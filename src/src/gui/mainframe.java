@@ -16,10 +16,13 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 import javax.swing.Action;
 
+import gui.about;
+
 public class mainframe {
 
 	private JFrame frame;
-	private final Action action = new SwingAction();
+	private final Action action_about = new SA_About();
+	private final Action action_quit = new SA_Quit();
 
 	/**
 	 * Launch the application.
@@ -59,12 +62,14 @@ public class mainframe {
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmQuit = new JMenuItem("Quit");
+		mntmQuit.setAction(action_quit);
 		mnFile.add(mntmQuit);
 		
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
 		
 		JMenuItem mntmAbout_1 = new JMenuItem("About");
+		mntmAbout_1.setAction(action_about);
 		mnHelp.add(mntmAbout_1);
 	}
 
@@ -85,13 +90,22 @@ public class mainframe {
 			}
 		});
 	}
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
+	private class SA_About extends AbstractAction {
+		public SA_About() {
+			putValue(NAME, "About");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			
+			about.main(null);
+		}
+	}
+	private class SA_Quit extends AbstractAction {
+		public SA_Quit() {
+			putValue(NAME, "Quit");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+			System.exit(0);
 		}
 	}
 }
