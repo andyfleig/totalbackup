@@ -25,7 +25,7 @@ import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.JTextPane;
 
-public class about extends JDialog {
+public class About extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private final Action action = new SA_ok();
@@ -41,7 +41,7 @@ public class about extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			about dialog = new about();
+			About dialog = new About();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -52,7 +52,7 @@ public class about extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public about() {
+	public About() {
 		setResizable(false);
 		setTitle("About");
 		setModal(true);
@@ -108,7 +108,7 @@ public class about extends JDialog {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			about.this.dispose();
+			About.this.dispose();
 		}
 	}
 }

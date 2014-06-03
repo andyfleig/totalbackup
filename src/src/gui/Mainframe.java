@@ -19,14 +19,19 @@ import java.awt.event.ActionEvent;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 
-import gui.about;
+import gui.About;
+import main.Backup;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 
-public class mainframe {
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class Mainframe {
 
 	private JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
@@ -38,6 +43,7 @@ public class mainframe {
 	File sourceFile;
 	File destinationFile;
 	private final Action action_1 = new SA_opendialog_destination();
+	private final Action action_2 = new SA_runBackup();
 
 	/**
 	 * Launch the application.
@@ -46,7 +52,7 @@ public class mainframe {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					mainframe window = new mainframe();
+					Mainframe window = new Mainframe();
 					window.frmTotalbackup.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,7 +64,7 @@ public class mainframe {
 	/**
 	 * Create the application.
 	 */
-	public mainframe() {
+	public Mainframe() {
 		initialize();
 	}
 
@@ -129,6 +135,14 @@ public class mainframe {
 		});
 		btnDurchsuchen.setAction(action);
 		panel_2.add(btnDurchsuchen);
+		
+		JButton btnBackupStarten = new JButton("Backup starten");
+		btnBackupStarten.setAction(action_2);
+		btnBackupStarten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		frmTotalbackup.getContentPane().add(btnBackupStarten, BorderLayout.SOUTH);
 	}
 
 	private static void addPopup(Component component, final JPopupMenu popup) {
@@ -154,7 +168,7 @@ public class mainframe {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			about.main(null);
+			About.main(null);
 		}
 	}
 	private class SA_Quit extends AbstractAction {
@@ -196,6 +210,23 @@ public class mainframe {
 				sourceFile = fc.getSelectedFile();
 				tf_destinationPath.setText(sourceFile.getAbsolutePath());
 			}
+		}
+	}
+	private class SA_runBackup extends AbstractAction {
+		public SA_runBackup() {
+			putValue(NAME, "Backup starten");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+			Backup backup = new Backup(tf_sourcePath.getText(), tf_destinationPath.getText());
+			try {
+				backup.runBackup();
+			} catch (FileNotFoundException ex) {
+				System.out.println("Datei existiert nicht!");
+			} catch (IOException ex) {
+				System.out.println("IO-Fehler!");
+			}
+			
 		}
 	}
 }
