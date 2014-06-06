@@ -26,7 +26,7 @@ public class Backup {
 	public void runBackup() throws FileNotFoundException, IOException {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 		df.setTimeZone(TimeZone.getDefault());
 		String backupDir = destinationFile.getAbsolutePath() + "/" + df.format(date);
 		
