@@ -41,6 +41,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import java.lang.NullPointerException;
+
 public class Mainframe {
 
 	private JFrame frmTotalbackup;
@@ -63,9 +65,9 @@ public class Mainframe {
 	 * Launch the application.
 	 */
 	public void main(String[] args) {
-		//Mainframe window = new Mainframe(controller);
-		//window.frmTotalbackup.setVisible(true);
-		
+		// Mainframe window = new Mainframe(controller);
+		// window.frmTotalbackup.setVisible(true);
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -76,7 +78,7 @@ public class Mainframe {
 				}
 			}
 		});
-		
+
 	}
 
 	/**
@@ -161,12 +163,11 @@ public class Mainframe {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		frmTotalbackup.getContentPane().add(btnBackupStarten,
-				BorderLayout.SOUTH);
+		frmTotalbackup.getContentPane().add(btnBackupStarten, BorderLayout.SOUTH);
 
 		ta_output = new JTextArea();
 		frmTotalbackup.getContentPane().add(ta_output, BorderLayout.WEST);
-		
+
 		JScrollPane scrollPane = new JScrollPane(ta_output);
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
 	}
@@ -261,12 +262,23 @@ public class Mainframe {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			ta_output.append("Backup wird erstellt...");
-			controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
+
+			if (tf_sourcePath.getText().isEmpty()) {
+				ta_output.append("Fehler: Kein Quellverzeichnis angegeben\n");
+			} else if (tf_destinationPath.getText().isEmpty()) {
+				ta_output.append("Fehler: Kein Zielverzeichnis angegeben\n");
+			} else {
+				//TODO: Pfad auf gültigkeit prüfen
+				ta_output.append("Backup wird erstellt...\n");
+				controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
+			}
 		}
 	}
 
 	public void addToOutput(String output) {
-		window.ta_output.append("\n" + output);
+		if (output == null) {
+			throw new NullPointerException();
+		}
+		window.ta_output.append(output + "\n");
 	}
 }
