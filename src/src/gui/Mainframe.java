@@ -260,7 +260,7 @@ public class Mainframe {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			ta_output.setText("Backup wird erstellt...");
+			ta_output.append("Backup wird erstellt...");
 			controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
 		}
 	}

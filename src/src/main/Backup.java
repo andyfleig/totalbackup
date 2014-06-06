@@ -61,6 +61,10 @@ public class Backup {
 		File[] files = source.listFiles();File newFile = null;
 		
 		destination.mkdirs();
+		
+		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
+		controller.printOut(output);
+		
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator") + files[i].getName());
@@ -83,7 +87,7 @@ public class Backup {
 		in.close();
 		out.close();
 		
-		String fileWithPath = source.getPath() + "/" + source.getName();
-		controller.printOut(fileWithPath);
+		String output = "Datei " + source.getPath() + "/" + source.getName() + " nach " + destination.getPath() + "/" + destination.getName() + " kopiert";
+		controller.printOut(output);
 	}
 }
