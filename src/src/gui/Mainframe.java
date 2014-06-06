@@ -39,6 +39,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JTextArea;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 public class Mainframe {
 
@@ -92,7 +93,7 @@ public class Mainframe {
 	private void initialize() {
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle("TotalBackup");
-		frmTotalbackup.setBounds(100, 100, 556, 451);
+		frmTotalbackup.setBounds(100, 100, 894, 569);
 		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -267,13 +268,5 @@ public class Mainframe {
 
 	public void addToOutput(String output) {
 		window.ta_output.append("\n" + output);
-	}
-
-	public String getTfSourcePath() {
-		return tf_sourcePath.getText();
-	}
-
-	public String getTfDestinationPath() {
-		return tf_destinationPath.getText();
 	}
 }
