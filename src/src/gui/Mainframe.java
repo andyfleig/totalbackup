@@ -96,17 +96,17 @@ public class Mainframe {
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
 
-		JMenu mnFile = new JMenu("File");
+		JMenu mnFile = new JMenu("Datei");
 		menuBar.add(mnFile);
 
-		JMenuItem mntmQuit = new JMenuItem("Quit");
+		JMenuItem mntmQuit = new JMenuItem("Beenden");
 		mntmQuit.setAction(action_quit);
 		mnFile.add(mntmQuit);
 
-		JMenu mnHelp = new JMenu("Help");
+		JMenu mnHelp = new JMenu("Hilfe");
 		menuBar.add(mnHelp);
 
-		JMenuItem mntmAbout_1 = new JMenuItem("About");
+		JMenuItem mntmAbout_1 = new JMenuItem("Über");
 		mntmAbout_1.setAction(action_about);
 		mnHelp.add(mntmAbout_1);
 
@@ -191,7 +191,7 @@ public class Mainframe {
 
 	private class SA_About extends AbstractAction {
 		public SA_About() {
-			putValue(NAME, "About");
+			putValue(NAME, "Über");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -202,7 +202,7 @@ public class Mainframe {
 
 	private class SA_Quit extends AbstractAction {
 		public SA_Quit() {
-			putValue(NAME, "Quit");
+			putValue(NAME, "Beenden");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
