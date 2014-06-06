@@ -37,6 +37,8 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextArea;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
 public class Mainframe {
 
@@ -162,7 +164,10 @@ public class Mainframe {
 				BorderLayout.SOUTH);
 
 		ta_output = new JTextArea();
-		frmTotalbackup.getContentPane().add(ta_output, BorderLayout.CENTER);
+		frmTotalbackup.getContentPane().add(ta_output, BorderLayout.WEST);
+		
+		JScrollPane scrollPane = new JScrollPane(ta_output);
+		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
 	}
 
 	public void init(Controller c) {
