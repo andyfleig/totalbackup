@@ -1,16 +1,13 @@
 package main;
 
-import gui.Mainframe;
+import main.Controller;
 
 public class Main {
 
 	public static void main(String[] args) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-	          public void run() {
-	               Mainframe.main(null);
-	          }
-	    });
 
+		Controller c = new Controller();
+		c.startController();
 	}
 
 }

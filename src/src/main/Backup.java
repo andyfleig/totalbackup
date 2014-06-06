@@ -1,6 +1,5 @@
 package main;
 
-import gui.About;
 import gui.Mainframe;
 
 import java.io.FileNotFoundException;
@@ -16,8 +15,10 @@ import java.text.*;
 public class Backup {
 	File sourceFile;
 	File destinationFile;
+	Controller controller;
 	
-	public Backup(String source, String destination){
+	public Backup(Controller c, String source, String destination){
+		this.controller = c;
 		this.sourceFile = new File(source);
 		this.destinationFile = new File(destination);
 	}
@@ -32,9 +33,9 @@ public class Backup {
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
 		if (dir.mkdir()) {
-			System.out.println("Ordner erfolgreich erstellt!");
+			System.out.println("Backup-Ordner erfolgreich erstellt!");
 		} else {
-			System.out.println("Fehler beim erstellen des Ordners");
+			System.out.println("Fehler beim erstellen des Backup-Ordners");
 		}
 		
 		String folder = dir + "/" + sourceFile.getName();
@@ -45,7 +46,7 @@ public class Backup {
 		} else {
 			System.out.println("Fehler beim erstellen des Ordners");
 		}
-		
+		// Eigentlicher Kopiervorgang:
 		copyDirectory(sourceFile, f);
 	}
 	
@@ -81,5 +82,8 @@ public class Backup {
 		}
 		in.close();
 		out.close();
+		
+		String fileWithPath = source.getPath() + "/" + source.getName();
+		controller.printOut(fileWithPath);
 	}
 }
