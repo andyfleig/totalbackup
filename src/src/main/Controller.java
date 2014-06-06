@@ -14,8 +14,6 @@ public class Controller {
 	}
 
 	public void startController() {
-		//mainframe.main(null);
-		
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				mainframe.main(null);
@@ -38,6 +36,5 @@ public class Controller {
 	
 	public void printOut(String s) {
 		mainframe.addToOutput(s);
-		//System.out.println("Test: " + mainframe.getTfDestinationPath());
 	}
 }

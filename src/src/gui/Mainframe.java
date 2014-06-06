@@ -256,14 +256,11 @@ public class Mainframe {
 
 		public void actionPerformed(ActionEvent e) {
 			ta_output.setText("Backup wird erstellt...");
-			//System.out.println("Source: " + tf_sourcePath.getText());
-			//System.out.println("Destination: " + tf_destinationPath.getText());
 			controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
 		}
 	}
 
 	public void addToOutput(String output) {
-		//System.out.println("Test2: " + ta_output.getText());
 		window.ta_output.append("\n" + output);
 	}
 
