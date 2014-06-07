@@ -37,9 +37,7 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 
 import java.lang.NullPointerException;
 

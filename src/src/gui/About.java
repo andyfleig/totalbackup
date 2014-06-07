@@ -1,13 +1,11 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
@@ -15,14 +13,6 @@ import javax.swing.Action;
 import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 import java.awt.Color;
-import javax.swing.BoxLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import java.awt.Component;
-import javax.swing.Box;
 import javax.swing.JTextPane;
 
 public class About extends JDialog {
