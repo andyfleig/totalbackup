@@ -269,16 +269,37 @@ public class Mainframe {
 				ta_output.append("Fehler: Kein Zielverzeichnis angegeben\n");
 			} else {
 				//TODO: Pfad auf gültigkeit prüfen
-				ta_output.append("Backup wird erstellt...\n");
-				controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
+				
+				if (!checkPathValidity(tf_sourcePath.getText())) {
+					ta_output.append("Ungültiger Quellpfad\n");
+				} else if (!checkPathValidity(tf_destinationPath.getText())) {
+					ta_output.append("Ungültiger Zielpfad\n");
+				} else {
+					ta_output.append("Backup wird erstellt...\n");
+					controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
+					ta_output.append("Backup erfolgreich erstellt");
+				}
 			}
 		}
 	}
 
+	/**
+	 * Gibt einen String auf der GUI (im Textfeld) aus.
+	 * ACHTUNG: Innerhalb von Mainframe.java direkt per ta_output.append() auf das Textfeld zugreifen!
+	 * @param output String welcher auf der GUI angezeigt werden soll.
+	 */
 	public void addToOutput(String output) {
 		if (output == null) {
 			throw new NullPointerException();
 		}
 		window.ta_output.append(output + "\n");
+	}
+	
+	private boolean checkPathValidity(String s) {
+		File f = new File(s);
+		if (f.exists()) {
+			return true;
+		}
+		return false;
 	}
 }
