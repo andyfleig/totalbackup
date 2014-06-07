@@ -10,6 +10,9 @@ import java.awt.BorderLayout;
 
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.Dimension;
 
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -37,19 +40,23 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextArea;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import java.lang.NullPointerException;
+import javax.swing.JList;
 
 public class Mainframe {
 
 	private JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
-	private JTextField tf_sourcePath;
 	private JTextField tf_destinationPath;
 	private JTextArea ta_output;
+	private JList l_source;
 	private final Action action = new SA_opendialog_source();
+	
+	private DefaultListModel listModel;
 
 	private Controller controller;
 	private Mainframe window;
@@ -58,6 +65,9 @@ public class Mainframe {
 	File destinationFile;
 	private final Action action_1 = new SA_opendialog_destination();
 	private final Action action_2 = new SA_runBackup();
+	private JTextField txtTest;
+	private JTextField txtTest_1;
+	private final Action action_3 = new SwingAction();
 
 	/**
 	 * Launch the application.
@@ -143,17 +153,50 @@ public class Mainframe {
 		JLabel lblQuelle = new JLabel("Quelle:");
 		panel_2.add(lblQuelle);
 
-		tf_sourcePath = new JTextField();
-		panel_2.add(tf_sourcePath);
-		tf_sourcePath.setColumns(20);
-
-		JButton btnDurchsuchen = new JButton("Durchsuchen...");
-		btnDurchsuchen.addActionListener(new ActionListener() {
+		JButton btnHinzufuegen = new JButton("Hinzufügen");
+		btnHinzufuegen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		btnDurchsuchen.setAction(action);
-		panel_2.add(btnDurchsuchen);
+		
+		listModel = new DefaultListModel<String>();
+		
+		l_source = new JList(listModel);
+		l_source.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		l_source.setSelectedIndex(0);
+		l_source.setVisibleRowCount(5);
+		JScrollPane listScroller = new JScrollPane(l_source);
+		listScroller.setPreferredSize(new Dimension(5, 5));
+		
+		
+		panel_2.add(l_source);
+		
+		txtTest = new JTextField();
+		txtTest.setText("test1");
+		//panel_2.add(txtTest);
+		txtTest.setColumns(10);
+		
+		txtTest_1 = new JTextField();
+		txtTest_1.setText("test2");
+		//panel_2.add(txtTest_1);
+		txtTest_1.setColumns(10);
+		
+		l_source.add(txtTest);
+		l_source.add(txtTest_1);
+		
+		btnHinzufuegen.setAction(action);
+		panel_2.add(btnHinzufuegen);
+		
+		JButton btnLoeschen = new JButton("Löschen");
+		btnLoeschen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (!l_source.isSelectionEmpty()) {
+					listModel.remove(l_source.getSelectedIndex());
+				}
+			}
+		});
+		btnLoeschen.setAction(action_3);
+		panel_2.add(btnLoeschen);
 
 		JButton btnBackupStarten = new JButton("Backup starten");
 		btnBackupStarten.setAction(action_2);
@@ -218,7 +261,7 @@ public class Mainframe {
 
 	private class SA_opendialog_source extends AbstractAction {
 		public SA_opendialog_source() {
-			putValue(NAME, "Durchsuchen...");
+			putValue(NAME, "Hinzufügen");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -229,7 +272,7 @@ public class Mainframe {
 
 			if (state == JFileChooser.APPROVE_OPTION) {
 				sourceFile = fc.getSelectedFile();
-				tf_sourcePath.setText(sourceFile.getAbsolutePath());
+				listModel.addElement(sourceFile.getAbsolutePath() + "\n");
 			}
 		}
 	}
@@ -261,13 +304,27 @@ public class Mainframe {
 
 		public void actionPerformed(ActionEvent e) {
 
-			if (tf_sourcePath.getText().isEmpty()) {
+			if (listModel.isEmpty()) {
 				ta_output.append("Fehler: Kein Quellverzeichnis angegeben\n");
 			} else if (tf_destinationPath.getText().isEmpty()) {
 				ta_output.append("Fehler: Kein Zielverzeichnis angegeben\n");
 			} else {
-				//TODO: Pfad auf gültigkeit prüfen
+				if (!checkPathValidity(tf_destinationPath.getText())) {
+					ta_output.append("Ungültiger Zielpfad\n");
+				} else {
+					for (int i = 0; i < listModel.size(); i++) {
+						if (!checkPathValidity(listModel.getElementAt(i).toString().trim())) {
+							ta_output.append("Ungültiger Quellpfad\n");
+						} else {
+							ta_output.append("Backup wird erstellt...\n");
+							controller.startBackup(listModel.getElementAt(i).toString().trim(), tf_destinationPath.getText());
+							ta_output.append("Backup erfolgreich erstellt");
+						}
+					}
+				}
 				
+				
+				/*
 				if (!checkPathValidity(tf_sourcePath.getText())) {
 					ta_output.append("Ungültiger Quellpfad\n");
 				} else if (!checkPathValidity(tf_destinationPath.getText())) {
@@ -277,6 +334,7 @@ public class Mainframe {
 					controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
 					ta_output.append("Backup erfolgreich erstellt");
 				}
+				*/
 			}
 		}
 	}
@@ -304,5 +362,13 @@ public class Mainframe {
 			return true;
 		}
 		return false;
+	}
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "Löschen");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
 	}
 }
