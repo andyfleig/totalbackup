@@ -13,16 +13,27 @@ import java.util.*;
 import java.text.*;
 
 public class Backup {
-	File sourceFile;
-	File destinationFile;
-	Controller controller;
+	private File sourceFile;
+	private File destinationFile;
+	private Controller controller;
 	
+	/**
+	 * Backup-Objekt zur "normalen" Datensicherung.
+	 * @param c Controller
+	 * @param source Quellpfad
+	 * @param destination Zielpfad
+	 */
 	public Backup(Controller c, String source, String destination){
 		this.controller = c;
 		this.sourceFile = new File(source);
 		this.destinationFile = new File(destination);
 	}
 	
+	/**
+	 * Startet den Backup-Vorgang
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void runBackup() throws FileNotFoundException, IOException {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
@@ -77,6 +88,13 @@ public class Backup {
 		}
 	}
 	
+	/**
+	 * Kopiet eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
+	 * @param source Quellpfad
+	 * @param destination Zielpfad
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public void copyFile(File source, File destination) throws FileNotFoundException, IOException {
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));

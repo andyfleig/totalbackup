@@ -285,7 +285,7 @@ public class Mainframe {
 
 	/**
 	 * Gibt einen String auf der GUI (im Textfeld) aus.
-	 * ACHTUNG: Innerhalb von Mainframe.java direkt per ta_output.append() auf das Textfeld zugreifen!
+	 * ACHTUNG: Innerhalb von Mainframe.java direkt per ta_output.append() zugreifen!
 	 * @param output String welcher auf der GUI angezeigt werden soll.
 	 */
 	public void addToOutput(String output) {
@@ -295,6 +295,11 @@ public class Mainframe {
 		window.ta_output.append(output + "\n");
 	}
 	
+	/**
+	 * Prüft einen Pfad auf Gültigkeit.
+	 * @param s Zu prüfender Pfad (als String)
+	 * @return Gültigkeit des Pfades
+	 */
 	private boolean checkPathValidity(String s) {
 		File f = new File(s);
 		if (f.exists()) {
