@@ -9,14 +9,11 @@ public class Controller {
 	
 	Mainframe mainframe;
 
-	public Controller() {
-		mainframe = new Mainframe(this);
-	}
-
 	public void startController() {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				mainframe.main(null);
+				mainframe = new Mainframe(Controller.this);
+				mainframe.frmTotalbackup.setVisible(true);
 			}
 		});
 		

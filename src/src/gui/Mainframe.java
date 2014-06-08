@@ -46,7 +46,8 @@ import javax.swing.JList;
 
 public class Mainframe {
 
-	private JFrame frmTotalbackup;
+	// private mit setter?
+	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
 	private JTextField tf_destinationPath;
@@ -57,7 +58,6 @@ public class Mainframe {
 	private DefaultListModel listModel;
 
 	private Controller controller;
-	private Mainframe window;
 
 	File sourceFile;
 	File destinationFile;
@@ -69,22 +69,9 @@ public class Mainframe {
 
 	/**
 	 * Launch the application.
+	 * @deprecated GUI wird über den Controller gestartet.
 	 */
 	public void main(String[] args) {
-		// Mainframe window = new Mainframe(controller);
-		// window.frmTotalbackup.setVisible(true);
-
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					window = new Mainframe(controller);
-					window.frmTotalbackup.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-
 	}
 
 	/**
@@ -98,7 +85,7 @@ public class Mainframe {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	public void initialize() {
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle("TotalBackup");
 		frmTotalbackup.setBounds(100, 100, 894, 569);
@@ -324,14 +311,13 @@ public class Mainframe {
 
 	/**
 	 * Gibt einen String auf der GUI (im Textfeld) aus.
-	 * ACHTUNG: Innerhalb von Mainframe.java direkt per ta_output.append() zugreifen!
 	 * @param output String welcher auf der GUI angezeigt werden soll.
 	 */
 	public void addToOutput(String output) {
 		if (output == null) {
 			throw new NullPointerException();
 		}
-		window.ta_output.append(output + "\n");
+		ta_output.append(output + "\n");
 	}
 	
 	/**

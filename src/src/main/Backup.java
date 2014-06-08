@@ -66,7 +66,7 @@ public class Backup {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void copyDirectory(File source, File destination) throws FileNotFoundException, IOException {
+	private void copyDirectory(File source, File destination) throws FileNotFoundException, IOException {
 		File[] files = source.listFiles();File newFile = null;
 		
 		destination.mkdirs();
@@ -93,7 +93,7 @@ public class Backup {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void copyFile(File source, File destination) throws FileNotFoundException, IOException {
+	private void copyFile(File source, File destination) throws FileNotFoundException, IOException {
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
