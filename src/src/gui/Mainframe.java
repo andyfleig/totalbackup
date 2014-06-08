@@ -174,6 +174,7 @@ public class Mainframe {
 		
 				JButton btnHinzufuegen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel_3.add(btnHinzufuegen);
+				btnHinzufuegen.setAlignmentX(Component.CENTER_ALIGNMENT);
 				btnHinzufuegen.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 					}
@@ -183,6 +184,7 @@ public class Mainframe {
 		
 		JButton btnLoeschen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btnLoeschen);
+		btnLoeschen.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnLoeschen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!l_source.isSelectionEmpty()) {
