@@ -11,7 +11,6 @@ import java.awt.BorderLayout;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.Dimension;
 
 import java.awt.Component;
@@ -40,7 +39,6 @@ import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import java.lang.NullPointerException;
@@ -173,12 +171,10 @@ public class Mainframe {
 		
 		txtTest = new JTextField();
 		txtTest.setText("test1");
-		//panel_2.add(txtTest);
 		txtTest.setColumns(10);
 		
 		txtTest_1 = new JTextField();
 		txtTest_1.setText("test2");
-		//panel_2.add(txtTest_1);
 		txtTest_1.setColumns(10);
 		
 		l_source.add(txtTest);
@@ -322,19 +318,6 @@ public class Mainframe {
 						}
 					}
 				}
-				
-				
-				/*
-				if (!checkPathValidity(tf_sourcePath.getText())) {
-					ta_output.append("Ungültiger Quellpfad\n");
-				} else if (!checkPathValidity(tf_destinationPath.getText())) {
-					ta_output.append("Ungültiger Zielpfad\n");
-				} else {
-					ta_output.append("Backup wird erstellt...\n");
-					controller.startBackup(tf_sourcePath.getText(), tf_destinationPath.getText());
-					ta_output.append("Backup erfolgreich erstellt");
-				}
-				*/
 			}
 		}
 	}
