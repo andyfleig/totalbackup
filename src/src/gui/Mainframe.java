@@ -200,7 +200,6 @@ public class Mainframe {
 		frmTotalbackup.getContentPane().add(btnBackupStarten, BorderLayout.SOUTH);
 
 		ta_output = new JTextArea();
-		frmTotalbackup.getContentPane().add(ta_output, BorderLayout.WEST);
 
 		JScrollPane scrollPane = new JScrollPane(ta_output);
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
