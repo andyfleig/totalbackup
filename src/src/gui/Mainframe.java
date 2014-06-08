@@ -43,6 +43,7 @@ import javax.swing.JScrollPane;
 
 import java.lang.NullPointerException;
 import javax.swing.JList;
+import java.util.ResourceBundle;
 
 public class Mainframe {
 	
@@ -103,24 +104,24 @@ public class Mainframe {
 	 */
 	public void initialize() {
 		frmTotalbackup = new JFrame();
-		frmTotalbackup.setTitle("TotalBackup");
+		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("Mainframe.frmTotalbackup.title")); //$NON-NLS-1$ //$NON-NLS-2$
 		frmTotalbackup.setBounds(100, 100, 894, 569);
 		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
 
-		JMenu mnFile = new JMenu("Datei");
+		JMenu mnFile = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnFile.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		menuBar.add(mnFile);
 
-		JMenuItem mntmQuit = new JMenuItem("Beenden");
+		JMenuItem mntmQuit = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmQuit.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		mntmQuit.setAction(action_quit);
 		mnFile.add(mntmQuit);
 
-		JMenu mnHelp = new JMenu("Hilfe");
+		JMenu mnHelp = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnHelp.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		menuBar.add(mnHelp);
 
-		JMenuItem mntmAbout_1 = new JMenuItem("Über");
+		JMenuItem mntmAbout_1 = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmAbout_1.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		mntmAbout_1.setAction(action_about);
 		mnHelp.add(mntmAbout_1);
 
@@ -132,14 +133,14 @@ public class Mainframe {
 		panel.add(panel_1, BorderLayout.SOUTH);
 		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JLabel lblZiel = new JLabel("Ziel:");
+		JLabel lblZiel = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblZiel.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_1.add(lblZiel);
 
 		tf_destinationPath = new JTextField();
 		panel_1.add(tf_destinationPath);
 		tf_destinationPath.setColumns(20);
 
-		JButton btnDurchsuchen_1 = new JButton("Durchsuchen...");
+		JButton btnDurchsuchen_1 = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnDurchsuchen_1.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnDurchsuchen_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -151,7 +152,7 @@ public class Mainframe {
 		panel.add(panel_2, BorderLayout.NORTH);
 		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JLabel lblQuelle = new JLabel("Quelle:");
+		JLabel lblQuelle = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblQuelle.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_2.add(lblQuelle);
 		
 		listModel = new DefaultListModel<String>();
@@ -171,7 +172,7 @@ public class Mainframe {
 		panel_2.add(panel_3);
 				panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
 		
-				JButton btnHinzufuegen = new JButton("Hinzufügen");
+				JButton btnHinzufuegen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel_3.add(btnHinzufuegen);
 				btnHinzufuegen.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -180,7 +181,7 @@ public class Mainframe {
 		
 		btnHinzufuegen.setAction(action);
 		
-		JButton btnLoeschen = new JButton("Löschen");
+		JButton btnLoeschen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btnLoeschen);
 		btnLoeschen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -191,7 +192,7 @@ public class Mainframe {
 		});
 		btnLoeschen.setAction(action_3);
 
-		JButton btnBackupStarten = new JButton("Backup starten");
+		JButton btnBackupStarten = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		btnBackupStarten.setAction(action_2);
 		btnBackupStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -242,7 +243,7 @@ public class Mainframe {
 
 	private class SA_Quit extends AbstractAction {
 		public SA_Quit() {
-			putValue(NAME, "Beenden");
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmQuit.text"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -253,7 +254,7 @@ public class Mainframe {
 
 	private class SA_opendialog_source extends AbstractAction {
 		public SA_opendialog_source() {
-			putValue(NAME, "Hinzufügen");
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -272,7 +273,7 @@ public class Mainframe {
 	private class SA_opendialog_destination extends AbstractAction {
 
 		public SA_opendialog_destination() {
-			putValue(NAME, "Durchsuchen...");
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnDurchsuchen_1.text"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -290,7 +291,7 @@ public class Mainframe {
 
 	private class SA_runBackup extends AbstractAction {
 		public SA_runBackup() {
-			putValue(NAME, "Backup starten");
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -343,7 +344,7 @@ public class Mainframe {
 	}
 	private class SwingAction extends AbstractAction {
 		public SwingAction() {
-			putValue(NAME, "Löschen");
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
