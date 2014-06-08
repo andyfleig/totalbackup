@@ -45,6 +45,8 @@ import java.lang.NullPointerException;
 import javax.swing.JList;
 
 public class Mainframe {
+	
+	private Mainframe window;
 
 	// private mit setter?
 	public JFrame frmTotalbackup;
@@ -63,15 +65,29 @@ public class Mainframe {
 	File destinationFile;
 	private final Action action_1 = new SA_opendialog_destination();
 	private final Action action_2 = new SA_runBackup();
-	private JTextField txtTest;
-	private JTextField txtTest_1;
 	private final Action action_3 = new SwingAction();
 
 	/**
 	 * Launch the application.
-	 * @deprecated GUI wird über den Controller gestartet.
+	 * @deprecated
 	 */
 	public void main(String[] args) {
+		// Mainframe window = new Mainframe(controller);
+		// window.frmTotalbackup.setVisible(true);
+
+		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					window = new Mainframe(controller);
+					window.frmTotalbackup.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+
 	}
 
 	/**
@@ -137,40 +153,35 @@ public class Mainframe {
 
 		JLabel lblQuelle = new JLabel("Quelle:");
 		panel_2.add(lblQuelle);
-
-		JButton btnHinzufuegen = new JButton("Hinzufügen");
-		btnHinzufuegen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		
 		listModel = new DefaultListModel<String>();
 		
 		l_source = new JList(listModel);
 		l_source.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		l_source.setSelectedIndex(0);
-		l_source.setVisibleRowCount(5);
+		l_source.setVisibleRowCount(6);
 		JScrollPane listScroller = new JScrollPane(l_source);
-		listScroller.setPreferredSize(new Dimension(5, 5));
+		listScroller.setMaximumSize(new Dimension(200, 200));
+		listScroller.setMinimumSize (new Dimension (200, 200));
 		
 		
-		panel_2.add(l_source);
+		panel_2.add(listScroller);
 		
-		txtTest = new JTextField();
-		txtTest.setText("test1");
-		txtTest.setColumns(10);
+		JPanel panel_3 = new JPanel();
+		panel_2.add(panel_3);
+				panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
 		
-		txtTest_1 = new JTextField();
-		txtTest_1.setText("test2");
-		txtTest_1.setColumns(10);
-		
-		l_source.add(txtTest);
-		l_source.add(txtTest_1);
+				JButton btnHinzufuegen = new JButton("Hinzufügen");
+				panel_3.add(btnHinzufuegen);
+				btnHinzufuegen.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+					}
+				});
 		
 		btnHinzufuegen.setAction(action);
-		panel_2.add(btnHinzufuegen);
 		
 		JButton btnLoeschen = new JButton("Löschen");
+		panel_3.add(btnLoeschen);
 		btnLoeschen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!l_source.isSelectionEmpty()) {
@@ -179,7 +190,6 @@ public class Mainframe {
 			}
 		});
 		btnLoeschen.setAction(action_3);
-		panel_2.add(btnLoeschen);
 
 		JButton btnBackupStarten = new JButton("Backup starten");
 		btnBackupStarten.setAction(action_2);
