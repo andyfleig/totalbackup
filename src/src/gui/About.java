@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import javax.swing.JTextPane;
+import java.util.ResourceBundle;
 
 public class About extends JDialog {
 
@@ -44,7 +45,7 @@ public class About extends JDialog {
 	 */
 	public About() {
 		setResizable(false);
-		setTitle("About");
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("About.this.title")); //$NON-NLS-1$ //$NON-NLS-2$
 		setModal(true);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 365, 147);
@@ -57,14 +58,14 @@ public class About extends JDialog {
 			contentPanel.add(panel, BorderLayout.SOUTH);
 			panel.setLayout(new BorderLayout(0, 0));
 			{
-				okButton = new JButton("OK");
+				okButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("About.okButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel.add(okButton, BorderLayout.EAST);
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 					}
 				});
 				okButton.setAction(action);
-				okButton.setActionCommand("OK");
+				okButton.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("About.okButton.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
@@ -72,13 +73,13 @@ public class About extends JDialog {
 				panel.add(panel_1, BorderLayout.WEST);
 				panel_1.setLayout(new BorderLayout(0, 0));
 				{
-					label = new JLabel("©2014 Andreas Fleig");
+					label = new JLabel(ResourceBundle.getBundle("gui.messages").getString("About.label.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					panel_1.add(label, BorderLayout.SOUTH);
 					label.setVerticalAlignment(SwingConstants.BOTTOM);
 					label.setHorizontalAlignment(SwingConstants.CENTER);
 				}
 				{
-					lblVAlpha = new JLabel(" v0.0.1 alpha");
+					lblVAlpha = new JLabel(ResourceBundle.getBundle("gui.messages").getString("About.lblVAlpha.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					panel_1.add(lblVAlpha, BorderLayout.NORTH);
 					lblVAlpha.setHorizontalAlignment(SwingConstants.LEFT);
 				}
@@ -87,7 +88,7 @@ public class About extends JDialog {
 		{
 			txtpnWarnungDieSoftware = new JTextPane();
 			txtpnWarnungDieSoftware.setForeground(Color.RED);
-			txtpnWarnungDieSoftware.setText("WARNUNG:\nDie Software befindet sich noch in einer sehr frühen Entwicklungsphase. Daher wird nicht empfohlen sie produktiv einzusetzen!");
+			txtpnWarnungDieSoftware.setText(ResourceBundle.getBundle("gui.messages").getString("About.txtpnWarnungDieSoftware.text")); //$NON-NLS-1$ //$NON-NLS-2$
 			contentPanel.add(txtpnWarnungDieSoftware, BorderLayout.CENTER);
 		}
 	}
