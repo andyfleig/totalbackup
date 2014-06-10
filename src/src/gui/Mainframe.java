@@ -44,6 +44,7 @@ import javax.swing.JScrollPane;
 import java.lang.NullPointerException;
 import javax.swing.JList;
 import java.util.ResourceBundle;
+import java.util.ArrayList;
 
 public class Mainframe {
 	
@@ -66,7 +67,9 @@ public class Mainframe {
 	File destinationFile;
 	private final Action action_1 = new SA_opendialog_destination();
 	private final Action action_2 = new SA_runBackup();
-	private final Action action_3 = new SwingAction();
+	private final Action action_3 = new SA_delete();
+	private final Action action_4 = new SA_Save();
+	private final Action action_5 = new SA_Load();
 
 	/**
 	 * Launch the application.
@@ -113,6 +116,17 @@ public class Mainframe {
 
 		JMenu mnFile = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnFile.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		menuBar.add(mnFile);
+		
+		JMenuItem mntmLaden = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmLaden.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		mntmLaden.setAction(action_5);
+		mnFile.add(mntmLaden);
+		
+		JMenuItem mntmSpeichern = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmSpeichern.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		mntmSpeichern.setAction(action_4);
+		mnFile.add(mntmSpeichern);
+		
+		JSeparator separator = new JSeparator();
+		mnFile.add(separator);
 
 		JMenuItem mntmQuit = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmQuit.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		mntmQuit.setAction(action_quit);
@@ -171,7 +185,6 @@ public class Mainframe {
 		JPanel panel_3 = new JPanel();
 		panel_2.add(panel_3);
 				panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
-		
 				JButton btnHinzufuegen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel_3.add(btnHinzufuegen);
 				btnHinzufuegen.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -189,6 +202,7 @@ public class Mainframe {
 			public void actionPerformed(ActionEvent e) {
 				if (!l_source.isSelectionEmpty()) {
 					listModel.remove(l_source.getSelectedIndex());
+					controller.setNumberOfSources(controller.getNumberOfSources() - 1);
 				}
 			}
 		});
@@ -234,7 +248,7 @@ public class Mainframe {
 
 	private class SA_About extends AbstractAction {
 		public SA_About() {
-			putValue(NAME, "Über");
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("About.this.title"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -267,7 +281,8 @@ public class Mainframe {
 
 			if (state == JFileChooser.APPROVE_OPTION) {
 				sourceFile = fc.getSelectedFile();
-				listModel.addElement(sourceFile.getAbsolutePath() + "\n");
+				listModel.addElement(sourceFile.getAbsolutePath());
+				controller.setNumberOfSources(controller.getNumberOfSources() + 1);
 			}
 		}
 	}
@@ -344,12 +359,51 @@ public class Mainframe {
 		}
 		return false;
 	}
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
+	private class SA_delete extends AbstractAction {
+		public SA_delete() {
 			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
+		}
+	}
+	private class SA_Save extends AbstractAction {
+		public SA_Save() {
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmSpeichern.text"));
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+			controller.saveProbs();
+		}
+	}
+	private class SA_Load extends AbstractAction {
+		public SA_Load() {
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmLaden.text"));
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+			controller.loadProps();
+		}
+	}
+	public String getDestPath() {
+		return tf_destinationPath.getText();
+	}
+	
+	public void setDestPath(String destPath) {
+		tf_destinationPath.setText(destPath.trim());
+	}
+	
+	public ArrayList<String> getSourcePaths() {
+		ArrayList<String> sources = new ArrayList<String>();
+		for (int i = 0; i < controller.getNumberOfSources(); i++) {
+			sources.add(l_source.getModel().getElementAt(i).toString());
+		}
+		return sources;
+	}
+	
+	public void setSourcePaths(ArrayList<String> sourcePaths) {
+		for (int i = 0; i < sourcePaths.size(); i++) {
+			listModel.addElement(sourcePaths.get(i));
 		}
 	}
 }
