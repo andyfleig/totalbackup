@@ -33,10 +33,7 @@ public class ProgramState {
 		File prop = new File(path);
 		try {
 			properties.load(new FileInputStream(prop));
-			//TODO: Load Fertigstellen
-			
 			controller.setDestinationPath(properties.getProperty("destination"));
-			
 			int i = 0;
 			ArrayList<String> sourcePaths = new ArrayList<String>();
 			while (properties.getProperty("source." + i) != null) {

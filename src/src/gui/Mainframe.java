@@ -264,6 +264,7 @@ public class Mainframe {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			controller.saveProbs();
 			System.exit(0);
 		}
 	}

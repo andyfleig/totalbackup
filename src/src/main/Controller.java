@@ -19,6 +19,7 @@ public class Controller {
 			public void run() {
 				mainframe = new Mainframe(Controller.this);
 				mainframe.frmTotalbackup.setVisible(true);
+				loadProps();
 			}
 		});
 	}
