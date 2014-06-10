@@ -68,8 +68,6 @@ public class Mainframe {
 	private final Action action_1 = new SA_opendialog_destination();
 	private final Action action_2 = new SA_runBackup();
 	private final Action action_3 = new SA_delete();
-	private final Action action_4 = new SA_Save();
-	private final Action action_5 = new SA_Load();
 
 	/**
 	 * Launch the application.
@@ -116,14 +114,6 @@ public class Mainframe {
 
 		JMenu mnFile = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnFile.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		menuBar.add(mnFile);
-		
-		JMenuItem mntmLaden = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmLaden.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		mntmLaden.setAction(action_5);
-		mnFile.add(mntmLaden);
-		
-		JMenuItem mntmSpeichern = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmSpeichern.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		mntmSpeichern.setAction(action_4);
-		mnFile.add(mntmSpeichern);
 		
 		JSeparator separator = new JSeparator();
 		mnFile.add(separator);
@@ -366,24 +356,6 @@ public class Mainframe {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-		}
-	}
-	private class SA_Save extends AbstractAction {
-		public SA_Save() {
-			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmSpeichern.text"));
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			controller.saveProbs();
-		}
-	}
-	private class SA_Load extends AbstractAction {
-		public SA_Load() {
-			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmLaden.text"));
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			controller.loadProps();
 		}
 	}
 	public String getDestPath() {
