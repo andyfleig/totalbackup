@@ -18,10 +18,19 @@ public class ProgramState {
 	private static ProgramState programState = null;
 	private Controller controller;
 	
+	/**
+	 * Erzeugt einen ProgramState mit dem ünbergebenen Controller.
+	 * @param c Controller für den ProgramState
+	 */
 	public ProgramState(Controller c) {
 		this.controller = c;
 	}
 	
+	/**
+	 * Gibt die einzige Instanz des ProgramState zurück.
+	 * @param c Controller für den ProgramState
+	 * @return Gibt den ProgramState zurück
+	 */
 	public static ProgramState getInstance(Controller c) {
 		if (programState == null) {
 			programState = new ProgramState(c);
@@ -29,6 +38,10 @@ public class ProgramState {
 		return programState;
 	}
 	
+	/**
+	 * Läd die, in der Properties-Datei gespeicherten Programm-Einstellugen.
+	 * @param path Pfad der Properties-Datei
+	 */
 	public void loadProperties(String path) {
 		File prop = new File(path);
 		try {
@@ -48,6 +61,10 @@ public class ProgramState {
 		}
 	}
 	
+	/**
+	 * Speichert die Programm-Einstellungen in die Properties-Datei.
+	 * @param path Pfad zur Properties-Datei
+	 */
 	public void saveProperties(String path) {
 		if (path == null) {
 			throw new IllegalArgumentException();
