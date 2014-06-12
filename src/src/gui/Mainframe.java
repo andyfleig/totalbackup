@@ -68,6 +68,7 @@ public class Mainframe {
 	private final Action action_1 = new SA_opendialog_destination();
 	private final Action action_2 = new SA_runBackup();
 	private final Action action_3 = new SA_delete();
+	private final Action action_4 = new SA_Edit();
 
 	/**
 	 * Launch the application.
@@ -184,6 +185,15 @@ public class Mainframe {
 				});
 		
 		btnHinzufuegen.setAction(action);
+		
+		JButton btnBearbeiten = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btnBearbeiten.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnBearbeiten.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnBearbeiten.setAction(action_4);
+		panel_3.add(btnBearbeiten);
 		
 		JButton btnLoeschen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btnLoeschen);
@@ -377,6 +387,15 @@ public class Mainframe {
 	public void setSourcePaths(ArrayList<String> sourcePaths) {
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			listModel.addElement(sourcePaths.get(i));
+		}
+	}
+	private class SA_Edit extends AbstractAction {
+		public SA_Edit() {
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text"));
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+			
 		}
 	}
 }
