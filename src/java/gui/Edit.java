@@ -3,49 +3,42 @@ package gui;
 import main.Controller;
 import main.BackupTask;
 
-import java.io.File;
+import java.util.ResourceBundle;
 import java.util.ArrayList;
+
+import java.io.File;
+
 import java.awt.BorderLayout;
+import java.awt.Panel;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JList;
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-
-import java.awt.Panel;
-
-import javax.swing.BoxLayout;
-import javax.swing.AbstractAction;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.Action;
-
-import java.awt.event.ActionListener;
-
 import javax.swing.JFileChooser;
-import java.util.ResourceBundle;
+import javax.swing.border.EmptyBorder;
+import javax.swing.SwingConstants;
+import javax.swing.BoxLayout;
+
 
 public class Edit extends JDialog {
 
 	private Controller controller;
-	private int numberOfSources = 0;
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_Name;
 
-	private JList list_SourcePaths;
-	private DefaultListModel listModel;
+	private JList<String> list_SourcePaths;
+	private DefaultListModel<String> listModel;
 
 	private File sourceFile;
 	private JTextField tf_Destination;
@@ -138,8 +131,6 @@ public class Edit extends JDialog {
 								sourceFile = fc.getSelectedFile();
 								if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
 									listModel.addElement(sourceFile.getAbsolutePath());
-									
-									numberOfSources++;
 								} else {
 									//TODO: outprint: "Fehler: Pfad exisitert bereits"
 								}
@@ -156,7 +147,6 @@ public class Edit extends JDialog {
 						public void actionPerformed(ActionEvent e) {
 							if (!list_SourcePaths.isSelectionEmpty()) {
 								listModel.remove(list_SourcePaths.getSelectedIndex());
-								numberOfSources--;
 							}
 						}
 					});
@@ -263,14 +253,24 @@ public class Edit extends JDialog {
 		}
 	}
 
-	private boolean isValidPath(String s) {
-		File f = new File(s);
+	/**
+	 * Prüft den gegebenen Pfad auf Gültigkeit.
+	 * @param s zu prüfender Pfad
+	 * @return Gültigkeit des Pfades.
+	 */
+	private boolean isValidPath(String pfad) {
+		File f = new File(pfad);
 		if (f.exists()) {
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Prüft ob der gegebene Name noch ungenutzt (noch nicht verwendet) ist.
+	 * @param name zu prüfender Name
+	 * @return ob der Name noch nicht benutzt ist
+	 */
 	private boolean nameIsNotTaken(String name) {
 		if (controller.getBackupTaskNames().contains(name)) {
 			return false;
@@ -278,6 +278,11 @@ public class Edit extends JDialog {
 		return true;
 	}
 
+	/**
+	 * Prüft den gegebenen Namen auf Gültigkeit.
+	 * @param name zu prüfender Name
+	 * @return ültigkeit des Namens
+	 */
 	private boolean isValidName(String name) {
 		if (!name.equals("")) {
 			return true;
@@ -285,24 +290,45 @@ public class Edit extends JDialog {
 		return false;
 	}
 
+	/**
+	 * Gibt den Zielpfad zurück.
+	 * @return Zielpfad
+	 */
 	public String getDestinationPath() {
 		return tf_Destination.getText();
 	}
 
+	/**
+	 * Legt den Namen des Backup-Tasks fest.
+	 * @param name festzulegender Name
+	 */
 	public void setBackupTaskName(String name) {
 		tf_Name.setText(name);
 	}
 
+	/**
+	 * Legt die Quellpfade fest.
+	 * @param sourcePaths festzulegende Quellpfade
+	 */
 	public void setSourcePaths(ArrayList<String> sourcePaths) {
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			listModel.addElement(sourcePaths.get(i));
 		}
 	}
 
+	/**
+	 * Legt den Zielpfad fest.
+	 * @param path festzulegender Zielpfad
+	 */
 	public void setDestinationPath(String path) {
 		tf_Destination.setText(path);
 	}
 	
+	/**
+	 * Prüft ob ein bestimmter Pfad bereits als Quellpfad festgelegt ist.
+	 * @param path zu prüfender Pfad
+	 * @return ob der Pfad bereits festgelegt ist
+	 */
 	private boolean isAlreadySourcePath(String path) {
 		return listModel.contains(path);
 	}
