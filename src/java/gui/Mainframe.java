@@ -1,58 +1,45 @@
 package gui;
 
+import main.Controller;
 import main.BackupTask;
+import gui.About;
+import gui.Edit;
+
+import java.io.File;
+
+import java.lang.NullPointerException;
+
+import java.util.ResourceBundle;
 
 import java.awt.EventQueue;
-import java.io.File;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import java.awt.BorderLayout;
-
-import javax.swing.*;
-
+import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.AbstractAction;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.Action;
-import javax.swing.JFileChooser;
-
-import gui.About;
-import gui.Edit;
-import main.Controller;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
-
-import java.awt.FlowLayout;
-
-import javax.swing.JTextField;
-
-import java.awt.event.ActionListener;
-
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-
-import java.lang.NullPointerException;
-
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JPopupMenu;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.BoxLayout;
 
-import java.util.ResourceBundle;
-import java.util.ArrayList;
 
 public class Mainframe {
 
@@ -145,7 +132,7 @@ public class Mainframe {
 
 		listModel = new DefaultListModel<BackupTask>();
 
-		list_Tasks = new JList(listModel);
+		list_Tasks = new JList<BackupTask>(listModel);
 		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list_Tasks.setSelectedIndex(0);
 		list_Tasks.setVisibleRowCount(6);
@@ -231,6 +218,10 @@ public class Mainframe {
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
 	}
 
+	/**
+	 * Initialisiert das Mainframe.
+	 * @param c Controller
+	 */
 	public void init(Controller c) {
 		this.controller = c;
 	}
@@ -311,14 +302,26 @@ public class Mainframe {
 		return false;
 	}
 
+	/**
+	 * Fügt der Liste der Backup-Tasks einen Backup-Task hinzu.
+	 * @param task hinzuzufügender Backup-Task
+	 */
 	public void addBackupTaskToList(BackupTask task) {
 		listModel.addElement(task);
 	}
 
+	/**
+	 * Löscht einen Backup-Task aus der Liste der Backup-Tasks.
+	 * @param task zu löschender Backup-Task
+	 */
 	public void removeBackupTaskFromList(BackupTask task) {
 		listModel.removeElement(task);
 	}
 
+	/**
+	 * Gibt den Zielpfad zurück.
+	 * @return Zielpfad
+	 */
 	public String getDestPath() {
 		if (editDialog != null) {
 			return editDialog.getDestinationPath();
@@ -327,6 +330,10 @@ public class Mainframe {
 		// TODO: schöner!?
 	}
 
+	/**
+	 * Legt den Zielpfad fest.
+	 * @param path festzulegender Zielpfad
+	 */
 	public void setDestPath(String path) {
 		if (editDialog != null) {
 			editDialog.setDestinationPath(path);
