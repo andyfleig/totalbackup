@@ -6,6 +6,11 @@ import main.BackupTask;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Controller zur Steuerung der Anwendung.
+ * @author andy
+ *
+ */
 public class Controller {
 
 	private Mainframe mainframe;
@@ -26,15 +31,24 @@ public class Controller {
 
 	/**
 	 * Startet ein "normales" Backup.
-	 * @param source Quellpfad
-	 * @param destination Zielpfad
+	 * 
+	 * @param source
+	 *            Quellpfad
+	 * @param destination
+	 *            Zielpfad
 	 */
 	public void startAllBackups() {
 		for (int i = 0; i < numberOfBackupTasks; i++) {
 			startBackup(backupTasks.get(i));
 		}
 	}
-	
+
+	/**
+	 * Startet den Backup-Vorgang eines bestimmten Backup-Tasks.
+	 * 
+	 * @param task
+	 *            Backup-Task welcher ausgeführt werden soll
+	 */
 	public void startBackup(BackupTask task) {
 		Backup backup = new Backup(this, task.getSourcePaths(), task.getDestinationPath());
 		try {
@@ -42,9 +56,14 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("Fehler beim einlesen der Datei(en)");
 		}
-		
+
 	}
-	
+
+	/**
+	 * Gibt eine Liste mit allen Namen aller Backup-Tasks zurück.
+	 * 
+	 * @return Liste der Namen aller Backup-Tasks
+	 */
 	public ArrayList<String> getBackupTaskNames() {
 		ArrayList<String> backupTaskNames = new ArrayList<String>();
 		for (int i = 0; i < numberOfBackupTasks; i++) {
@@ -55,52 +74,88 @@ public class Controller {
 
 	/**
 	 * Gibt den übergebenen String auf dem Output-Panel aus.
-	 * @param s auszugebender String
+	 * 
+	 * @param s
+	 *            auszugebender String
 	 */
 	public void printOut(String s) {
 		mainframe.addToOutput(s);
 	}
-	
+
 	/**
 	 * Gibt den Zielpfad als String zurück.
+	 * 
 	 * @return Zielpfad
 	 */
 	public String getDestinationPath() {
 		return mainframe.getDestPath();
 	}
-	
+
 	/**
 	 * Setzt den Zielpfad auf den übergebenen String.
-	 * @param path zu setzender Zielpfad
+	 * 
+	 * @param path
+	 *            zu setzender Zielpfad
 	 */
 	public void setDestinationPath(String path) {
 		mainframe.setDestPath(path);
 	}
-	
+
+	/**
+	 * Legt die Anzahl der Backup-Tasks fest.
+	 * 
+	 * @param number
+	 *            festzulegende Anzahl an Backup-Tasks
+	 */
 	public void setNumberOfBackupTasks(int number) {
 		this.numberOfBackupTasks = number;
 	}
-	
+
+	/**
+	 * Gibt die Anzahl der Backup-Taks zurück.
+	 * 
+	 * @return Anzahl der Backup-Tasks
+	 */
 	public int getNumberOfBackupTasks() {
 		return numberOfBackupTasks;
 	}
-	
+
+	/**
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup
+	 * mit dem angegebenen Namen so wird null zurückgeliefert.
+	 * 
+	 * @param name
+	 *            Name des "gesuchten" Backup-Tasks
+	 * @return den gesuchten Backup-Task oder null
+	 */
 	public BackupTask getBackupTaskWithName(String name) {
 		for (int i = 0; i < numberOfBackupTasks; i++) {
 			if (backupTasks.get(i).getTaskName().equals(name)) {
 				return backupTasks.get(i);
 			}
 		}
-		//TODO: schöner!?
+		// TODO: schöner!?
 		return null;
 	}
-	
+
+	/**
+	 * Fügt einen Backup-Task hinzu.
+	 * 
+	 * @param task
+	 *            hinzuzufügender Backup-Task
+	 */
 	public void addBackupTask(BackupTask task) {
 		backupTasks.add(task);
 		numberOfBackupTasks = numberOfBackupTasks + 1;
 		mainframe.addBackupTaskToList(task);
 	}
-	
+
+	/**
+	 * Löscht einen Backup-Task.
+	 * 
+	 * @param task
+	 *            zu löschender Backup-Task.
+	 */
 	public void removeBackupTask(BackupTask task) {
 		backupTasks.remove(task);
 		numberOfBackupTasks = numberOfBackupTasks - 1;
