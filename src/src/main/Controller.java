@@ -14,8 +14,6 @@ public class Controller {
 	private int numberOfSources = 0;
 	private int numberOfBackupTasks = 0;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
-	private ProgramState programState = ProgramState.getInstance(this);
-	private static final String PROPERTIES_PATH = "./properties.properties";
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -25,23 +23,8 @@ public class Controller {
 			public void run() {
 				mainframe = new Mainframe(Controller.this);
 				mainframe.frmTotalbackup.setVisible(true);
-				loadProps();
 			}
 		});
-	}
-
-	/**
-	 * Läd die Programmeinstellungen aus der Properties-Datei und wendet sie an.
-	 */
-	public void loadProps() {
-		programState.loadProperties(PROPERTIES_PATH);
-	}
-
-	/**
-	 * Speichert die Programmeinstellungen in die Properties-Datei.
-	 */
-	public void saveProbs() {
-		programState.saveProperties(PROPERTIES_PATH);
 	}
 
 	/**
@@ -137,17 +120,6 @@ public class Controller {
 	 */
 	public ArrayList<String> getSourcePaths() {
 		return mainframe.getSourcePaths();
-	}
-	
-	/**
-	 * @deprecated
-	 * Legt die Quellpfade auf die übergebenen Pfade fest. Alte Quellpfade werden dabei überschrieben.
-	 * @param sourcePaths zu setzende Quellpfade
-	 */
-	public void setSourcePaths(ArrayList<String> sourcePaths) {
-		//mainframe.setSourcePaths(sourcePaths);
-		//numberOfSources = sourcePaths.size();
-		System.out.println("FICK DICH");
 	}
 	
 	public BackupTask getBackupTaskWithName(String name) {

@@ -4,6 +4,10 @@ import main.BackupTask;
 
 import java.awt.EventQueue;
 import java.io.File;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -175,7 +179,6 @@ public class Mainframe {
 			}
 		});
 
-		
 		// Button Bearbeiten:
 		JButton btnBearbeiten = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -188,7 +191,7 @@ public class Mainframe {
 						editDialog = new Edit(controller);
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						editDialog.setVisible(true);
-						
+
 						// Gespeicherte werte in den Edit-Dialog eintragen:
 						BackupTask task = list_backupTasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
@@ -280,8 +283,6 @@ public class Mainframe {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			//TODO: Einstellungen speichern!?
-			//controller.saveProbs();
 			System.exit(0);
 		}
 	}
@@ -290,25 +291,20 @@ public class Mainframe {
 	 * @deprecated
 	 */
 	/*
-	private class SA_opendialog_source extends AbstractAction {
-		public SA_opendialog_source() {
-			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text"));
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			JFileChooser fc = new JFileChooser();
-			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			int state = fc.showOpenDialog(null);
-
-			if (state == JFileChooser.APPROVE_OPTION) {
-				sourceFile = fc.getSelectedFile();
-				listModel.addElement(sourceFile.getAbsolutePath());
-				controller.setNumberOfSources(controller.getNumberOfSources() + 1);
-			}
-		}
-	}
-	*/
+	 * private class SA_opendialog_source extends AbstractAction { public
+	 * SA_opendialog_source() { putValue(NAME,
+	 * ResourceBundle.getBundle("gui.messages"
+	 * ).getString("Mainframe.btnHinzufuegen.text"));
+	 * putValue(SHORT_DESCRIPTION, "Some short description"); }
+	 * 
+	 * public void actionPerformed(ActionEvent e) { JFileChooser fc = new
+	 * JFileChooser(); fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	 * int state = fc.showOpenDialog(null);
+	 * 
+	 * if (state == JFileChooser.APPROVE_OPTION) { sourceFile =
+	 * fc.getSelectedFile(); listModel.addElement(sourceFile.getAbsolutePath());
+	 * controller.setNumberOfSources(controller.getNumberOfSources() + 1); } } }
+	 */
 
 	private class SA_runAllBackups extends AbstractAction {
 		public SA_runAllBackups() {
@@ -385,17 +381,15 @@ public class Mainframe {
 	}
 
 	/*
-	public void setSourcePaths(ArrayList<String> sourcePaths) {
-		for (int i = 0; i < sourcePaths.size(); i++) {
-			listModel.addElement(sourcePaths.get(i));
-		}
-	}
-	*/
-	
+	 * public void setSourcePaths(ArrayList<String> sourcePaths) { for (int i =
+	 * 0; i < sourcePaths.size(); i++) {
+	 * listModel.addElement(sourcePaths.get(i)); } }
+	 */
+
 	public void addBackupTaskToList(BackupTask task) {
 		listModel.addElement(task);
 	}
-	
+
 	public void removeBackupTaskFromList(BackupTask task) {
 		listModel.removeElement(task);
 	}
