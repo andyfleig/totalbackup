@@ -20,12 +20,12 @@ public class About extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private final Action action = new SA_ok();
-	private JLabel label;
-	private JButton okButton;
+	private JLabel lbl_Copyright;
+	private JButton btn_Ok;
 	private JPanel panel;
-	private JLabel lblVAlpha;
+	private JLabel lbl_Version;
 	private JPanel panel_1;
-	private JTextPane txtpnWarnungDieSoftware;
+	private JTextPane txt_About;
 
 
 	/**
@@ -61,38 +61,38 @@ public class About extends JDialog {
 			contentPanel.add(panel, BorderLayout.SOUTH);
 			panel.setLayout(new BorderLayout(0, 0));
 			{
-				okButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("About.okButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
-				panel.add(okButton, BorderLayout.EAST);
-				okButton.addActionListener(new ActionListener() {
+				btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("About.okButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				panel.add(btn_Ok, BorderLayout.EAST);
+				btn_Ok.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 					}
 				});
-				okButton.setAction(action);
-				okButton.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("About.okButton.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
-				getRootPane().setDefaultButton(okButton);
+				btn_Ok.setAction(action);
+				btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("About.okButton.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
+				getRootPane().setDefaultButton(btn_Ok);
 			}
 			{
 				panel_1 = new JPanel();
 				panel.add(panel_1, BorderLayout.WEST);
 				panel_1.setLayout(new BorderLayout(0, 0));
 				{
-					label = new JLabel(ResourceBundle.getBundle("gui.messages").getString("About.label.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					panel_1.add(label, BorderLayout.SOUTH);
-					label.setVerticalAlignment(SwingConstants.BOTTOM);
-					label.setHorizontalAlignment(SwingConstants.CENTER);
+					lbl_Copyright = new JLabel(ResourceBundle.getBundle("gui.messages").getString("About.label.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					panel_1.add(lbl_Copyright, BorderLayout.SOUTH);
+					lbl_Copyright.setVerticalAlignment(SwingConstants.BOTTOM);
+					lbl_Copyright.setHorizontalAlignment(SwingConstants.CENTER);
 				}
 				{
-					lblVAlpha = new JLabel(ResourceBundle.getBundle("gui.messages").getString("About.lblVAlpha.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					panel_1.add(lblVAlpha, BorderLayout.NORTH);
-					lblVAlpha.setHorizontalAlignment(SwingConstants.LEFT);
+					lbl_Version = new JLabel(ResourceBundle.getBundle("gui.messages").getString("About.lblVAlpha.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					panel_1.add(lbl_Version, BorderLayout.NORTH);
+					lbl_Version.setHorizontalAlignment(SwingConstants.LEFT);
 				}
 			}
 		}
 		{
-			txtpnWarnungDieSoftware = new JTextPane();
-			txtpnWarnungDieSoftware.setForeground(Color.RED);
-			txtpnWarnungDieSoftware.setText(ResourceBundle.getBundle("gui.messages").getString("About.txtpnWarnungDieSoftware.text")); //$NON-NLS-1$ //$NON-NLS-2$
-			contentPanel.add(txtpnWarnungDieSoftware, BorderLayout.CENTER);
+			txt_About = new JTextPane();
+			txt_About.setForeground(Color.RED);
+			txt_About.setText(ResourceBundle.getBundle("gui.messages").getString("About.txtpnWarnungDieSoftware.text")); //$NON-NLS-1$ //$NON-NLS-2$
+			contentPanel.add(txt_About, BorderLayout.CENTER);
 		}
 	}
 

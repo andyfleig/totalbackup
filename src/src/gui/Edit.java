@@ -40,14 +40,14 @@ public class Edit extends JDialog {
 	private Controller controller;
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField tF_Name;
+	private JTextField tf_Name;
 
-	private JList list_Quellpfade;
+	private JList list_SourcePaths;
 	private DefaultListModel listModel;
 	private final Action action = new SwingAction();
 
 	private File sourceFile;
-	private JTextField tf_Zielpfad;
+	private JTextField tf_Destination;
 
 	/**
 	 * @deprecated
@@ -82,17 +82,17 @@ public class Edit extends JDialog {
 				panel.add(lbl_Name);
 			}
 			{
-				tF_Name = new JTextField();
-				panel.add(tF_Name);
-				tF_Name.setColumns(10);
+				tf_Name = new JTextField();
+				panel.add(tf_Name);
+				tf_Name.setColumns(10);
 			}
 		}
 		{
 			JPanel panel = new JPanel();
 			contentPanel.add(panel, BorderLayout.SOUTH);
 			{
-				JLabel lbl_Einstellungen = new JLabel("Einstellungen:");
-				panel.add(lbl_Einstellungen);
+				JLabel lbl_Properties = new JLabel("Einstellungen:");
+				panel.add(lbl_Properties);
 			}
 		}
 		{
@@ -108,13 +108,13 @@ public class Edit extends JDialog {
 			JPanel panel_2 = new JPanel();
 			panel.add(panel_2);
 			panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			JLabel lbl_Quelle = new JLabel("Quellpfade:");
-			panel_2.add(lbl_Quelle);
-			list_Quellpfade = new JList<String>(listModel);
-			list_Quellpfade.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			list_Quellpfade.setSelectedIndex(0);
-			list_Quellpfade.setVisibleRowCount(6);
-			JScrollPane listScroller = new JScrollPane(list_Quellpfade);
+			JLabel lbl_Source = new JLabel("Quellpfade:");
+			panel_2.add(lbl_Source);
+			list_SourcePaths = new JList<String>(listModel);
+			list_SourcePaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			list_SourcePaths.setSelectedIndex(0);
+			list_SourcePaths.setVisibleRowCount(6);
+			JScrollPane listScroller = new JScrollPane(list_SourcePaths);
 			listScroller.setMaximumSize(new Dimension(200, 200));
 			listScroller.setMinimumSize(new Dimension(200, 200));
 			panel_2.add(listScroller);
@@ -123,8 +123,8 @@ public class Edit extends JDialog {
 				panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
 				panel_2.add(panel_1);
 				{
-					JButton btn_Hinzufuegen = new JButton("Hinzufügen");
-					btn_Hinzufuegen.addActionListener(new ActionListener() {
+					JButton btn_Add = new JButton("Hinzufügen");
+					btn_Add.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
 							fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -137,48 +137,48 @@ public class Edit extends JDialog {
 							}
 						}
 					});
-					panel_1.add(btn_Hinzufuegen);
+					panel_1.add(btn_Add);
 				}
 				{
-					JButton btn_Loeschen = new JButton("Löschen");
-					btn_Loeschen.addActionListener(new ActionListener() {
+					JButton btn_Delete = new JButton("Löschen");
+					btn_Delete.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							if (!list_Quellpfade.isSelectionEmpty()) {
-								listModel.remove(list_Quellpfade.getSelectedIndex());
+							if (!list_SourcePaths.isSelectionEmpty()) {
+								listModel.remove(list_SourcePaths.getSelectedIndex());
 								controller.setNumberOfSources(controller.getNumberOfSources() - 1);
 							}
 						}
 					});
-					panel_1.add(btn_Loeschen);
+					panel_1.add(btn_Delete);
 				}
 			}
 			{
 				Panel panel_1 = new Panel();
 				panel.add(panel_1);
 				{
-					JLabel lblZielpfad = new JLabel("Zielpfad:");
-					panel_1.add(lblZielpfad);
+					JLabel lbl_Destination = new JLabel("Zielpfad:");
+					panel_1.add(lbl_Destination);
 				}
 				{
-					tf_Zielpfad = new JTextField();
-					panel_1.add(tf_Zielpfad);
-					tf_Zielpfad.setColumns(20);
+					tf_Destination = new JTextField();
+					panel_1.add(tf_Destination);
+					tf_Destination.setColumns(20);
 				}
 				{
 					// Button Durchsuchen:
-					JButton btn_Durchsuchen = new JButton("Durchsuchen...");
-					btn_Durchsuchen.addActionListener(new ActionListener() {
+					JButton btn_Find = new JButton("Durchsuchen...");
+					btn_Find.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
 							fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 							int state = fc.showOpenDialog(null);
 							if (state == JFileChooser.APPROVE_OPTION) {
 								sourceFile = fc.getSelectedFile();
-								tf_Zielpfad.setText(sourceFile.getAbsolutePath());
+								tf_Destination.setText(sourceFile.getAbsolutePath());
 							}
 						}
 					});
-					panel_1.add(btn_Durchsuchen);
+					panel_1.add(btn_Find);
 				}
 			}
 		}
@@ -195,11 +195,11 @@ public class Edit extends JDialog {
 						boolean allInputsAreValid = true;
 						// Namen prüfen und BackupTask erstellen (wenn der Name
 						// gültig ist):
-						if (isValidName(tF_Name.getText())) {
-							if (nameIsNotTaken(tF_Name.getText())) {
-								task = new BackupTask(tF_Name.getText());
+						if (isValidName(tf_Name.getText())) {
+							if (nameIsNotTaken(tf_Name.getText())) {
+								task = new BackupTask(tf_Name.getText());
 							} else {
-								task = controller.getBackupTaskWithName(tF_Name.getText());
+								task = controller.getBackupTaskWithName(tf_Name.getText());
 								controller.removeBackupTask(task);
 								task.resetPaths();
 							}
@@ -213,8 +213,8 @@ public class Edit extends JDialog {
 									}
 								}
 								// Prüfen ob ein Zielpfad eingefügt wurde:
-								if (isValidPath(tf_Zielpfad.getText())) {
-									task.setDestinationPath(tf_Zielpfad.getText());
+								if (isValidPath(tf_Destination.getText())) {
+									task.setDestinationPath(tf_Destination.getText());
 
 									controller.addBackupTask(task);
 								} else {
@@ -280,11 +280,11 @@ public class Edit extends JDialog {
 	}
 
 	public String getDestinationPath() {
-		return tf_Zielpfad.getText();
+		return tf_Destination.getText();
 	}
 
 	public void setBackupTaskName(String name) {
-		tF_Name.setText(name);
+		tf_Name.setText(name);
 	}
 
 	public void setSourcePaths(ArrayList<String> sourcePaths) {
@@ -294,6 +294,6 @@ public class Edit extends JDialog {
 	}
 
 	public void setDestinationPath(String path) {
-		tf_Zielpfad.setText(path);
+		tf_Destination.setText(path);
 	}
 }

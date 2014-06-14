@@ -62,8 +62,8 @@ public class Mainframe {
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
-	private JTextArea ta_output;
-	private JList<BackupTask> list_backupTasks;
+	private JTextArea ta_Output;
+	private JList<BackupTask> list_Tasks;
 
 	private Edit editDialog;
 
@@ -116,24 +116,21 @@ public class Mainframe {
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
 
-		JMenu mnFile = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnFile.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		menuBar.add(mnFile);
+		JMenu mn_File = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnFile.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		menuBar.add(mn_File);
 
-		JSeparator separator = new JSeparator();
-		mnFile.add(separator);
-
-		JMenuItem mntmQuit = new JMenuItem(ResourceBundle
+		JMenuItem mntm_Quit = new JMenuItem(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.mntmQuit.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		mntmQuit.setAction(action_quit);
-		mnFile.add(mntmQuit);
+		mntm_Quit.setAction(action_quit);
+		mn_File.add(mntm_Quit);
 
-		JMenu mnHelp = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnHelp.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		menuBar.add(mnHelp);
+		JMenu mn_Help = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnHelp.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		menuBar.add(mn_Help);
 
-		JMenuItem mntmAbout_1 = new JMenuItem(ResourceBundle
+		JMenuItem mntm_About = new JMenuItem(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.mntmAbout_1.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		mntmAbout_1.setAction(action_about);
-		mnHelp.add(mntmAbout_1);
+		mntm_About.setAction(action_about);
+		mn_Help.add(mntm_About);
 
 		JPanel panel = new JPanel();
 		frmTotalbackup.getContentPane().add(panel, BorderLayout.NORTH);
@@ -143,16 +140,16 @@ public class Mainframe {
 		panel.add(panel_2, BorderLayout.NORTH);
 		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JLabel lblQuelle = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblTask.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_2.add(lblQuelle);
+		JLabel lbl_Tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblTask.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_2.add(lbl_Tasks);
 
 		listModel = new DefaultListModel<BackupTask>();
 
-		list_backupTasks = new JList(listModel);
-		list_backupTasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_backupTasks.setSelectedIndex(0);
-		list_backupTasks.setVisibleRowCount(6);
-		JScrollPane listScroller = new JScrollPane(list_backupTasks);
+		list_Tasks = new JList(listModel);
+		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list_Tasks.setSelectedIndex(0);
+		list_Tasks.setVisibleRowCount(6);
+		JScrollPane listScroller = new JScrollPane(list_Tasks);
 		listScroller.setMaximumSize(new Dimension(200, 200));
 		listScroller.setMinimumSize(new Dimension(200, 200));
 
@@ -162,11 +159,11 @@ public class Mainframe {
 		JPanel panel_3 = new JPanel();
 		panel_2.add(panel_3);
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
-		JButton btnHinzufuegen = new JButton(ResourceBundle
+		JButton btn_Add = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_3.add(btnHinzufuegen);
-		btnHinzufuegen.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnHinzufuegen.addActionListener(new ActionListener() {
+		panel_3.add(btn_Add);
+		btn_Add.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btn_Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					editDialog = new Edit(controller);
@@ -179,12 +176,12 @@ public class Mainframe {
 		});
 
 		// Button Bearbeiten:
-		JButton btnBearbeiten = new JButton(ResourceBundle
+		JButton btn_Edit = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btnBearbeiten.addActionListener(new ActionListener() {
+		btn_Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob ein Listenelement selektiert ist:
-				if (!list_backupTasks.isSelectionEmpty()) {
+				if (!list_Tasks.isSelectionEmpty()) {
 					try {
 						// Neuen Edit-Dialog erzeugen:
 						editDialog = new Edit(controller);
@@ -192,7 +189,7 @@ public class Mainframe {
 						editDialog.setVisible(true);
 
 						// Gespeicherte werte in den Edit-Dialog eintragen:
-						BackupTask task = list_backupTasks.getSelectedValue();
+						BackupTask task = list_Tasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
 						editDialog.setSourcePaths(task.getSourcePaths());
 						editDialog.setDestinationPath(task.getDestinationPath());
@@ -202,35 +199,35 @@ public class Mainframe {
 				}
 			}
 		});
-		btnBearbeiten.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel_3.add(btnBearbeiten);
+		btn_Edit.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel_3.add(btn_Edit);
 
 		// Button Löschen:
-		JButton btnLoeschen = new JButton(ResourceBundle
+		JButton btn_Delete = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_3.add(btnLoeschen);
-		btnLoeschen.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btnLoeschen.addActionListener(new ActionListener() {
+		panel_3.add(btn_Delete);
+		btn_Delete.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btn_Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!list_backupTasks.isSelectionEmpty()) {
-					listModel.remove(list_backupTasks.getSelectedIndex());
+				if (!list_Tasks.isSelectionEmpty()) {
+					listModel.remove(list_Tasks.getSelectedIndex());
 					controller.setNumberOfBackupTasks(controller.getNumberOfSources() - 1);
 				}
 			}
 		});
 
-		JButton btnBackupStarten = new JButton(ResourceBundle
+		JButton btn_StartAll = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btnBackupStarten.addActionListener(new ActionListener() {
+		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controller.startAllBackups();
 			}
 		});
-		frmTotalbackup.getContentPane().add(btnBackupStarten, BorderLayout.SOUTH);
+		frmTotalbackup.getContentPane().add(btn_StartAll, BorderLayout.SOUTH);
 
-		ta_output = new JTextArea();
+		ta_Output = new JTextArea();
 
-		JScrollPane scrollPane = new JScrollPane(ta_output);
+		JScrollPane scrollPane = new JScrollPane(ta_Output);
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
 	}
 
@@ -316,7 +313,7 @@ public class Mainframe {
 		if (output == null) {
 			throw new NullPointerException();
 		}
-		ta_output.append(output + "\n");
+		ta_Output.append(output + "\n");
 	}
 
 	/**
@@ -346,7 +343,7 @@ public class Mainframe {
 	public ArrayList<String> getSourcePaths() {
 		ArrayList<String> sources = new ArrayList<String>();
 		for (int i = 0; i < controller.getNumberOfSources(); i++) {
-			sources.add(list_backupTasks.getModel().getElementAt(i).toString());
+			sources.add(list_Tasks.getModel().getElementAt(i).toString());
 		}
 		return sources;
 	}
