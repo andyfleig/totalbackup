@@ -30,18 +30,19 @@ public class Backup {
 	}
 	
 	/**
-	 * Startet den Backup-Vorgang
+	 * Startet den Backup-Vorgang.
+	 * @param taskName Name des Backup-Tasks welcher ausgeführt wird
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void runBackup() throws FileNotFoundException, IOException {
+	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 		df.setTimeZone(TimeZone.getDefault());
 		
 		File destinationFile = new File(destinationPath);
-		String backupDir = destinationFile.getAbsolutePath() + "/" + df.format(date);
+		String backupDir = destinationFile.getAbsolutePath() + "/" + taskName + "_" + df.format(date);
 		
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
@@ -49,6 +50,7 @@ public class Backup {
 			System.out.println("Backup-Ordner erfolgreich erstellt!");
 		} else {
 			System.out.println("Fehler beim erstellen des Backup-Ordners");
+			return;
 		}
 		
 		for (int i = 0; i < sourcePaths.size(); i++) {

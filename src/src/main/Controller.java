@@ -3,15 +3,17 @@ package main;
 import gui.Mainframe;
 import main.BackupTask;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class Controller {
 
 	private Mainframe mainframe;
-	private int numberOfSources = 0;
 	private int numberOfBackupTasks = 0;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 
@@ -57,7 +59,7 @@ public class Controller {
 	public void startBackup(BackupTask task) {
 		Backup backup = new Backup(this, task.getSourcePaths(), task.getDestinationPath());
 		try {
-			backup.runBackup();
+			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {
 			System.out.println("Fehler beim einlesen der Datei(en)");
 		}
@@ -96,36 +98,12 @@ public class Controller {
 		mainframe.setDestPath(path);
 	}
 	
-	/**
-	 * Gibt Anzahl der eingetragenen Quellverzeichnisse zurück.
-	 * @return Anzahl der Quellverzeichnisse.
-	 */
-	public int getNumberOfSources() {
-		return numberOfSources;
-	}
-	
-	/**
-	 * Legt die Anzahl der Quellverzeichnisse auf den übergebenen Wert.
-	 * @param number zu setzende Anzahl der Quellverzeichnisse
-	 */
-	public void setNumberOfSources(int number) {
-		this.numberOfSources = number;
-	}
-	
 	public void setNumberOfBackupTasks(int number) {
 		this.numberOfBackupTasks = number;
 	}
 	
 	public int getNumberOfBackupTasks() {
 		return numberOfBackupTasks;
-	}
-	
-	/**
-	 * Gibt alle Quellpfade als ArrayList zurück.
-	 * @return Quellpfade
-	 */
-	public ArrayList<String> getSourcePaths() {
-		return mainframe.getSourcePaths();
 	}
 	
 	public BackupTask getBackupTaskWithName(String name) {

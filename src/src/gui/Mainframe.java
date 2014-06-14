@@ -211,7 +211,7 @@ public class Mainframe {
 			public void actionPerformed(ActionEvent e) {
 				if (!list_Tasks.isSelectionEmpty()) {
 					listModel.remove(list_Tasks.getSelectedIndex());
-					controller.setNumberOfBackupTasks(controller.getNumberOfSources() - 1);
+					controller.setNumberOfBackupTasks(controller.getNumberOfBackupTasks() - 1);
 				}
 			}
 		});
@@ -284,26 +284,6 @@ public class Mainframe {
 	}
 
 	/**
-	 * @deprecated
-	 */
-	/*
-	 * private class SA_opendialog_source extends AbstractAction { public
-	 * SA_opendialog_source() { putValue(NAME,
-	 * ResourceBundle.getBundle("gui.messages"
-	 * ).getString("Mainframe.btnHinzufuegen.text"));
-	 * putValue(SHORT_DESCRIPTION, "Some short description"); }
-	 * 
-	 * public void actionPerformed(ActionEvent e) { JFileChooser fc = new
-	 * JFileChooser(); fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	 * int state = fc.showOpenDialog(null);
-	 * 
-	 * if (state == JFileChooser.APPROVE_OPTION) { sourceFile =
-	 * fc.getSelectedFile(); listModel.addElement(sourceFile.getAbsolutePath());
-	 * controller.setNumberOfSources(controller.getNumberOfSources() + 1); } } }
-	 */
-
-
-	/**
 	 * Gibt einen String auf der GUI (im Textfeld) aus.
 	 * 
 	 * @param output
@@ -330,29 +310,6 @@ public class Mainframe {
 		}
 		return false;
 	}
-
-	/*
-	 * private class SA_delete extends AbstractAction { public SA_delete() {
-	 * putValue( NAME, ResourceBundle.getBundle("gui.messages").getString(
-	 * "Mainframe.btnLoeschen.text")); putValue(SHORT_DESCRIPTION,
-	 * "Some short description"); }
-	 * 
-	 * public void actionPerformed(ActionEvent e) { } }
-	 */
-
-	public ArrayList<String> getSourcePaths() {
-		ArrayList<String> sources = new ArrayList<String>();
-		for (int i = 0; i < controller.getNumberOfSources(); i++) {
-			sources.add(list_Tasks.getModel().getElementAt(i).toString());
-		}
-		return sources;
-	}
-
-	/*
-	 * public void setSourcePaths(ArrayList<String> sourcePaths) { for (int i =
-	 * 0; i < sourcePaths.size(); i++) {
-	 * listModel.addElement(sourcePaths.get(i)); } }
-	 */
 
 	public void addBackupTaskToList(BackupTask task) {
 		listModel.addElement(task);

@@ -39,13 +39,13 @@ import java.util.ResourceBundle;
 public class Edit extends JDialog {
 
 	private Controller controller;
+	private int numberOfSources = 0;
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_Name;
 
 	private JList list_SourcePaths;
 	private DefaultListModel listModel;
-	private final Action action = new SwingAction();
 
 	private File sourceFile;
 	private JTextField tf_Destination;
@@ -92,7 +92,8 @@ public class Edit extends JDialog {
 			JPanel panel = new JPanel();
 			contentPanel.add(panel, BorderLayout.SOUTH);
 			{
-				JLabel lbl_Properties = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Properties.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				JLabel lbl_Properties = new JLabel(ResourceBundle
+						.getBundle("gui.messages").getString("Edit.lbl_Properties.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel.add(lbl_Properties);
 			}
 		}
@@ -124,7 +125,9 @@ public class Edit extends JDialog {
 				panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
 				panel_2.add(panel_1);
 				{
-					JButton btn_Add = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Add.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					// Button Add:
+					JButton btn_Add = new JButton(ResourceBundle
+							.getBundle("gui.messages").getString("Edit.btn_Add.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					btn_Add.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
@@ -133,20 +136,27 @@ public class Edit extends JDialog {
 
 							if (state == JFileChooser.APPROVE_OPTION) {
 								sourceFile = fc.getSelectedFile();
-								listModel.addElement(sourceFile.getAbsolutePath());
-								controller.setNumberOfSources(controller.getNumberOfSources() + 1);
+								if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
+									listModel.addElement(sourceFile.getAbsolutePath());
+									
+									numberOfSources++;
+								} else {
+									//TODO: outprint: "Fehler: Pfad exisitert bereits"
+								}
 							}
 						}
 					});
 					panel_1.add(btn_Add);
 				}
 				{
-					JButton btn_Delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Delete.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					// Button Delete:
+					JButton btn_Delete = new JButton(ResourceBundle
+							.getBundle("gui.messages").getString("Edit.btn_Delete.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					btn_Delete.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (!list_SourcePaths.isSelectionEmpty()) {
 								listModel.remove(list_SourcePaths.getSelectedIndex());
-								controller.setNumberOfSources(controller.getNumberOfSources() - 1);
+								numberOfSources--;
 							}
 						}
 					});
@@ -157,7 +167,8 @@ public class Edit extends JDialog {
 				Panel panel_1 = new Panel();
 				panel.add(panel_1);
 				{
-					JLabel lbl_Destination = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Destination.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					JLabel lbl_Destination = new JLabel(ResourceBundle
+							.getBundle("gui.messages").getString("Edit.lbl_Destination.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					panel_1.add(lbl_Destination);
 				}
 				{
@@ -166,8 +177,9 @@ public class Edit extends JDialog {
 					tf_Destination.setColumns(20);
 				}
 				{
-					// Button Durchsuchen:
-					JButton btn_Find = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Find.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					// Button Find:
+					JButton btn_Find = new JButton(ResourceBundle
+							.getBundle("gui.messages").getString("Edit.btn_Find.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					btn_Find.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
@@ -237,13 +249,16 @@ public class Edit extends JDialog {
 				getRootPane().setDefaultButton(btn_Ok);
 			}
 
-			JButton btn_Abbrechen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Abbrechen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+			// Button Cancel:
+			JButton btn_Abbrechen = new JButton(ResourceBundle
+					.getBundle("gui.messages").getString("Edit.btn_Abbrechen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 			btn_Abbrechen.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Edit.this.dispose();
 				}
 			});
-			btn_Abbrechen.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Abbrechen.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
+			btn_Abbrechen.setActionCommand(ResourceBundle
+					.getBundle("gui.messages").getString("Edit.btn_Abbrechen.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
 			buttonPane.add(btn_Abbrechen);
 		}
 	}
@@ -270,16 +285,6 @@ public class Edit extends JDialog {
 		return false;
 	}
 
-	private class SwingAction extends AbstractAction {
-		public SwingAction() {
-			putValue(NAME, "SwingAction");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-
-		public void actionPerformed(ActionEvent e) {
-		}
-	}
-
 	public String getDestinationPath() {
 		return tf_Destination.getText();
 	}
@@ -296,5 +301,9 @@ public class Edit extends JDialog {
 
 	public void setDestinationPath(String path) {
 		tf_Destination.setText(path);
+	}
+	
+	private boolean isAlreadySourcePath(String path) {
+		return listModel.contains(path);
 	}
 }
