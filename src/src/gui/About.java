@@ -27,10 +27,12 @@ public class About extends JDialog {
 	private JPanel panel_1;
 	private JTextPane txtpnWarnungDieSoftware;
 
+
 	/**
-	 * Launch the application.
+	 * @deprecated
 	 */
 	public static void main(String[] args) {
+		/*
 		try {
 			About dialog = new About();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -38,6 +40,7 @@ public class About extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	/**

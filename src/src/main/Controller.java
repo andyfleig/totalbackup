@@ -1,6 +1,7 @@
 package main;
 
 import gui.Mainframe;
+import main.BackupTask;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,6 +12,8 @@ public class Controller {
 
 	private Mainframe mainframe;
 	private int numberOfSources = 0;
+	private int numberOfBackupTasks = 0;
+	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 	private ProgramState programState = ProgramState.getInstance(this);
 	private static final String PROPERTIES_PATH = "./properties.properties";
 
@@ -46,7 +49,17 @@ public class Controller {
 	 * @param source Quellpfad
 	 * @param destination Zielpfad
 	 */
-	public void startBackup(String source, String destination) {
+	public void startAllBackups() {
+		
+		for (int i = 0; i < numberOfBackupTasks; i++) {
+			startBackup(backupTasks.get(i));
+		}
+		
+		
+		
+		
+		
+		/*
 		Backup backup = new Backup(this, source, destination);
 		try {
 			backup.runBackup();
@@ -55,6 +68,19 @@ public class Controller {
 		} catch (IOException ex) {
 			System.out.println("IO-Fehler!");
 		}
+		*/
+	}
+	
+	public void startBackup(BackupTask task) {
+		Backup backup = new Backup(this, task.getSourcePaths(), task.getDestinationPath());
+	}
+	
+	public ArrayList<String> getBackupTaskNames() {
+		ArrayList<String> backupTaskNames = new ArrayList<String>();
+		for (int i = 0; i < numberOfBackupTasks; i++) {
+			backupTaskNames.add(backupTasks.get(i).getTaskName());
+		}
+		return backupTaskNames;
 	}
 
 	/**
@@ -97,6 +123,14 @@ public class Controller {
 		this.numberOfSources = number;
 	}
 	
+	public void setNumberOfBackupTasks(int number) {
+		this.numberOfBackupTasks = number;
+	}
+	
+	public int getNumberOfBackupTasks() {
+		return numberOfBackupTasks;
+	}
+	
 	/**
 	 * Gibt alle Quellpfade als ArrayList zurück.
 	 * @return Quellpfade
@@ -106,11 +140,35 @@ public class Controller {
 	}
 	
 	/**
+	 * @deprecated
 	 * Legt die Quellpfade auf die übergebenen Pfade fest. Alte Quellpfade werden dabei überschrieben.
 	 * @param sourcePaths zu setzende Quellpfade
 	 */
 	public void setSourcePaths(ArrayList<String> sourcePaths) {
-		mainframe.setSourcePaths(sourcePaths);
-		numberOfSources = sourcePaths.size();
+		//mainframe.setSourcePaths(sourcePaths);
+		//numberOfSources = sourcePaths.size();
+		System.out.println("FICK DICH");
+	}
+	
+	public BackupTask getBackupTaskWithName(String name) {
+		for (int i = 0; i < numberOfBackupTasks; i++) {
+			if (backupTasks.get(i).getTaskName().equals(name)) {
+				return backupTasks.get(i);
+			}
+		}
+		//TODO: schöner!?
+		return null;
+	}
+	
+	public void addBackupTask(BackupTask task) {
+		backupTasks.add(task);
+		numberOfBackupTasks = numberOfBackupTasks + 1;
+		mainframe.addBackupTaskToList(task);
+	}
+	
+	public void removeBackupTask(BackupTask task) {
+		backupTasks.remove(task);
+		numberOfBackupTasks = numberOfBackupTasks - 1;
+		mainframe.removeBackupTaskFromList(task);
 	}
 }

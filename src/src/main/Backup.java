@@ -11,20 +11,22 @@ import java.util.*;
 import java.text.*;
 
 public class Backup {
-	private File sourceFile;
-	private File destinationFile;
+	private ArrayList<String> sourcePaths;
+	private String destinationPath;
 	private Controller controller;
 	
 	/**
 	 * Backup-Objekt zur "normalen" Datensicherung.
 	 * @param c Controller
-	 * @param source Quellpfad
+	 * @param source Quellpfade
 	 * @param destination Zielpfad
 	 */
-	public Backup(Controller c, String source, String destination){
+	public Backup(Controller c, ArrayList<String> sources, String destination){
 		this.controller = c;
-		this.sourceFile = new File(source);
-		this.destinationFile = new File(destination);
+		this.sourcePaths = sources;
+		this.destinationPath = destination;
+		
+		//this.destinationFile = new File(destination);
 	}
 	
 	/**
@@ -37,6 +39,8 @@ public class Backup {
 		Date date = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 		df.setTimeZone(TimeZone.getDefault());
+		
+		File destinationFile = new File(destinationPath);
 		String backupDir = destinationFile.getAbsolutePath() + "/" + df.format(date);
 		
 		File dir = new File(backupDir);
@@ -47,16 +51,20 @@ public class Backup {
 			System.out.println("Fehler beim erstellen des Backup-Ordners");
 		}
 		
-		String folder = dir + "/" + sourceFile.getName();
-		File f = new File(folder);
-		
-		if (f.mkdir()) {
-			System.out.println("Ordner erfolgreich erstellt!");
-		} else {
-			System.out.println("Fehler beim erstellen des Ordners");
+		for (int i = 0; i < sourcePaths.size(); i++) {
+			File sourceFile = new File(sourcePaths.get(i));
+			
+			String folder = dir + "/" + sourceFile.getName();
+			File f = new File(folder);
+			
+			if (f.mkdir()) {
+				System.out.println("Ordner erfolgreich erstellt!");
+			} else {
+				System.out.println("Fehler beim erstellen des Ordners");
+			}
+			// Eigentlicher Kopiervorgang:
+			copyDirectory(sourceFile, f);
 		}
-		// Eigentlicher Kopiervorgang:
-		copyDirectory(sourceFile, f);
 	}
 	
 	/**
