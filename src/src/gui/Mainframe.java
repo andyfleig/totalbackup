@@ -73,7 +73,6 @@ public class Mainframe {
 
 	File sourceFile;
 	File destinationFile;
-	private final Action action_2 = new SA_runAllBackups();
 
 	/**
 	 * Launch the application.
@@ -222,9 +221,9 @@ public class Mainframe {
 
 		JButton btnBackupStarten = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btnBackupStarten.setAction(action_2);
 		btnBackupStarten.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				controller.startAllBackups();
 			}
 		});
 		frmTotalbackup.getContentPane().add(btnBackupStarten, BorderLayout.SOUTH);
@@ -306,34 +305,6 @@ public class Mainframe {
 	 * controller.setNumberOfSources(controller.getNumberOfSources() + 1); } } }
 	 */
 
-	private class SA_runAllBackups extends AbstractAction {
-		public SA_runAllBackups() {
-			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text"));
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-
-		public void actionPerformed(ActionEvent e) {
-
-			controller.startAllBackups();
-
-			/*
-			 * if (listModel.isEmpty()) {
-			 * ta_output.append("Fehler: Kein Quellverzeichnis angegeben\n"); }
-			 * else if (tf_destinationPath.getText().isEmpty()) {
-			 * ta_output.append("Fehler: Kein Zielverzeichnis angegeben\n"); }
-			 * else { if (!checkPathValidity(tf_destinationPath.getText())) {
-			 * ta_output.append("Ungültiger Zielpfad\n"); } else { for (int i =
-			 * 0; i < listModel.size(); i++) { if
-			 * (!checkPathValidity(listModel.getElementAt(i)
-			 * .toString().trim())) {
-			 * ta_output.append("Ungültiger Quellpfad\n"); } else {
-			 * ta_output.append("Backup wird erstellt...\n");
-			 * controller.startBackup(listModel.getElementAt(i)
-			 * .toString().trim(), tf_destinationPath.getText());
-			 * ta_output.append("Backup erfolgreich erstellt"); } } } }
-			 */
-		}
-	}
 
 	/**
 	 * Gibt einen String auf der GUI (im Textfeld) aus.

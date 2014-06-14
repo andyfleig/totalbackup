@@ -56,6 +56,12 @@ public class Controller {
 	
 	public void startBackup(BackupTask task) {
 		Backup backup = new Backup(this, task.getSourcePaths(), task.getDestinationPath());
+		try {
+			backup.runBackup();
+		} catch (IOException e) {
+			System.out.println("Fehler beim einlesen der Datei(en)");
+		}
+		
 	}
 	
 	public ArrayList<String> getBackupTaskNames() {
