@@ -34,6 +34,7 @@ import javax.swing.Action;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFileChooser;
+import java.util.ResourceBundle;
 
 public class Edit extends JDialog {
 
@@ -77,7 +78,7 @@ public class Edit extends JDialog {
 			contentPanel.add(panel, BorderLayout.NORTH);
 			panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 			{
-				JLabel lbl_Name = new JLabel("Name:");
+				JLabel lbl_Name = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Name.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				lbl_Name.setHorizontalAlignment(SwingConstants.CENTER);
 				panel.add(lbl_Name);
 			}
@@ -91,7 +92,7 @@ public class Edit extends JDialog {
 			JPanel panel = new JPanel();
 			contentPanel.add(panel, BorderLayout.SOUTH);
 			{
-				JLabel lbl_Properties = new JLabel("Einstellungen:");
+				JLabel lbl_Properties = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Properties.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel.add(lbl_Properties);
 			}
 		}
@@ -108,7 +109,7 @@ public class Edit extends JDialog {
 			JPanel panel_2 = new JPanel();
 			panel.add(panel_2);
 			panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			JLabel lbl_Source = new JLabel("Quellpfade:");
+			JLabel lbl_Source = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Source.text")); //$NON-NLS-1$ //$NON-NLS-2$
 			panel_2.add(lbl_Source);
 			list_SourcePaths = new JList<String>(listModel);
 			list_SourcePaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -123,7 +124,7 @@ public class Edit extends JDialog {
 				panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
 				panel_2.add(panel_1);
 				{
-					JButton btn_Add = new JButton("Hinzufügen");
+					JButton btn_Add = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Add.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					btn_Add.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
@@ -140,7 +141,7 @@ public class Edit extends JDialog {
 					panel_1.add(btn_Add);
 				}
 				{
-					JButton btn_Delete = new JButton("Löschen");
+					JButton btn_Delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Delete.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					btn_Delete.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (!list_SourcePaths.isSelectionEmpty()) {
@@ -156,7 +157,7 @@ public class Edit extends JDialog {
 				Panel panel_1 = new Panel();
 				panel.add(panel_1);
 				{
-					JLabel lbl_Destination = new JLabel("Zielpfad:");
+					JLabel lbl_Destination = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Destination.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					panel_1.add(lbl_Destination);
 				}
 				{
@@ -166,7 +167,7 @@ public class Edit extends JDialog {
 				}
 				{
 					// Button Durchsuchen:
-					JButton btn_Find = new JButton("Durchsuchen...");
+					JButton btn_Find = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Find.text")); //$NON-NLS-1$ //$NON-NLS-2$
 					btn_Find.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
@@ -188,7 +189,7 @@ public class Edit extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				// Button OK:
-				JButton btn_Ok = new JButton("OK");
+				JButton btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Ok.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				btn_Ok.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						BackupTask task;
@@ -231,18 +232,18 @@ public class Edit extends JDialog {
 						}
 					}
 				});
-				btn_Ok.setActionCommand("OK");
+				btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Ok.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
 				buttonPane.add(btn_Ok);
 				getRootPane().setDefaultButton(btn_Ok);
 			}
 
-			JButton btn_Abbrechen = new JButton("Abbrechen");
+			JButton btn_Abbrechen = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Abbrechen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 			btn_Abbrechen.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					Edit.this.dispose();
 				}
 			});
-			btn_Abbrechen.setActionCommand("Cancel");
+			btn_Abbrechen.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Abbrechen.actionCommand")); //$NON-NLS-1$ //$NON-NLS-2$
 			buttonPane.add(btn_Abbrechen);
 		}
 	}
