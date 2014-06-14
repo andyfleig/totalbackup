@@ -3,13 +3,8 @@ package main;
 import gui.Mainframe;
 import main.BackupTask;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.TimeZone;
 
 public class Controller {
 
@@ -35,25 +30,9 @@ public class Controller {
 	 * @param destination Zielpfad
 	 */
 	public void startAllBackups() {
-		
 		for (int i = 0; i < numberOfBackupTasks; i++) {
 			startBackup(backupTasks.get(i));
 		}
-		
-		
-		
-		
-		
-		/*
-		Backup backup = new Backup(this, source, destination);
-		try {
-			backup.runBackup();
-		} catch (FileNotFoundException ex) {
-			System.out.println("Datei existiert nicht!");
-		} catch (IOException ex) {
-			System.out.println("IO-Fehler!");
-		}
-		*/
 	}
 	
 	public void startBackup(BackupTask task) {
