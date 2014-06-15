@@ -89,7 +89,7 @@ public class Controller {
 	 *            Zielpfad
 	 */
 	public void startAllBackups() {
-		for (int i = 0; i < numberOfBackupTasks; i++) {
+		for (int i = 0; i < backupTasks.size(); i++) {
 			startBackup(backupTasks.get(i));
 		}
 	}

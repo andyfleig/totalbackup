@@ -42,7 +42,6 @@ import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
-import javax.swing.JSplitPane;
 
 public class Mainframe {
 
@@ -101,8 +100,8 @@ public class Mainframe {
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("Mainframe.frmTotalbackup.title")); //$NON-NLS-1$ //$NON-NLS-2$
 		frmTotalbackup.setBounds(100, 100, 894, 569);
-		frmTotalbackup.setPreferredSize(new Dimension(500, 400));
-		frmTotalbackup.setMinimumSize(frmTotalbackup.getPreferredSize());
+		frmTotalbackup.setMinimumSize(new Dimension(500, 400));
+		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -129,6 +128,7 @@ public class Mainframe {
 
 		JButton btn_StartAll = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		frmTotalbackup.getContentPane().add(btn_StartAll, BorderLayout.SOUTH);
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				controller.startAllBackups();
@@ -193,7 +193,7 @@ public class Mainframe {
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						editDialog.setVisible(true);
 
-						// Gespeicherte werte in den Edit-Dialog eintragen:
+						// Gespeicherte Werte in den Edit-Dialog eintragen:
 						BackupTask task = list_Tasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
 						editDialog.setSourcePaths(task.getSourcePaths());
@@ -228,16 +228,6 @@ public class Mainframe {
 				}
 			}
 		});
-		
-		
-
-		/*
-		 * JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		 * splitPane.setTopComponent(panel);
-		 * splitPane.setBottomComponent(scrollPane);
-		 * splitPane.setOneTouchExpandable(true);
-		 * splitPane.setDividerLocation(150);
-		 */
 	}
 
 	/**
