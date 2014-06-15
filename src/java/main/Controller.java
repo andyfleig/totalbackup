@@ -20,10 +20,6 @@ import org.hamcrest.core.IsInstanceOf;
 public class Controller {
 
 	private Mainframe mainframe;
-	/**
-	 * @deprecated
-	 */
-	private int numberOfBackupTasks = 0;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 
 	/**
@@ -117,7 +113,7 @@ public class Controller {
 	 */
 	public ArrayList<String> getBackupTaskNames() {
 		ArrayList<String> backupTaskNames = new ArrayList<String>();
-		for (int i = 0; i < numberOfBackupTasks; i++) {
+		for (int i = 0; i < backupTasks.size(); i++) {
 			backupTaskNames.add(backupTasks.get(i).getTaskName());
 		}
 		return backupTaskNames;
@@ -153,22 +149,12 @@ public class Controller {
 	}
 
 	/**
-	 * Legt die Anzahl der Backup-Tasks fest.
-	 * 
-	 * @param number
-	 *            festzulegende Anzahl an Backup-Tasks
-	 */
-	public void setNumberOfBackupTasks(int number) {
-		this.numberOfBackupTasks = number;
-	}
-
-	/**
 	 * Gibt die Anzahl der Backup-Taks zurück.
 	 * 
 	 * @return Anzahl der Backup-Tasks
 	 */
 	public int getNumberOfBackupTasks() {
-		return numberOfBackupTasks;
+		return backupTasks.size();
 	}
 
 	/**
@@ -180,7 +166,7 @@ public class Controller {
 	 * @return den gesuchten Backup-Task oder null
 	 */
 	public BackupTask getBackupTaskWithName(String name) {
-		for (int i = 0; i < numberOfBackupTasks; i++) {
+		for (int i = 0; i < backupTasks.size(); i++) {
 			if (backupTasks.get(i).getTaskName().equals(name)) {
 				return backupTasks.get(i);
 			}
@@ -197,7 +183,6 @@ public class Controller {
 	 */
 	public void addBackupTask(BackupTask task) {
 		backupTasks.add(task);
-		numberOfBackupTasks = numberOfBackupTasks + 1;
 		mainframe.addBackupTaskToList(task);
 	}
 
@@ -209,7 +194,6 @@ public class Controller {
 	 */
 	public void removeBackupTask(BackupTask task) {
 		backupTasks.remove(task);
-		numberOfBackupTasks = numberOfBackupTasks - 1;
 		mainframe.removeBackupTaskFromList(task);
 	}
 

@@ -223,8 +223,6 @@ public class Mainframe {
 			public void actionPerformed(ActionEvent e) {
 				if (!list_Tasks.isSelectionEmpty()) {
 					controller.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
-					// listModel.remove(list_Tasks.getSelectedIndex());
-					controller.setNumberOfBackupTasks(controller.getNumberOfBackupTasks() - 1);
 				}
 			}
 		});
