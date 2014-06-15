@@ -121,6 +121,7 @@ public class Edit extends JDialog {
 					// Button Add:
 					JButton btn_Add = new JButton(ResourceBundle
 							.getBundle("gui.messages").getString("Edit.btn_Add.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					btn_Add.setAlignmentX(CENTER_ALIGNMENT);
 					btn_Add.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							JFileChooser fc = new JFileChooser();
@@ -143,6 +144,7 @@ public class Edit extends JDialog {
 					// Button Delete:
 					JButton btn_Delete = new JButton(ResourceBundle
 							.getBundle("gui.messages").getString("Edit.btn_Delete.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					btn_Delete.setAlignmentX(CENTER_ALIGNMENT);
 					btn_Delete.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (!list_SourcePaths.isSelectionEmpty()) {
