@@ -148,6 +148,7 @@ public class Edit extends JDialog {
 					btn_Delete.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (!list_SourcePaths.isSelectionEmpty()) {
+								
 								listModel.remove(list_SourcePaths.getSelectedIndex());
 							}
 						}

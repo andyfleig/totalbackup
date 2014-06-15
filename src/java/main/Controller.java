@@ -9,8 +9,6 @@ import java.io.FileInputStream;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.hamcrest.core.IsInstanceOf;
-
 /**
  * Controller zur Steuerung der Anwendung.
  * 
@@ -127,34 +125,6 @@ public class Controller {
 	 */
 	public void printOut(String s) {
 		mainframe.addToOutput(s);
-	}
-
-	/**
-	 * Gibt den Zielpfad als String zurück.
-	 * 
-	 * @return Zielpfad
-	 */
-	public String getDestinationPath() {
-		return mainframe.getDestPath();
-	}
-
-	/**
-	 * Setzt den Zielpfad auf den übergebenen String.
-	 * 
-	 * @param path
-	 *            zu setzender Zielpfad
-	 */
-	public void setDestinationPath(String path) {
-		mainframe.setDestPath(path);
-	}
-
-	/**
-	 * Gibt die Anzahl der Backup-Taks zurück.
-	 * 
-	 * @return Anzahl der Backup-Tasks
-	 */
-	public int getNumberOfBackupTasks() {
-		return backupTasks.size();
 	}
 
 	/**
