@@ -36,7 +36,7 @@ public class Backup {
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy_HH-mm");
 		df.setTimeZone(TimeZone.getDefault());
 		
 		File destinationFile = new File(destinationPath);
