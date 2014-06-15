@@ -1,4 +1,5 @@
 .directory
 *.class
 *.properties
+*.ser
 src/bin/
