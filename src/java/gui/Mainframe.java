@@ -6,11 +6,15 @@ import gui.About;
 import gui.Edit;
 
 import java.io.File;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.lang.NullPointerException;
-
 import java.util.ResourceBundle;
-
 import java.awt.EventQueue;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,7 +24,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -39,7 +42,7 @@ import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
-
+import javax.swing.JSplitPane;
 
 public class Mainframe {
 
@@ -98,6 +101,9 @@ public class Mainframe {
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("Mainframe.frmTotalbackup.title")); //$NON-NLS-1$ //$NON-NLS-2$
 		frmTotalbackup.setBounds(100, 100, 894, 569);
+		frmTotalbackup.setPreferredSize(new Dimension(500, 400));
+		frmTotalbackup.setMinimumSize(frmTotalbackup.getPreferredSize());
+		frmTotalbackup.pack();
 		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -119,33 +125,45 @@ public class Mainframe {
 		mntm_About.setAction(action_about);
 		mn_Help.add(mntm_About);
 
+		listModel = new DefaultListModel<BackupTask>();
+
+		JButton btn_StartAll = new JButton(ResourceBundle
+				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btn_StartAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				controller.startAllBackups();
+			}
+		});
+
+		ta_Output = new JTextArea();
+
+		JScrollPane scrollPane = new JScrollPane(ta_Output);
+		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
 		JPanel panel = new JPanel();
 		frmTotalbackup.getContentPane().add(panel, BorderLayout.NORTH);
 		panel.setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_2 = new JPanel();
 		panel.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panel_2.setLayout(new BorderLayout(0, 0));
 
 		JLabel lbl_Tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblTask.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_2.add(lbl_Tasks);
+		lbl_Tasks.setPreferredSize(new Dimension(0, 25));
+		panel_2.add(lbl_Tasks, BorderLayout.NORTH);
+		JScrollPane listScroller = new JScrollPane();
 
-		listModel = new DefaultListModel<BackupTask>();
+		// TODO
+		// listScroller.setMaximumSize(new Dimension(2000, 2000));
+		// listScroller.setMinimumSize(new Dimension(2000, 2000));
 
-		list_Tasks = new JList<BackupTask>(listModel);
-		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_Tasks.setSelectedIndex(0);
-		list_Tasks.setVisibleRowCount(6);
-		JScrollPane listScroller = new JScrollPane(list_Tasks);
-		listScroller.setMaximumSize(new Dimension(200, 200));
-		listScroller.setMinimumSize(new Dimension(200, 200));
-
-		panel_2.add(listScroller);
+		panel_2.add(listScroller, BorderLayout.WEST);
 
 		// Button Hinzufügen:
 		JPanel panel_3 = new JPanel();
-		panel_2.add(panel_3);
+		panel_2.add(panel_3, BorderLayout.EAST);
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
+		panel_3.setPreferredSize(new Dimension(140, 76));
 		JButton btn_Add = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btn_Add);
@@ -194,33 +212,39 @@ public class Mainframe {
 				.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btn_Delete);
 		btn_Delete.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		list_Tasks = new JList<BackupTask>(listModel);
+		panel_2.add(list_Tasks, BorderLayout.CENTER);
+		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list_Tasks.setSelectedIndex(0);
+		list_Tasks.setVisibleRowCount(6);
+
 		btn_Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!list_Tasks.isSelectionEmpty()) {
-					listModel.remove(list_Tasks.getSelectedIndex());
+					controller.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+					// listModel.remove(list_Tasks.getSelectedIndex());
 					controller.setNumberOfBackupTasks(controller.getNumberOfBackupTasks() - 1);
 				}
 			}
 		});
+		
+		
 
-		JButton btn_StartAll = new JButton(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btn_StartAll.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				controller.startAllBackups();
-			}
-		});
-		frmTotalbackup.getContentPane().add(btn_StartAll, BorderLayout.SOUTH);
-
-		ta_Output = new JTextArea();
-
-		JScrollPane scrollPane = new JScrollPane(ta_Output);
-		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		/*
+		 * JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		 * splitPane.setTopComponent(panel);
+		 * splitPane.setBottomComponent(scrollPane);
+		 * splitPane.setOneTouchExpandable(true);
+		 * splitPane.setDividerLocation(150);
+		 */
 	}
 
 	/**
 	 * Initialisiert das Mainframe.
-	 * @param c Controller
+	 * 
+	 * @param c
+	 *            Controller
 	 */
 	public void init(Controller c) {
 		this.controller = c;
@@ -270,6 +294,39 @@ public class Mainframe {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			File properties = new File("./properties.ser");
+			if (!properties.exists()) {
+				try {
+					properties.createNewFile();
+				} catch (IOException ex) {
+					System.err.println(ex);
+				}
+			}
+
+			OutputStream fos = null;
+			ObjectOutputStream o = null;
+
+			try {
+				fos = new FileOutputStream(properties);
+				o = new ObjectOutputStream(fos);
+
+				o.writeObject(controller.getBackupTasks());
+			} catch (IOException ex) {
+				System.out.println(ex);
+			} finally {
+				if (o != null)
+					try {
+						o.close();
+					} catch (IOException ex) {
+						System.err.println(ex);
+					}
+				if (fos != null)
+					try {
+						fos.close();
+					} catch (IOException ex) {
+						System.err.println(ex);
+					}
+			}
 			System.exit(0);
 		}
 	}
@@ -304,7 +361,9 @@ public class Mainframe {
 
 	/**
 	 * Fügt der Liste der Backup-Tasks einen Backup-Task hinzu.
-	 * @param task hinzuzufügender Backup-Task
+	 * 
+	 * @param task
+	 *            hinzuzufügender Backup-Task
 	 */
 	public void addBackupTaskToList(BackupTask task) {
 		listModel.addElement(task);
@@ -312,7 +371,9 @@ public class Mainframe {
 
 	/**
 	 * Löscht einen Backup-Task aus der Liste der Backup-Tasks.
-	 * @param task zu löschender Backup-Task
+	 * 
+	 * @param task
+	 *            zu löschender Backup-Task
 	 */
 	public void removeBackupTaskFromList(BackupTask task) {
 		listModel.removeElement(task);
@@ -320,6 +381,7 @@ public class Mainframe {
 
 	/**
 	 * Gibt den Zielpfad zurück.
+	 * 
 	 * @return Zielpfad
 	 */
 	public String getDestPath() {
@@ -332,7 +394,9 @@ public class Mainframe {
 
 	/**
 	 * Legt den Zielpfad fest.
-	 * @param path festzulegender Zielpfad
+	 * 
+	 * @param path
+	 *            festzulegender Zielpfad
 	 */
 	public void setDestPath(String path) {
 		if (editDialog != null) {

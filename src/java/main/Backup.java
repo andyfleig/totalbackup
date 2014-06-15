@@ -25,8 +25,6 @@ public class Backup {
 		this.controller = c;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;
-		
-		//this.destinationFile = new File(destination);
 	}
 	
 	/**

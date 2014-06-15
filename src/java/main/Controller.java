@@ -4,16 +4,25 @@ import gui.Mainframe;
 import main.BackupTask;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.FileInputStream;
+import java.io.File;
 import java.util.ArrayList;
+
+import org.hamcrest.core.IsInstanceOf;
 
 /**
  * Controller zur Steuerung der Anwendung.
+ * 
  * @author andy
  *
  */
 public class Controller {
 
 	private Mainframe mainframe;
+	/**
+	 * @deprecated
+	 */
 	private int numberOfBackupTasks = 0;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 
@@ -21,12 +30,54 @@ public class Controller {
 	 * Startet und initialisiert den Controller.
 	 */
 	public void startController() {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				mainframe = new Mainframe(Controller.this);
-				mainframe.frmTotalbackup.setVisible(true);
+		try {
+			java.awt.EventQueue.invokeAndWait(new Runnable() {
+				public void run() {
+					mainframe = new Mainframe(Controller.this);
+					mainframe.frmTotalbackup.setVisible(true);
+				}
+			});
+			loadSerialization();
+		} catch (Exception ex) {
+			System.err.println(ex);
+		}
+	}
+
+	private void loadSerialization() {
+		// Prüfen ob bereits Einstellungen gespeichert wurden:
+		File file = new File("./properties.ser");
+		if (file.exists()) {
+			ObjectInputStream ois = null;
+			FileInputStream fis = null;
+
+			File properties = new File("./properties.ser");
+			try {
+				fis = new FileInputStream(properties);
+				ois = new ObjectInputStream(fis);
+
+				backupTasks = (ArrayList<BackupTask>) ois.readObject();
+			} catch (IOException e) {
+				System.err.println(e);
+			} catch (ClassNotFoundException e) {
+				System.err.println(e);
+			} finally {
+				if (ois != null)
+					try {
+						ois.close();
+					} catch (IOException e) {
+						System.err.println(e);
+					}
+				if (fis != null)
+					try {
+						fis.close();
+					} catch (IOException e) {
+						System.err.println(e);
+					}
 			}
-		});
+			for (int i = 0; i < backupTasks.size(); i++) {
+				mainframe.addBackupTaskToList(backupTasks.get(i));
+			}
+		}
 	}
 
 	/**
@@ -160,5 +211,9 @@ public class Controller {
 		backupTasks.remove(task);
 		numberOfBackupTasks = numberOfBackupTasks - 1;
 		mainframe.removeBackupTaskFromList(task);
+	}
+
+	public ArrayList<BackupTask> getBackupTasks() {
+		return backupTasks;
 	}
 }
