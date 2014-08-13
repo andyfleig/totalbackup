@@ -28,6 +28,8 @@ import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 
 
 public class Edit extends JDialog {
@@ -88,7 +90,23 @@ public class Edit extends JDialog {
 				JLabel lbl_Properties = new JLabel(ResourceBundle
 						.getBundle("gui.messages").getString("Edit.lbl_Properties.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel.add(lbl_Properties);
+				
+				// JRadioButtons anlegen:
+				JRadioButton rdbtnNormal = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				JRadioButton rdbtnHarlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHarlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				
+				// ButtonGroup anlegen:
+				ButtonGroup btng_settings = new ButtonGroup();
+				
+				// JRadioButtons zur ButtonGroup hinzufügen:
+				btng_settings.add(rdbtnNormal);
+				btng_settings.add(rdbtnHarlink);
+
+				// JRadioButtons zum Panel hinzufügen:
+				panel.add(rdbtnNormal);
+				panel.add(rdbtnHarlink);
 			}
+
 		}
 		{
 			{
