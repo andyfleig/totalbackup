@@ -44,6 +44,9 @@ public class Edit extends JDialog {
 
 	private File sourceFile;
 	private JTextField tf_Destination;
+	
+	private JRadioButton rdbtnNormal;
+	private JRadioButton rdbtnHarlink;
 
 	/**
 	 * @deprecated
@@ -92,8 +95,9 @@ public class Edit extends JDialog {
 				panel.add(lbl_Properties);
 				
 				// JRadioButtons anlegen:
-				JRadioButton rdbtnNormal = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
-				JRadioButton rdbtnHarlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHarlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				rdbtnNormal = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				rdbtnNormal.setSelected(true);
+				rdbtnHarlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHarlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				// ButtonGroup anlegen:
 				ButtonGroup btng_settings = new ButtonGroup();
