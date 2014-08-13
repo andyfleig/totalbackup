@@ -10,18 +10,20 @@ import java.io.FileOutputStream;
 import java.util.*;
 import java.text.*;
 
-public class Backup {
+public class NormalBackup implements Backupable {
+	
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
 	private Controller controller;
 	
+	
 	/**
-	 * Backup-Objekt zur "normalen" Datensicherung.
+	 * Backup-Objekt zur Datensicherung.
 	 * @param c Controller
 	 * @param source Quellpfade
 	 * @param destination Zielpfad
 	 */
-	public Backup(Controller c, ArrayList<String> sources, String destination){
+	public NormalBackup(Controller c, ArrayList<String> sources, String destination) {
 		this.controller = c;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;

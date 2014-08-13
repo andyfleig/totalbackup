@@ -1,7 +1,7 @@
 package test;
 
 import main.Controller;
-import main.Backup;
+import main.NormalBackup;
 import static org.junit.Assert.*;
 
 import org.junit.After;

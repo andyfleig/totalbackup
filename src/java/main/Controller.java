@@ -95,7 +95,7 @@ public class Controller {
 	 *            Backup-Task welcher ausgeführt werden soll
 	 */
 	public void startBackup(BackupTask task) {
-		Backup backup = new Backup(this, task.getSourcePaths(), task.getDestinationPath());
+		NormalBackup backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
 		try {
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {
