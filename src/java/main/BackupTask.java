@@ -19,6 +19,7 @@ public class BackupTask implements Serializable {
 	private String taskName;
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
+	private int backupMode;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -134,5 +135,21 @@ public class BackupTask implements Serializable {
 	public void resetPaths() {
 		sourcePaths.clear();
 		destinationPath = null;
+	}
+	
+	/**
+	 * Legt den Backup-Modus fest.
+	 * @param mode festzulegender Backup-Modus
+	 */
+	public void setBackupMode(int mode) {
+		backupMode = mode;
+	}
+	
+	/**
+	 * Gibt den gewählten Backup-Modus zurück.
+	 * @return gewälter Backup-Modus
+	 */
+	public int getBackupMode() {
+		return backupMode;
 	}
 }

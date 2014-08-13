@@ -46,7 +46,7 @@ public class Edit extends JDialog {
 	private JTextField tf_Destination;
 	
 	private JRadioButton rdbtnNormal;
-	private JRadioButton rdbtnHarlink;
+	private JRadioButton rdbtnHardlink;
 
 	/**
 	 * @deprecated
@@ -97,18 +97,18 @@ public class Edit extends JDialog {
 				// JRadioButtons anlegen:
 				rdbtnNormal = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				rdbtnNormal.setSelected(true);
-				rdbtnHarlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHarlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				rdbtnHardlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHarlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				// ButtonGroup anlegen:
 				ButtonGroup btng_settings = new ButtonGroup();
 				
 				// JRadioButtons zur ButtonGroup hinzufügen:
 				btng_settings.add(rdbtnNormal);
-				btng_settings.add(rdbtnHarlink);
+				btng_settings.add(rdbtnHardlink);
 
 				// JRadioButtons zum Panel hinzufügen:
 				panel.add(rdbtnNormal);
-				panel.add(rdbtnHarlink);
+				panel.add(rdbtnHardlink);
 			}
 
 		}
@@ -231,6 +231,13 @@ public class Edit extends JDialog {
 								controller.removeBackupTask(task);
 								task.resetPaths();
 							}
+							// Backup-Modus speichern:
+							if (rdbtnNormal.isSelected()) {
+								task.setBackupMode(0);
+							} else if (rdbtnHardlink.isSelected()) {
+								task.setBackupMode(1);
+							}
+							
 							// Prüfen ob Quellpfade eingefügt wurden:
 							if (!listModel.isEmpty()) {
 								for (int i = 0; i < listModel.getSize(); i++) {
@@ -243,7 +250,6 @@ public class Edit extends JDialog {
 								// Prüfen ob ein Zielpfad eingefügt wurde:
 								if (isValidPath(tf_Destination.getText())) {
 									task.setDestinationPath(tf_Destination.getText());
-
 									controller.addBackupTask(task);
 								} else {
 									allInputsAreValid = false;
@@ -365,9 +371,19 @@ public class Edit extends JDialog {
 	public int getBackupMode() {
 		if (rdbtnNormal.isSelected()) {
 			return 0;
-		} else if (rdbtnHarlink.isSelected()) {
+		} else if (rdbtnHardlink.isSelected()) {
 			return 1;
 		}
 		return -1;
+	}
+	
+	public void setBackupMode(int mode) {
+		if (mode == 0) {
+			rdbtnNormal.setSelected(true);
+			rdbtnHardlink.setSelected(false);
+		} else if (mode == 1) {
+			rdbtnNormal.setSelected(false);
+			rdbtnHardlink.setSelected(true);
+		}
 	}
 }
