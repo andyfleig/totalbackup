@@ -357,4 +357,17 @@ public class Edit extends JDialog {
 	private boolean isAlreadySourcePath(String path) {
 		return listModel.contains(path);
 	}
+	
+	/**
+	 * Gibt den Backup-Modus zurück.
+	 * @return 0 für normal oder 1 für hardlink oder -1 für kein Modus ausgewählt
+	 */
+	public int getBackupMode() {
+		if (rdbtnNormal.isSelected()) {
+			return 0;
+		} else if (rdbtnHarlink.isSelected()) {
+			return 1;
+		}
+		return -1;
+	}
 }
