@@ -1,12 +1,16 @@
 package main;
 
 import java.util.ArrayList;
-
 import java.io.File;
+import java.io.Serializable;
 
-public class StructureFile {
+public class StructureFile implements Serializable {
 	
 	
+	/**
+	 * Versionsnummer für die Seriallisierung.
+	 */
+	private static final long serialVersionUID = 7289482994627565945L;
 	private String rootPath;
 	private String filePath;
 	private long lastModified;
