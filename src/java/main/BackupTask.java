@@ -1,7 +1,6 @@
 package main;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 
 /**
@@ -15,7 +14,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Versionsnummer für die Seriallisierung.
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1212577706810419845L;
 	private String taskName;
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
