@@ -77,7 +77,8 @@ public class NormalBackup implements Backupable {
 	 * @throws IOException
 	 */
 	private void copyDirectory(File source, File destination) throws FileNotFoundException, IOException {
-		File[] files = source.listFiles();File newFile = null;
+		File[] files = source.listFiles();
+		File newFile = null;
 		
 		destination.mkdirs();
 		
