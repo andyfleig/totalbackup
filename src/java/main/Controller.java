@@ -95,7 +95,13 @@ public class Controller {
 	 *            Backup-Task welcher ausgeführt werden soll
 	 */
 	public void startBackup(BackupTask task) {
-		NormalBackup backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
+		Backupable backup;
+		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
+		if (task.getBackupMode() == 1) {
+			backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
+		} else {
+			backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
+		} 
 		try {
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {

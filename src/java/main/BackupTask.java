@@ -146,7 +146,7 @@ public class BackupTask implements Serializable {
 	}
 	
 	/**
-	 * Gibt den gewählten Backup-Modus zurück.
+	 * Gibt den gewählten Backup-Modus zurück. 0 = normal, 1 = hardlink.
 	 * @return gewälter Backup-Modus
 	 */
 	public int getBackupMode() {
