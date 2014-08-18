@@ -97,7 +97,7 @@ public class Edit extends JDialog {
 				// JRadioButtons anlegen:
 				rdbtnNormal = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				rdbtnNormal.setSelected(true);
-				rdbtnHardlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHarlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				rdbtnHardlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHardlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				
 				// ButtonGroup anlegen:
 				ButtonGroup btng_settings = new ButtonGroup();
