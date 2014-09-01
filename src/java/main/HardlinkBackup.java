@@ -49,8 +49,8 @@ public class HardlinkBackup implements Backupable {
 		
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			File sourceFile = new File(sourcePaths.get(i));
-			
-			String folder = dir + "/" + sourceFile.getName();
+
+			String folder = dir + System.getProperty("file.separator") + sourceFile.getName();
 			File f = new File(folder);
 			
 			if (f.mkdir()) {
@@ -84,7 +84,7 @@ public class HardlinkBackup implements Backupable {
 	private void serializeDirectoryStructure(String taskName) {
 		// Verzeichnisstruktur speichern:
 		// File anlegen:
-		File index = new File(destinationPath + "/index_" + taskName + ".ser");
+		File index = new File(destinationPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
 		// Prüfen ob bereits ein Index existert:
 		if (!index.exists()) {
 			try {

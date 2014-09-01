@@ -66,7 +66,7 @@ public final class BackupHelper {
 		in.close();
 		out.close();
 
-		String output = "Datei " + source.getPath() + "/" + source.getName() + " nach " + destination.getPath() + "/"
+		String output = "Datei " + source.getPath() + System.getProperty("file.separator") + source.getName() + " nach " + destination.getPath() + "/"
 				+ destination.getName() + " kopiert";
 		// TODO: logging
 		// controller.printOut(output);
@@ -81,11 +81,11 @@ public final class BackupHelper {
 	public static File createBackupFolder(String destinationPath, String taskName) {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy_HH-mm");
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm");
 		df.setTimeZone(TimeZone.getDefault());
 
 		File destinationFile = new File(destinationPath);
-		String backupDir = destinationFile.getAbsolutePath() + "/" + taskName + "_" + df.format(date);
+		String backupDir = destinationFile.getAbsolutePath() + System.getProperty("file.separator") + taskName + "_" + df.format(date);
 
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
