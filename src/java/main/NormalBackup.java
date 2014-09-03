@@ -42,7 +42,7 @@ public class NormalBackup implements Backupable {
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			File sourceFile = new File(sourcePaths.get(i));
 			
-			String folder = dir + "/" + sourceFile.getName();
+			String folder = dir + System.getProperty("file.separator") + sourceFile.getName();
 			File f = new File(folder);
 			
 			if (f.mkdir()) {

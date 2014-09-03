@@ -37,4 +37,26 @@ public class StructureFile implements Serializable {
 		}
 		existingFiles.add(file);
 	}
+	
+	public long getLastModifiedDate() {
+		return lastModified;
+	}
+	
+	public String getFilePath() {
+		return rootPath;
+	}
+	
+	/**
+	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht exisitert.
+	 * @param name Name der zu suchenden Datei
+	 * @return Datei oder null
+	 */
+	public StructureFile getStructureFile(String name) {
+		for (int i = 0; i < existingFiles.size(); i++) {
+			if (existingFiles.get(i).getFilePath().endsWith(name)) {
+				return existingFiles.get(i);
+			}
+		}
+		return null;
+	}
 }

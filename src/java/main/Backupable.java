@@ -8,6 +8,5 @@ public interface Backupable {
 	
 	
 	public void runBackup(String taskName) throws FileNotFoundException, IOException;
-	
 
 }

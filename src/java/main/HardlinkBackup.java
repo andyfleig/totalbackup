@@ -21,7 +21,7 @@ public class HardlinkBackup implements Backupable {
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
 	private Controller controller;
-	private ArrayList<StructureFile> directoryStructure;
+	private StructureFile directoryStructure;
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm";
 
 	/**
@@ -38,7 +38,6 @@ public class HardlinkBackup implements Backupable {
 		this.controller = c;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;
-		directoryStructure = new ArrayList<StructureFile>();
 	}
 
 	@Override
@@ -105,16 +104,52 @@ public class HardlinkBackup implements Backupable {
 				System.out.println("Fehler beim erstellen des Ordners");
 			}
 			// Eigentlicher Backup-Vorgang:
-			// TODO
+			recursiveBackup(sourceFile, f);
 
 		}
 
 	}
 
-	private void recursiveBackup(String path, File backupDir) {
+	private void recursiveBackup(File sourceFile, File backupDir) {
+		
+		File[] files = sourceFile.listFiles();
+		
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+				files[i].mkdir();
+				recursiveBackup(files[i], backupDir);
+			} else {
+				if (files[i].lastModified() < getLastModifiedDateFromIndex(files[i])) {
+					// Neue Datei zu sichern:
+					try {
+						BackupHelper.copyFile(sourceFile, backupDir);
+					} catch (IOException e) {
+						System.out.println("Fehler: IO-Fehler beim kopieren");
+					}
+				} else {
+					// Datei zu verlinken (Hardlink):
+					BackupHelper.hardlinkFile(sourceFile, backupDir);
+				}
+			}
+		}
 
 	}
 
+	/**
+	 * Gibt zurück, von wann eine Datei aus dem Index ist, oder -1 wenn die Datein im Index nicht existiert.
+	 * @param file Datei für welche das Datum zurückgegeben werden soll
+	 * @return ms seit 1.1.1970
+	 */
+	private long getLastModifiedDateFromIndex(File file) {
+		// Namen der Datei "zerlegen":
+		StringTokenizer tokenizer = new StringTokenizer(file.getAbsolutePath(), System.getProperty("file.separator"));
+		StructureFile currentStructureFile = directoryStructure;
+		while (tokenizer.hasMoreTokens()) {
+			currentStructureFile = currentStructureFile.getStructureFile(tokenizer.nextToken());
+		}
+		return currentStructureFile.getLastModifiedDate();
+	}
+	
 	/**
 	 * Erzeugt die Verzeichnisstruktur.
 	 */
@@ -122,7 +157,7 @@ public class HardlinkBackup implements Backupable {
 
 		// Verzeichnisstruktur-Objekt erzeugen:
 		StructureFile rootFile = recCalcDirStruct(root.getAbsolutePath(), root.getAbsolutePath());
-		directoryStructure.add(rootFile);
+		directoryStructure = rootFile;
 	}
 
 	private void serializeDirectoryStructure(String taskName) {
@@ -176,7 +211,7 @@ public class HardlinkBackup implements Backupable {
 			fis = new FileInputStream(index);
 			ois = new ObjectInputStream(fis);
 
-			directoryStructure = (ArrayList<StructureFile>) ois.readObject();
+			directoryStructure = (StructureFile) ois.readObject();
 		} catch (IOException e) {
 			System.err.println(e);
 		} catch (ClassNotFoundException e) {

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public final class BackupHelper {
 
@@ -70,6 +72,15 @@ public final class BackupHelper {
 				+ destination.getName() + " kopiert";
 		// TODO: logging
 		// controller.printOut(output);
+	}
+	
+	public static void hardlinkFile(File source, File destination) {
+		try {
+			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
+		} catch (IOException e) {
+			System.out.println("Fehler: IO-Problem");
+		}
+		
 	}
 
 	/**
