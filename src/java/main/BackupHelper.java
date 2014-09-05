@@ -31,7 +31,7 @@ public final class BackupHelper {
 
 		destination.mkdirs();
 
-		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
+		//String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
 		// TODO: logging
 		// controller.printOut(output);
 
@@ -92,7 +92,7 @@ public final class BackupHelper {
 	public static File createBackupFolder(String destinationPath, String taskName) {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm");
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
 		df.setTimeZone(TimeZone.getDefault());
 
 		File destinationFile = new File(destinationPath);

@@ -22,7 +22,7 @@ public class HardlinkBackup implements Backupable {
 	private String destinationPath;
 	private Controller controller;
 	private StructureFile directoryStructure;
-	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm";
+	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -49,7 +49,6 @@ public class HardlinkBackup implements Backupable {
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
 		// aktuellsten Backup-Satz finden:
-		File newestIndex;
 		for (int i = 0; i < destFolders.length; i++) {
 			boolean indexExists = false;
 			if (destFolders[i].isDirectory() && destFolders[i].getName().contains(taskName)) {
@@ -72,10 +71,11 @@ public class HardlinkBackup implements Backupable {
 				createDirectoryStructure(destFolders[i]);
 				System.out.println("Index wurde erzeugt");
 				System.out.println("Index wird gespeichert...");
-				serializeDirectoryStructure(taskName);
+				serializeDirectoryStructure(taskName, destFolders[i].getAbsolutePath());
 				System.out.println("Index gespeichert");
 			}
 		}
+
 
 		// Herausfinden welcher Backup-Satz der Neuste ist und diesen laden:
 		// Neusten Backup-Ordner finden:
@@ -85,17 +85,29 @@ public class HardlinkBackup implements Backupable {
 			System.out.println("Vorgang abgebrochen");
 			return;
 		}
+		
 		// Index dieses backups einlesen:
-		File index = new File(newestBackupPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
+		File index = new File(destinationPath + System.getProperty("file.separator") + newestBackupPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
+		
+		// Pfad prüfen:
+		if (!index.exists()) {
+			System.err.println("Fehler: Index-Datei nicht gefunden");
+			return;
+		}
+		
 		loadSerialization(index);
 
 		// Hardlink-Backup:
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
+		if (dir == null) {
+			System.out.println("Sry, you are too fast. Wait a minute and try again :-)");
+			return;
+		}
 
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			File sourceFile = new File(sourcePaths.get(i));
 
-			String folder = dir + System.getProperty("file.separator") + sourceFile.getName();
+			String folder = dir.getAbsolutePath() + System.getProperty("file.separator") + sourceFile.getName();
 			File f = new File(folder);
 
 			if (f.mkdir()) {
@@ -105,7 +117,6 @@ public class HardlinkBackup implements Backupable {
 			}
 			// Eigentlicher Backup-Vorgang:
 			recursiveBackup(sourceFile, f);
-
 		}
 
 	}
@@ -116,19 +127,21 @@ public class HardlinkBackup implements Backupable {
 		
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isDirectory()) {
-				files[i].mkdir();
-				recursiveBackup(files[i], backupDir);
+				File newBackupDir = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator") + files[i].getName());
+				newBackupDir.mkdir();
+				recursiveBackup(files[i], newBackupDir);
 			} else {
-				if (files[i].lastModified() < getLastModifiedDateFromIndex(files[i])) {
+				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator") + files[i].getName());
+				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
 					// Neue Datei zu sichern:
 					try {
-						BackupHelper.copyFile(sourceFile, backupDir);
+						BackupHelper.copyFile(files[i], newFile);
 					} catch (IOException e) {
 						System.out.println("Fehler: IO-Fehler beim kopieren");
 					}
 				} else {
 					// Datei zu verlinken (Hardlink):
-					BackupHelper.hardlinkFile(sourceFile, backupDir);
+					BackupHelper.hardlinkFile(files[i], newFile);
 				}
 			}
 		}
@@ -144,8 +157,13 @@ public class HardlinkBackup implements Backupable {
 		// Namen der Datei "zerlegen":
 		StringTokenizer tokenizer = new StringTokenizer(file.getAbsolutePath(), System.getProperty("file.separator"));
 		StructureFile currentStructureFile = directoryStructure;
+		StructureFile tmp;
 		while (tokenizer.hasMoreTokens()) {
-			currentStructureFile = currentStructureFile.getStructureFile(tokenizer.nextToken());
+			
+			tmp = currentStructureFile.getStructureFile(tokenizer.nextToken());
+			if (tmp != null) {
+				currentStructureFile = tmp;
+			}
 		}
 		return currentStructureFile.getLastModifiedDate();
 	}
@@ -160,13 +178,11 @@ public class HardlinkBackup implements Backupable {
 		directoryStructure = rootFile;
 	}
 
-	private void serializeDirectoryStructure(String taskName) {
-
-		// TODO: Anpassen!!! Index für Backup-Sätze, nicht für Quellen
+	private void serializeDirectoryStructure(String taskName, String backupSetPath) {
 
 		// Verzeichnisstruktur speichern:
 		// File anlegen:
-		File index = new File(destinationPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
+		File index = new File(backupSetPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
 		// Prüfen ob bereits ein Index existert:
 		if (!index.exists()) {
 			try {
