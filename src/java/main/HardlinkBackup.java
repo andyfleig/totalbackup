@@ -116,6 +116,12 @@ public class HardlinkBackup implements Backupable {
 			// Eigentlicher Backup-Vorgang:
 			recursiveBackup(sourceFile, f);
 		}
+		// Index des Backup-Satzen erzeugen und serialisiert:
+		createDirectoryStructure(dir);
+		System.out.println("Index wurde erzeugt");
+		System.out.println("Index wird gespeichert...");
+		serializeDirectoryStructure(taskName, dir.getAbsolutePath());
+		
 		System.out.println("Backup abgeschlossen");
 	}
 
