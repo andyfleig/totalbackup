@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 import java.util.TimeZone;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,31 +26,31 @@ public final class BackupHelper {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void copyDirectory(File source, File destination) throws FileNotFoundException, IOException {
+	public static void copyDirectory(File source, File destination, Controller controller)
+			throws FileNotFoundException, IOException {
 		File[] files = source.listFiles();
 		File newFile = null;
 
 		destination.mkdirs();
 
-		//String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
-		// TODO: logging
-		// controller.printOut(output);
+		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
+		controller.printOut(output);
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
 				if (files[i].isDirectory()) {
-					copyDirectory(files[i], newFile);
+					copyDirectory(files[i], newFile, controller);
 				} else {
-					copyFile(files[i], newFile);
+					copyFile(files[i], newFile, controller);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Kopiet eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
+	 * Kopiert eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
 	 * 
 	 * @param source
 	 *            Quellpfad
@@ -58,35 +59,47 @@ public final class BackupHelper {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void copyFile(File source, File destination) throws FileNotFoundException, IOException {
+	public static void copyFile(File source, File destination, Controller controller) throws FileNotFoundException,
+			IOException {
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
 		while ((bytes = in.read()) != -1) {
 			out.write(bytes);
 		}
+
 		in.close();
 		out.close();
 
-		String output = "Datei " + source.getPath() + System.getProperty("file.separator") + source.getName() + " nach " + destination.getPath() + "/"
-				+ destination.getName() + " kopiert";
-		// TODO: logging
-		// controller.printOut(output);
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.File") + source.getPath()
+				+ System.getProperty("file.separator") + source.getName()
+				+ ResourceBundle.getBundle("gui.messages").getString("Messages.to") + destination.getPath() + "/"
+				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.copied");
+		controller.printOut(output);
 	}
-	
-	public static void hardlinkFile(File source, File destination) {
+
+	public static void hardlinkFile(File source, File destination, Controller controller) {
 		try {
 			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
 		} catch (IOException e) {
 			System.out.println("Fehler: IO-Problem");
 		}
-		
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.File") + source.getPath()
+				+ System.getProperty("file.separator") + source.getName()
+				+ ResourceBundle.getBundle("gui.messages").getString("Messages.with") + destination.getPath() + "/"
+				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.linked");
+		controller.printOut(output);
+
 	}
 
 	/**
 	 * Erstellt den Root-Ordner für ein Backup.
-	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt werden soll)
-	 * @param taskName Name des Backup-Tasks
+	 * 
+	 * @param destinationPath
+	 *            Zielpfad des Backups (Ort an dem der Root-Ordner angelegt
+	 *            werden soll)
+	 * @param taskName
+	 *            Name des Backup-Tasks
 	 * @return angelegter Root-Ordner
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName) {
@@ -96,7 +109,8 @@ public final class BackupHelper {
 		df.setTimeZone(TimeZone.getDefault());
 
 		File destinationFile = new File(destinationPath);
-		String backupDir = destinationFile.getAbsolutePath() + System.getProperty("file.separator") + taskName + "_" + df.format(date);
+		String backupDir = destinationFile.getAbsolutePath() + System.getProperty("file.separator") + taskName + "_"
+				+ df.format(date);
 
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:

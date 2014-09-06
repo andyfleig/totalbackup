@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.FileInputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 /**
  * Controller zur Steuerung der Anwendung.
@@ -108,10 +109,12 @@ public class Controller {
 				}
 			}
 			if (backupSetFound) {
-				System.out.println("Mindestens ein Backup-Satz gefunden. Hardlinkbackup wird ausgeführt...");
+				printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.startHardlinkBackup"));
 				backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
 			} else {
-				System.out.println("Kein Backup-Satz gefunden. 'Normales' Backup wird ausgeführt");
+				printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.startNormalBackup"));
 				backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
 			}
 		} else {
@@ -120,7 +123,7 @@ public class Controller {
 		try {
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {
-			System.out.println("Fehler beim einlesen der Datei(en)");
+			System.err.println("Fehler beim einlesen der Datei(en)");
 		}
 
 	}

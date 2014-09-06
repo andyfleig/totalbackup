@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,8 @@ public class HardlinkBackup implements Backupable {
 	@Override
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 		
+		controller.printOut(ResourceBundle
+				.getBundle("gui.messages").getString("Messages.startBackup"));
 		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
 		File dest = new File(destinationPath);
 		File[] destFolders = dest.listFiles();
@@ -65,22 +68,25 @@ public class HardlinkBackup implements Backupable {
 			// TODO: Problem bei leeren Ordnern?
 			// Falls kein index gefunden wurde, wird ein index angelegt:
 			if (indexExists == false) {
-				System.out.println("Kein gültiger Index gefunden: Backup wird indiziert...");
+				controller.printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"));
 				createDirectoryStructure(destFolders[i]);
-				System.out.println("Index wurde erzeugt");
-				System.out.println("Index wird gespeichert...");
+				controller.printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.IndexCreated"));
+				controller.printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.IndexSaving"));
 				serializeDirectoryStructure(taskName, destFolders[i].getAbsolutePath());
-				System.out.println("Index gespeichert");
+				controller.printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.IndexSaved"));
 			}
 		}
-
 
 		// Herausfinden welcher Backup-Satz der Neuste ist und diesen laden:
 		// Neusten Backup-Ordner finden:
 		String newestBackupPath = findNewestBackup(destinationPath);
 		if (newestBackupPath == null) {
-			System.out.println("Error: Kein gültiger-Backup-Index gefunden");
-			System.out.println("Vorgang abgebrochen");
+			controller.printOut(ResourceBundle
+					.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"));
 			return;
 		}
 		
@@ -98,7 +104,8 @@ public class HardlinkBackup implements Backupable {
 		// Hardlink-Backup:
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
 		if (dir == null) {
-			System.out.println("Sry, you are too fast. Wait a minute and try again :-)");
+			controller.printOut(ResourceBundle
+					.getBundle("gui.messages").getString("Messages.tooFast"));
 			return;
 		}
 
@@ -109,20 +116,24 @@ public class HardlinkBackup implements Backupable {
 			File f = new File(folder);
 
 			if (f.mkdir()) {
-				System.out.println("Ordner erfolgreich erstellt!");
+				controller.printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.FolderCreated"));
 			} else {
-				System.out.println("Fehler beim erstellen des Ordners");
+				controller.printOut(ResourceBundle
+						.getBundle("gui.messages").getString("Messages.FolderCreationError"));
 			}
 			// Eigentlicher Backup-Vorgang:
 			recursiveBackup(sourceFile, f);
 		}
 		// Index des Backup-Satzen erzeugen und serialisiert:
 		createDirectoryStructure(dir);
-		System.out.println("Index wurde erzeugt");
-		System.out.println("Index wird gespeichert...");
+		controller.printOut(ResourceBundle
+				.getBundle("gui.messages").getString("Messages.IndexCreated"));
+		controller.printOut(ResourceBundle
+				.getBundle("gui.messages").getString("Messages.IndexSaving"));
 		serializeDirectoryStructure(taskName, dir.getAbsolutePath());
-		
-		System.out.println("Backup abgeschlossen");
+		controller.printOut(ResourceBundle
+				.getBundle("gui.messages").getString("Messages.BackupComplete"));
 	}
 
 	private void recursiveBackup(File sourceFile, File backupDir) {
@@ -139,13 +150,13 @@ public class HardlinkBackup implements Backupable {
 				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
 					// Neue Datei zu sichern:
 					try {
-						BackupHelper.copyFile(files[i], newFile);
+						BackupHelper.copyFile(files[i], newFile, controller);
 					} catch (IOException e) {
 						System.out.println("Fehler: IO-Fehler beim kopieren");
 					}
 				} else {
 					// Datei zu verlinken (Hardlink):
-					BackupHelper.hardlinkFile(files[i], newFile);
+					BackupHelper.hardlinkFile(files[i], newFile, controller);
 				}
 			}
 		}
