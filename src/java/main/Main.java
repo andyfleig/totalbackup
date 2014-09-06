@@ -9,6 +9,8 @@ public class Main {
 	 * @param args Start-Argumente
 	 */
 	public static void main(String[] args) {
+		
+		
 
 		Controller c = new Controller();
 		c.startController();

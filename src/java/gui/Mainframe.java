@@ -153,10 +153,6 @@ public class Mainframe {
 		panel_2.add(lbl_Tasks, BorderLayout.NORTH);
 		JScrollPane listScroller = new JScrollPane();
 
-		// TODO
-		// listScroller.setMaximumSize(new Dimension(2000, 2000));
-		// listScroller.setMinimumSize(new Dimension(2000, 2000));
-
 		panel_2.add(listScroller, BorderLayout.WEST);
 
 		// Button Hinzufügen:
