@@ -265,6 +265,11 @@ public class HardlinkBackup implements Backupable {
 		return sFile;
 	}
 
+	/**
+	 * Gibt den Pfad (als String) zum aktuellsten Backup-Satz zurück.
+	 * @param rootPath Ordner in dem nach Backup-Sätzen gesucht werden soll
+	 * @return Pfad zum aktuellsten Backup-Satz
+	 */
 	private String findNewestBackup(String rootPath) {
 		File root = new File(rootPath);
 		File[] directories = root.listFiles();
