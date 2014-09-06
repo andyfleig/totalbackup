@@ -98,7 +98,22 @@ public class Controller {
 		Backupable backup;
 		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
 		if (task.getBackupMode() == 1) {
-			backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
+			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es sich um die erste Ausführung handelt:
+			File[] files = new File(task.getDestinationPath()).listFiles();
+			boolean backupSetFound = false;
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory() && files[i].getName().contains(task.getTaskName())) {
+					backupSetFound = true;
+					break;
+				}
+			}
+			if (backupSetFound) {
+				System.out.println("Mindestens ein Backup-Satz gefunden. Hardlinkbackup wird ausgeführt...");
+				backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
+			} else {
+				System.out.println("Kein Backup-Satz gefunden. 'Normales' Backup wird ausgeführt");
+				backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
+			}
 		} else {
 			backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
 		} 
