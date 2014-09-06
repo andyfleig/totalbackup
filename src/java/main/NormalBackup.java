@@ -48,5 +48,6 @@ public class NormalBackup implements Backupable {
 			// Eigentlicher Kopiervorgang:
 			BackupHelper.copyDirectory(sourceFile, f);
 		}
+		System.out.println("Backup abgeschlossen");
 	}
 }

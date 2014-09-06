@@ -8,11 +8,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.Date;
-
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
@@ -42,7 +40,7 @@ public class HardlinkBackup implements Backupable {
 
 	@Override
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
-
+		
 		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
 		File dest = new File(destinationPath);
 		File[] destFolders = dest.listFiles();
@@ -118,7 +116,7 @@ public class HardlinkBackup implements Backupable {
 			// Eigentlicher Backup-Vorgang:
 			recursiveBackup(sourceFile, f);
 		}
-
+		System.out.println("Backup abgeschlossen");
 	}
 
 	private void recursiveBackup(File sourceFile, File backupDir) {
