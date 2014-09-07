@@ -38,6 +38,9 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Läd die serialisierten Einstellungen.
+	 */
 	private void loadSerialization() {
 		// Prüfen ob bereits Einstellungen gespeichert wurden:
 		File file = new File("./properties.ser");
@@ -99,7 +102,8 @@ public class Controller {
 		Backupable backup;
 		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
 		if (task.getBackupMode() == 1) {
-			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es sich um die erste Ausführung handelt:
+			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
+			// sich um die erste Ausführung handelt:
 			File[] files = new File(task.getDestinationPath()).listFiles();
 			boolean backupSetFound = false;
 			for (int i = 0; i < files.length; i++) {
@@ -109,17 +113,15 @@ public class Controller {
 				}
 			}
 			if (backupSetFound) {
-				printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.startHardlinkBackup"));
+				printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup"));
 				backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
 			} else {
-				printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.startNormalBackup"));
+				printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"));
 				backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
 			}
 		} else {
 			backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
-		} 
+		}
 		try {
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {

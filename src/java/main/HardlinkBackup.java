@@ -41,9 +41,8 @@ public class HardlinkBackup implements Backupable {
 
 	@Override
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
-		
-		controller.printOut(ResourceBundle
-				.getBundle("gui.messages").getString("Messages.startBackup"));
+
+		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup"));
 		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
 		File dest = new File(destinationPath);
 		File[] destFolders = dest.listFiles();
@@ -68,16 +67,13 @@ public class HardlinkBackup implements Backupable {
 			// TODO: Problem bei leeren Ordnern?
 			// Falls kein index gefunden wurde, wird ein index angelegt:
 			if (indexExists == false) {
-				controller.printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"));
+				controller
+						.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"));
 				createDirectoryStructure(destFolders[i]);
-				controller.printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.IndexCreated"));
-				controller.printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.IndexSaving"));
+				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"));
+				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"));
 				serializeDirectoryStructure(taskName, destFolders[i].getAbsolutePath());
-				controller.printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.IndexSaved"));
+				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"));
 			}
 		}
 
@@ -85,27 +81,26 @@ public class HardlinkBackup implements Backupable {
 		// Neusten Backup-Ordner finden:
 		String newestBackupPath = findNewestBackup(destinationPath);
 		if (newestBackupPath == null) {
-			controller.printOut(ResourceBundle
-					.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"));
+			controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"));
 			return;
 		}
-		
+
 		// Index dieses backups einlesen:
-		File index = new File(destinationPath + System.getProperty("file.separator") + newestBackupPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
-		
+		File index = new File(destinationPath + System.getProperty("file.separator") + newestBackupPath
+				+ System.getProperty("file.separator") + "index_" + taskName + ".ser");
+
 		// Pfad prüfen:
 		if (!index.exists()) {
 			System.err.println("Fehler: Index-Datei nicht gefunden");
 			return;
 		}
-		
+
 		loadSerialization(index);
 
 		// Hardlink-Backup:
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
 		if (dir == null) {
-			controller.printOut(ResourceBundle
-					.getBundle("gui.messages").getString("Messages.tooFast"));
+			controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.tooFast"));
 			return;
 		}
 
@@ -116,37 +111,42 @@ public class HardlinkBackup implements Backupable {
 			File f = new File(folder);
 
 			if (f.mkdir()) {
-				controller.printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.FolderCreated"));
+				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"));
 			} else {
-				controller.printOut(ResourceBundle
-						.getBundle("gui.messages").getString("Messages.FolderCreationError"));
+				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"));
 			}
 			// Eigentlicher Backup-Vorgang:
 			recursiveBackup(sourceFile, f);
 		}
 		// Index des Backup-Satzen erzeugen und serialisiert:
 		createDirectoryStructure(dir);
-		controller.printOut(ResourceBundle
-				.getBundle("gui.messages").getString("Messages.IndexCreated"));
-		controller.printOut(ResourceBundle
-				.getBundle("gui.messages").getString("Messages.IndexSaving"));
+		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"));
+		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"));
 		serializeDirectoryStructure(taskName, dir.getAbsolutePath());
-		controller.printOut(ResourceBundle
-				.getBundle("gui.messages").getString("Messages.BackupComplete"));
+		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"));
 	}
 
+	/**
+	 * Rekursive Mathode zur Druchführung eines Hardlink Backups.
+	 * 
+	 * @param sourceFile
+	 *            Quell-Verzeichnis
+	 * @param backupDir
+	 *            Ziel-Verzeichnis
+	 */
 	private void recursiveBackup(File sourceFile, File backupDir) {
-		
+
 		File[] files = sourceFile.listFiles();
-		
+
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isDirectory()) {
-				File newBackupDir = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator") + files[i].getName());
+				File newBackupDir = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
+						+ files[i].getName());
 				newBackupDir.mkdir();
 				recursiveBackup(files[i], newBackupDir);
 			} else {
-				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator") + files[i].getName());
+				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
+						+ files[i].getName());
 				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
 					// Neue Datei zu sichern:
 					try {
@@ -164,8 +164,11 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Gibt zurück, von wann eine Datei aus dem Index ist, oder -1 wenn die Datein im Index nicht existiert.
-	 * @param file Datei für welche das Datum zurückgegeben werden soll
+	 * Gibt zurück, von wann eine Datei aus dem Index ist, oder -1 wenn die
+	 * Datein im Index nicht existiert.
+	 * 
+	 * @param file
+	 *            Datei für welche das Datum zurückgegeben werden soll
 	 * @return ms seit 1.1.1970
 	 */
 	private long getLastModifiedDateFromIndex(File file) {
@@ -174,7 +177,7 @@ public class HardlinkBackup implements Backupable {
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 		while (tokenizer.hasMoreTokens()) {
-			
+
 			tmp = currentStructureFile.getStructureFile(tokenizer.nextToken());
 			if (tmp != null) {
 				currentStructureFile = tmp;
@@ -182,9 +185,9 @@ public class HardlinkBackup implements Backupable {
 		}
 		return currentStructureFile.getLastModifiedDate();
 	}
-	
+
 	/**
-	 * Erzeugt die Verzeichnisstruktur.
+	 * Erzeugt den Index.
 	 */
 	private void createDirectoryStructure(File root) {
 
@@ -193,6 +196,14 @@ public class HardlinkBackup implements Backupable {
 		directoryStructure = rootFile;
 	}
 
+	/**
+	 * Serialisiert den Index.
+	 * 
+	 * @param taskName
+	 *            Name des Tasks des zu serialisierenden Index
+	 * @param backupSetPath
+	 *            Pfad zum Backup-Satz
+	 */
 	private void serializeDirectoryStructure(String taskName, String backupSetPath) {
 
 		// Verzeichnisstruktur speichern:
@@ -233,6 +244,12 @@ public class HardlinkBackup implements Backupable {
 		}
 	}
 
+	/**
+	 * Läd einen seriallisierten Index.
+	 * 
+	 * @param index
+	 *            zu ladender Index
+	 */
 	private void loadSerialization(File index) {
 
 		ObjectInputStream ois = null;
@@ -263,6 +280,15 @@ public class HardlinkBackup implements Backupable {
 		}
 	}
 
+	/**
+	 * Rekursive Methode zur Berechnung der Verzeichnisstruktur.
+	 * 
+	 * @param rootPath
+	 *            root Pfad des Backups
+	 * @param path
+	 *            aktueller (zu analysierender) Pfad
+	 * @return StructureFile für die Verzeichnisstruktur
+	 */
 	private StructureFile recCalcDirStruct(String rootPath, String path) {
 		File currentFile = new File(path);
 		File[] files = currentFile.listFiles();
@@ -282,7 +308,9 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Gibt den Pfad (als String) zum aktuellsten Backup-Satz zurück.
-	 * @param rootPath Ordner in dem nach Backup-Sätzen gesucht werden soll
+	 * 
+	 * @param rootPath
+	 *            Ordner in dem nach Backup-Sätzen gesucht werden soll
 	 * @return Pfad zum aktuellsten Backup-Satz
 	 */
 	private String findNewestBackup(String rootPath) {

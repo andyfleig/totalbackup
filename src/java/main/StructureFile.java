@@ -5,8 +5,7 @@ import java.io.File;
 import java.io.Serializable;
 
 public class StructureFile implements Serializable {
-	
-	
+
 	/**
 	 * Versionsnummer für die Seriallisierung.
 	 */
@@ -16,20 +15,27 @@ public class StructureFile implements Serializable {
 	private long lastModified;
 	private boolean isDirectory = false;
 	private ArrayList<StructureFile> existingFiles;
-	
+
 	/**
-	 * Erzeugt ein StructureFile-Objekt, liest das letzte Modifizierungsdatum aus und schreibt dieses.
-	 * @param root Pfad des Wurzelverzeichnisses
+	 * Erzeugt ein StructureFile-Objekt, liest das letzte Modifizierungsdatum
+	 * aus und schreibt dieses.
+	 * 
+	 * @param root
+	 *            Pfad des Wurzelverzeichnisses
 	 */
 	public StructureFile(String root, String path) {
 		this.rootPath = root;
 		this.filePath = path;
-		
+
 		File tempFile = new File(filePath);
 		lastModified = tempFile.lastModified();
 		tempFile = null;
 	}
-	
+
+	/**
+	 * Fügt zum StruktureFile eine Datei hinzu.
+	 * @param file hinzuzufügende Datei
+	 */
 	public void addFile(StructureFile file) {
 		if (isDirectory == false) {
 			existingFiles = new ArrayList<StructureFile>();
@@ -37,18 +43,25 @@ public class StructureFile implements Serializable {
 		}
 		existingFiles.add(file);
 	}
-	
+
+	/**
+	 * Gibt den Zeitpunkt der letzten Bearbeitung der Datei zurück.
+	 * @return Zeitpunkt der letzten Bearbeitung (als long in ms seit 1.1.1970)
+	 */
 	public long getLastModifiedDate() {
 		return lastModified;
 	}
-	
+
 	public String getFilePath() {
 		return rootPath;
 	}
-	
+
 	/**
-	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht exisitert.
-	 * @param name Name der zu suchenden Datei
+	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht
+	 * exisitert.
+	 * 
+	 * @param name
+	 *            Name der zu suchenden Datei
 	 * @return Datei oder null
 	 */
 	public StructureFile getStructureFile(String name) {
