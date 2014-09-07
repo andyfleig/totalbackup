@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.io.FilenameFilter;
 
 public class HardlinkBackup implements Backupable {
 
@@ -42,10 +43,19 @@ public class HardlinkBackup implements Backupable {
 	@Override
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 
-		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup"));
+		controller.printOut(controller.getCurrentTask(),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup"), 1);
 		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
 		File dest = new File(destinationPath);
-		File[] destFolders = dest.listFiles();
+		
+		FilenameFilter filter = new FilenameFilter() {
+			  @Override
+			  public boolean accept(File current, String name) {
+			    return new File(current, name).isDirectory();
+			  }
+			};
+		
+		File[] destFolders = dest.listFiles(filter);
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
 		// aktuellsten Backup-Satz finden:
@@ -67,13 +77,16 @@ public class HardlinkBackup implements Backupable {
 			// TODO: Problem bei leeren Ordnern?
 			// Falls kein index gefunden wurde, wird ein index angelegt:
 			if (indexExists == false) {
-				controller
-						.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"), 1);
 				createDirectoryStructure(destFolders[i]);
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"));
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
 				serializeDirectoryStructure(taskName, destFolders[i].getAbsolutePath());
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1);
 			}
 		}
 
@@ -81,7 +94,8 @@ public class HardlinkBackup implements Backupable {
 		// Neusten Backup-Ordner finden:
 		String newestBackupPath = findNewestBackup(destinationPath);
 		if (newestBackupPath == null) {
-			controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"));
+			controller.printOut(controller.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"), 1);
 			return;
 		}
 
@@ -100,7 +114,8 @@ public class HardlinkBackup implements Backupable {
 		// Hardlink-Backup:
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
 		if (dir == null) {
-			controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.tooFast"));
+			controller.printOut(controller.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.tooFast"), 0);
 			return;
 		}
 
@@ -111,19 +126,24 @@ public class HardlinkBackup implements Backupable {
 			File f = new File(folder);
 
 			if (f.mkdir()) {
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1);
 			} else {
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1);
 			}
 			// Eigentlicher Backup-Vorgang:
 			recursiveBackup(sourceFile, f);
 		}
 		// Index des Backup-Satzen erzeugen und serialisiert:
 		createDirectoryStructure(dir);
-		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"));
-		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"));
+		controller.printOut(controller.getCurrentTask(),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
+		controller.printOut(controller.getCurrentTask(),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
 		serializeDirectoryStructure(taskName, dir.getAbsolutePath());
-		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"));
+		controller.printOut(controller.getCurrentTask(),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1);
 	}
 
 	/**
@@ -191,9 +211,11 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private void createDirectoryStructure(File root) {
 
-		// Verzeichnisstruktur-Objekt erzeugen:
-		StructureFile rootFile = recCalcDirStruct(root.getAbsolutePath(), root.getAbsolutePath());
-		directoryStructure = rootFile;
+		if (root.isDirectory()) {
+			// Verzeichnisstruktur-Objekt erzeugen:
+			StructureFile rootFile = recCalcDirStruct(root.getAbsolutePath(), root.getAbsolutePath());
+			directoryStructure = rootFile;
+		}
 	}
 
 	/**

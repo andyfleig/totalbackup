@@ -34,7 +34,7 @@ public final class BackupHelper {
 		destination.mkdirs();
 
 		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
-		controller.printOut(output);
+		controller.printOut(controller.getCurrentTask(), output, 1);
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
@@ -75,7 +75,7 @@ public final class BackupHelper {
 				+ System.getProperty("file.separator") + source.getName()
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.to") + destination.getPath() + "/"
 				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.copied");
-		controller.printOut(output);
+		controller.printOut(controller.getCurrentTask(), output, 1);
 	}
 
 	public static void hardlinkFile(File source, File destination, Controller controller) {
@@ -88,7 +88,7 @@ public final class BackupHelper {
 				+ System.getProperty("file.separator") + source.getName()
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.with") + destination.getPath() + "/"
 				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.linked");
-		controller.printOut(output);
+		controller.printOut(controller.getCurrentTask(), output, 1);
 
 	}
 

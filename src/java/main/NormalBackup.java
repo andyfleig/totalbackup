@@ -46,13 +46,16 @@ public class NormalBackup implements Backupable {
 			File f = new File(folder);
 
 			if (f.mkdir()) {
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1);
 			} else {
-				controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"));
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1);
 			}
 			// Eigentlicher Kopiervorgang:
 			BackupHelper.copyDirectory(sourceFile, f, controller);
 		}
-		controller.printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"));
+		controller.printOut(controller.getCurrentTask(),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1);
 	}
 }

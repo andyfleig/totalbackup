@@ -7,8 +7,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.FileInputStream;
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 
 /**
  * Controller zur Steuerung der Anwendung.
@@ -20,6 +26,7 @@ public class Controller {
 
 	private Mainframe mainframe;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
+	private BackupTask currentTask = null;
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -99,6 +106,7 @@ public class Controller {
 	 *            Backup-Task welcher ausgeführt werden soll
 	 */
 	public void startBackup(BackupTask task) {
+		currentTask = task;
 		Backupable backup;
 		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
 		if (task.getBackupMode() == 1) {
@@ -113,10 +121,12 @@ public class Controller {
 				}
 			}
 			if (backupSetFound) {
-				printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup"));
+				printOut(currentTask, ResourceBundle.getBundle("gui.messages")
+						.getString("Messages.startHardlinkBackup"), 1);
 				backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
 			} else {
-				printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"));
+				printOut(currentTask, ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"),
+						1);
 				backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
 			}
 		} else {
@@ -127,7 +137,7 @@ public class Controller {
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		}
-
+		currentTask = null;
 	}
 
 	/**
@@ -144,13 +154,46 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den übergebenen String auf dem Output-Panel aus.
+	 * Gibt den übergebenen String auf dem Output-Panel aus und schreibt ihn
+	 * (abhängig vom Level) in die log-Datei.
 	 * 
+	 * @param level
+	 *            Ausgabe Level: 0 = nur ausgeben, 1 = ausgeben und loggen
 	 * @param s
 	 *            auszugebender String
 	 */
-	public void printOut(String s) {
+	public void printOut(BackupTask task, String s, int level) {
 		mainframe.addToOutput(s);
+		if (level > 0) {
+			// Log-Datei anlegen:
+			if (task == null) {
+				printOut(currentTask, "Fehler: Ereignis konnte nicht gelogged werden", 0);
+				return;
+			}
+			File log = new File(task.getDestinationPath() + System.getProperty("file.separator") + task.getTaskName()
+					+ ".log");
+			// Kontrollieren ob bereits eine log Datei exisitert:
+			if (!log.exists()) {
+				try {
+					log.createNewFile();
+				} catch (IOException e) {
+					System.out.println("Fehler: IO-Problem");
+				}
+			}
+			try {
+				PrintWriter writer = new PrintWriter(new FileOutputStream(log, true));
+				//TODO: Warum falsche Zeitzone?
+				ZoneId zoneid = ZoneId.systemDefault();
+				Clock myclock = Clock.system(zoneid);
+				Instant time = myclock.instant();
+				String output = time.toString() + ": " + s;
+				writer.append("\n" + output);
+				writer.close();
+			} catch (FileNotFoundException e) {
+				System.err.println("Fehler: log Datei nicht gefunden");
+			}
+			
+		}
 	}
 
 	/**
@@ -195,5 +238,9 @@ public class Controller {
 
 	public ArrayList<BackupTask> getBackupTasks() {
 		return backupTasks;
+	}
+
+	public BackupTask getCurrentTask() {
+		return currentTask;
 	}
 }
