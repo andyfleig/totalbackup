@@ -34,7 +34,9 @@ public class StructureFile implements Serializable {
 
 	/**
 	 * Fügt zum StruktureFile eine Datei hinzu.
-	 * @param file hinzuzufügende Datei
+	 * 
+	 * @param file
+	 *            hinzuzufügende Datei
 	 */
 	public void addFile(StructureFile file) {
 		if (isDirectory == false) {
@@ -46,6 +48,7 @@ public class StructureFile implements Serializable {
 
 	/**
 	 * Gibt den Zeitpunkt der letzten Bearbeitung der Datei zurück.
+	 * 
 	 * @return Zeitpunkt der letzten Bearbeitung (als long in ms seit 1.1.1970)
 	 */
 	public long getLastModifiedDate() {
