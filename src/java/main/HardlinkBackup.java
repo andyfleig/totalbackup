@@ -74,7 +74,6 @@ public class HardlinkBackup implements Backupable {
 					}
 				}
 			}
-			// TODO: Problem bei leeren Ordnern?
 			// Falls kein index gefunden wurde, wird ein index angelegt:
 			if (indexExists == false) {
 				controller.printOut(controller.getCurrentTask(),
