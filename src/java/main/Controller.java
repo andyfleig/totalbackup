@@ -12,9 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Controller zur Steuerung der Anwendung.
@@ -182,11 +181,11 @@ public class Controller {
 			}
 			try {
 				PrintWriter writer = new PrintWriter(new FileOutputStream(log, true));
-				//TODO: Warum falsche Zeitzone?
-				ZoneId zoneid = ZoneId.systemDefault();
-				Clock myclock = Clock.system(zoneid);
-				Instant time = myclock.instant();
-				String output = time.toString() + ": " + s;
+				LocalDateTime dateDime = LocalDateTime.now();
+				String timePattern = "dd.MM.yyyy HH:mm:ss";
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern(timePattern);
+				String output = dtf.format(dateDime) + ": " + s;
+
 				writer.append("\n" + output);
 				writer.close();
 			} catch (FileNotFoundException e) {
