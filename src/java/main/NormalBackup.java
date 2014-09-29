@@ -7,6 +7,7 @@ import java.util.*;
 
 public class NormalBackup implements Backupable {
 
+	private String taskName;
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
 	private Controller controller;
@@ -21,8 +22,9 @@ public class NormalBackup implements Backupable {
 	 * @param destination
 	 *            Zielpfad
 	 */
-	public NormalBackup(Controller c, ArrayList<String> sources, String destination) {
+	public NormalBackup(Controller c, String nameOfTask, ArrayList<String> sources, String destination) {
 		this.controller = c;
+		this.taskName = nameOfTask;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;
 	}

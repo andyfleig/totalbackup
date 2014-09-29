@@ -19,6 +19,7 @@ import java.io.FilenameFilter;
 public class HardlinkBackup implements Backupable {
 
 	private ArrayList<String> sourcePaths;
+	private String taskName;
 	private String destinationPath;
 	private Controller controller;
 	private StructureFile directoryStructure;
@@ -34,8 +35,9 @@ public class HardlinkBackup implements Backupable {
 	 * @param destination
 	 *            Zielpfad
 	 */
-	public HardlinkBackup(Controller c, ArrayList<String> sources, String destination) {
+	public HardlinkBackup(Controller c, String nameOfTask,  ArrayList<String> sources, String destination) {
 		this.controller = c;
+		this.taskName = nameOfTask;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;
 	}
@@ -59,10 +61,20 @@ public class HardlinkBackup implements Backupable {
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
 		// aktuellsten Backup-Satz finden:
-		//TODO: Überprüfung anpassen (siehe findNewestBackup())
 		for (int i = 0; i < destFolders.length; i++) {
 			boolean indexExists = false;
-			if (destFolders[i].isDirectory() && destFolders[i].getName().contains(taskName)) {
+			if (destFolders[i].isDirectory()) {
+				// Namen des Ordners "zerlegen":
+				StringTokenizer tokenizer = new StringTokenizer(destFolders[i].getName(), "_");
+				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				if (tokenizer.countTokens() != 2) {
+					continue;
+				}
+				// Erster Token muss dem TaskName entsprechen:
+				if (!tokenizer.nextToken().equals(taskName)) {
+					continue;
+				}
+				// Es handelt sich wohl um einen Backup-Satz
 				File[] destFolder = destFolders[i].listFiles();
 				for (int j = 0; j < destFolder.length; j++) {
 					if (!destFolder[j].isDirectory() && destFolder[j].getName().contains(taskName)
@@ -377,8 +389,10 @@ public class HardlinkBackup implements Backupable {
 				if (tokenizer.countTokens() != 2) {
 					continue;
 				}
-				// Erster Token kann ignoriert werden:
-				tokenizer.nextToken();
+				// Erster Token muss dem TaskName entsprechen:
+				if (!tokenizer.nextToken().equals(taskName)) {
+					continue;
+				}
 				// Zweiter Token muss analysiert werden:
 				String backupDate = tokenizer.nextToken();
 

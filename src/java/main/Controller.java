@@ -122,14 +122,14 @@ public class Controller {
 			if (backupSetFound) {
 				printOut(currentTask, ResourceBundle.getBundle("gui.messages")
 						.getString("Messages.startHardlinkBackup"), 1);
-				backup = new HardlinkBackup(this, task.getSourcePaths(), task.getDestinationPath());
+				backup = new HardlinkBackup(this, task.getTaskName(), task.getSourcePaths(), task.getDestinationPath());
 			} else {
 				printOut(currentTask, ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"),
 						1);
-				backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
+				backup = new NormalBackup(this, task.getTaskName(), task.getSourcePaths(), task.getDestinationPath());
 			}
 		} else {
-			backup = new NormalBackup(this, task.getSourcePaths(), task.getDestinationPath());
+			backup = new NormalBackup(this, task.getTaskName(), task.getSourcePaths(), task.getDestinationPath());
 		}
 		try {
 			backup.runBackup(task.getTaskName());
