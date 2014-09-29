@@ -59,6 +59,7 @@ public class HardlinkBackup implements Backupable {
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
 		// aktuellsten Backup-Satz finden:
+		//TODO: Überprüfung anpassen (siehe findNewestBackup())
 		for (int i = 0; i < destFolders.length; i++) {
 			boolean indexExists = false;
 			if (destFolders[i].isDirectory() && destFolders[i].getName().contains(taskName)) {
@@ -68,7 +69,6 @@ public class HardlinkBackup implements Backupable {
 							&& destFolder[j].getName().contains(".ser")) {
 						// Ab hier wird davon ausgegangen, dass ein index-file
 						// exisitert.
-						// TODO: Gültigkeitsprüfung!?
 						indexExists = true;
 						break;
 					}
@@ -78,12 +78,12 @@ public class HardlinkBackup implements Backupable {
 			if (indexExists == false) {
 				controller.printOut(controller.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"), 1);
-				createDirectoryStructure(destFolders[i]);
+				createIndex(destFolders[i]);
 				controller.printOut(controller.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
 				controller.printOut(controller.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
-				serializeDirectoryStructure(taskName, destFolders[i].getAbsolutePath());
+				serializeIndex(taskName, destFolders[i].getAbsolutePath());
 				controller.printOut(controller.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1);
 			}
@@ -103,12 +103,30 @@ public class HardlinkBackup implements Backupable {
 				+ System.getProperty("file.separator") + "index_" + taskName + ".ser");
 
 		// Pfad prüfen:
+		//TODO
 		if (!index.exists()) {
 			System.err.println("Fehler: Index-Datei nicht gefunden");
 			return;
 		}
 
-		loadSerialization(index);
+		if (!loadSerialization(index)) {
+			controller.printOut(controller.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCorrupted"), 1);
+			createIndex(index);
+			controller.printOut(controller.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
+			controller.printOut(controller.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
+			serializeIndex(taskName, index.getAbsolutePath());
+			controller.printOut(controller.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1);
+			// Index erneut laden:
+			if (!loadSerialization(index)) {
+				controller.printOut(controller.getCurrentTask(),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FatalErrorIndexing"), 1);
+				return;
+			}
+		}
 
 		// Hardlink-Backup:
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
@@ -135,12 +153,12 @@ public class HardlinkBackup implements Backupable {
 			recursiveBackup(sourceFile, f);
 		}
 		// Index des Backup-Satzen erzeugen und serialisiert:
-		createDirectoryStructure(dir);
+		createIndex(dir);
 		controller.printOut(controller.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
 		controller.printOut(controller.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
-		serializeDirectoryStructure(taskName, dir.getAbsolutePath());
+		serializeIndex(taskName, dir.getAbsolutePath());
 		controller.printOut(controller.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1);
 	}
@@ -204,11 +222,13 @@ public class HardlinkBackup implements Backupable {
 		}
 		return currentStructureFile.getLastModifiedDate();
 	}
-
+	
+	
 	/**
-	 * Erzeugt den Index.
+	 *  Erzeugt den Index.
+	 * @param root Root-File zur Indizierung
 	 */
-	private void createDirectoryStructure(File root) {
+	private void createIndex(File root) {
 
 		if (root.isDirectory()) {
 			// Verzeichnisstruktur-Objekt erzeugen:
@@ -225,7 +245,7 @@ public class HardlinkBackup implements Backupable {
 	 * @param backupSetPath
 	 *            Pfad zum Backup-Satz
 	 */
-	private void serializeDirectoryStructure(String taskName, String backupSetPath) {
+	private void serializeIndex(String taskName, String backupSetPath) {
 
 		// Verzeichnisstruktur speichern:
 		// File anlegen:
@@ -267,11 +287,14 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Läd einen seriallisierten Index.
+	 * Gibt bei Erfolg TRUE und sonst FALSE zurück;
 	 * 
 	 * @param index
 	 *            zu ladender Index
 	 */
-	private void loadSerialization(File index) {
+	private boolean loadSerialization(File index) {
+		
+		boolean result = true;
 
 		ObjectInputStream ois = null;
 		FileInputStream fis = null;
@@ -283,22 +306,27 @@ public class HardlinkBackup implements Backupable {
 			directoryStructure = (StructureFile) ois.readObject();
 		} catch (IOException e) {
 			System.err.println(e);
+			result = false;
 		} catch (ClassNotFoundException e) {
 			System.err.println(e);
+			result = false;
 		} finally {
 			if (ois != null)
 				try {
 					ois.close();
 				} catch (IOException e) {
 					System.err.println(e);
+					result = false;
 				}
 			if (fis != null)
 				try {
 					fis.close();
 				} catch (IOException e) {
 					System.err.println(e);
+					result = false;
 				}
 		}
+		return result;
 	}
 
 	/**
