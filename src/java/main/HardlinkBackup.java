@@ -142,7 +142,7 @@ public class HardlinkBackup implements Backupable {
 		}
 
 		// Hardlink-Backup:
-		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
+		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
 		if (dir == null) {
 			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.tooFast"), 0);

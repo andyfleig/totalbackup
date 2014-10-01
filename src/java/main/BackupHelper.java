@@ -102,7 +102,7 @@ public final class BackupHelper {
 	 *            Name des Backup-Tasks
 	 * @return angelegter Root-Ordner
 	 */
-	public static File createBackupFolder(String destinationPath, String taskName) {
+	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener) {
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
@@ -115,9 +115,11 @@ public final class BackupHelper {
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
 		if (dir.mkdir()) {
-			System.out.println("Backup-Ordner erfolgreich erstellt!");
+			listener.printOut(listener.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated"), 1);
 		} else {
-			System.out.println("Fehler beim erstellen des Backup-Ordners");
+			listener.printOut(listener.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 1);
 			return null;
 		}
 		return dir;

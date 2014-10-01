@@ -39,7 +39,7 @@ public class NormalBackup implements Backupable {
 	 */
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 
-		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
+		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
 
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			File sourceFile = new File(sourcePaths.get(i));
