@@ -22,6 +22,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.Color;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
@@ -30,6 +32,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+
+import javax.swing.text.*;
+import javax.swing.JTextPane;
+
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JMenu;
@@ -48,9 +54,9 @@ public class Mainframe {
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
-	private JTextArea ta_Output;
+	private JTextPane ta_Output;
 	private JList<BackupTask> list_Tasks;
-	
+
 	private IEditListener editListener;
 
 	private Edit editDialog;
@@ -59,8 +65,13 @@ public class Mainframe {
 
 	private IMainframeListener listener;
 
+	private StyledDocument doc;
+
 	File sourceFile;
 	File destinationFile;
+
+	SimpleAttributeSet blackAS;
+	SimpleAttributeSet redAS;
 
 	/**
 	 * Launch the application.
@@ -71,17 +82,11 @@ public class Mainframe {
 		// Mainframe window = new Mainframe(controller);
 		// window.frmTotalbackup.setVisible(true);
 		/*
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					window = new Mainframe(controller);
-					window.frmTotalbackup.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		*/
+		 * EventQueue.invokeLater(new Runnable() { public void run() { try {
+		 * window = new Mainframe(controller);
+		 * window.frmTotalbackup.setVisible(true); } catch (Exception e) {
+		 * e.printStackTrace(); } } });
+		 */
 	}
 
 	/**
@@ -96,7 +101,16 @@ public class Mainframe {
 	 * Initialize the contents of the frame.
 	 */
 	public void initialize() {
-		//Edit-Listener anlegen:
+		
+		//AttributeSets erstellen:
+		blackAS = new SimpleAttributeSet();
+		redAS = new SimpleAttributeSet();
+		StyleConstants.setForeground(blackAS, Color.BLACK);
+		StyleConstants.setForeground(redAS, Color.RED);
+		
+		
+		
+		// Edit-Listener anlegen:
 		editListener = new IEditListener() {
 
 			@Override
@@ -107,7 +121,7 @@ public class Mainframe {
 			@Override
 			public void removeBackupTask(BackupTask task) {
 				listener.removeBackupTask(task);
-				
+
 			}
 
 			@Override
@@ -119,11 +133,9 @@ public class Mainframe {
 			public void addBackupTask(BackupTask task) {
 				listener.addBackupTask(task);
 			}
-			
+
 		};
-		
-		
-		
+
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("Mainframe.frmTotalbackup.title")); //$NON-NLS-1$ //$NON-NLS-2$
 		frmTotalbackup.setBounds(100, 100, 894, 569);
@@ -162,7 +174,9 @@ public class Mainframe {
 			}
 		});
 
-		ta_Output = new JTextArea();
+		// TODO: ta_Output umbenennen!?
+		ta_Output = new JTextPane();
+		doc = ta_Output.getStyledDocument();
 
 		JScrollPane scrollPane = new JScrollPane(ta_Output);
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -261,7 +275,7 @@ public class Mainframe {
 	 *            Controller
 	 */
 	public void init(Controller c) {
-		//this.controller = c;
+		// this.controller = c;
 	}
 
 	private void addPopup(Component component, final JPopupMenu popup) {
@@ -350,12 +364,48 @@ public class Mainframe {
 	 * 
 	 * @param output
 	 *            String welcher auf der GUI angezeigt werden soll.
+	 * @param error
+	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
+	 *            (schrift schwarz)
 	 */
-	public void addToOutput(String output) {
+	public void addToOutput(String output, boolean error) {
 		if (output == null) {
 			throw new NullPointerException();
 		}
-		ta_Output.append(output + "\n");
+		
+		if (!error) {
+			try {
+				doc.insertString(doc.getLength(), "\n" + output, blackAS);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		} else {
+			try {
+				doc.insertString(doc.getLength(), "\n" + output, redAS);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+		
+		
+
+		// ta_Output.setText(ta_Output.getText() + "/n" + output);
+
+		// ta_Output.setText("<HTML> test </HTML> <HTML> bla </HTML>");
+
+		// ta_Output.setText("<HTML><BODY><b>ein Html-Text</b><br> zum Testen </BODY></HTML>");
+
+		/*
+		 * output = "<HTML>" + output + "<br></HTML>";
+		 * ta_Output.setText(ta_Output.getText() + output);
+		 */
+
+		/*
+		 * try { Document doc = ta_Output.getDocument();
+		 * doc.insertString(doc.getLength(), output + "<br>", null); } catch
+		 * (BadLocationException ex) { ex.printStackTrace(); }
+		 */
+		// ta_Output.ins(output + "\n");
 	}
 
 	/**

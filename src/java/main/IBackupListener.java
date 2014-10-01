@@ -12,8 +12,11 @@ public interface IBackupListener {
 	 *            auszugebender String
 	 * @param level
 	 *            Ausgabe Level: 0 = nur ausgeben, 1 = ausgeben und loggen
+	 * @param error
+	 * 
 	 */
-	public void printOut(BackupTask task, String s, int level);
+	//TODO: error-javadoc
+	public void printOut(BackupTask task, String s, int level, boolean error);
 
 	/**
 	 * Gibt den aktuell laufenden Task zurück.

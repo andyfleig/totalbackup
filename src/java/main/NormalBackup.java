@@ -49,15 +49,15 @@ public class NormalBackup implements Backupable {
 
 			if (f.mkdir()) {
 				listener.printOut(listener.getCurrentTask(),
-						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1);
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1, false);
 			} else {
 				listener.printOut(listener.getCurrentTask(),
-						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1);
+						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1, true);
 			}
 			// Eigentlicher Kopiervorgang:
 			BackupHelper.copyDirectory(sourceFile, f, listener);
 		}
 		listener.printOut(listener.getCurrentTask(),
-				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1);
+				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1, false);
 	}
 }

@@ -141,8 +141,8 @@ public class Controller {
 		IBackupListener backupListener = new IBackupListener() {
 
 			@Override
-			public void printOut(BackupTask task, String s, int level) {
-				Controller.this.printOut(task, s, level);
+			public void printOut(BackupTask task, String s, int level, boolean error) {
+				Controller.this.printOut(task, s, level, error);
 			}
 
 			@Override
@@ -166,12 +166,12 @@ public class Controller {
 			}
 			if (backupSetFound) {
 				printOut(currentTask, ResourceBundle.getBundle("gui.messages")
-						.getString("Messages.startHardlinkBackup"), 1);
+						.getString("Messages.startHardlinkBackup"), 1, false);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
 						task.getDestinationPath());
 			} else {
 				printOut(currentTask, ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"),
-						1);
+						1, false);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
 						task.getDestinationPath());
 			}
@@ -210,13 +210,17 @@ public class Controller {
 	 *            auszugebender String
 	 * @param level
 	 *            Ausgabe Level: 0 = nur ausgeben, 1 = ausgeben und loggen
+	 * @param error
+	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
+	 *            (schrift schwarz)
 	 */
-	public void printOut(BackupTask task, String s, int level) {
-		mainframe.addToOutput(s);
+	public void printOut(BackupTask task, String s, int level, boolean error) {
+		mainframe.addToOutput(s, error);
 		if (level > 0) {
 			// Log-Datei anlegen:
 			if (task == null) {
-				printOut(currentTask, "Fehler: Ereignis konnte nicht gelogged werden", 0);
+				// TODO: Auslagern in msg.prop
+				printOut(currentTask, "Fehler: Ereignis konnte nicht gelogged werden", 0, true);
 				return;
 			}
 			File log = new File(task.getDestinationPath() + System.getProperty("file.separator") + task.getTaskName()

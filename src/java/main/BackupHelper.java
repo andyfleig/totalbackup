@@ -34,7 +34,7 @@ public final class BackupHelper {
 		destination.mkdirs();
 
 		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
-		listener.printOut(listener.getCurrentTask(), output, 1);
+		listener.printOut(listener.getCurrentTask(), output, 1, false);
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
@@ -75,7 +75,7 @@ public final class BackupHelper {
 				+ System.getProperty("file.separator") + source.getName()
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.to") + destination.getPath() + "/"
 				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.copied");
-		listener.printOut(listener.getCurrentTask(), output, 1);
+		listener.printOut(listener.getCurrentTask(), output, 1, false);
 	}
 
 	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
@@ -88,7 +88,7 @@ public final class BackupHelper {
 				+ System.getProperty("file.separator") + source.getName()
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.with") + destination.getPath() + "/"
 				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.linked");
-		listener.printOut(listener.getCurrentTask(), output, 1);
+		listener.printOut(listener.getCurrentTask(), output, 1, false);
 
 	}
 
@@ -116,10 +116,10 @@ public final class BackupHelper {
 		// Backup-Ordner anlegen:
 		if (dir.mkdir()) {
 			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated"), 1);
+					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated"), 1, false);
 		} else {
 			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 1);
+					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 1, true);
 			return null;
 		}
 		return dir;
