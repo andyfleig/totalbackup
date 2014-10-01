@@ -13,9 +13,10 @@ public interface IBackupListener {
 	 * @param level
 	 *            Ausgabe Level: 0 = nur ausgeben, 1 = ausgeben und loggen
 	 * @param error
+	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
+	 *            (schrift schwarz)
 	 * 
 	 */
-	//TODO: error-javadoc
 	public void printOut(BackupTask task, String s, int level, boolean error);
 
 	/**
