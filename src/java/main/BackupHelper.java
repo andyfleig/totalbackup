@@ -26,7 +26,7 @@ public final class BackupHelper {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void copyDirectory(File source, File destination, Controller controller)
+	public static void copyDirectory(File source, File destination, IBackupListener listener)
 			throws FileNotFoundException, IOException {
 		File[] files = source.listFiles();
 		File newFile = null;
@@ -34,16 +34,16 @@ public final class BackupHelper {
 		destination.mkdirs();
 
 		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
-		controller.printOut(controller.getCurrentTask(), output, 1);
+		listener.printOut(listener.getCurrentTask(), output, 1);
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
 				if (files[i].isDirectory()) {
-					copyDirectory(files[i], newFile, controller);
+					copyDirectory(files[i], newFile, listener);
 				} else {
-					copyFile(files[i], newFile, controller);
+					copyFile(files[i], newFile, listener);
 				}
 			}
 		}
@@ -59,7 +59,7 @@ public final class BackupHelper {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void copyFile(File source, File destination, Controller controller) throws FileNotFoundException,
+	public static void copyFile(File source, File destination, IBackupListener listener) throws FileNotFoundException,
 			IOException {
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
@@ -75,10 +75,10 @@ public final class BackupHelper {
 				+ System.getProperty("file.separator") + source.getName()
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.to") + destination.getPath() + "/"
 				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.copied");
-		controller.printOut(controller.getCurrentTask(), output, 1);
+		listener.printOut(listener.getCurrentTask(), output, 1);
 	}
 
-	public static void hardlinkFile(File source, File destination, Controller controller) {
+	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
 		try {
 			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
 		} catch (IOException e) {
@@ -88,7 +88,7 @@ public final class BackupHelper {
 				+ System.getProperty("file.separator") + source.getName()
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.with") + destination.getPath() + "/"
 				+ destination.getName() + ResourceBundle.getBundle("gui.messages").getString("Messages.linked");
-		controller.printOut(controller.getCurrentTask(), output, 1);
+		listener.printOut(listener.getCurrentTask(), output, 1);
 
 	}
 

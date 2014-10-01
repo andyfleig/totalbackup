@@ -10,7 +10,7 @@ public class NormalBackup implements Backupable {
 	private String taskName;
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
-	private Controller controller;
+	private IBackupListener listener;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -22,8 +22,8 @@ public class NormalBackup implements Backupable {
 	 * @param destination
 	 *            Zielpfad
 	 */
-	public NormalBackup(Controller c, String nameOfTask, ArrayList<String> sources, String destination) {
-		this.controller = c;
+	public NormalBackup(IBackupListener listener, String nameOfTask, ArrayList<String> sources, String destination) {
+		this.listener = listener;
 		this.taskName = nameOfTask;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;
@@ -48,16 +48,16 @@ public class NormalBackup implements Backupable {
 			File f = new File(folder);
 
 			if (f.mkdir()) {
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1);
 			} else {
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1);
 			}
 			// Eigentlicher Kopiervorgang:
-			BackupHelper.copyDirectory(sourceFile, f, controller);
+			BackupHelper.copyDirectory(sourceFile, f, listener);
 		}
-		controller.printOut(controller.getCurrentTask(),
+		listener.printOut(listener.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1);
 	}
 }

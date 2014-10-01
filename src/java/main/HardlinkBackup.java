@@ -21,22 +21,22 @@ public class HardlinkBackup implements Backupable {
 	private ArrayList<String> sourcePaths;
 	private String taskName;
 	private String destinationPath;
-	private Controller controller;
+	private IBackupListener listener;
 	private StructureFile directoryStructure;
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
 	 * 
-	 * @param c
-	 *            Controller
+	 * @param listener
+	 *            Listener
 	 * @param source
 	 *            Quellpfade
 	 * @param destination
 	 *            Zielpfad
 	 */
-	public HardlinkBackup(Controller c, String nameOfTask,  ArrayList<String> sources, String destination) {
-		this.controller = c;
+	public HardlinkBackup(IBackupListener listener, String nameOfTask, ArrayList<String> sources, String destination) {
+		this.listener = listener;
 		this.taskName = nameOfTask;
 		this.sourcePaths = sources;
 		this.destinationPath = destination;
@@ -45,18 +45,18 @@ public class HardlinkBackup implements Backupable {
 	@Override
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 
-		controller.printOut(controller.getCurrentTask(),
+		listener.printOut(listener.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup"), 1);
 		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
 		File dest = new File(destinationPath);
-		
+
 		FilenameFilter filter = new FilenameFilter() {
-			  @Override
-			  public boolean accept(File current, String name) {
-			    return new File(current, name).isDirectory();
-			  }
-			};
-		
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
+		};
+
 		File[] destFolders = dest.listFiles(filter);
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
@@ -87,16 +87,17 @@ public class HardlinkBackup implements Backupable {
 				}
 			}
 			// Falls kein index gefunden wurde, wird ein index angelegt:
+			// TODO: Unschön: Task jedes Mal neu holen...
 			if (indexExists == false) {
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing"), 1);
 				createIndex(destFolders[i]);
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
 				serializeIndex(taskName, destFolders[i].getAbsolutePath());
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1);
 			}
 		}
@@ -105,7 +106,7 @@ public class HardlinkBackup implements Backupable {
 		// Neusten Backup-Ordner finden:
 		String newestBackupPath = findNewestBackup(destinationPath);
 		if (newestBackupPath == null) {
-			controller.printOut(controller.getCurrentTask(),
+			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"), 1);
 			return;
 		}
@@ -115,26 +116,26 @@ public class HardlinkBackup implements Backupable {
 				+ System.getProperty("file.separator") + "index_" + taskName + ".ser");
 
 		// Pfad prüfen:
-		//TODO
+		// TODO
 		if (!index.exists()) {
 			System.err.println("Fehler: Index-Datei nicht gefunden");
 			return;
 		}
 
 		if (!loadSerialization(index)) {
-			controller.printOut(controller.getCurrentTask(),
+			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCorrupted"), 1);
 			createIndex(index);
-			controller.printOut(controller.getCurrentTask(),
+			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
-			controller.printOut(controller.getCurrentTask(),
+			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
 			serializeIndex(taskName, index.getAbsolutePath());
-			controller.printOut(controller.getCurrentTask(),
+			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1);
 			// Index erneut laden:
 			if (!loadSerialization(index)) {
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.FatalErrorIndexing"), 1);
 				return;
 			}
@@ -143,7 +144,7 @@ public class HardlinkBackup implements Backupable {
 		// Hardlink-Backup:
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName);
 		if (dir == null) {
-			controller.printOut(controller.getCurrentTask(),
+			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.tooFast"), 0);
 			return;
 		}
@@ -155,10 +156,10 @@ public class HardlinkBackup implements Backupable {
 			File f = new File(folder);
 
 			if (f.mkdir()) {
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1);
 			} else {
-				controller.printOut(controller.getCurrentTask(),
+				listener.printOut(listener.getCurrentTask(),
 						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1);
 			}
 			// Eigentlicher Backup-Vorgang:
@@ -166,12 +167,12 @@ public class HardlinkBackup implements Backupable {
 		}
 		// Index des Backup-Satzen erzeugen und serialisiert:
 		createIndex(dir);
-		controller.printOut(controller.getCurrentTask(),
+		listener.printOut(listener.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1);
-		controller.printOut(controller.getCurrentTask(),
+		listener.printOut(listener.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1);
 		serializeIndex(taskName, dir.getAbsolutePath());
-		controller.printOut(controller.getCurrentTask(),
+		listener.printOut(listener.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1);
 	}
 
@@ -199,13 +200,13 @@ public class HardlinkBackup implements Backupable {
 				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
 					// Neue Datei zu sichern:
 					try {
-						BackupHelper.copyFile(files[i], newFile, controller);
+						BackupHelper.copyFile(files[i], newFile, listener);
 					} catch (IOException e) {
 						System.out.println("Fehler: IO-Fehler beim kopieren");
 					}
 				} else {
 					// Datei zu verlinken (Hardlink):
-					BackupHelper.hardlinkFile(files[i], newFile, controller);
+					BackupHelper.hardlinkFile(files[i], newFile, listener);
 				}
 			}
 		}
@@ -234,11 +235,12 @@ public class HardlinkBackup implements Backupable {
 		}
 		return currentStructureFile.getLastModifiedDate();
 	}
-	
-	
+
 	/**
-	 *  Erzeugt den Index.
-	 * @param root Root-File zur Indizierung
+	 * Erzeugt den Index.
+	 * 
+	 * @param root
+	 *            Root-File zur Indizierung
 	 */
 	private void createIndex(File root) {
 
@@ -298,14 +300,14 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Läd einen seriallisierten Index.
-	 * Gibt bei Erfolg TRUE und sonst FALSE zurück;
+	 * Läd einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE
+	 * zurück;
 	 * 
 	 * @param index
 	 *            zu ladender Index
 	 */
 	private boolean loadSerialization(File index) {
-		
+
 		boolean result = true;
 
 		ObjectInputStream ois = null;

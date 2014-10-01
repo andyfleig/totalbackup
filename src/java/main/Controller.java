@@ -1,7 +1,9 @@
 package main;
 
 import gui.Mainframe;
+import gui.IMainframeListener;
 import main.BackupTask;
+import main.IBackupListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,7 +36,40 @@ public class Controller {
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
-					mainframe = new Mainframe(Controller.this);
+					mainframe = new Mainframe(new IMainframeListener() {
+
+						@Override
+						public void startAllBackups() {
+							startAllBackups();
+						}
+
+						@Override
+						public void removeBackupTask(BackupTask task) {
+							removeBackupTask(task);
+						}
+
+						@Override
+						public ArrayList<BackupTask> getBackupTasks() {
+							return backupTasks;
+						}
+
+						@Override
+						public BackupTask getBackupTaskWithName(String name) {
+							return Controller.this.getBackupTaskWithName(name);
+						}
+
+						@Override
+						public ArrayList<String> getBackupTaskNames() {
+							return Controller.this.getBackupTaskNames();
+						}
+
+						@Override
+						public void addBackupTask(BackupTask task) {
+							Controller.this.addBackupTask(task);
+
+						}
+
+					});
 					mainframe.frmTotalbackup.setVisible(true);
 				}
 			});
@@ -107,6 +142,21 @@ public class Controller {
 	public void startBackup(BackupTask task) {
 		currentTask = task;
 		Backupable backup;
+		// Listener anlegen:
+		IBackupListener backupListener = new IBackupListener() {
+
+			@Override
+			public void printOut(BackupTask task, String s, int level) {
+				Controller.this.printOut(task, s, level);
+			}
+
+			@Override
+			public BackupTask getCurrentTask() {
+				return Controller.this.getCurrentTask();
+			}
+
+		};
+
 		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
 		if (task.getBackupMode() == 1) {
 			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
@@ -122,14 +172,17 @@ public class Controller {
 			if (backupSetFound) {
 				printOut(currentTask, ResourceBundle.getBundle("gui.messages")
 						.getString("Messages.startHardlinkBackup"), 1);
-				backup = new HardlinkBackup(this, task.getTaskName(), task.getSourcePaths(), task.getDestinationPath());
+				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
+						task.getDestinationPath());
 			} else {
 				printOut(currentTask, ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"),
 						1);
-				backup = new NormalBackup(this, task.getTaskName(), task.getSourcePaths(), task.getDestinationPath());
+				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
+						task.getDestinationPath());
 			}
 		} else {
-			backup = new NormalBackup(this, task.getTaskName(), task.getSourcePaths(), task.getDestinationPath());
+			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
+					task.getDestinationPath());
 		}
 		try {
 			backup.runBackup(task.getTaskName());
@@ -191,7 +244,7 @@ public class Controller {
 			} catch (FileNotFoundException e) {
 				System.err.println("Fehler: log Datei nicht gefunden");
 			}
-			
+
 		}
 	}
 
@@ -233,10 +286,6 @@ public class Controller {
 	public void removeBackupTask(BackupTask task) {
 		backupTasks.remove(task);
 		mainframe.removeBackupTaskFromList(task);
-	}
-
-	public ArrayList<BackupTask> getBackupTasks() {
-		return backupTasks;
 	}
 
 	public BackupTask getCurrentTask() {

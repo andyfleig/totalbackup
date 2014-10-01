@@ -1,7 +1,7 @@
 package gui;
 
-import main.Controller;
 import main.BackupTask;
+import gui.IEditListener;
 
 import java.util.ResourceBundle;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import javax.swing.ButtonGroup;
 
 public class Edit extends JDialog {
 
-	private Controller controller;
+	private IEditListener editListener;
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_Name;
@@ -64,8 +64,8 @@ public class Edit extends JDialog {
 	 * Erzeugt einen Edit-Dialog.
 	 * 
 	 */
-	public Edit(Controller c) {
-		this.controller = c;
+	public Edit(IEditListener listener) {
+		this.editListener = listener;
 		setBounds(100, 100, 511, 389);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -227,8 +227,8 @@ public class Edit extends JDialog {
 							if (nameIsNotTaken(tf_Name.getText())) {
 								task = new BackupTask(tf_Name.getText());
 							} else {
-								task = controller.getBackupTaskWithName(tf_Name.getText());
-								controller.removeBackupTask(task);
+								task = editListener.getBackupTaskWithName(tf_Name.getText());
+								editListener.removeBackupTask(task);
 								task.resetPaths();
 							}
 							// Backup-Modus speichern:
@@ -250,7 +250,7 @@ public class Edit extends JDialog {
 								// Prüfen ob ein Zielpfad eingefügt wurde:
 								if (isValidPath(tf_Destination.getText())) {
 									task.setDestinationPath(tf_Destination.getText());
-									controller.addBackupTask(task);
+									editListener.addBackupTask(task);
 								} else {
 									allInputsAreValid = false;
 								}
@@ -303,7 +303,7 @@ public class Edit extends JDialog {
 	 * @return ob der Name noch nicht benutzt ist
 	 */
 	private boolean nameIsNotTaken(String name) {
-		if (controller.getBackupTaskNames().contains(name)) {
+		if (editListener.getBackupTaskNames().contains(name)) {
 			return false;
 		}
 		return true;

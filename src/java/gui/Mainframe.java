@@ -4,20 +4,17 @@ import main.Controller;
 import main.BackupTask;
 import gui.About;
 import gui.Edit;
+import gui.IEditListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.lang.NullPointerException;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.awt.EventQueue;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -53,12 +50,14 @@ public class Mainframe {
 	private final Action action_quit = new SA_Quit();
 	private JTextArea ta_Output;
 	private JList<BackupTask> list_Tasks;
+	
+	private IEditListener editListener;
 
 	private Edit editDialog;
 
 	private DefaultListModel<BackupTask> listModel;
 
-	private Controller controller;
+	private IMainframeListener listener;
 
 	File sourceFile;
 	File destinationFile;
@@ -71,7 +70,7 @@ public class Mainframe {
 	public void main(String[] args) {
 		// Mainframe window = new Mainframe(controller);
 		// window.frmTotalbackup.setVisible(true);
-
+		/*
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -82,14 +81,14 @@ public class Mainframe {
 				}
 			}
 		});
-
+		*/
 	}
 
 	/**
 	 * Create the application.
 	 */
-	public Mainframe(Controller c) {
-		this.controller = c;
+	public Mainframe(IMainframeListener listener) {
+		this.listener = listener;
 		initialize();
 	}
 
@@ -97,6 +96,34 @@ public class Mainframe {
 	 * Initialize the contents of the frame.
 	 */
 	public void initialize() {
+		//Edit-Listener anlegen:
+		editListener = new IEditListener() {
+
+			@Override
+			public BackupTask getBackupTaskWithName(String name) {
+				return listener.getBackupTaskWithName(name);
+			}
+
+			@Override
+			public void removeBackupTask(BackupTask task) {
+				listener.removeBackupTask(task);
+				
+			}
+
+			@Override
+			public ArrayList<String> getBackupTaskNames() {
+				return listener.getBackupTaskNames();
+			}
+
+			@Override
+			public void addBackupTask(BackupTask task) {
+				listener.addBackupTask(task);
+			}
+			
+		};
+		
+		
+		
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("Mainframe.frmTotalbackup.title")); //$NON-NLS-1$ //$NON-NLS-2$
 		frmTotalbackup.setBounds(100, 100, 894, 569);
@@ -131,7 +158,7 @@ public class Mainframe {
 		frmTotalbackup.getContentPane().add(btn_StartAll, BorderLayout.SOUTH);
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				controller.startAllBackups();
+				listener.startAllBackups();
 			}
 		});
 
@@ -167,7 +194,7 @@ public class Mainframe {
 		btn_Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					editDialog = new Edit(controller);
+					editDialog = new Edit(editListener);
 					editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					editDialog.setVisible(true);
 				} catch (Exception ex) {
@@ -185,7 +212,7 @@ public class Mainframe {
 				if (!list_Tasks.isSelectionEmpty()) {
 					try {
 						// Neuen Edit-Dialog erzeugen:
-						editDialog = new Edit(controller);
+						editDialog = new Edit(editListener);
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						editDialog.setVisible(true);
 
@@ -219,7 +246,7 @@ public class Mainframe {
 		btn_Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!list_Tasks.isSelectionEmpty()) {
-					controller.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+					listener.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
 				}
 			}
 		});
@@ -228,11 +255,13 @@ public class Mainframe {
 	/**
 	 * Initialisiert das Mainframe.
 	 * 
+	 * @deprecated
+	 * 
 	 * @param c
 	 *            Controller
 	 */
 	public void init(Controller c) {
-		this.controller = c;
+		//this.controller = c;
 	}
 
 	private void addPopup(Component component, final JPopupMenu popup) {
@@ -295,7 +324,7 @@ public class Mainframe {
 				fos = new FileOutputStream(properties);
 				o = new ObjectOutputStream(fos);
 
-				o.writeObject(controller.getBackupTasks());
+				o.writeObject(listener.getBackupTasks());
 			} catch (IOException ex) {
 				System.out.println(ex);
 			} finally {
