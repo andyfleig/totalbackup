@@ -54,7 +54,7 @@ public class Mainframe {
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
-	private JTextPane ta_Output;
+	private JTextPane tp_Output;
 	private JList<BackupTask> list_Tasks;
 
 	private IEditListener editListener;
@@ -65,7 +65,7 @@ public class Mainframe {
 
 	private IMainframeListener listener;
 
-	private StyledDocument doc;
+	private StyledDocument tpOutput_doc;
 
 	File sourceFile;
 	File destinationFile;
@@ -174,11 +174,10 @@ public class Mainframe {
 			}
 		});
 
-		// TODO: ta_Output umbenennen!?
-		ta_Output = new JTextPane();
-		doc = ta_Output.getStyledDocument();
+		tp_Output = new JTextPane();
+		tpOutput_doc = tp_Output.getStyledDocument();
 
-		JScrollPane scrollPane = new JScrollPane(ta_Output);
+		JScrollPane scrollPane = new JScrollPane(tp_Output);
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 		JPanel panel = new JPanel();
@@ -375,13 +374,13 @@ public class Mainframe {
 		
 		if (!error) {
 			try {
-				doc.insertString(doc.getLength(), "\n" + output, blackAS);
+				tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, blackAS);
 			} catch (Exception e) {
 				System.out.println(e);
 			}
 		} else {
 			try {
-				doc.insertString(doc.getLength(), "\n" + output, redAS);
+				tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, redAS);
 			} catch (Exception e) {
 				System.out.println(e);
 			}
