@@ -120,12 +120,7 @@ public class Controller {
 	}
 
 	/**
-	 * Startet ein "normales" Backup.
-	 * 
-	 * @param source
-	 *            Quellpfad
-	 * @param destination
-	 *            Zielpfad
+	 * Startet alle Backup-Tasks.
 	 */
 	public void startAllBackups() {
 		for (int i = 0; i < backupTasks.size(); i++) {
