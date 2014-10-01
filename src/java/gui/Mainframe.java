@@ -99,15 +99,13 @@ public class Mainframe {
 	 * Initialize the contents of the frame.
 	 */
 	public void initialize() {
-		
-		//AttributeSets erstellen:
+
+		// AttributeSets erstellen:
 		blackAS = new SimpleAttributeSet();
 		redAS = new SimpleAttributeSet();
 		StyleConstants.setForeground(blackAS, Color.BLACK);
 		StyleConstants.setForeground(redAS, Color.RED);
-		
-		
-		
+
 		// Edit-Listener anlegen:
 		editListener = new IEditListener() {
 
@@ -369,7 +367,7 @@ public class Mainframe {
 		if (output == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (!error) {
 			try {
 				tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, blackAS);
