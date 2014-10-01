@@ -116,9 +116,9 @@ public class HardlinkBackup implements Backupable {
 				+ System.getProperty("file.separator") + "index_" + taskName + ".ser");
 
 		// Pfad prüfen:
-		// TODO
 		if (!index.exists()) {
-			System.err.println("Fehler: Index-Datei nicht gefunden");
+			listener.printOut(listener.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.IndexNotFound"), 1);
 			return;
 		}
 
