@@ -30,7 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
-
+import javax.swing.JOptionPane;
 
 public class Edit extends JDialog {
 
@@ -44,7 +44,7 @@ public class Edit extends JDialog {
 
 	private File sourceFile;
 	private JTextField tf_Destination;
-	
+
 	private JRadioButton rdbtnNormal;
 	private JRadioButton rdbtnHardlink;
 
@@ -93,15 +93,17 @@ public class Edit extends JDialog {
 				JLabel lbl_Properties = new JLabel(ResourceBundle
 						.getBundle("gui.messages").getString("Edit.lbl_Properties.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				panel.add(lbl_Properties);
-				
+
 				// JRadioButtons anlegen:
-				rdbtnNormal = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				rdbtnNormal = new JRadioButton(ResourceBundle
+						.getBundle("gui.messages").getString("Edit.rdbtnNormal.text")); //$NON-NLS-1$ //$NON-NLS-2$
 				rdbtnNormal.setSelected(true);
-				rdbtnHardlink = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Edit.rdbtnHardlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
-				
+				rdbtnHardlink = new JRadioButton(ResourceBundle
+						.getBundle("gui.messages").getString("Edit.rdbtnHardlink.text")); //$NON-NLS-1$ //$NON-NLS-2$
+
 				// ButtonGroup anlegen:
 				ButtonGroup btng_settings = new ButtonGroup();
-				
+
 				// JRadioButtons zur ButtonGroup hinzufügen:
 				btng_settings.add(rdbtnNormal);
 				btng_settings.add(rdbtnHardlink);
@@ -155,7 +157,9 @@ public class Edit extends JDialog {
 								if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
 									listModel.addElement(sourceFile.getAbsolutePath());
 								} else {
-									//TODO: outprint: "Fehler: Pfad exisitert bereits"
+									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
+											.getString("Edit.ErrSamePath"), ResourceBundle.getBundle("gui.messages")
+											.getString("Edit.ErrMsg"), JOptionPane.INFORMATION_MESSAGE);
 								}
 							}
 						}
@@ -170,7 +174,7 @@ public class Edit extends JDialog {
 					btn_Delete.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							if (!list_SourcePaths.isSelectionEmpty()) {
-								
+
 								listModel.remove(list_SourcePaths.getSelectedIndex());
 							}
 						}
@@ -237,7 +241,7 @@ public class Edit extends JDialog {
 							} else if (rdbtnHardlink.isSelected()) {
 								task.setBackupMode(1);
 							}
-							
+
 							// Prüfen ob Quellpfade eingefügt wurden:
 							if (!listModel.isEmpty()) {
 								for (int i = 0; i < listModel.getSize(); i++) {
@@ -286,7 +290,9 @@ public class Edit extends JDialog {
 
 	/**
 	 * Prüft den gegebenen Pfad auf Gültigkeit.
-	 * @param s zu prüfender Pfad
+	 * 
+	 * @param s
+	 *            zu prüfender Pfad
 	 * @return Gültigkeit des Pfades.
 	 */
 	private boolean isValidPath(String pfad) {
@@ -299,7 +305,9 @@ public class Edit extends JDialog {
 
 	/**
 	 * Prüft ob der gegebene Name noch ungenutzt (noch nicht verwendet) ist.
-	 * @param name zu prüfender Name
+	 * 
+	 * @param name
+	 *            zu prüfender Name
 	 * @return ob der Name noch nicht benutzt ist
 	 */
 	private boolean nameIsNotTaken(String name) {
@@ -311,7 +319,9 @@ public class Edit extends JDialog {
 
 	/**
 	 * Prüft den gegebenen Namen auf Gültigkeit.
-	 * @param name zu prüfender Name
+	 * 
+	 * @param name
+	 *            zu prüfender Name
 	 * @return ültigkeit des Namens
 	 */
 	private boolean isValidName(String name) {
@@ -323,6 +333,7 @@ public class Edit extends JDialog {
 
 	/**
 	 * Gibt den Zielpfad zurück.
+	 * 
 	 * @return Zielpfad
 	 */
 	public String getDestinationPath() {
@@ -331,7 +342,9 @@ public class Edit extends JDialog {
 
 	/**
 	 * Legt den Namen des Backup-Tasks fest.
-	 * @param name festzulegender Name
+	 * 
+	 * @param name
+	 *            festzulegender Name
 	 */
 	public void setBackupTaskName(String name) {
 		tf_Name.setText(name);
@@ -339,7 +352,9 @@ public class Edit extends JDialog {
 
 	/**
 	 * Legt die Quellpfade fest.
-	 * @param sourcePaths festzulegende Quellpfade
+	 * 
+	 * @param sourcePaths
+	 *            festzulegende Quellpfade
 	 */
 	public void setSourcePaths(ArrayList<String> sourcePaths) {
 		for (int i = 0; i < sourcePaths.size(); i++) {
@@ -349,24 +364,30 @@ public class Edit extends JDialog {
 
 	/**
 	 * Legt den Zielpfad fest.
-	 * @param path festzulegender Zielpfad
+	 * 
+	 * @param path
+	 *            festzulegender Zielpfad
 	 */
 	public void setDestinationPath(String path) {
 		tf_Destination.setText(path);
 	}
-	
+
 	/**
 	 * Prüft ob ein bestimmter Pfad bereits als Quellpfad festgelegt ist.
-	 * @param path zu prüfender Pfad
+	 * 
+	 * @param path
+	 *            zu prüfender Pfad
 	 * @return ob der Pfad bereits festgelegt ist
 	 */
 	private boolean isAlreadySourcePath(String path) {
 		return listModel.contains(path);
 	}
-	
+
 	/**
 	 * Gibt den Backup-Modus zurück.
-	 * @return 0 für normal oder 1 für hardlink oder -1 für kein Modus ausgewählt
+	 * 
+	 * @return 0 für normal oder 1 für hardlink oder -1 für kein Modus
+	 *         ausgewählt
 	 */
 	public int getBackupMode() {
 		if (rdbtnNormal.isSelected()) {
@@ -376,7 +397,7 @@ public class Edit extends JDialog {
 		}
 		return -1;
 	}
-	
+
 	public void setBackupMode(int mode) {
 		if (mode == 0) {
 			rdbtnNormal.setSelected(true);
