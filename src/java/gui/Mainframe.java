@@ -21,7 +21,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -31,11 +30,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
-
-import javax.swing.text.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.StyleConstants;
 import javax.swing.JTextPane;
-
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JMenu;
