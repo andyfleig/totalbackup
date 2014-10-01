@@ -40,7 +40,7 @@ public class Controller {
 
 						@Override
 						public void startAllBackups() {
-							startAllBackups();
+							Controller.this.startAllBackups();
 						}
 
 						@Override
