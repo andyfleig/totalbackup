@@ -385,26 +385,6 @@ public class Mainframe {
 				System.out.println(e);
 			}
 		}
-		
-		
-
-		// ta_Output.setText(ta_Output.getText() + "/n" + output);
-
-		// ta_Output.setText("<HTML> test </HTML> <HTML> bla </HTML>");
-
-		// ta_Output.setText("<HTML><BODY><b>ein Html-Text</b><br> zum Testen </BODY></HTML>");
-
-		/*
-		 * output = "<HTML>" + output + "<br></HTML>";
-		 * ta_Output.setText(ta_Output.getText() + output);
-		 */
-
-		/*
-		 * try { Document doc = ta_Output.getDocument();
-		 * doc.insertString(doc.getLength(), output + "<br>", null); } catch
-		 * (BadLocationException ex) { ex.printStackTrace(); }
-		 */
-		// ta_Output.ins(output + "\n");
 	}
 
 	/**
