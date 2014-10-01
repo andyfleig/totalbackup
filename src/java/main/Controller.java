@@ -40,12 +40,12 @@ public class Controller {
 
 						@Override
 						public void startAllBackups() {
-							startAllBackups();
+							Controller.this.startAllBackups();
 						}
 
 						@Override
 						public void removeBackupTask(BackupTask task) {
-							removeBackupTask(task);
+							Controller.this.removeBackupTask(task);
 						}
 
 						@Override
