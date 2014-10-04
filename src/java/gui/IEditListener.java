@@ -37,4 +37,9 @@ public interface IEditListener {
 	 *            hinzuzufügender Backup-Task
 	 */
 	public void addBackupTask(BackupTask task);
+	
+	/**
+	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
+	 */
+	public void saveProperties();
 }

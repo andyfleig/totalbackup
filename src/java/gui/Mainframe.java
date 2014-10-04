@@ -130,6 +130,11 @@ public class Mainframe {
 				listener.addBackupTask(task);
 			}
 
+			@Override
+			public void saveProperties() {
+				Mainframe.this.saveProperties();
+			}
+
 		};
 
 		frmTotalbackup = new JFrame();
@@ -171,10 +176,9 @@ public class Mainframe {
 		});
 
 		tp_Output = new JTextPane() {
-			public boolean getScrollableTracksViewportWidth()
-		    {
-		        return getUI().getPreferredSize(this).width <= getParent().getSize().width;
-		    }
+			public boolean getScrollableTracksViewportWidth() {
+				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
+			}
 		};
 		tpOutput_doc = tp_Output.getStyledDocument();
 
@@ -322,40 +326,44 @@ public class Mainframe {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			File properties = new File("./properties.ser");
-			if (!properties.exists()) {
+			saveProperties();
+			System.exit(0);
+		}
+	}
+
+	private void saveProperties() {
+		File properties = new File("./properties.ser");
+		if (!properties.exists()) {
+			try {
+				properties.createNewFile();
+			} catch (IOException ex) {
+				System.err.println(ex);
+			}
+		}
+
+		OutputStream fos = null;
+		ObjectOutputStream o = null;
+
+		try {
+			fos = new FileOutputStream(properties);
+			o = new ObjectOutputStream(fos);
+
+			o.writeObject(listener.getBackupTasks());
+		} catch (IOException ex) {
+			System.out.println(ex);
+		} finally {
+			if (o != null)
 				try {
-					properties.createNewFile();
+					o.close();
 				} catch (IOException ex) {
 					System.err.println(ex);
 				}
-			}
-
-			OutputStream fos = null;
-			ObjectOutputStream o = null;
-
-			try {
-				fos = new FileOutputStream(properties);
-				o = new ObjectOutputStream(fos);
-
-				o.writeObject(listener.getBackupTasks());
-			} catch (IOException ex) {
-				System.out.println(ex);
-			} finally {
-				if (o != null)
-					try {
-						o.close();
-					} catch (IOException ex) {
-						System.err.println(ex);
-					}
-				if (fos != null)
-					try {
-						fos.close();
-					} catch (IOException ex) {
-						System.err.println(ex);
-					}
-			}
-			System.exit(0);
+			if (fos != null)
+				try {
+					fos.close();
+				} catch (IOException ex) {
+					System.err.println(ex);
+				}
 		}
 	}
 

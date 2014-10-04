@@ -264,6 +264,8 @@ public class Edit extends JDialog {
 						} else {
 							allInputsAreValid = false;
 						}
+						//Einstellungen sichern (seriallisieren):
+						editListener.saveProperties();
 						if (allInputsAreValid) {
 							Edit.this.dispose();
 						}
