@@ -170,7 +170,12 @@ public class Mainframe {
 			}
 		});
 
-		tp_Output = new JTextPane();
+		tp_Output = new JTextPane() {
+			public boolean getScrollableTracksViewportWidth()
+		    {
+		        return getUI().getPreferredSize(this).width <= getParent().getSize().width;
+		    }
+		};
 		tpOutput_doc = tp_Output.getStyledDocument();
 
 		JScrollPane scrollPane = new JScrollPane(tp_Output);
