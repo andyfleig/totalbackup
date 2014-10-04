@@ -43,7 +43,15 @@ public final class BackupHelper {
 				if (files[i].isDirectory()) {
 					copyDirectory(files[i], newFile, listener);
 				} else {
-					copyFile(files[i], newFile, listener);
+					try {
+						copyFile(files[i], newFile, listener);
+					} catch (IOException e) {
+						// Fehler beim kopieren einer Datei (z.B. wegen
+						// fehlenden Rechten)
+						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
+								+ System.getProperty("file.separator") + source.getPath();
+						listener.printOut(listener.getCurrentTask(), outprint, 1, true);
+					}
 				}
 			}
 		}

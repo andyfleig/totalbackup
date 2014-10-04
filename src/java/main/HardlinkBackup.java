@@ -198,11 +198,15 @@ public class HardlinkBackup implements Backupable {
 				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
 				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
-					// Neue Datei zu sichern:
+					// Datei zu sichern:
 					try {
 						BackupHelper.copyFile(files[i], newFile, listener);
 					} catch (IOException e) {
-						System.out.println("Fehler: IO-Fehler beim kopieren");
+						// Fehler beim kopieren einer Datei (z.B. wegen
+						// fehlenden Rechten)
+						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
+								+ System.getProperty("file.separator") + sourceFile.getPath();
+						listener.printOut(listener.getCurrentTask(), outprint, 1, true);
 					}
 				} else {
 					// Datei zu verlinken (Hardlink):
