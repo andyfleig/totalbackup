@@ -375,13 +375,21 @@ public class Mainframe {
 
 		if (!error) {
 			try {
-				tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, blackAS);
+				if (tpOutput_doc.getLength() < 1) {
+					tpOutput_doc.insertString(tpOutput_doc.getLength(), output, blackAS);
+				} else {
+					tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, blackAS);
+				}
 			} catch (Exception e) {
 				System.out.println(e);
 			}
 		} else {
 			try {
-				tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, redAS);
+				if (tpOutput_doc.getLength() < 1) {
+					tpOutput_doc.insertString(tpOutput_doc.getLength(), output, redAS);
+				} else {
+					tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, redAS);
+				}
 			} catch (Exception e) {
 				System.out.println(e);
 			}
