@@ -180,6 +180,7 @@ public class Mainframe {
 				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
 			}
 		};
+		tp_Output.setEditable(false);
 		tpOutput_doc = tp_Output.getStyledDocument();
 
 		JScrollPane scrollPane = new JScrollPane(tp_Output);
