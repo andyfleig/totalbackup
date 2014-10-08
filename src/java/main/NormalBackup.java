@@ -40,6 +40,11 @@ public class NormalBackup implements Backupable {
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
 
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
+		if (dir == null) {
+			//listener.printOut(listener.getCurrentTask(),
+			//		ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 0, true);
+			return;
+		}
 
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			File sourceFile = new File(sourcePaths.get(i));
