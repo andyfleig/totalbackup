@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
+import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -48,12 +49,18 @@ public class Mainframe {
 
 	private Mainframe window;
 
+	//TODO
 	// private mit setter?
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
 	private JTextPane tp_Output;
 	private JList<BackupTask> list_Tasks;
+	
+	private JButton btn_StartAll;
+	private JButton btn_Add;
+	private JButton btn_Edit;
+	private JButton btn_Delete;
 
 	private IEditListener editListener;
 
@@ -166,12 +173,22 @@ public class Mainframe {
 
 		listModel = new DefaultListModel<BackupTask>();
 
-		JButton btn_StartAll = new JButton(ResourceBundle
+		btn_StartAll = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		frmTotalbackup.getContentPane().add(btn_StartAll, BorderLayout.SOUTH);
+		
+		//Button Alle-Backups-Starten:
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				listener.startAllBackups();
+				Thread backupThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						listener.startAllBackups();
+					}
+				});
+				backupThread.start();
+				
+				//listener.startAllBackups();
 			}
 		});
 
@@ -206,7 +223,7 @@ public class Mainframe {
 		panel_2.add(panel_3, BorderLayout.EAST);
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
 		panel_3.setPreferredSize(new Dimension(140, 76));
-		JButton btn_Add = new JButton(ResourceBundle
+		btn_Add = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btn_Add);
 		btn_Add.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -223,7 +240,7 @@ public class Mainframe {
 		});
 
 		// Button Bearbeiten:
-		JButton btn_Edit = new JButton(ResourceBundle
+		btn_Edit = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		btn_Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -251,7 +268,7 @@ public class Mainframe {
 		panel_3.add(btn_Edit);
 
 		// Button Löschen:
-		JButton btn_Delete = new JButton(ResourceBundle
+		btn_Delete = new JButton(ResourceBundle
 				.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btn_Delete);
 		btn_Delete.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -463,5 +480,12 @@ public class Mainframe {
 		if (editDialog != null) {
 			editDialog.setDestinationPath(path);
 		}
+	}
+	
+	public void setButtonsEnabled(boolean enabled) {
+		btn_StartAll.setEnabled(enabled);
+		btn_Add.setEnabled(enabled);
+		btn_Edit.setEnabled(enabled);
+		btn_Delete.setEnabled(enabled);
 	}
 }
