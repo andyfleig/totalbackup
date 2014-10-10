@@ -521,16 +521,18 @@ public class Mainframe {
 	}
 
 	/**
-	 * TODO
+	 * Sperrt bzw. entsperrt die Buttons der GUI.
 	 * 
-	 * @param enabled
+	 * @param noBackupRunning
+	 *            false = "sperrt" die Buttons der GUI (während laufendem
+	 *            Backup), true = entsperrt
 	 */
-	public void setButtonsEnabled(boolean enabled) {
-		btnCancel.setEnabled(!enabled);
-		btnStartSelected.setEnabled(enabled);
-		btn_StartAll.setEnabled(enabled);
-		btn_Add.setEnabled(enabled);
-		btn_Edit.setEnabled(enabled);
-		btn_Delete.setEnabled(enabled);
+	public void setButtonsToBackupRunning(boolean noBackupRunning) {
+		btnCancel.setEnabled(!noBackupRunning);
+		btnStartSelected.setEnabled(noBackupRunning);
+		btn_StartAll.setEnabled(noBackupRunning);
+		btn_Add.setEnabled(noBackupRunning);
+		btn_Edit.setEnabled(noBackupRunning);
+		btn_Delete.setEnabled(noBackupRunning);
 	}
 }

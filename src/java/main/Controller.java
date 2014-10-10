@@ -141,7 +141,7 @@ public class Controller {
 	 *            Backup-Task welcher ausgeführt werden soll
 	 */
 	public void startBackup(BackupTask task) {
-		mainframe.setButtonsEnabled(false);
+		mainframe.setButtonsToBackupRunning(false);
 		currentTask = task;
 		Backupable backup;
 		// Listener anlegen:
@@ -192,7 +192,7 @@ public class Controller {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		}
 		currentTask = null;
-		mainframe.setButtonsEnabled(true);
+		mainframe.setButtonsToBackupRunning(true);
 	}
 
 	/**
