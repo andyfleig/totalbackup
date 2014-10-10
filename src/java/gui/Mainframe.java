@@ -17,7 +17,6 @@ import java.util.ResourceBundle;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -34,7 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
-import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -48,10 +46,9 @@ import javax.swing.BoxLayout;
 
 public class Mainframe {
 
-	private Mainframe window;
+	// Für main benötigt:
+	// private Mainframe window;
 
-	// TODO
-	// private mit setter?
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
