@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -49,18 +50,20 @@ public class Mainframe {
 
 	private Mainframe window;
 
-	//TODO
+	// TODO
 	// private mit setter?
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
 	private JTextPane tp_Output;
 	private JList<BackupTask> list_Tasks;
-	
+
 	private JButton btn_StartAll;
 	private JButton btn_Add;
 	private JButton btn_Edit;
 	private JButton btn_Delete;
+	private JButton btnCancel;
+	private JButton btnStartSelected;
 
 	private IEditListener editListener;
 
@@ -71,6 +74,8 @@ public class Mainframe {
 	private IMainframeListener listener;
 
 	private StyledDocument tpOutput_doc;
+
+	private Thread backupThread;
 
 	File sourceFile;
 	File destinationFile;
@@ -84,11 +89,12 @@ public class Mainframe {
 	 * @deprecated
 	 */
 	public void main(String[] args) {
-		// Mainframe window = new Mainframe(controller);
-		// window.frmTotalbackup.setVisible(true);
 		/*
+		 * Mainframe window = new Mainframe(listener);
+		 * window.frmTotalbackup.setVisible(true);
+		 * 
 		 * EventQueue.invokeLater(new Runnable() { public void run() { try {
-		 * window = new Mainframe(controller);
+		 * window = new Mainframe(listener);
 		 * window.frmTotalbackup.setVisible(true); } catch (Exception e) {
 		 * e.printStackTrace(); } } });
 		 */
@@ -173,25 +179,6 @@ public class Mainframe {
 
 		listModel = new DefaultListModel<BackupTask>();
 
-		btn_StartAll = new JButton(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.btnBackupStarten.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		frmTotalbackup.getContentPane().add(btn_StartAll, BorderLayout.SOUTH);
-		
-		//Button Alle-Backups-Starten:
-		btn_StartAll.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Thread backupThread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						listener.startAllBackups();
-					}
-				});
-				backupThread.start();
-				
-				//listener.startAllBackups();
-			}
-		});
-
 		tp_Output = new JTextPane() {
 			public boolean getScrollableTracksViewportWidth() {
 				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
@@ -223,8 +210,7 @@ public class Mainframe {
 		panel_2.add(panel_3, BorderLayout.EAST);
 		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
 		panel_3.setPreferredSize(new Dimension(140, 76));
-		btn_Add = new JButton(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btn_Add = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btn_Add);
 		btn_Add.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btn_Add.addActionListener(new ActionListener() {
@@ -240,8 +226,7 @@ public class Mainframe {
 		});
 
 		// Button Bearbeiten:
-		btn_Edit = new JButton(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btn_Edit = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		btn_Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob ein Listenelement selektiert ist:
@@ -268,16 +253,9 @@ public class Mainframe {
 		panel_3.add(btn_Edit);
 
 		// Button Löschen:
-		btn_Delete = new JButton(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btn_Delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_3.add(btn_Delete);
 		btn_Delete.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		list_Tasks = new JList<BackupTask>(listModel);
-		panel_2.add(list_Tasks, BorderLayout.CENTER);
-		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_Tasks.setSelectedIndex(0);
-		list_Tasks.setVisibleRowCount(6);
 
 		btn_Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -286,6 +264,69 @@ public class Mainframe {
 				}
 			}
 		});
+
+		list_Tasks = new JList<BackupTask>(listModel);
+		panel_2.add(list_Tasks, BorderLayout.CENTER);
+		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list_Tasks.setSelectedIndex(0);
+		list_Tasks.setVisibleRowCount(6);
+
+		JPanel panel_1 = new JPanel();
+		frmTotalbackup.getContentPane().add(panel_1, BorderLayout.SOUTH);
+
+		// Button Ausgewähltes Backup starten:
+		btnStartSelected = new JButton(ResourceBundle
+				.getBundle("gui.messages").getString("Mainframe.btnStartSelected.text")); //$NON-NLS-1$ //$NON-NLS-2$
+
+		btnStartSelected.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				backupThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						if (!list_Tasks.isSelectionEmpty()) {
+							listener.startBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+						}
+					}
+				});
+				backupThread.start();
+			}
+		});
+		panel_1.add(btnStartSelected);
+
+		// Button Backup Abbrechen:
+		btnCancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnCancel.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btnCancel.setEnabled(false);
+
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO: Dialog: Wirklich abbrechen?
+				// TODO: Ausgabe: Wird abgebrocghen...
+				btnCancel.setEnabled(false);
+				if (backupThread != null) {
+					backupThread.interrupt();
+				}
+			}
+		});
+
+		// Button Alle-Backups-Starten:
+		btn_StartAll = new JButton(ResourceBundle.getBundle("gui.messages")
+				.getString("Mainframe.btnBackupStarten.text"));
+		panel_1.add(btn_StartAll);
+
+		btn_StartAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				backupThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						listener.startAllBackups();
+					}
+				});
+				backupThread.start();
+
+				// listener.startAllBackups();
+			}
+		});
+		panel_1.add(btnCancel);
 	}
 
 	/**
@@ -481,8 +522,15 @@ public class Mainframe {
 			editDialog.setDestinationPath(path);
 		}
 	}
-	
+
+	/**
+	 * TODO
+	 * 
+	 * @param enabled
+	 */
 	public void setButtonsEnabled(boolean enabled) {
+		btnCancel.setEnabled(!enabled);
+		btnStartSelected.setEnabled(enabled);
 		btn_StartAll.setEnabled(enabled);
 		btn_Add.setEnabled(enabled);
 		btn_Edit.setEnabled(enabled);

@@ -10,6 +10,8 @@ public interface IMainframeListener {
 	 */
 	public void startAllBackups();
 	
+	public void startBackupTask(BackupTask task);
+	
 	/**
 	 * Löscht einen Backup-Task.
 	 * 
