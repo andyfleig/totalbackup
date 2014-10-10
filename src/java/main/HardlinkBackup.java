@@ -215,11 +215,6 @@ public class HardlinkBackup implements Backupable {
 						listener.printOut(listener.getCurrentTask(), outprint, 1, true);
 					}
 				} else {
-					// Datei zu verlinken (Hardlink):
-					// TODO: Wird mit Original-Datei verlinkt und nicht mit
-					// gesicherter Verison davon!?
-					// TODO: Für jede Datei einzeln Prüfen ob sie bereits im
-					// Backup ist (also kopiert oder verlinkt werden muss)
 					BackupHelper.hardlinkFile(files[i], newFile, listener);
 				}
 			}
