@@ -239,8 +239,6 @@ public class HardlinkBackup implements Backupable {
 		// Namen der Datei "zerlegen":
 		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath(),
 				System.getProperty("file.separator"));
-		// TODO dirStruct aktuelle und hier auch das richtige? - Nicht das vom
-		// neusten Backup! Ist vom ältesten oder Beliebig!!!
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 
@@ -258,7 +256,7 @@ public class HardlinkBackup implements Backupable {
 				break;
 			}
 		}
-		
+
 		boolean lastTime = false;
 		while (tokenizerOfFile.hasMoreTokens() || lastTime) {
 
@@ -288,7 +286,6 @@ public class HardlinkBackup implements Backupable {
 	 *            Root-File zur Indizierung
 	 */
 	private void createIndex(File root) {
-
 		if (root.isDirectory()) {
 			// Verzeichnisstruktur-Objekt erzeugen:
 			StructureFile rootFile = recCalcDirStruct(root.getAbsolutePath(), root.getAbsolutePath());
@@ -454,7 +451,7 @@ public class HardlinkBackup implements Backupable {
 					newestDate = foundDate;
 					newestBackupPath = directories[i].getName();
 				} else {
-					if (newestDate.compareTo(foundDate) > 0) {
+					if (newestDate.compareTo(foundDate) < 0) {
 						newestDate = foundDate;
 						newestBackupPath = directories[i].getName();
 					}
