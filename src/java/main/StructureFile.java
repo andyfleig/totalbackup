@@ -55,12 +55,18 @@ public class StructureFile implements Serializable {
 		return lastModified;
 	}
 
-	//TODO: JavaDoc
+	/**
+	 * Gibt den Root-Pfad (parent-Pfad) zurück.
+	 * @return Root-Pfad
+	 */
 	public String getRootPath() {
 		return rootPath;
 	}
 	
-	//TODO: JavaDoc
+	/**
+	 * Gibt den Datei-Pfad zurück.
+	 * @return Datei-Pfad
+	 */
 	public String getFilePath() {
 		return filePath;
 	}
