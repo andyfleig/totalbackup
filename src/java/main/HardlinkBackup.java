@@ -202,11 +202,6 @@ public class HardlinkBackup implements Backupable {
 			} else {
 				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
-
-				//DEBUGGING-CODE:
-				long test = getLastModifiedDateFromIndex(files[i]);
-				
-				
 				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
 					// Datei zu sichern:
 					try {
