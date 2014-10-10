@@ -38,6 +38,10 @@ public final class BackupHelper {
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
+				if (Thread.interrupted()) {
+					//TODO: Ausgabe: Abgebrochen
+					break;
+				}
 				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
 				if (files[i].isDirectory()) {

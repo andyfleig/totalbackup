@@ -55,8 +55,14 @@ public class StructureFile implements Serializable {
 		return lastModified;
 	}
 
-	public String getFilePath() {
+	//TODO: JavaDoc
+	public String getRootPath() {
 		return rootPath;
+	}
+	
+	//TODO: JavaDoc
+	public String getFilePath() {
+		return filePath;
 	}
 
 	/**
@@ -69,7 +75,8 @@ public class StructureFile implements Serializable {
 	 */
 	public StructureFile getStructureFile(String name) {
 		for (int i = 0; i < existingFiles.size(); i++) {
-			if (existingFiles.get(i).getFilePath().endsWith(name)) {
+			String test = existingFiles.get(i).getFilePath();
+			if (test.endsWith(name)) {
 				return existingFiles.get(i);
 			}
 		}

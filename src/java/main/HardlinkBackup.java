@@ -186,6 +186,11 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private void recursiveBackup(File sourceFile, File backupDir) {
 
+		if (Thread.interrupted()) {
+			// TODO: Ausgabe: Abgebrochen
+			return;
+		}
+
 		File[] files = sourceFile.listFiles();
 
 		for (int i = 0; i < files.length; i++) {
@@ -197,6 +202,11 @@ public class HardlinkBackup implements Backupable {
 			} else {
 				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
+
+				//DEBUGGING-CODE:
+				long test = getLastModifiedDateFromIndex(files[i]);
+				
+				
 				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
 					// Datei zu sichern:
 					try {
@@ -210,6 +220,10 @@ public class HardlinkBackup implements Backupable {
 					}
 				} else {
 					// Datei zu verlinken (Hardlink):
+					// TODO: Wird mit Original-Datei verlinkt und nicht mit
+					// gesicherter Verison davon!?
+					// TODO: Für jede Datei einzeln Prüfen ob sie bereits im
+					// Backup ist (also kopiert oder verlinkt werden muss)
 					BackupHelper.hardlinkFile(files[i], newFile, listener);
 				}
 			}
@@ -226,15 +240,47 @@ public class HardlinkBackup implements Backupable {
 	 * @return ms seit 1.1.1970
 	 */
 	private long getLastModifiedDateFromIndex(File file) {
+
 		// Namen der Datei "zerlegen":
-		StringTokenizer tokenizer = new StringTokenizer(file.getAbsolutePath(), System.getProperty("file.separator"));
+		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath(),
+				System.getProperty("file.separator"));
+		// TODO dirStruct aktuelle und hier auch das richtige? - Nicht das vom
+		// neusten Backup! Ist vom ältesten oder Beliebig!!!
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
-		while (tokenizer.hasMoreTokens()) {
 
-			tmp = currentStructureFile.getStructureFile(tokenizer.nextToken());
+		// TODO: Kann currentStructureFile null sein?
+		StringTokenizer tokenizerOfIndex = new StringTokenizer(currentStructureFile.getRootPath(),
+				System.getProperty("file.separator"));
+
+		String tokenOfFile = System.getProperty("file.separator");
+
+		while (tokenizerOfFile.hasMoreTokens() && tokenizerOfIndex.hasMoreTokens()) {
+			tokenOfFile = tokenizerOfFile.nextToken();
+			if (tokenOfFile.equals(tokenizerOfIndex.nextToken())) {
+				continue;
+			} else {
+				break;
+			}
+		}
+		
+		boolean lastTime = false;
+		while (tokenizerOfFile.hasMoreTokens() || lastTime) {
+
+			tmp = currentStructureFile.getStructureFile(tokenOfFile);
+
 			if (tmp != null) {
 				currentStructureFile = tmp;
+			} else {
+				return -1;
+			}
+			if (!lastTime) {
+				tokenOfFile = tokenizerOfFile.nextToken();
+			} else {
+				break;
+			}
+			if (!tokenizerOfFile.hasMoreTokens()) {
+				lastTime = true;
 			}
 		}
 		return currentStructureFile.getLastModifiedDate();
