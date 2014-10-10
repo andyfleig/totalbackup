@@ -44,6 +44,7 @@ import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 
 public class Mainframe {
 
@@ -297,11 +298,17 @@ public class Mainframe {
 
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: Dialog: Wirklich abbrechen?
-				Mainframe.this.addToOutput(ResourceBundle.getBundle("gui.messages").getString("Mainframe.CancelingBackup"), false);
-				btnCancel.setEnabled(false);
-				if (backupThread != null) {
-					backupThread.interrupt();
+				int reply = JOptionPane.showConfirmDialog(null,
+						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
+								.getBundle("gui.messages").getString("Mainframe.Messages.Cancel"),
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					Mainframe.this.addToOutput(
+							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
+					btnCancel.setEnabled(false);
+					if (backupThread != null) {
+						backupThread.interrupt();
+					}
 				}
 			}
 		});
