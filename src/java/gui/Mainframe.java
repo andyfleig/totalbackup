@@ -2,6 +2,7 @@ package gui;
 
 import main.Controller;
 import main.BackupTask;
+import main.Main;
 import gui.About;
 import gui.Edit;
 import gui.IEditListener;
@@ -297,7 +298,7 @@ public class Mainframe {
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// TODO: Dialog: Wirklich abbrechen?
-				// TODO: Ausgabe: Wird abgebrocghen...
+				Mainframe.this.addToOutput(ResourceBundle.getBundle("gui.messages").getString("Mainframe.CancelingBackup"), false);
 				btnCancel.setEnabled(false);
 				if (backupThread != null) {
 					backupThread.interrupt();

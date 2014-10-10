@@ -39,7 +39,8 @@ public final class BackupHelper {
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				if (Thread.interrupted()) {
-					//TODO: Ausgabe: Abgebrochen
+					listener.printOut(listener.getCurrentTask(),
+							ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 1, true);
 					break;
 				}
 				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator")
@@ -117,7 +118,7 @@ public final class BackupHelper {
 	 * @return angelegter Root-Ordner
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener) {
-		
+
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
 		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");

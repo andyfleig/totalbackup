@@ -187,7 +187,8 @@ public class HardlinkBackup implements Backupable {
 	private void recursiveBackup(File sourceFile, File backupDir) {
 
 		if (Thread.interrupted()) {
-			// TODO: Ausgabe: Abgebrochen
+			listener.printOut(listener.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 1, true);
 			return;
 		}
 

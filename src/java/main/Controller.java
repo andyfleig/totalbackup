@@ -42,11 +42,11 @@ public class Controller {
 						public void startAllBackups() {
 							Controller.this.startAllBackups();
 						}
-						
+
 						@Override
 						public void startBackupTask(BackupTask task) {
 							Controller.this.startBackup(task);
-							
+
 						}
 
 						@Override
