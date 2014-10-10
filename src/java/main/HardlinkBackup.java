@@ -238,7 +238,6 @@ public class HardlinkBackup implements Backupable {
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 
-		// TODO: Kann currentStructureFile null sein?
 		StringTokenizer tokenizerOfIndex = new StringTokenizer(currentStructureFile.getRootPath(),
 				System.getProperty("file.separator"));
 
