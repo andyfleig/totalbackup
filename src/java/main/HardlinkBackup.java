@@ -193,6 +193,11 @@ public class HardlinkBackup implements Backupable {
 		}
 
 		File[] files = sourceFile.listFiles();
+		
+		if (files == null) {
+			//TODO: Fehlermeldung
+			return;
+		}
 
 		for (int i = 0; i < files.length; i++) {
 			if (files[i].isDirectory()) {
