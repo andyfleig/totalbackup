@@ -44,6 +44,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
+import javax.swing.text.DefaultCaret;
 
 public class Mainframe {
 
@@ -183,9 +184,15 @@ public class Mainframe {
 			}
 		};
 		tp_Output.setEditable(false);
+
+		DefaultCaret caret = (DefaultCaret) tp_Output.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		//TODO: Kein Vertikales Autoscrollen
+		
 		tpOutput_doc = tp_Output.getStyledDocument();
 
 		JScrollPane scrollPane = new JScrollPane(tp_Output);
+
 		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 		JPanel panel = new JPanel();
@@ -199,6 +206,7 @@ public class Mainframe {
 		JLabel lbl_Tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblTask.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lbl_Tasks.setPreferredSize(new Dimension(0, 25));
 		panel_2.add(lbl_Tasks, BorderLayout.NORTH);
+		
 		JScrollPane listScroller = new JScrollPane();
 
 		panel_2.add(listScroller, BorderLayout.WEST);
