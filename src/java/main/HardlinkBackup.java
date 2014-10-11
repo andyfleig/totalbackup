@@ -201,9 +201,29 @@ public class HardlinkBackup implements Backupable {
 				newBackupDir.mkdir();
 				recursiveBackup(files[i], newBackupDir);
 			} else {
+				// Entsprechendes StrucutreFile aus dem Index:
+				StructureFile fileInIndex = getStructureFileFromIndex(files[i]);
+				
 				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
-				if (files[i].lastModified() > getLastModifiedDateFromIndex(files[i])) {
+				
+				if (fileInIndex == null) {
+					// Befindet die Datei sich nicht im Index, wird sie kopiert (nicht verlinkt)
+					// Es handelt sich also um eine neue Datei (bisher nicht im Backup)
+					try {
+						BackupHelper.copyFile(files[i], newFile, listener);
+					} catch (IOException e) {
+						// Fehler beim kopieren einer Datei (z.B. wegen
+						// fehlenden Rechten)
+						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
+								+ System.getProperty("file.separator") + sourceFile.getPath();
+						listener.printOut(listener.getCurrentTask(), outprint, 1, true);
+					}
+					continue;
+				}
+				
+				if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
+					// Datei liegt in einer älteren Version im Backup vor
 					// Datei zu sichern:
 					try {
 						BackupHelper.copyFile(files[i], newFile, listener);
@@ -215,7 +235,8 @@ public class HardlinkBackup implements Backupable {
 						listener.printOut(listener.getCurrentTask(), outprint, 1, true);
 					}
 				} else {
-					BackupHelper.hardlinkFile(files[i], newFile, listener);
+					// Datei liegt in der neuesten Version im Backup vor
+					BackupHelper.hardlinkFile(new File(fileInIndex.getFilePath()), newFile, listener);
 				}
 			}
 		}
@@ -223,14 +244,14 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Gibt zurück, von wann eine Datei aus dem Index ist, oder -1 wenn die
-	 * Datein im Index nicht existiert.
+	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort
+	 * vorhanden ist. Ist die Datei nicht im Index wird null zurückgegeben.
 	 * 
 	 * @param file
-	 *            Datei für welche das Datum zurückgegeben werden soll
-	 * @return ms seit 1.1.1970
+	 *            Datei für welche das StrucutreFile zurückgegeben werden soll
+	 * @return Gefundenes StructureFile oder null
 	 */
-	private long getLastModifiedDateFromIndex(File file) {
+	private StructureFile getStructureFileFromIndex(File file) {
 
 		// Namen der Datei "zerlegen":
 		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath(),
@@ -243,6 +264,7 @@ public class HardlinkBackup implements Backupable {
 
 		String tokenOfFile = System.getProperty("file.separator");
 
+		// Überspringe erste Tokens (Pfad zum Zielverzeichnis):
 		while (tokenizerOfFile.hasMoreTokens() && tokenizerOfIndex.hasMoreTokens()) {
 			tokenOfFile = tokenizerOfFile.nextToken();
 			if (tokenOfFile.equals(tokenizerOfIndex.nextToken())) {
@@ -260,7 +282,7 @@ public class HardlinkBackup implements Backupable {
 			if (tmp != null) {
 				currentStructureFile = tmp;
 			} else {
-				return -1;
+				return null;
 			}
 			if (!lastTime) {
 				tokenOfFile = tokenizerOfFile.nextToken();
@@ -271,7 +293,7 @@ public class HardlinkBackup implements Backupable {
 				lastTime = true;
 			}
 		}
-		return currentStructureFile.getLastModifiedDate();
+		return currentStructureFile;
 	}
 
 	/**
