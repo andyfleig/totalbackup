@@ -84,8 +84,7 @@ public final class BackupHelper {
 		in.close();
 		out.close();
 
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.File") + " " + source.getPath()
-				+ System.getProperty("file.separator") + source.getName() + " "
+		String output = source.getPath() + System.getProperty("file.separator") + source.getName() + " "
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.to") + " " + destination.getPath()
 				+ System.getProperty("file.separator") + destination.getName() + " "
 				+ ResourceBundle.getBundle("gui.messages").getString("Messages.copied");
@@ -98,11 +97,9 @@ public final class BackupHelper {
 		} catch (IOException e) {
 			System.out.println("Fehler: IO-Problem");
 		}
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.File") + " " + source.getPath()
-				+ System.getProperty("file.separator") + source.getName() + " "
-				+ ResourceBundle.getBundle("gui.messages").getString("Messages.with") + " " + destination.getPath()
-				+ System.getProperty("file.separator") + destination.getName() + " "
-				+ ResourceBundle.getBundle("gui.messages").getString("Messages.linked");
+		String output = source.getPath() + System.getProperty("file.separator") + source.getName() + " "
+				+ ResourceBundle.getBundle("gui.messages").getString("Messages.linked") + " " + destination.getPath()
+				+ System.getProperty("file.separator") + destination.getName();
 		listener.printOut(listener.getCurrentTask(), output, 1, false);
 
 	}
