@@ -2,7 +2,6 @@ package gui;
 
 import main.Controller;
 import main.BackupTask;
-import main.Main;
 import gui.About;
 import gui.Edit;
 import gui.IEditListener;
@@ -471,6 +470,7 @@ public class Mainframe {
 	/**
 	 * Prüft einen Pfad auf Gültigkeit.
 	 * 
+	 * @deprecated
 	 * @param s
 	 *            Zu prüfender Pfad (als String)
 	 * @return Gültigkeit des Pfades
