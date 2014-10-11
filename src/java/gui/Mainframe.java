@@ -299,7 +299,7 @@ public class Mainframe {
 			public void actionPerformed(ActionEvent e) {
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
-								.getBundle("gui.messages").getString("Mainframe.Messages.Cancel"),
+								.getBundle("gui.messages").getString("Messages.Cancel"),
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					Mainframe.this.addToOutput(
