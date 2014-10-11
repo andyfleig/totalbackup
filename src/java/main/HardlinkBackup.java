@@ -236,7 +236,51 @@ public class HardlinkBackup implements Backupable {
 					}
 				} else {
 					// Datei liegt in der neuesten Version im Backup vor
-					BackupHelper.hardlinkFile(new File(fileInIndex.getFilePath()), newFile, listener);
+					
+					File file = new File(fileInIndex.getFilePath());
+					if (file.exists()) {
+						BackupHelper.hardlinkFile(file, newFile, listener);
+					} else {
+						// File exisitiert im Backup-Satz nicht (aber im Index)
+						
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.BadIndex"), 1, false);
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.DeletingIndex"), 1, false);
+						
+						// Root-Pfad des Index "sichern":
+						String rootPathForIndex = directoryStructure.getRootPath();
+						
+						//Ungültiger Index wird gelöscht:
+						File badIndex = new File (directoryStructure.getFilePath()); //TODO: richtiger Pfad (zum Index)?
+						badIndex.delete();
+						
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexDeleted"), 1, false);
+						
+						// Neu indizieren:
+						createIndex(new File(rootPathForIndex));
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.Indexing"), 1, false);
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1, false);
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1, false);
+						serializeIndex(taskName, rootPathForIndex);
+						listener.printOut(listener.getCurrentTask(),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1, false);
+						
+						// Datei kopieren
+						try {
+							BackupHelper.copyFile(files[i], newFile, listener);
+						} catch (IOException e) {
+							// Fehler beim kopieren einer Datei (z.B. wegen
+							// fehlenden Rechten)
+							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
+									+ System.getProperty("file.separator") + sourceFile.getPath();
+							listener.printOut(listener.getCurrentTask(), outprint, 1, true);
+						}
+					}
 				}
 			}
 		}
