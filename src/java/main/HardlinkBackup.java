@@ -188,7 +188,7 @@ public class HardlinkBackup implements Backupable {
 
 		if (Thread.interrupted()) {
 			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 0, true);
+					ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 1, false);
 			return;
 		}
 
