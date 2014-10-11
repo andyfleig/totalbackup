@@ -252,7 +252,7 @@ public class HardlinkBackup implements Backupable {
 						String rootPathForIndex = directoryStructure.getRootPath();
 						
 						//Ungültiger Index wird gelöscht:
-						File badIndex = new File (directoryStructure.getFilePath()); //TODO: richtiger Pfad (zum Index)?
+						File badIndex = new File (directoryStructure.getFilePath());
 						badIndex.delete();
 						
 						listener.printOut(listener.getCurrentTask(),
