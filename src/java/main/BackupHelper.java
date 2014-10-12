@@ -39,9 +39,7 @@ public final class BackupHelper {
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				if (Thread.interrupted()) {
-					listener.printOut(listener.getCurrentTask(),
-							ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 1, false);
-					break;
+					throw new BackupCanceledException();
 				}
 				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());

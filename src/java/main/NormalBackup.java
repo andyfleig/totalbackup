@@ -41,28 +41,34 @@ public class NormalBackup implements Backupable {
 
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
 		if (dir == null) {
-			//listener.printOut(listener.getCurrentTask(),
-			//		ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 0, true);
+			// listener.printOut(listener.getCurrentTask(),
+			// ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"),
+			// 0, true);
 			return;
 		}
 
-		for (int i = 0; i < sourcePaths.size(); i++) {
-			File sourceFile = new File(sourcePaths.get(i));
+		try {
+			for (int i = 0; i < sourcePaths.size(); i++) {
+				File sourceFile = new File(sourcePaths.get(i));
 
-			String folder = dir + System.getProperty("file.separator") + sourceFile.getName();
-			File f = new File(folder);
+				String folder = dir + System.getProperty("file.separator") + sourceFile.getName();
+				File f = new File(folder);
 
-			if (f.mkdir()) {
-				listener.printOut(listener.getCurrentTask(),
-						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1, false);
-			} else {
-				listener.printOut(listener.getCurrentTask(),
-						ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1, true);
+				if (f.mkdir()) {
+					listener.printOut(listener.getCurrentTask(),
+							ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1, false);
+				} else {
+					listener.printOut(listener.getCurrentTask(),
+							ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1, true);
+				}
+				// Eigentlicher Kopiervorgang:
+				BackupHelper.copyDirectory(sourceFile, f, listener);
 			}
-			// Eigentlicher Kopiervorgang:
-			BackupHelper.copyDirectory(sourceFile, f, listener);
+			listener.printOut(listener.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1, false);
+		} catch (BackupCanceledException e) {
+			listener.printOut(listener.getCurrentTask(),
+					ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 1, false);
 		}
-		listener.printOut(listener.getCurrentTask(),
-				ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1, false);
 	}
 }
