@@ -17,6 +17,8 @@ import java.util.ResourceBundle;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.SwingUtilities;
+
 /**
  * Controller zur Steuerung der Anwendung.
  * 
@@ -148,8 +150,20 @@ public class Controller {
 		IBackupListener backupListener = new IBackupListener() {
 
 			@Override
-			public void printOut(BackupTask task, String s, int level, boolean error) {
-				Controller.this.printOut(task, s, level, error);
+			public void printOut(final BackupTask task, final String s, final int level, final boolean error) {
+				// final BackupTask backupTask = task;
+
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						Controller.this.printOut(task, s, level, error);
+					}
+
+				});
+
+				// alt:
+				// Controller.this.printOut(task, s, level, error);
 			}
 
 			@Override
@@ -223,7 +237,10 @@ public class Controller {
 	 *            (schrift schwarz)
 	 */
 	public void printOut(BackupTask task, String s, int level, boolean error) {
+		// Ausgabe:
 		mainframe.addToOutput(s, error);
+
+		// Logging:
 		if (level > 0) {
 			// Log-Datei anlegen:
 			if (task == null) {

@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.io.FilenameFilter;
 
+import javax.swing.SwingUtilities;
+
 public class HardlinkBackup implements Backupable {
 
 	private ArrayList<String> sourcePaths;
@@ -47,6 +49,7 @@ public class HardlinkBackup implements Backupable {
 
 		listener.printOut(listener.getCurrentTask(),
 				ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup"), 1, false);
+
 		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
 		File dest = new File(destinationPath);
 
@@ -193,9 +196,9 @@ public class HardlinkBackup implements Backupable {
 		}
 
 		File[] files = sourceFile.listFiles();
-		
+
 		if (files == null) {
-			//TODO: Fehlermeldung
+			// TODO: Fehlermeldung
 			return;
 		}
 
@@ -208,13 +211,15 @@ public class HardlinkBackup implements Backupable {
 			} else {
 				// Entsprechendes StrucutreFile aus dem Index:
 				StructureFile fileInIndex = getStructureFileFromIndex(files[i]);
-				
+
 				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
-				
+
 				if (fileInIndex == null) {
-					// Befindet die Datei sich nicht im Index, wird sie kopiert (nicht verlinkt)
-					// Es handelt sich also um eine neue Datei (bisher nicht im Backup)
+					// Befindet die Datei sich nicht im Index, wird sie kopiert
+					// (nicht verlinkt)
+					// Es handelt sich also um eine neue Datei (bisher nicht im
+					// Backup)
 					try {
 						BackupHelper.copyFile(files[i], newFile, listener);
 					} catch (IOException e) {
@@ -226,7 +231,7 @@ public class HardlinkBackup implements Backupable {
 					}
 					continue;
 				}
-				
+
 				if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
 					// Datei liegt in einer älteren Version im Backup vor
 					// Datei zu sichern:
@@ -241,40 +246,40 @@ public class HardlinkBackup implements Backupable {
 					}
 				} else {
 					// Datei liegt in der neuesten Version im Backup vor
-					
+
 					File file = new File(fileInIndex.getFilePath());
 					if (file.exists()) {
 						BackupHelper.hardlinkFile(file, newFile, listener);
 					} else {
 						// File exisitiert im Backup-Satz nicht (aber im Index)
-						
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.BadIndex"), 1, false);
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.DeletingIndex"), 1, false);
-						
+
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.BadIndex"), 1, false);
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.DeletingIndex"), 1, false);
+
 						// Root-Pfad des Index "sichern":
 						String rootPathForIndex = directoryStructure.getRootPath();
-						
-						//Ungültiger Index wird gelöscht:
-						File badIndex = new File (directoryStructure.getFilePath());
+
+						// Ungültiger Index wird gelöscht:
+						File badIndex = new File(directoryStructure.getFilePath());
 						badIndex.delete();
-						
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexDeleted"), 1, false);
-						
+
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.IndexDeleted"), 1, false);
+
 						// Neu indizieren:
 						createIndex(new File(rootPathForIndex));
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.Indexing"), 1, false);
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated"), 1, false);
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving"), 1, false);
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.Indexing"), 1, false);
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.IndexCreated"), 1, false);
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.IndexSaving"), 1, false);
 						serializeIndex(taskName, rootPathForIndex);
-						listener.printOut(listener.getCurrentTask(),
-								ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved"), 1, false);
-						
+						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.IndexSaved"), 1, false);
+
 						// Datei kopieren
 						try {
 							BackupHelper.copyFile(files[i], newFile, listener);
@@ -526,5 +531,4 @@ public class HardlinkBackup implements Backupable {
 		}
 		return newestBackupPath;
 	}
-
 }
