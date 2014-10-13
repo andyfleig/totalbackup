@@ -476,9 +476,7 @@ public class HardlinkBackup implements Backupable {
 	private StructureFile recCalcDirStruct(String rootPath, String path) {
 		// TODO: Interrupt!?
 
-		// TODO: In eine Zeile zusammenoptimieren
-		File currentFile = new File(path);
-		File[] files = currentFile.listFiles();
+		File[] files = new File(path).listFiles();
 
 		StructureFile sFile = new StructureFile(rootPath, path.substring(rootPath.length()));
 		for (int i = 0; i < files.length; i++) {
