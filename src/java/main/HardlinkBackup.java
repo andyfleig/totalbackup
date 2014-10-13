@@ -25,6 +25,8 @@ public class HardlinkBackup implements Backupable {
 	private String destinationPath;
 	private IBackupListener listener;
 	private StructureFile directoryStructure;
+	private String newestBackupPath;
+	private String sourceRootDir;
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 
 	/**
@@ -107,7 +109,7 @@ public class HardlinkBackup implements Backupable {
 
 		// Herausfinden welcher Backup-Satz der Neuste ist und diesen laden:
 		// Neusten Backup-Ordner finden:
-		String newestBackupPath = findNewestBackup(destinationPath);
+		newestBackupPath = findNewestBackup(destinationPath);
 		if (newestBackupPath == null) {
 			listener.printOut(listener.getCurrentTask(),
 					ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexCanceled"), 1, true);
@@ -167,6 +169,8 @@ public class HardlinkBackup implements Backupable {
 							ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1, true);
 				}
 				// Eigentlicher Backup-Vorgang:
+				sourceRootDir = sourcePaths.get(i).substring(0,
+						sourcePaths.get(i).length() - new File(sourcePaths.get(i)).getName().length());
 				recursiveBackup(sourceFile, f);
 			}
 			// Index des Backup-Satzen erzeugen und serialisiert:
@@ -185,7 +189,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Rekursive Mathode zur Druchführung eines Hardlink Backups.
+	 * Rekursive Mathode zur Durchführung eines Hardlink Backups.
 	 * 
 	 * @param sourceFile
 	 *            Quell-Verzeichnis
@@ -212,7 +216,7 @@ public class HardlinkBackup implements Backupable {
 				recursiveBackup(files[i], newBackupDir);
 			} else {
 				// Entsprechendes StrucutreFile aus dem Index:
-				StructureFile fileInIndex = getStructureFileFromIndex(files[i]);
+				StructureFile fileInIndex = getStructureFileFromIndex(files[i], sourceRootDir);
 
 				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
 						+ files[i].getName());
@@ -236,7 +240,7 @@ public class HardlinkBackup implements Backupable {
 
 				if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
 					// Datei liegt in einer älteren Version im Backup vor
-					// Datei zu sichern:
+					// Datei zu kopieren:
 					try {
 						BackupHelper.copyFile(files[i], newFile, listener);
 					} catch (IOException e) {
@@ -248,10 +252,10 @@ public class HardlinkBackup implements Backupable {
 					}
 				} else {
 					// Datei liegt in der neuesten Version im Backup vor
-
-					File file = new File(fileInIndex.getFilePath());
-					if (file.exists()) {
-						BackupHelper.hardlinkFile(file, newFile, listener);
+					File fileToLinkFrom = new File(destinationPath + System.getProperty("file.separator")
+							+ newestBackupPath + fileInIndex.getFilePath());
+					if (fileToLinkFrom.exists()) {
+						BackupHelper.hardlinkFile(fileToLinkFrom, newFile, listener);
 					} else {
 						// File exisitiert im Backup-Satz nicht (aber im Index)
 
@@ -261,10 +265,10 @@ public class HardlinkBackup implements Backupable {
 								.getString("Messages.DeletingIndex"), 1, false);
 
 						// Root-Pfad des Index "sichern":
-						String rootPathForIndex = directoryStructure.getRootPath();
+						String rootPathForIndex = files[i].getAbsolutePath();
 
 						// Ungültiger Index wird gelöscht:
-						File badIndex = new File(directoryStructure.getFilePath());
+						File badIndex = new File(files[i].getAbsolutePath() + directoryStructure.getFilePath());
 						badIndex.delete();
 
 						listener.printOut(listener.getCurrentTask(), ResourceBundle.getBundle("gui.messages")
@@ -305,48 +309,26 @@ public class HardlinkBackup implements Backupable {
 	 * 
 	 * @param file
 	 *            Datei für welche das StrucutreFile zurückgegeben werden soll
+	 * @param sourceRootPath
+	 *            //TODO
 	 * @return Gefundenes StructureFile oder null
 	 */
-	private StructureFile getStructureFileFromIndex(File file) {
+	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
 
 		// Namen der Datei "zerlegen":
-		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath(),
-				System.getProperty("file.separator"));
+		StringTokenizer tokenizerOfFile = new StringTokenizer(
+				file.getAbsolutePath().substring(sourceRootPath.length()), System.getProperty("file.separator"));
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 
-		StringTokenizer tokenizerOfIndex = new StringTokenizer(currentStructureFile.getRootPath(),
-				System.getProperty("file.separator"));
+		while (tokenizerOfFile.hasMoreTokens()) {
 
-		String tokenOfFile = System.getProperty("file.separator");
-
-		// Überspringe erste Tokens (Pfad zum Zielverzeichnis):
-		while (tokenizerOfFile.hasMoreTokens() && tokenizerOfIndex.hasMoreTokens()) {
-			tokenOfFile = tokenizerOfFile.nextToken();
-			if (tokenOfFile.equals(tokenizerOfIndex.nextToken())) {
-				continue;
-			} else {
-				break;
-			}
-		}
-
-		boolean lastTime = false;
-		while (tokenizerOfFile.hasMoreTokens() || lastTime) {
-
-			tmp = currentStructureFile.getStructureFile(tokenOfFile);
+			tmp = currentStructureFile.getStructureFile(tokenizerOfFile.nextToken());
 
 			if (tmp != null) {
 				currentStructureFile = tmp;
 			} else {
 				return null;
-			}
-			if (!lastTime) {
-				tokenOfFile = tokenizerOfFile.nextToken();
-			} else {
-				break;
-			}
-			if (!tokenizerOfFile.hasMoreTokens()) {
-				lastTime = true;
 			}
 		}
 		return currentStructureFile;
@@ -464,22 +446,23 @@ public class HardlinkBackup implements Backupable {
 	 * @param rootPath
 	 *            root Pfad des Backups
 	 * @param path
-	 *            aktueller (zu analysierender) Pfad
+	 *            Pfad der aktuell zu analysierenden Datei (relativer Pfad)
 	 * @return StructureFile für die Verzeichnisstruktur
 	 */
 	private StructureFile recCalcDirStruct(String rootPath, String path) {
 		// TODO: Interrupt!?
 
+		// TODO: In eine Zeile zusammenoptimieren
 		File currentFile = new File(path);
 		File[] files = currentFile.listFiles();
 
-		StructureFile sFile = new StructureFile(rootPath, path);
+		StructureFile sFile = new StructureFile(rootPath, path.substring(rootPath.length()));
 		for (int i = 0; i < files.length; i++) {
 			StructureFile newFile;
 			if (files[i].isDirectory()) {
 				newFile = recCalcDirStruct(rootPath, files[i].getAbsolutePath());
 			} else {
-				newFile = new StructureFile(rootPath, files[i].getAbsolutePath());
+				newFile = new StructureFile(rootPath, files[i].getAbsolutePath().substring(rootPath.length()));
 			}
 			sFile.addFile(newFile);
 		}

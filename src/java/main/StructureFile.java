@@ -10,7 +10,6 @@ public class StructureFile implements Serializable {
 	 * Versionsnummer für die Seriallisierung.
 	 */
 	private static final long serialVersionUID = 7289482994627565945L;
-	private String rootPath;
 	private String filePath;
 	private long lastModified;
 	private boolean isDirectory = false;
@@ -20,14 +19,14 @@ public class StructureFile implements Serializable {
 	 * Erzeugt ein StructureFile-Objekt, liest das letzte Modifizierungsdatum
 	 * aus und schreibt dieses.
 	 * 
-	 * @param root
+	 * @param rootPath
 	 *            Pfad des Wurzelverzeichnisses
+	 * @param path	relativer Pfad der Datei
 	 */
-	public StructureFile(String root, String path) {
-		this.rootPath = root;
+	public StructureFile(String rootPath, String path) {
 		this.filePath = path;
 
-		File tempFile = new File(filePath);
+		File tempFile = new File(rootPath + filePath);
 		lastModified = tempFile.lastModified();
 		tempFile = null;
 	}
@@ -54,14 +53,6 @@ public class StructureFile implements Serializable {
 	public long getLastModifiedDate() {
 		return lastModified;
 	}
-
-	/**
-	 * Gibt den Root-Pfad (parent-Pfad) zurück.
-	 * @return Root-Pfad
-	 */
-	public String getRootPath() {
-		return rootPath;
-	}
 	
 	/**
 	 * Gibt den Datei-Pfad zurück.
@@ -70,6 +61,7 @@ public class StructureFile implements Serializable {
 	public String getFilePath() {
 		return filePath;
 	}
+	
 
 	/**
 	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht
@@ -80,6 +72,9 @@ public class StructureFile implements Serializable {
 	 * @return Datei oder null
 	 */
 	public StructureFile getStructureFile(String name) {
+		if (existingFiles == null) {
+			return null;
+		}
 		for (int i = 0; i < existingFiles.size(); i++) {
 			String test = existingFiles.get(i).getFilePath();
 			if (test.endsWith(name)) {
