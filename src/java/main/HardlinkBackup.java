@@ -20,13 +20,37 @@ import javax.swing.SwingUtilities;
 
 public class HardlinkBackup implements Backupable {
 
+	/**
+	 * Liste der Quellpfade
+	 */
 	private ArrayList<String> sourcePaths;
+	/**
+	 * Name des zu bearbeitenden BackupTasks
+	 */
 	private String taskName;
+	/**
+	 * Zielpfad
+	 */
 	private String destinationPath;
+	/**
+	 * Listener zur Interaktion mit dem Controller
+	 */
 	private IBackupListener listener;
+	/**
+	 * Index für diesen Backup-Task
+	 */
 	private StructureFile directoryStructure;
+	/**
+	 * aktuellster Backup-Satz
+	 */
 	private String newestBackupPath;
+	/**
+	 * Root-Pfad der Quelle
+	 */
 	private String sourceRootDir;
+	/**
+	 * Datum-Pattern
+	 */
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 
 	/**
@@ -310,7 +334,7 @@ public class HardlinkBackup implements Backupable {
 	 * @param file
 	 *            Datei für welche das StrucutreFile zurückgegeben werden soll
 	 * @param sourceRootPath
-	 *            //TODO
+	 *            Root-Pfad der Quelle
 	 * @return Gefundenes StructureFile oder null
 	 */
 	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
