@@ -55,20 +55,27 @@ public class NormalBackup implements Backupable {
 				File f = new File(folder);
 
 				if (f.mkdir()) {
-					listener.printOut(listener.getCurrentTask(),
-							ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated"), 1, false);
+					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
+					listener.printOut(outprint, false);
+					listener.log(outprint, listener.getCurrentTask());
 				} else {
-					listener.printOut(listener.getCurrentTask(),
-							ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError"), 1, true);
+					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError");
+					listener.printOut(outprint, true);
+					listener.log(outprint, listener.getCurrentTask());
 				}
 				// Eigentlicher Kopiervorgang:
 				BackupHelper.copyDirectory(sourceFile, f, listener);
 			}
-			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete"), 1, false);
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
+			listener.printOut(outprint, false);
+			listener.log(outprint, listener.getCurrentTask());
+			listener.setStatus("");
+			
 		} catch (BackupCanceledException e) {
-			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser"), 1, false);
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			listener.printOut(outprint, false);
+			listener.log(outprint, listener.getCurrentTask());
+			listener.setStatus("");
 		}
 	}
 }

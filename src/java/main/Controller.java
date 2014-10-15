@@ -150,14 +150,14 @@ public class Controller {
 		IBackupListener backupListener = new IBackupListener() {
 
 			@Override
-			public void printOut(final BackupTask task, final String s, final int level, final boolean error) {
+			public void printOut(final String s, final boolean error) {
 				// final BackupTask backupTask = task;
 
 				SwingUtilities.invokeLater(new Runnable() {
 
 					@Override
 					public void run() {
-						Controller.this.printOut(task, s, level, error);
+						Controller.this.printOut(s, error);
 					}
 
 				});
@@ -169,6 +169,19 @@ public class Controller {
 			@Override
 			public BackupTask getCurrentTask() {
 				return Controller.this.getCurrentTask();
+			}
+
+			@Override
+			public void setStatus(String status) {
+				// TODO: invokeLater/ final
+				Controller.this.setStatus(status);
+
+			}
+
+			@Override
+			public void log(String event, BackupTask task) {
+				Controller.this.log(event, task);
+
 			}
 
 		};
@@ -186,13 +199,15 @@ public class Controller {
 				}
 			}
 			if (backupSetFound) {
-				printOut(currentTask, ResourceBundle.getBundle("gui.messages")
-						.getString("Messages.startHardlinkBackup"), 1, false);
+				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup");
+				printOut(output, false);
+				log(output, currentTask);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
 						task.getDestinationPath());
 			} else {
-				printOut(currentTask, ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup"),
-						1, false);
+				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup");
+				printOut(output, false);
+				log(output, currentTask);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
 						task.getDestinationPath());
 			}
@@ -223,56 +238,60 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den übergebenen String auf dem Output-Panel aus und schreibt ihn
-	 * (abhängig vom Level) in die log-Datei.
+	 * //TODO: JavaDoc
 	 * 
-	 * @param task
-	 *            zugehöriger Task (zu welchem der Outprint gehört)
 	 * @param s
-	 *            auszugebender String
-	 * @param level
-	 *            Ausgabe Level: 0 = nur ausgeben, 1 = ausgeben und loggen
 	 * @param error
-	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
-	 *            (schrift schwarz)
 	 */
-	public void printOut(BackupTask task, String s, int level, boolean error) {
-		// Ausgabe:
+	public void printOut(String s, boolean error) {
 		mainframe.addToOutput(s, error);
+	}
 
-		// Logging:
-		if (level > 0) {
-			// Log-Datei anlegen:
-			if (task == null) {
-				// TODO: Endlos-Schleife:
-				// printOut(currentTask,
-				// ResourceBundle.getBundle("gui.messages").getString("Messages.ErrorLoggingDisabled"),
-				// 0, true);
-				return;
-			}
-			File log = new File(task.getDestinationPath() + System.getProperty("file.separator") + task.getTaskName()
-					+ ".log");
-			// Kontrollieren ob bereits eine log Datei exisitert:
-			if (!log.exists()) {
-				try {
-					log.createNewFile();
-				} catch (IOException e) {
-					System.out.println("Fehler: IO-Problem");
-				}
-			}
+	/**
+	 * //TODO: JavaDoc
+	 * 
+	 * @param status
+	 */
+	private void setStatus(String status) {
+		mainframe.setStatus(status);
+	}
+
+	/**
+	 * //TODO: JavaDoc
+	 * 
+	 * @param event
+	 * @param task
+	 */
+	private void log(String event, BackupTask task) {
+		// Log-Datei anlegen:
+		if (task == null) {
+			// TODO: Endlos-Schleife:
+			// printOut(currentTask,
+			// ResourceBundle.getBundle("gui.messages").getString("Messages.ErrorLoggingDisabled"),
+			// 0, true);
+			return;
+		}
+		File log = new File(task.getDestinationPath() + System.getProperty("file.separator") + task.getTaskName()
+				+ ".log");
+		// Kontrollieren ob bereits eine log Datei exisitert:
+		if (!log.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter(new FileOutputStream(log, true));
-				LocalDateTime dateDime = LocalDateTime.now();
-				String timePattern = "dd.MM.yyyy HH:mm:ss";
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern(timePattern);
-				String output = dtf.format(dateDime) + ": " + s;
-
-				writer.append("\n" + output);
-				writer.close();
-			} catch (FileNotFoundException e) {
-				System.err.println("Fehler: log Datei nicht gefunden");
+				log.createNewFile();
+			} catch (IOException e) {
+				System.out.println("Fehler: IO-Problem");
 			}
+		}
+		try {
+			PrintWriter writer = new PrintWriter(new FileOutputStream(log, true));
+			LocalDateTime dateDime = LocalDateTime.now();
+			String timePattern = "dd.MM.yyyy HH:mm:ss";
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(timePattern);
+			String output = dtf.format(dateDime) + ": " + event;
 
+			writer.append("\n" + output);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Fehler: log Datei nicht gefunden");
 		}
 	}
 

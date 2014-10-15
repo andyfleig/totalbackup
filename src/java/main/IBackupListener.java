@@ -17,7 +17,19 @@ public interface IBackupListener {
 	 *            (schrift schwarz)
 	 * 
 	 */
-	public void printOut(BackupTask task, String s, int level, boolean error);
+	public void printOut(String s, boolean error);
+	
+	/**
+	 * //TODO: JavaDoc
+	 * @param event
+	 */
+	public void log(String event, BackupTask task);
+	
+	/**
+	 * //TODO: JavaDoc
+	 * @param status
+	 */
+	public void setStatus(String status);
 
 	/**
 	 * Gibt den aktuell laufenden Task zurück.

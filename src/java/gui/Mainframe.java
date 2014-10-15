@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -63,6 +64,7 @@ public class Mainframe {
 	private JButton btn_Delete;
 	private JButton btnCancel;
 	private JButton btnStartSelected;
+	private JTextField tF_status;
 
 	private IEditListener editListener;
 
@@ -192,8 +194,28 @@ public class Mainframe {
 		tpOutput_doc = tp_Output.getStyledDocument();
 
 		JScrollPane scrollPane = new JScrollPane(tp_Output);
+		
+		JPanel panel_4 = new JPanel();
 
-		frmTotalbackup.getContentPane().add(scrollPane, BorderLayout.CENTER);
+		frmTotalbackup.getContentPane().add(panel_4, BorderLayout.CENTER);
+		panel_4.setLayout(new BorderLayout());
+		panel_4.add(scrollPane, BorderLayout.CENTER);
+		
+		
+		JPanel panel_5 = new JPanel();
+		panel_5.setLayout(new BorderLayout());
+		panel_4.add(panel_5, BorderLayout.NORTH);
+		
+		tF_status = new JTextField();
+		tF_status.setEditable(false);
+		tF_status.setPreferredSize(new Dimension(0, 25));
+		panel_5.add(tF_status, BorderLayout.CENTER);
+		
+		JLabel lbl_status = new JLabel();
+		lbl_status.setPreferredSize(new Dimension(0, 25));
+		//TODO: ins locale
+		lbl_status.setText(" Aktuelle Datei:");
+		panel_5.add(lbl_status, BorderLayout.NORTH);
 
 		JPanel panel = new JPanel();
 		frmTotalbackup.getContentPane().add(panel, BorderLayout.NORTH);
@@ -473,6 +495,14 @@ public class Mainframe {
 				System.out.println(e);
 			}
 		}
+	}
+	
+	/**
+	 * //TODO
+	 * @param status
+	 */
+	public void setStatus(String status) {
+		tF_status.setText(status);
 	}
 
 	/**

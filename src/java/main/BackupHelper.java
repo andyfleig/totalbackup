@@ -34,7 +34,8 @@ public final class BackupHelper {
 		destination.mkdirs();
 
 		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
-		listener.printOut(listener.getCurrentTask(), output, 1, false);
+		listener.printOut(output, false);
+		listener.log(output, listener.getCurrentTask());
 
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
@@ -53,7 +54,8 @@ public final class BackupHelper {
 						// fehlenden Rechten)
 						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
 								+ System.getProperty("file.separator") + source.getPath();
-						listener.printOut(listener.getCurrentTask(), outprint, 1, true);
+						listener.printOut(output, true);
+						listener.log(output, listener.getCurrentTask());
 					}
 				}
 			}
@@ -72,6 +74,12 @@ public final class BackupHelper {
 	 */
 	public static void copyFile(File source, File destination, IBackupListener listener) throws FileNotFoundException,
 			IOException {
+		
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.copying") + " " + source.getPath();
+		listener.setStatus(output);
+		listener.printOut(output, false);
+		listener.log(output, listener.getCurrentTask());
+		
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
@@ -82,11 +90,6 @@ public final class BackupHelper {
 		in.close();
 		out.close();
 
-		String output = source.getPath() + System.getProperty("file.separator") + source.getName() + " "
-				+ ResourceBundle.getBundle("gui.messages").getString("Messages.to") + " " + destination.getPath()
-				+ System.getProperty("file.separator") + destination.getName() + " "
-				+ ResourceBundle.getBundle("gui.messages").getString("Messages.copied");
-		listener.printOut(listener.getCurrentTask(), output, 1, false);
 	}
 
 	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
@@ -95,10 +98,9 @@ public final class BackupHelper {
 		} catch (IOException e) {
 			System.out.println("Fehler: IO-Problem");
 		}
-		String output = source.getPath() + System.getProperty("file.separator") + source.getName() + " "
-				+ ResourceBundle.getBundle("gui.messages").getString("Messages.linked") + " " + destination.getPath()
-				+ System.getProperty("file.separator") + destination.getName();
-		listener.printOut(listener.getCurrentTask(), output, 1, false);
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
+		listener.printOut(output, false);
+		listener.log(output, listener.getCurrentTask());
 
 	}
 
@@ -121,8 +123,9 @@ public final class BackupHelper {
 
 		File destinationFile = new File(destinationPath);
 		if (!destinationFile.exists()) {
-			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 1, true);
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			listener.printOut(output, true);
+			listener.log(output, listener.getCurrentTask());;
 			return null;
 		}
 		String backupDir = destinationFile.getAbsolutePath() + System.getProperty("file.separator") + taskName + "_"
@@ -131,11 +134,13 @@ public final class BackupHelper {
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
 		if (dir.mkdir()) {
-			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated"), 1, false);
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated");
+			listener.printOut(output, false);
+			listener.log(output, listener.getCurrentTask());;
 		} else {
-			listener.printOut(listener.getCurrentTask(),
-					ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"), 1, true);
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			listener.printOut(output, true);
+			listener.log(output, listener.getCurrentTask());;
 			return null;
 		}
 		return dir;
