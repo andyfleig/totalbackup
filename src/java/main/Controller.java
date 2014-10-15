@@ -277,9 +277,6 @@ public class Controller {
 		// Log-Datei anlegen:
 		if (task == null) {
 			// TODO: Endlos-Schleife:
-			// printOut(currentTask,
-			// ResourceBundle.getBundle("gui.messages").getString("Messages.ErrorLoggingDisabled"),
-			// 0, true);
 			return;
 		}
 		File log = new File(task.getDestinationPath() + System.getProperty("file.separator") + task.getTaskName()
@@ -354,7 +351,7 @@ public class Controller {
 	public BackupTask getCurrentTask() {
 		return currentTask;
 	}
-	
+
 	/**
 	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
 	 * 
