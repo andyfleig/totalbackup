@@ -232,20 +232,26 @@ public class Controller {
 		}
 		// alte Backups aufräumen (wenn gewünscht):
 		if (currentTask.autoCleanIsEnabled()) {
-			while (this.getNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
-				File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
+			try {
+				while (this.getNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
 
-				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
-						+ toDelete.getAbsolutePath();
-				setStatus(output);
-				log(output, currentTask);
-				// TODO: Interrupt
-				if (!deleteDirectory(toDelete)) {
-					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
+
+					String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
+							+ toDelete.getAbsolutePath();
+					setStatus(output);
+					log(output, currentTask);
+					if (!deleteDirectory(toDelete)) {
+						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					}
+					printOut(
+							toDelete.getAbsolutePath() + " "
+									+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"), false);
 				}
-				printOut(
-						toDelete.getAbsolutePath() + " "
-								+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"), false);
+			} catch (BackupCanceledException e) {
+				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+				printOut(outprint, false);
+				log(outprint, currentTask);
 			}
 		}
 		currentTask = null;
@@ -463,6 +469,9 @@ public class Controller {
 
 	// TODO: JavaDoc
 	public boolean deleteDirectory(File path) {
+		if (Thread.interrupted()) {
+			throw new BackupCanceledException();
+		}
 		if (path.exists()) {
 			File[] files = path.listFiles();
 			for (int i = 0; i < files.length; i++) {
