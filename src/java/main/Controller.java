@@ -230,15 +230,22 @@ public class Controller {
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		}
-		// alte Backuops aufräumen (wenn gewünscht):
+		// alte Backups aufräumen (wenn gewünscht):
 		if (currentTask.autoCleanIsEnabled()) {
 			while (this.getNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
 				File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
-				//TODO: Outprint/log
-				//TODO: Interrupt
+
+				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
+						+ toDelete.getAbsolutePath();
+				setStatus(output);
+				log(output, currentTask);
+				// TODO: Interrupt
 				if (!deleteDirectory(toDelete)) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 				}
+				printOut(
+						toDelete.getAbsolutePath() + " "
+								+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"), false);
 			}
 		}
 		currentTask = null;
