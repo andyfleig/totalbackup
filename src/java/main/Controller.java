@@ -167,10 +167,15 @@ public class Controller {
 			}
 
 			@Override
-			public void setStatus(String status) {
-				// TODO: invokeLater/ final
-				Controller.this.setStatus(status);
+			public void setStatus(final String status) {
+				SwingUtilities.invokeLater(new Runnable() {
 
+					@Override
+					public void run() {
+						Controller.this.setStatus(status);
+					}
+
+				});
 			}
 
 			@Override
