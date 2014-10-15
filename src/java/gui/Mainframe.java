@@ -275,6 +275,8 @@ public class Mainframe {
 						editDialog.setSourcePaths(task.getSourcePaths());
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());
+						editDialog.setAutoCleanEnabled(task.autoCleanIsEnabled());
+						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}

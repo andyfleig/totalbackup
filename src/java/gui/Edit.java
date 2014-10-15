@@ -51,7 +51,7 @@ public class Edit extends JDialog {
 	private JRadioButton rdbtnNormal;
 	private JRadioButton rdbtnHardlink;
 	
-	private JCheckBox cB_numberOfBackupsToKeep;
+	private JCheckBox cB_autoClean;
 	private JSpinner s_numberOfBackupsToKeep;
 
 	/**
@@ -228,9 +228,9 @@ public class Edit extends JDialog {
 					p_autoremove.add(lbl_autoclean);
 				}
 				{
-					cB_numberOfBackupsToKeep = new JCheckBox(ResourceBundle
+					cB_autoClean = new JCheckBox(ResourceBundle
 							.getBundle("gui.messages").getString("Edit.chckbxAnzahlZuBehlatender.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					p_autoremove.add(cB_numberOfBackupsToKeep);
+					p_autoremove.add(cB_autoClean);
 				}
 				{
 					s_numberOfBackupsToKeep = new JSpinner();
@@ -289,7 +289,7 @@ public class Edit extends JDialog {
 							}
 							
 							// Einstellungen für das automatische Aufräumen sichern:
-							task.setAutoCleanEnabled(cB_numberOfBackupsToKeep.isEnabled());
+							task.setAutoCleanEnabled(cB_autoClean.isSelected());
 							task.setNumberOfBackupsToKeep((Integer) s_numberOfBackupsToKeep.getValue());
 							
 						} else {
@@ -431,6 +431,7 @@ public class Edit extends JDialog {
 		return -1;
 	}
 
+	//TODO: JavaDoc
 	public void setBackupMode(int mode) {
 		if (mode == 0) {
 			rdbtnNormal.setSelected(true);
@@ -439,5 +440,15 @@ public class Edit extends JDialog {
 			rdbtnNormal.setSelected(false);
 			rdbtnHardlink.setSelected(true);
 		}
+	}
+	
+	//TODO: JavaDoc
+	public void setAutoCleanEnabled(boolean enabled) {
+		cB_autoClean.setSelected(enabled);
+	}
+	
+	//TODO: JavaDoc
+	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
+		s_numberOfBackupsToKeep.setValue(numberOfBackupsToKeep);
 	}
 }

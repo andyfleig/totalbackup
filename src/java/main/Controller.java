@@ -235,6 +235,7 @@ public class Controller {
 			while (this.getNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
 				File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
 				//TODO: Outprint/log
+				//TODO: Interrupt
 				if (!deleteDirectory(toDelete)) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 				}
