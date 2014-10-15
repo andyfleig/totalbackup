@@ -12,7 +12,7 @@ public interface IBackupListener {
 	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	public void printOut(String s, boolean error);
-	
+
 	/**
 	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
 	 * 
@@ -22,7 +22,7 @@ public interface IBackupListener {
 	 *            zugehöriger Task
 	 */
 	public void log(String event, BackupTask task);
-	
+
 	/**
 	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
 	 * 
@@ -37,5 +37,12 @@ public interface IBackupListener {
 	 * @return aktuell laufender Task
 	 */
 	public BackupTask getCurrentTask();
+
+	/**
+	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
+	 * 
+	 * @return Status der erweiterten Ausgabe
+	 */
+	public boolean advancedOutputIsEnabled();
 
 }

@@ -14,6 +14,8 @@ import java.util.TimeZone;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.swing.JCheckBox;
+
 public final class BackupHelper {
 
 	/**
@@ -74,12 +76,14 @@ public final class BackupHelper {
 	 */
 	public static void copyFile(File source, File destination, IBackupListener listener) throws FileNotFoundException,
 			IOException {
-		
+
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.copying") + " " + source.getPath();
 		listener.setStatus(output);
-		listener.printOut(output, false);
+		if (listener.advancedOutputIsEnabled()) {
+			listener.printOut(output, false);
+		}
 		listener.log(output, listener.getCurrentTask());
-		
+
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
@@ -94,16 +98,18 @@ public final class BackupHelper {
 
 	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
-		listener.printOut(output, false);
+		if (listener.advancedOutputIsEnabled()) {
+			listener.printOut(output, false);
+		}
 		listener.setStatus(output);
 		listener.log(output, listener.getCurrentTask());
-		
+
 		try {
 			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
 		} catch (IOException e) {
 			System.out.println("Fehler: IO-Problem");
 		}
-		
+
 		listener.setStatus("");
 	}
 
@@ -128,7 +134,8 @@ public final class BackupHelper {
 		if (!destinationFile.exists()) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true);
-			listener.log(output, listener.getCurrentTask());;
+			listener.log(output, listener.getCurrentTask());
+			;
 			return null;
 		}
 		String backupDir = destinationFile.getAbsolutePath() + System.getProperty("file.separator") + taskName + "_"
@@ -139,11 +146,13 @@ public final class BackupHelper {
 		if (dir.mkdir()) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated");
 			listener.printOut(output, false);
-			listener.log(output, listener.getCurrentTask());;
+			listener.log(output, listener.getCurrentTask());
+			;
 		} else {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true);
-			listener.log(output, listener.getCurrentTask());;
+			listener.log(output, listener.getCurrentTask());
+			;
 			return null;
 		}
 		return dir;

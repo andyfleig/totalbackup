@@ -184,6 +184,11 @@ public class Controller {
 
 			}
 
+			@Override
+			public boolean advancedOutputIsEnabled() {
+				return Controller.this.advancedOutputIsEnabled();
+			}
+
 		};
 
 		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
@@ -348,5 +353,14 @@ public class Controller {
 	 */
 	public BackupTask getCurrentTask() {
 		return currentTask;
+	}
+	
+	/**
+	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
+	 * 
+	 * @return Status der erweiterten Ausgabe
+	 */
+	public boolean advancedOutputIsEnabled() {
+		return mainframe.advancedOutputIsEnabled();
 	}
 }

@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyleConstants;
+import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
@@ -65,6 +66,7 @@ public class Mainframe {
 	private JButton btnCancel;
 	private JButton btnStartSelected;
 	private JTextField tF_status;
+	private JCheckBox cb_advancedOutput;
 
 	private IEditListener editListener;
 
@@ -189,31 +191,35 @@ public class Mainframe {
 
 		DefaultCaret caret = (DefaultCaret) tp_Output.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		//TODO: Kein Vertikales Autoscrollen
-		
+		// TODO: Kein Vertikales Autoscrollen
+
 		tpOutput_doc = tp_Output.getStyledDocument();
 
 		JScrollPane scrollPane = new JScrollPane(tp_Output);
-		
+
 		JPanel panel_4 = new JPanel();
 
 		frmTotalbackup.getContentPane().add(panel_4, BorderLayout.CENTER);
 		panel_4.setLayout(new BorderLayout());
 		panel_4.add(scrollPane, BorderLayout.CENTER);
-		
-		
+
+		// Ceckbox erweiterte Ausgabe:
+		// TODO: ins locale
+		cb_advancedOutput = new JCheckBox("erweiterte Ausgabe");
+		panel_4.add(cb_advancedOutput, BorderLayout.SOUTH);
+
 		JPanel panel_5 = new JPanel();
 		panel_5.setLayout(new BorderLayout());
 		panel_4.add(panel_5, BorderLayout.NORTH);
-		
+
 		tF_status = new JTextField();
 		tF_status.setEditable(false);
 		tF_status.setPreferredSize(new Dimension(0, 25));
 		panel_5.add(tF_status, BorderLayout.CENTER);
-		
+
 		JLabel lbl_status = new JLabel();
 		lbl_status.setPreferredSize(new Dimension(0, 25));
-		//TODO: ins locale
+		// TODO: ins locale
 		lbl_status.setText(" Aktuelle Datei:");
 		panel_5.add(lbl_status, BorderLayout.NORTH);
 
@@ -228,7 +234,7 @@ public class Mainframe {
 		JLabel lbl_Tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblTask.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lbl_Tasks.setPreferredSize(new Dimension(0, 25));
 		panel_2.add(lbl_Tasks, BorderLayout.NORTH);
-		
+
 		JScrollPane listScroller = new JScrollPane();
 
 		panel_2.add(listScroller, BorderLayout.WEST);
@@ -329,8 +335,7 @@ public class Mainframe {
 			public void actionPerformed(ActionEvent e) {
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
-								.getBundle("gui.messages").getString("Messages.Cancel"),
-						JOptionPane.YES_NO_OPTION);
+								.getBundle("gui.messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					Mainframe.this.addToOutput(
 							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
@@ -496,7 +501,7 @@ public class Mainframe {
 			}
 		}
 	}
-	
+
 	/**
 	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
 	 * 
@@ -582,5 +587,14 @@ public class Mainframe {
 		btn_Add.setEnabled(noBackupRunning);
 		btn_Edit.setEnabled(noBackupRunning);
 		btn_Delete.setEnabled(noBackupRunning);
+	}
+
+	/**
+	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
+	 * 
+	 * @return Status der erweiterten Ausgabe
+	 */
+	public boolean advancedOutputIsEnabled() {
+		return cb_advancedOutput.isSelected();
 	}
 }
