@@ -31,6 +31,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
+import javax.swing.JCheckBox;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class Edit extends JDialog {
 
@@ -47,6 +50,9 @@ public class Edit extends JDialog {
 
 	private JRadioButton rdbtnNormal;
 	private JRadioButton rdbtnHardlink;
+	
+	private JCheckBox cB_numberOfBackupsToKeep;
+	private JSpinner s_numberOfBackupsToKeep;
 
 	/**
 	 * @deprecated
@@ -213,6 +219,26 @@ public class Edit extends JDialog {
 					panel_1.add(btn_Find);
 				}
 			}
+			{
+				JPanel p_autoremove = new JPanel();
+				panel.add(p_autoremove);
+				{
+					JLabel lbl_autoclean = new JLabel(ResourceBundle
+							.getBundle("gui.messages").getString("Edit.lblAutomatischesLschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					p_autoremove.add(lbl_autoclean);
+				}
+				{
+					cB_numberOfBackupsToKeep = new JCheckBox(ResourceBundle
+							.getBundle("gui.messages").getString("Edit.chckbxAnzahlZuBehlatender.text")); //$NON-NLS-1$ //$NON-NLS-2$
+					p_autoremove.add(cB_numberOfBackupsToKeep);
+				}
+				{
+					s_numberOfBackupsToKeep = new JSpinner();
+					s_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
+							new Integer(1)));
+					p_autoremove.add(s_numberOfBackupsToKeep);
+				}
+			}
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -261,10 +287,15 @@ public class Edit extends JDialog {
 							} else {
 								allInputsAreValid = false;
 							}
+							
+							// Einstellungen für das automatische Aufräumen sichern:
+							task.setAutoCleanEnabled(cB_numberOfBackupsToKeep.isEnabled());
+							task.setNumberOfBackupsToKeep((Integer) s_numberOfBackupsToKeep.getValue());
+							
 						} else {
 							allInputsAreValid = false;
 						}
-						//Einstellungen sichern (seriallisieren):
+						// Einstellungen sichern (seriallisieren):
 						editListener.saveProperties();
 						if (allInputsAreValid) {
 							Edit.this.dispose();

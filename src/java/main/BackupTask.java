@@ -19,6 +19,8 @@ public class BackupTask implements Serializable {
 	private ArrayList<String> sourcePaths;
 	private String destinationPath;
 	private int backupMode;
+	private boolean autoCleanIsEnabled;
+	private int numberOfBackupsToKeep;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -150,5 +152,24 @@ public class BackupTask implements Serializable {
 	 */
 	public int getBackupMode() {
 		return backupMode;
+	}
+	
+	//TODO: JavaDoc
+	public void setAutoCleanEnabled(boolean enabled) {
+		autoCleanIsEnabled = enabled;
+	}
+	
+	public boolean autoCleanIsEnabled() {
+		return autoCleanIsEnabled;
+	}
+	
+	//TODO: JavaDoc
+	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
+		this.numberOfBackupsToKeep = numberOfBackupsToKeep;
+	}
+	
+	//TODO: JavaDoc
+	public int getNumberOfBackupsToKeep() {
+		return numberOfBackupsToKeep;
 	}
 }

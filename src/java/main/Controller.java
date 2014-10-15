@@ -14,6 +14,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -30,6 +34,7 @@ public class Controller {
 	private Mainframe mainframe;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 	private BackupTask currentTask = null;
+	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -225,6 +230,16 @@ public class Controller {
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		}
+		// alte Backuops aufräumen (wenn gewünscht):
+		if (currentTask.autoCleanIsEnabled()) {
+			while (this.getNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
+				File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
+				//TODO: Outprint/log
+				if (!deleteDirectory(toDelete)) {
+					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+				}
+			}
+		}
 		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
 	}
@@ -359,5 +374,98 @@ public class Controller {
 	 */
 	public boolean advancedOutputIsEnabled() {
 		return mainframe.advancedOutputIsEnabled();
+	}
+
+	// TODO: JavaDoc
+	private int getNumberOfBackups() {
+		File dest = new File(currentTask.getDestinationPath());
+		File[] files = dest.listFiles();
+
+		// Gültige Backup-Sätze suchen:
+		int backupCounter = 0;
+		for (int i = 0; i < files.length; i++) {
+			// Namen des Ordners "zerlegen":
+			StringTokenizer tokenizer = new StringTokenizer(files[i].getName(), "_");
+			// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+			if (tokenizer.countTokens() != 2) {
+				continue;
+			}
+			// Erster Token muss dem TaskName entsprechen:
+			if (!tokenizer.nextToken().equals(currentTask.getTaskName())) {
+				continue;
+			}
+			// Zweiter Token muss analysiert werden:
+			String backupDate = tokenizer.nextToken();
+
+			try {
+				SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+				Date date = sdfToDate.parse(backupDate);
+				backupCounter++;
+			} catch (ParseException e) {
+				// Offenbar kein gültiges Datum
+				continue;
+			}
+		}
+		return backupCounter;
+	}
+
+	// TODO: JavaDoc
+	private String findOldestBackup() {
+		File root = new File(currentTask.getDestinationPath());
+		File[] directories = root.listFiles();
+
+		Date oldestDate = null;
+		String oldestBackupPath = null;
+		Date foundDate;
+		for (int i = 0; i < directories.length; i++) {
+			if (directories[i].isDirectory()) {
+				// Namen des Ordners "zerlegen":
+				StringTokenizer tokenizer = new StringTokenizer(directories[i].getName(), "_");
+				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				if (tokenizer.countTokens() != 2) {
+					continue;
+				}
+				// Erster Token muss dem TaskName entsprechen:
+				if (!tokenizer.nextToken().equals(currentTask.getTaskName())) {
+					continue;
+				}
+				// Zweiter Token muss analysiert werden:
+				String backupDate = tokenizer.nextToken();
+
+				try {
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+					foundDate = sdfToDate.parse(backupDate);
+				} catch (ParseException e) {
+					// Offenbar kein gültiges Datum
+					continue;
+				}
+				if (oldestDate == null) {
+					oldestDate = foundDate;
+					oldestBackupPath = directories[i].getName();
+				} else {
+					if (oldestDate.compareTo(foundDate) > 0) {
+						oldestDate = foundDate;
+						oldestBackupPath = directories[i].getName();
+					}
+				}
+			}
+		}
+		return oldestBackupPath;
+	}
+
+	// TODO: JavaDoc
+	public boolean deleteDirectory(File path) {
+		if (path.exists()) {
+			File[] files = path.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory()) {
+					deleteDirectory(files[i]);
+				} else {
+					if (!files[i].delete()) {
+					}
+				}
+			}
+		}
+		return (path.delete());
 	}
 }
