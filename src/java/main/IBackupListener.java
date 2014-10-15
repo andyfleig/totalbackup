@@ -3,31 +3,31 @@ package main;
 public interface IBackupListener {
 
 	/**
-	 * Gibt den übergebenen String auf dem Output-Panel aus und schreibt ihn
-	 * (abhängig vom Level) in die log-Datei.
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
+	 * eine Fehlermeldung (rot) handelt oder nicht.
 	 * 
-	 * @param task
-	 *            zugehöriger Task (zu welchem der Outprint gehört)
 	 * @param s
 	 *            auszugebender String
-	 * @param level
-	 *            Ausgabe Level: 0 = nur ausgeben, 1 = ausgeben und loggen
 	 * @param error
-	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
-	 *            (schrift schwarz)
-	 * 
+	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	public void printOut(String s, boolean error);
 	
 	/**
-	 * //TODO: JavaDoc
+	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
+	 * 
 	 * @param event
+	 *            zu loggender String
+	 * @param task
+	 *            zugehöriger Task
 	 */
 	public void log(String event, BackupTask task);
 	
 	/**
-	 * //TODO: JavaDoc
+	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
+	 * 
 	 * @param status
+	 *            auszugebender String
 	 */
 	public void setStatus(String status);
 

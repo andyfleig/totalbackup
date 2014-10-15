@@ -238,29 +238,35 @@ public class Controller {
 	}
 
 	/**
-	 * //TODO: JavaDoc
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
+	 * eine Fehlermeldung (rot) handelt oder nicht.
 	 * 
 	 * @param s
+	 *            auszugebender String
 	 * @param error
+	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	public void printOut(String s, boolean error) {
 		mainframe.addToOutput(s, error);
 	}
 
 	/**
-	 * //TODO: JavaDoc
+	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
 	 * 
 	 * @param status
+	 *            auszugebender String
 	 */
 	private void setStatus(String status) {
 		mainframe.setStatus(status);
 	}
 
 	/**
-	 * //TODO: JavaDoc
+	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
 	 * 
 	 * @param event
+	 *            zu loggender String
 	 * @param task
+	 *            zugehöriger Task
 	 */
 	private void log(String event, BackupTask task) {
 		// Log-Datei anlegen:

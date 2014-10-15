@@ -498,8 +498,10 @@ public class Mainframe {
 	}
 	
 	/**
-	 * //TODO
+	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
+	 * 
 	 * @param status
+	 *            auszugebender String
 	 */
 	public void setStatus(String status) {
 		tF_status.setText(status);
