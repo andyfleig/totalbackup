@@ -151,8 +151,6 @@ public class Controller {
 
 			@Override
 			public void printOut(final String s, final boolean error) {
-				// final BackupTask backupTask = task;
-
 				SwingUtilities.invokeLater(new Runnable() {
 
 					@Override
@@ -161,9 +159,6 @@ public class Controller {
 					}
 
 				});
-
-				// alt:
-				// Controller.this.printOut(task, s, level, error);
 			}
 
 			@Override
