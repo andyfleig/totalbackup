@@ -204,8 +204,7 @@ public class Mainframe {
 		panel_4.add(scrollPane, BorderLayout.CENTER);
 
 		// Ceckbox erweiterte Ausgabe:
-		// TODO: ins locale
-		cb_advancedOutput = new JCheckBox("erweiterte Ausgabe");
+		cb_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString("Mainframe.cb_advancedOutput.text"));
 		panel_4.add(cb_advancedOutput, BorderLayout.SOUTH);
 
 		JPanel panel_5 = new JPanel();
@@ -219,8 +218,7 @@ public class Mainframe {
 
 		JLabel lbl_status = new JLabel();
 		lbl_status.setPreferredSize(new Dimension(0, 25));
-		// TODO: ins locale
-		lbl_status.setText(" Aktuelle Datei:");
+		lbl_status.setText(" " + ResourceBundle.getBundle("gui.messages").getString("Mainframe.lbl_status.text"));
 		panel_5.add(lbl_status, BorderLayout.NORTH);
 
 		JPanel panel = new JPanel();
