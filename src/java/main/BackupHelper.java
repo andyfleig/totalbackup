@@ -35,10 +35,6 @@ public final class BackupHelper {
 
 		destination.mkdirs();
 
-		String output = "Verzeichnis " + destination.getAbsolutePath() + " erstellt";
-		listener.printOut(output, false);
-		listener.log(output, listener.getCurrentTask());
-
 		if (files != null) {
 			for (int i = 0; i < files.length; i++) {
 				if (Thread.interrupted()) {
@@ -54,7 +50,7 @@ public final class BackupHelper {
 					} catch (IOException e) {
 						// Fehler beim kopieren einer Datei (z.B. wegen
 						// fehlenden Rechten)
-						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
+						String output = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
 								+ System.getProperty("file.separator") + source.getPath();
 						listener.printOut(output, true);
 						listener.log(output, listener.getCurrentTask());
