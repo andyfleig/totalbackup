@@ -69,13 +69,11 @@ public class NormalBackup implements Backupable {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
-			listener.setStatus("");
 			
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
-			listener.setStatus("");
 		}
 	}
 }

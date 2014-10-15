@@ -89,19 +89,22 @@ public final class BackupHelper {
 
 		in.close();
 		out.close();
-
+		listener.setStatus("");
 	}
 
 	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
+		listener.printOut(output, false);
+		listener.setStatus(output);
+		listener.log(output, listener.getCurrentTask());
+		
 		try {
 			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
 		} catch (IOException e) {
 			System.out.println("Fehler: IO-Problem");
 		}
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
-		listener.printOut(output, false);
-		listener.log(output, listener.getCurrentTask());
-
+		
+		listener.setStatus("");
 	}
 
 	/**
