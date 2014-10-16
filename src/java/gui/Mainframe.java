@@ -272,6 +272,7 @@ public class Mainframe {
 						// Gespeicherte Werte in den Edit-Dialog eintragen:
 						BackupTask task = list_Tasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
+						editDialog.setEditable(false);
 						editDialog.setSourcePaths(task.getSourcePaths());
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());

@@ -257,9 +257,17 @@ public class Edit extends JDialog {
 							if (nameIsNotTaken(tf_Name.getText())) {
 								task = new BackupTask(tf_Name.getText());
 							} else {
-								task = editListener.getBackupTaskWithName(tf_Name.getText());
-								editListener.removeBackupTask(task);
-								task.resetPaths();
+								
+								if (tf_Name.isEditable()) {
+									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
+											.getString("Edit.ErrSameName"), ResourceBundle.getBundle("gui.messages")
+											.getString("Edit.ErrMsg"), JOptionPane.INFORMATION_MESSAGE);
+									return;
+								} else {
+									task = editListener.getBackupTaskWithName(tf_Name.getText());
+									editListener.removeBackupTask(task);
+									task.resetPaths();
+								}
 							}
 							// Backup-Modus speichern:
 							if (rdbtnNormal.isSelected()) {
@@ -466,5 +474,13 @@ public class Edit extends JDialog {
 	 */
 	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
 		s_numberOfBackupsToKeep.setValue(numberOfBackupsToKeep);
+	}
+	
+	/**
+	 * Sperrt das Namens-TextFeld für den Benutzer (Name eines Backups kann nachträglich nicht geändert werden).
+	 * @param editable Editierbarkeit
+	 */
+	public void setEditable(boolean editable) {
+		tf_Name.setEditable(editable);
 	}
 }
