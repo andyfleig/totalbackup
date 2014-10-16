@@ -50,7 +50,7 @@ public class Edit extends JDialog {
 
 	private JRadioButton rdbtnNormal;
 	private JRadioButton rdbtnHardlink;
-	
+
 	private JCheckBox cB_autoClean;
 	private JSpinner s_numberOfBackupsToKeep;
 
@@ -287,11 +287,12 @@ public class Edit extends JDialog {
 							} else {
 								allInputsAreValid = false;
 							}
-							
-							// Einstellungen für das automatische Aufräumen sichern:
+
+							// Einstellungen für das automatische Aufräumen
+							// sichern:
 							task.setAutoCleanEnabled(cB_autoClean.isSelected());
 							task.setNumberOfBackupsToKeep((Integer) s_numberOfBackupsToKeep.getValue());
-							
+
 						} else {
 							allInputsAreValid = false;
 						}
@@ -431,7 +432,12 @@ public class Edit extends JDialog {
 		return -1;
 	}
 
-	//TODO: JavaDoc
+	/**
+	 * Setzt die Auswahl des Backup-Modes auf der GUI.
+	 * 
+	 * @param mode
+	 *            Backup-Modus (0 = normal, 1 = hardlink)
+	 */
 	public void setBackupMode(int mode) {
 		if (mode == 0) {
 			rdbtnNormal.setSelected(true);
@@ -441,13 +447,23 @@ public class Edit extends JDialog {
 			rdbtnHardlink.setSelected(true);
 		}
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Setzt die Einstellung für die Auto-Clean Funktion auf der GUI.
+	 * 
+	 * @param enabled
+	 *            Auto-Clean Funktion aktiviert (true) oder Deaktiviert (false)
+	 */
 	public void setAutoCleanEnabled(boolean enabled) {
 		cB_autoClean.setSelected(enabled);
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Setzt die Anzahl der bei Auto-Clean zu behaltenden Backups auf der GUI.
+	 * 
+	 * @param numberOfBackupsToKeep
+	 *            zu setzende Anzahl an zu behaltenden Backups
+	 */
 	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
 		s_numberOfBackupsToKeep.setValue(numberOfBackupsToKeep);
 	}

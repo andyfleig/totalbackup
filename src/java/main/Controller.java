@@ -233,7 +233,7 @@ public class Controller {
 		// alte Backups aufräumen (wenn gewünscht):
 		if (currentTask.autoCleanIsEnabled()) {
 			try {
-				while (this.getNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
+				while (this.calcNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
 
 					File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
 
@@ -390,8 +390,12 @@ public class Controller {
 		return mainframe.advancedOutputIsEnabled();
 	}
 
-	// TODO: JavaDoc
-	private int getNumberOfBackups() {
+	/**
+	 * Gibt die Anzahl der Backup-Sätze zum aktuellen Backup-Task zurück.
+	 * 
+	 * @return Anzahl der Backup-Sätze zum aktuellen Backup-Task
+	 */
+	private int calcNumberOfBackups() {
 		File dest = new File(currentTask.getDestinationPath());
 		File[] files = dest.listFiles();
 
@@ -423,7 +427,11 @@ public class Controller {
 		return backupCounter;
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Gibt den Pfad des ältesten Backup-Satzes zurück.
+	 * 
+	 * @return Pfad des ältesten Backup-Satzes
+	 */
 	private String findOldestBackup() {
 		File root = new File(currentTask.getDestinationPath());
 		File[] directories = root.listFiles();
@@ -467,7 +475,13 @@ public class Controller {
 		return oldestBackupPath;
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Löscht ein Verzeichnis und dessen Inhalt rekursiv.
+	 * 
+	 * @param path
+	 *            Pfad des zu löschenden Ordners
+	 * @return true falls erfolgreich, false sonst
+	 */
 	public boolean deleteDirectory(File path) {
 		if (Thread.interrupted()) {
 			throw new BackupCanceledException();

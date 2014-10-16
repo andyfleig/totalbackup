@@ -137,38 +137,60 @@ public class BackupTask implements Serializable {
 		sourcePaths.clear();
 		destinationPath = null;
 	}
-	
+
 	/**
 	 * Legt den Backup-Modus fest.
-	 * @param mode festzulegender Backup-Modus
+	 * 
+	 * @param mode
+	 *            festzulegender Backup-Modus
 	 */
 	public void setBackupMode(int mode) {
 		backupMode = mode;
 	}
-	
+
 	/**
 	 * Gibt den gewählten Backup-Modus zurück. 0 = normal, 1 = hardlink.
+	 * 
 	 * @return gewälter Backup-Modus
 	 */
 	public int getBackupMode() {
 		return backupMode;
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Aktiviert bzw. Deaktiviert die Auto-Clean Funktion.
+	 * 
+	 * @param enabled
+	 *            Auto-Clean aktivieren
+	 */
 	public void setAutoCleanEnabled(boolean enabled) {
 		autoCleanIsEnabled = enabled;
 	}
-	
+
+	/**
+	 * Gibt zurück ob Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * 
+	 * @return Zustand der Auto-Clean Funktion
+	 */
 	public boolean autoCleanIsEnabled() {
 		return autoCleanIsEnabled;
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Legt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze fest
+	 * 
+	 * @param numberOfBackupsToKeep
+	 *            Anzahl der zu behaltenden Backup-Sätze
+	 */
 	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
 		this.numberOfBackupsToKeep = numberOfBackupsToKeep;
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Gibt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze zurück
+	 * 
+	 * @return Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze
+	 */
 	public int getNumberOfBackupsToKeep() {
 		return numberOfBackupsToKeep;
 	}
