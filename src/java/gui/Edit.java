@@ -257,7 +257,7 @@ public class Edit extends JDialog {
 							if (nameIsNotTaken(tf_Name.getText())) {
 								task = new BackupTask(tf_Name.getText());
 							} else {
-								
+
 								if (tf_Name.isEditable()) {
 									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
 											.getString("Edit.ErrSameName"), ResourceBundle.getBundle("gui.messages")
@@ -282,7 +282,12 @@ public class Edit extends JDialog {
 									if (isValidPath(listModel.getElementAt(i).toString().trim())) {
 										task.addSourcePath(listModel.getElementAt(i).toString().trim());
 									} else {
-										allInputsAreValid = false;
+										// Mindestens ein Quellpfad ist ungültig
+										JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
+												.getString("Edit.ErrIllegalSource"),
+												ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
+												JOptionPane.INFORMATION_MESSAGE);
+										return;
 									}
 								}
 								// Prüfen ob ein Zielpfad eingefügt wurde:
@@ -290,10 +295,22 @@ public class Edit extends JDialog {
 									task.setDestinationPath(tf_Destination.getText());
 									editListener.addBackupTask(task);
 								} else {
-									allInputsAreValid = false;
+									// Zielpfad ist ungültig oder leer:
+									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
+											.getString("Edit.ErrIllegalDestination"),
+											ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
+											JOptionPane.INFORMATION_MESSAGE);
+									return;
 								}
 							} else {
-								allInputsAreValid = false;
+								// Keine Quelle gewählt:
+								JOptionPane.showMessageDialog(
+										null,
+										ResourceBundle.getBundle("gui.messages").getString(
+												"Edit.ErrNoSourcePathSelected"),
+										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
+										JOptionPane.INFORMATION_MESSAGE);
+								return;
 							}
 
 							// Einstellungen für das automatische Aufräumen
@@ -302,7 +319,12 @@ public class Edit extends JDialog {
 							task.setNumberOfBackupsToKeep((Integer) s_numberOfBackupsToKeep.getValue());
 
 						} else {
-							allInputsAreValid = false;
+							// Ungültiger Name:
+							JOptionPane.showMessageDialog(null,
+									ResourceBundle.getBundle("gui.messages").getString("Edit.ErrIllegalName"),
+									ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
+									JOptionPane.INFORMATION_MESSAGE);
+							return;
 						}
 						// Einstellungen sichern (seriallisieren):
 						editListener.saveProperties();
@@ -475,10 +497,13 @@ public class Edit extends JDialog {
 	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
 		s_numberOfBackupsToKeep.setValue(numberOfBackupsToKeep);
 	}
-	
+
 	/**
-	 * Sperrt das Namens-TextFeld für den Benutzer (Name eines Backups kann nachträglich nicht geändert werden).
-	 * @param editable Editierbarkeit
+	 * Sperrt das Namens-TextFeld für den Benutzer (Name eines Backups kann
+	 * nachträglich nicht geändert werden).
+	 * 
+	 * @param editable
+	 *            Editierbarkeit
 	 */
 	public void setEditable(boolean editable) {
 		tf_Name.setEditable(editable);
