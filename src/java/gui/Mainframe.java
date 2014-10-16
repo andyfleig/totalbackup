@@ -297,6 +297,7 @@ public class Mainframe {
 				if (!list_Tasks.isSelectionEmpty()) {
 					listener.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
 				}
+				saveProperties();
 			}
 		});
 
