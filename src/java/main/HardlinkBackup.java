@@ -271,8 +271,6 @@ public class HardlinkBackup implements Backupable {
 		File[] files = sourceFile.listFiles();
 
 		if (files == null) {
-			// TODO: Fehlermeldung
-			
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt")
 					+ " " + sourceFile.getPath();
 			listener.printOut(outprint, true);
