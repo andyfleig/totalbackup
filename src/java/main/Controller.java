@@ -229,6 +229,10 @@ public class Controller {
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
+		} catch (BackupCanceledException ex) {
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			printOut(output, false);
+			log(output, currentTask);
 		}
 		// alte Backups aufräumen (wenn gewünscht):
 		if (currentTask.autoCleanIsEnabled()) {
