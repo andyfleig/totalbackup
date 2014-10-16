@@ -272,6 +272,12 @@ public class HardlinkBackup implements Backupable {
 
 		if (files == null) {
 			// TODO: Fehlermeldung
+			
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt")
+					+ " " + sourceFile.getPath();
+			listener.printOut(outprint, true);
+			listener.log(outprint, listener.getCurrentTask());
+			
 			return;
 		}
 
@@ -301,8 +307,7 @@ public class HardlinkBackup implements Backupable {
 					} catch (IOException e) {
 						// Fehler beim kopieren einer Datei (z.B. wegen
 						// fehlenden Rechten)
-						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
-								+ System.getProperty("file.separator") + sourceFile.getPath();
+						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError");
 						listener.printOut(outprint, true);
 						listener.log(outprint, listener.getCurrentTask());
 					}
