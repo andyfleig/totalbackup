@@ -245,7 +245,7 @@ public class Controller {
 							+ toDelete.getAbsolutePath();
 					setStatus(output);
 					log(output, currentTask);
-					if (!deleteDirectory(toDelete)) {
+					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
 					printOut(
@@ -477,30 +477,5 @@ public class Controller {
 			}
 		}
 		return oldestBackupPath;
-	}
-
-	/**
-	 * Löscht ein Verzeichnis und dessen Inhalt rekursiv.
-	 * 
-	 * @param path
-	 *            Pfad des zu löschenden Ordners
-	 * @return true falls erfolgreich, false sonst
-	 */
-	public boolean deleteDirectory(File path) {
-		if (Thread.interrupted()) {
-			throw new BackupCanceledException();
-		}
-		if (path.exists()) {
-			File[] files = path.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					deleteDirectory(files[i]);
-				} else {
-					if (!files[i].delete()) {
-					}
-				}
-			}
-		}
-		return (path.delete());
 	}
 }

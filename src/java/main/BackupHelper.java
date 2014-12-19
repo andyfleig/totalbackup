@@ -157,6 +157,31 @@ public final class BackupHelper {
 	}
 	
 	/**
+	 * Löscht ein Verzeichnis und dessen Inhalt rekursiv.
+	 * 
+	 * @param path
+	 *            Pfad des zu löschenden Ordners
+	 * @return true falls erfolgreich, false sonst
+	 */
+	public static boolean deleteDirectory(File path) {
+		if (Thread.interrupted()) {
+			throw new BackupCanceledException();
+		}
+		if (path.exists()) {
+			File[] files = path.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				if (files[i].isDirectory()) {
+					deleteDirectory(files[i]);
+				} else {
+					if (!files[i].delete()) {
+					}
+				}
+			}
+		}
+		return (path.delete());
+	}
+	
+	/**
 	 * Berechnet den MD5 Hashwert der gegebenen Datei.
 	 * @param f Datei von der der Hadhwert berechnet werden soll
 	 * @return MD5-Hashwert der gegebenen Datei
