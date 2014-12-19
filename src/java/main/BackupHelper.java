@@ -42,8 +42,7 @@ public final class BackupHelper {
 				if (Thread.interrupted()) {
 					throw new BackupCanceledException();
 				}
-				newFile = new File(destination.getAbsolutePath() + System.getProperty("file.separator")
-						+ files[i].getName());
+				newFile = new File(destination.getAbsolutePath() + File.separator + files[i].getName());
 				if (files[i].isDirectory()) {
 					copyDirectory(files[i], newFile, listener);
 				} else {
@@ -53,7 +52,7 @@ public final class BackupHelper {
 						// Fehler beim kopieren einer Datei (z.B. wegen
 						// fehlenden Rechten)
 						String output = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
-								+ System.getProperty("file.separator") + source.getPath();
+								+ File.separator + source.getPath();
 						listener.printOut(output, true);
 						listener.log(output, listener.getCurrentTask());
 					}
@@ -136,8 +135,7 @@ public final class BackupHelper {
 			;
 			return null;
 		}
-		String backupDir = destinationFile.getAbsolutePath() + System.getProperty("file.separator") + taskName + "_"
-				+ df.format(date);
+		String backupDir = destinationFile.getAbsolutePath() + File.separator + taskName + "_" + df.format(date);
 
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
@@ -155,7 +153,7 @@ public final class BackupHelper {
 		}
 		return dir;
 	}
-	
+
 	/**
 	 * Löscht ein Verzeichnis und dessen Inhalt rekursiv.
 	 * 
@@ -180,14 +178,18 @@ public final class BackupHelper {
 		}
 		return (path.delete());
 	}
-	
+
 	/**
 	 * Berechnet den MD5 Hashwert der gegebenen Datei.
-	 * @param f Datei von der der Hadhwert berechnet werden soll
+	 * 
+	 * @param f
+	 *            Datei von der der Hadhwert berechnet werden soll
 	 * @return MD5-Hashwert der gegebenen Datei
-	 * @throws NoSuchAlgorithmException wird nie geworfen (da der Algorithmus hardcoded ist)
-	 * @throws FileNotFoundException Wird bei ungültiger gegebener Datei geworfen
-	 * @throws IOException 
+	 * @throws NoSuchAlgorithmException
+	 *             wird nie geworfen (da der Algorithmus hardcoded ist)
+	 * @throws FileNotFoundException
+	 *             Wird bei ungültiger gegebener Datei geworfen
+	 * @throws IOException
 	 */
 	public static String calcMD5(File f) throws NoSuchAlgorithmException, FileNotFoundException, IOException {
 		MessageDigest md;

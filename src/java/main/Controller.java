@@ -312,8 +312,7 @@ public class Controller {
 			// TODO: Endlos-Schleife:
 			return;
 		}
-		File log = new File(task.getDestinationPath() + System.getProperty("file.separator") + task.getTaskName()
-				+ ".log");
+		File log = new File(task.getDestinationPath() + File.separator + task.getTaskName() + ".log");
 		// Kontrollieren ob bereits eine log Datei exisitert:
 		if (!log.exists()) {
 			try {

@@ -124,12 +124,12 @@ public class HardlinkBackup implements Backupable {
 				listener.log(outprint, listener.getCurrentTask());
 
 				createIndex(destFolders[i]);
-				
+
 				// Indizierung wurde abgebrochen:
 				if (directoryStructure == null) {
 					throw new BackupCanceledException();
 				}
-				
+
 				outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
 				listener.printOut(outprint, false);
 				listener.log(outprint, listener.getCurrentTask());
@@ -156,8 +156,8 @@ public class HardlinkBackup implements Backupable {
 		}
 
 		// Index dieses backups einlesen:
-		File index = new File(destinationPath + System.getProperty("file.separator") + newestBackupPath
-				+ System.getProperty("file.separator") + "index_" + taskName + ".ser");
+		File index = new File(destinationPath + File.separator + newestBackupPath + File.separator + "index_"
+				+ taskName + ".ser");
 
 		// Pfad prüfen:
 		if (!index.exists()) {
@@ -173,7 +173,7 @@ public class HardlinkBackup implements Backupable {
 			listener.log(outprint, listener.getCurrentTask());
 
 			createIndex(index);
-			
+
 			// Indizierung wurde abgebrochen:
 			if (directoryStructure == null) {
 				throw new BackupCanceledException();
@@ -214,7 +214,7 @@ public class HardlinkBackup implements Backupable {
 			for (int i = 0; i < sourcePaths.size(); i++) {
 				File sourceFile = new File(sourcePaths.get(i));
 
-				String folder = dir.getAbsolutePath() + System.getProperty("file.separator") + sourceFile.getName();
+				String folder = dir.getAbsolutePath() + File.separator + sourceFile.getName();
 				File f = new File(folder);
 
 				if (f.mkdir()) {
@@ -233,7 +233,7 @@ public class HardlinkBackup implements Backupable {
 			}
 			// Index des Backup-Satzen erzeugen und serialisiert:
 			createIndex(dir);
-			
+
 			// Indizierung wurde abgebrochen:
 			if (directoryStructure == null) {
 				throw new BackupCanceledException();
@@ -271,11 +271,11 @@ public class HardlinkBackup implements Backupable {
 		File[] files = sourceFile.listFiles();
 
 		if (files == null) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt")
-					+ " " + sourceFile.getPath();
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "
+					+ sourceFile.getPath();
 			listener.printOut(outprint, true);
 			listener.log(outprint, listener.getCurrentTask());
-			
+
 			return;
 		}
 
@@ -284,16 +284,14 @@ public class HardlinkBackup implements Backupable {
 				throw new BackupCanceledException();
 			}
 			if (files[i].isDirectory()) {
-				File newBackupDir = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
-						+ files[i].getName());
+				File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 				newBackupDir.mkdir();
 				recursiveBackup(files[i], newBackupDir);
 			} else {
 				// Entsprechendes StrucutreFile aus dem Index:
 				StructureFile fileInIndex = getStructureFileFromIndex(files[i], sourceRootDir);
 
-				File newFile = new File(backupDir.getAbsolutePath() + System.getProperty("file.separator")
-						+ files[i].getName());
+				File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 
 				if (fileInIndex == null) {
 					// Befindet die Datei sich nicht im Index, wird sie kopiert
@@ -321,14 +319,14 @@ public class HardlinkBackup implements Backupable {
 						// Fehler beim kopieren einer Datei (z.B. wegen
 						// fehlenden Rechten)
 						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
-								+ System.getProperty("file.separator") + sourceFile.getPath();
+								+ File.separator + sourceFile.getPath();
 						listener.printOut(outprint, true);
 						listener.log(outprint, listener.getCurrentTask());
 					}
 				} else {
 					// Datei liegt in der neuesten Version im Backup vor
-					File fileToLinkFrom = new File(destinationPath + System.getProperty("file.separator")
-							+ newestBackupPath + fileInIndex.getFilePath());
+					File fileToLinkFrom = new File(destinationPath + File.separator + newestBackupPath
+							+ fileInIndex.getFilePath());
 					if (fileToLinkFrom.exists()) {
 						BackupHelper.hardlinkFile(fileToLinkFrom, newFile, listener);
 					} else {
@@ -358,12 +356,12 @@ public class HardlinkBackup implements Backupable {
 						listener.printOut(outprint, false);
 						listener.log(outprint, listener.getCurrentTask());
 						createIndex(new File(rootPathForIndex));
-						
+
 						// Indizierung wurde abgebrochen:
 						if (directoryStructure == null) {
 							throw new BackupCanceledException();
 						}
-						
+
 						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
 						listener.printOut(outprint, false);
 						listener.log(outprint, listener.getCurrentTask());
@@ -384,7 +382,7 @@ public class HardlinkBackup implements Backupable {
 							// Fehler beim kopieren einer Datei (z.B. wegen
 							// fehlenden Rechten)
 							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
-									+ System.getProperty("file.separator") + sourceFile.getPath();
+									+ File.separator + sourceFile.getPath();
 
 							listener.printOut(outprint, true);
 							listener.log(outprint, listener.getCurrentTask());
@@ -410,7 +408,7 @@ public class HardlinkBackup implements Backupable {
 
 		// Namen der Datei "zerlegen":
 		StringTokenizer tokenizerOfFile = new StringTokenizer(
-				file.getAbsolutePath().substring(sourceRootPath.length()), System.getProperty("file.separator"));
+				file.getAbsolutePath().substring(sourceRootPath.length()), File.separator);
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 
@@ -460,7 +458,7 @@ public class HardlinkBackup implements Backupable {
 
 		// Verzeichnisstruktur speichern:
 		// File anlegen:
-		File index = new File(backupSetPath + System.getProperty("file.separator") + "index_" + taskName + ".ser");
+		File index = new File(backupSetPath + File.separator + "index_" + taskName + ".ser");
 		// Prüfen ob bereits ein Index existert:
 		if (!index.exists()) {
 			try {
