@@ -1,5 +1,6 @@
 package test;
 
+import main.BackupHelper;
 import main.BackupTask;
 import main.Controller;
 import main.NormalBackup;
@@ -47,7 +48,7 @@ public class BackupTest {
 	}
 
 	@Test
-	public void testNormalBackup1() {
+	public void testNormalBackupSingleFile() {
 		BackupTask task = new BackupTask("test");
 		task.addSourcePath(testFolder + "/source");
 		task.setDestinationPath(testFolder + "/dest");
@@ -71,18 +72,15 @@ public class BackupTest {
 		String originalHash;
 		String backupHash;
 		try {
-			originalHash = calcMD5(original);
+			originalHash = BackupHelper.calcMD5(original);
 		} catch (Exception e) {
 			return;
 		}
 		try {
-			backupHash = calcMD5(testFile);
+			backupHash =  BackupHelper.calcMD5(testFile);
 		} catch (Exception e) {
 			return;
 		}
-		
-		System.out.println(originalHash);
-		System.out.println(backupHash);
 		
 		assertTrue(originalHash.equals(backupHash));
 
@@ -90,31 +88,6 @@ public class BackupTest {
 		testFile.delete();
 		(new File(testFolder + "/dest/" + filesInDest[0] + "/source")).delete();
 		(new File(testFolder + "/dest/" + filesInDest[0])).delete();
-	}
-
-	private String calcMD5(File f) throws Exception {
-		MessageDigest md;
-
-		md = MessageDigest.getInstance("MD5");
-
-		FileInputStream fis;
-
-		fis = new FileInputStream(f.getAbsoluteFile());
-
-		byte[] dataBytes = new byte[1024];
-
-		int nread = 0;
-		while ((nread = fis.read(dataBytes)) != -1) {
-			md.update(dataBytes, 0, nread);
-		}
-		;
-		byte[] mdbytes = md.digest();
-
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < mdbytes.length; i++) {
-			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-		}
-		return sb.toString();
 	}
 
 }

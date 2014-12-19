@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
@@ -152,5 +154,38 @@ public final class BackupHelper {
 			return null;
 		}
 		return dir;
+	}
+	
+	/**
+	 * Berechnet den MD5 Hashwert der gegebenen Datei.
+	 * @param f Datei von der der Hadhwert berechnet werden soll
+	 * @return MD5-Hashwert der gegebenen Datei
+	 * @throws NoSuchAlgorithmException wird nie geworfen (da der Algorithmus hardcoded ist)
+	 * @throws FileNotFoundException Wird bei ungültiger gegebener Datei geworfen
+	 * @throws IOException 
+	 */
+	public static String calcMD5(File f) throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+		MessageDigest md;
+
+		md = MessageDigest.getInstance("MD5");
+
+		FileInputStream fis;
+
+		fis = new FileInputStream(f.getAbsoluteFile());
+
+		byte[] dataBytes = new byte[1024];
+
+		int nread = 0;
+		while ((nread = fis.read(dataBytes)) != -1) {
+			md.update(dataBytes, 0, nread);
+		}
+		;
+		byte[] mdbytes = md.digest();
+
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < mdbytes.length; i++) {
+			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+		}
+		return sb.toString();
 	}
 }
