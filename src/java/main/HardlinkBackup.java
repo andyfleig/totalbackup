@@ -54,6 +54,15 @@ public class HardlinkBackup implements Backupable {
 	 * Zu bearbeitende Elemente
 	 */
 	private LinkedList<BackupElement> elementQueue;
+	/**
+	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann
+	 * runBackup() aufgerufen werden.
+	 */
+	private boolean preparationDone = false;
+	/**
+	 * Aktuelles Backup-Directory.
+	 */
+	File backupDir;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -74,8 +83,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	@Override
-	public void runBackup(String taskName) throws FileNotFoundException, IOException {
-
+	public void runPreparation() {
 		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup");
 		listener.printOut(outprint, false);
 		listener.log(outprint, listener.getCurrentTask());
@@ -204,11 +212,10 @@ public class HardlinkBackup implements Backupable {
 				return;
 			}
 		}
-
 		// Eigentliches Hardlink Backup:
 		// Backup-Ordner anlegen:
-		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
-		if (dir == null) {
+		backupDir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
+		if (backupDir == null) {
 			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(outprint, true);
 			return;
@@ -218,7 +225,7 @@ public class HardlinkBackup implements Backupable {
 			for (int i = 0; i < sourcePaths.size(); i++) {
 				File sourceFile = new File(sourcePaths.get(i));
 
-				String folder = dir.getAbsolutePath() + File.separator + sourceFile.getName();
+				String folder = backupDir.getAbsolutePath() + File.separator + sourceFile.getName();
 				File f = new File(folder);
 
 				if (f.mkdir()) {
@@ -239,6 +246,17 @@ public class HardlinkBackup implements Backupable {
 					// TODO
 				}
 			}
+		} catch (BackupCanceledException e) {
+			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			listener.printOut(outprint, false);
+			listener.log(outprint, listener.getCurrentTask());
+		}
+	}
+
+	@Override
+	public void runBackup(String taskName) throws FileNotFoundException, IOException {
+
+		try {
 			// Eigentlicher Backup-Vorgang:
 			while (!elementQueue.isEmpty()) {
 				BackupElement currentElement = elementQueue.pop();
@@ -256,27 +274,27 @@ public class HardlinkBackup implements Backupable {
 			}
 
 			// Index des Backup-Satzen erzeugen und serialisiert:
-			createIndex(dir);
+			createIndex(backupDir);
 
 			// Indizierung wurde abgebrochen:
 			if (directoryStructure == null) {
 				throw new BackupCanceledException();
 			}
 
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
 			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
 
-			serializeIndex(taskName, dir.getAbsolutePath());
+			serializeIndex(taskName, backupDir.getAbsolutePath());
 
 			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
 		} catch (BackupCanceledException e) {
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
 		}

@@ -6,6 +6,11 @@ import java.io.IOException;
 public interface Backupable {
 
 	/**
+	 * Bereitet den Backup-Vorgang vor (sammelt zu bearbeitenden Dateien)
+	 */
+	public void runPreparation();
+	
+	/**
 	 * Führt das Backup aus.
 	 * 
 	 * @param taskName

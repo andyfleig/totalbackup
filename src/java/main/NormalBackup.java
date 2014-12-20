@@ -29,6 +29,11 @@ public class NormalBackup implements Backupable {
 	 * Zu bearbeitende Elemente
 	 */
 	private LinkedList<BackupElement> elementQueue;
+	/**
+	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann
+	 * runBackup() aufgerufen werden.
+	 */
+	private boolean preparationDone = false;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -48,16 +53,8 @@ public class NormalBackup implements Backupable {
 		elementQueue = new LinkedList<BackupElement>();
 	}
 
-	/**
-	 * Startet den Backup-Vorgang.
-	 * 
-	 * @param taskName
-	 *            Name des Backup-Tasks welcher ausgeführt wird
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public void runBackup(String taskName) throws FileNotFoundException, IOException {
-
+	@Override
+	public void runPreparation() {
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
 		if (dir == null) {
 			// listener.printOut(listener.getCurrentTask(),
@@ -93,6 +90,30 @@ public class NormalBackup implements Backupable {
 					// TODO
 				}
 			}
+		} catch (BackupCanceledException e) {
+			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			listener.printOut(outprint, false);
+			listener.log(outprint, listener.getCurrentTask());
+		}
+		preparationDone = true;
+	}
+
+	/**
+	 * Startet den Backup-Vorgang.
+	 * 
+	 * @param taskName
+	 *            Name des Backup-Tasks welcher ausgeführt wird
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public void runBackup(String taskName) throws FileNotFoundException, IOException {
+		// Test ob die Vorbereitung durchgeführt wurden:
+		if (!preparationDone) {
+			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
+			return;
+		}
+
+		try {
 			// Eigentlicher Backup-Vorgang:
 			while (!elementQueue.isEmpty()) {
 				BackupElement currentElement = elementQueue.pop();
@@ -107,7 +128,6 @@ public class NormalBackup implements Backupable {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
-
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false);

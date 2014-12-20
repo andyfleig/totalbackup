@@ -226,6 +226,7 @@ public class Controller {
 					task.getDestinationPath());
 		}
 		try {
+			backup.runPreparation();
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
