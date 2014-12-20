@@ -405,7 +405,8 @@ public class Mainframe {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						// TODO: früher: listener.startAllBackups();
+						// TODO: Implementieren! Mit oben zusammenlegen?
+						
 					}
 				});
 				backupThread.start();
