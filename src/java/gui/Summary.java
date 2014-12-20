@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class Summary extends JDialog {
 
@@ -40,6 +42,14 @@ public class Summary extends JDialog {
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		
+		{
+			JLabel lblAktuellerBackuptask = new JLabel("Aktueller Backup-Task:");
+			contentPanel.add(lblAktuellerBackuptask);
+		}
+		
+		JLabel lblNewLabel = new JLabel("");
+		contentPanel.add(lblNewLabel);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -70,6 +80,8 @@ public class Summary extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		
+		//Inhalte hinzufügen:
+		lblNewLabel.setText(listener.getTaskName());
 	}
-
 }

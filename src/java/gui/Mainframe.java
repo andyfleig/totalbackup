@@ -333,6 +333,12 @@ public class Mainframe {
 								public void startBackup() {
 									startBackupTask();
 								}
+
+								@Override
+								public String getTaskName() {
+									//TODO: schön?
+									return selectedTask.getTaskName();
+								}
 								
 							});
 							summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
