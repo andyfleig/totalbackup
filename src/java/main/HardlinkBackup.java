@@ -63,6 +63,8 @@ public class HardlinkBackup implements Backupable {
 	 * Aktuelles Backup-Directory.
 	 */
 	File backupDir;
+	//TODO: JavaDoc
+	String sourceRootDir;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -240,6 +242,8 @@ public class HardlinkBackup implements Backupable {
 				// Queueing:
 				try {
 					for (int j = 0; j < sourcePaths.size(); j++) {
+						sourceRootDir = sourceFile.getAbsolutePath().substring(0,
+								sourcePaths.get(j).length() - sourceFile.getName().length());
 						rekursivePreparation(new File(sourcePaths.get(j)), f);
 					}
 				} catch (BackupCanceledException e) {
@@ -326,12 +330,11 @@ public class HardlinkBackup implements Backupable {
 				File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[j].getName());
 				elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newBackupDir.getAbsolutePath(), true,
 						false));
+				listener.increaseNumberOfDirectories();
 				rekursivePreparation(files[j], newBackupDir);
 			} else {
 				// Herausfinden ob zu kopieren oder zu verlinken:
 				// Entsprechendes StrucutreFile aus dem Index:
-				String sourceRootDir = sourceFile.getAbsolutePath().substring(0,
-						sourceFile.getAbsolutePath().length() - sourceFile.getName().length());
 
 				StructureFile fileInIndex = getStructureFileFromIndex(files[j], sourceRootDir);
 
@@ -344,6 +347,8 @@ public class HardlinkBackup implements Backupable {
 					// Backup)
 					elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newFile.getAbsolutePath(), false,
 							false));
+					listener.increaseNumberOfFiles();
+					listener.increaseSizeToCopyBy(files[j].length());
 					continue;
 				}
 				if (files[j].lastModified() > fileInIndex.getLastModifiedDate()) {
@@ -351,6 +356,8 @@ public class HardlinkBackup implements Backupable {
 					// Datei zu kopieren:
 					elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newFile.getAbsolutePath(), false,
 							false));
+					listener.increaseNumberOfFiles();
+					listener.increaseSizeToCopyBy(files[j].length());
 				} else {
 					// Datei liegt in der aktuellen Version vor
 
@@ -361,6 +368,8 @@ public class HardlinkBackup implements Backupable {
 						// Datei verlinken:
 						elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile.getAbsolutePath(),
 								false, true));
+						listener.increaseNumberOfFiles();
+						listener.increaseSizeToLinkBy(files[j].length());
 					} else {
 						// File exisitiert im Backup-Satz nicht (aber im Index)
 						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BadIndex");
@@ -408,6 +417,8 @@ public class HardlinkBackup implements Backupable {
 						// Datei zu kopieren:
 						elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
+						listener.increaseNumberOfFiles();
+						listener.increaseSizeToCopyBy(files[j].length());
 					}
 				}
 			}

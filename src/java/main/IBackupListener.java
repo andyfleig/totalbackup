@@ -44,5 +44,10 @@ public interface IBackupListener {
 	 * @return Status der erweiterten Ausgabe
 	 */
 	public boolean advancedOutputIsEnabled();
-
+	
+	//TODO: JavaDoc
+	public void increaseNumberOfDirectories();
+	public void increaseNumberOfFiles();
+	public void increaseSizeToCopyBy(double sizeToIncreaseBy);
+	public void increaseSizeToLinkBy(double sizeToIncreaseBy);
 }

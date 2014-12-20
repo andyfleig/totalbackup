@@ -56,4 +56,12 @@ public interface IMainframeListener {
 	 *            hinzuzufügender Backup-Task
 	 */
 	public void addBackupTask(BackupTask task);
+	
+	public void clearBackupInfos();
+	
+	//TODO: JavaDoc
+	public long getNumberOfDirectories();
+	public long getNumberOfFiles();
+	public double getSizeToCopy();
+	public double getSizeToLink();
 }

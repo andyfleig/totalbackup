@@ -1,5 +1,6 @@
 package gui;
 
+import main.BackupInfos;
 import main.Controller;
 import main.BackupTask;
 import gui.About;
@@ -338,6 +339,31 @@ public class Mainframe {
 								public String getTaskName() {
 									//TODO: schön?
 									return selectedTask.getTaskName();
+								}
+
+								@Override
+								public long getNumberOfDirectories() {
+									return listener.getNumberOfDirectories();
+								}
+
+								@Override
+								public long getNumberOfFiles() {
+									return listener.getNumberOfFiles();
+								}
+
+								@Override
+								public double getSizeToCopy() {
+									return listener.getSizeToCopy();
+								}
+
+								@Override
+								public double getSizeToLink() {
+									return listener.getSizeToLink();
+								}
+
+								@Override
+								public void clearBackupInfos() {
+									listener.clearBackupInfos();
 								}
 								
 							});

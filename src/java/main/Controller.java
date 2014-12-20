@@ -38,11 +38,13 @@ public class Controller {
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 	private Backupable backup;
 	private IBackupListener backupListener;
+	private BackupInfos backupInfos;
 
 	/**
 	 * Startet und initialisiert den Controller.
 	 */
 	public void startController() {
+		backupInfos = new BackupInfos();
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
@@ -83,6 +85,31 @@ public class Controller {
 						public void addBackupTask(BackupTask task) {
 							Controller.this.addBackupTask(task);
 
+						}
+
+						@Override
+						public long getNumberOfDirectories() {
+							return backupInfos.getNumberOfDirectories();
+						}
+
+						@Override
+						public long getNumberOfFiles() {
+							return backupInfos.getNumberOfFiles();
+						}
+
+						@Override
+						public double getSizeToCopy() {
+							return backupInfos.getSizeToCopy();
+						}
+
+						@Override
+						public double getSizeToLink() {
+							return backupInfos.getSizeToLink();
+						}
+
+						@Override
+						public void clearBackupInfos() {
+							backupInfos.clear();
 						}
 
 					});
@@ -193,6 +220,30 @@ public class Controller {
 			@Override
 			public boolean advancedOutputIsEnabled() {
 				return Controller.this.advancedOutputIsEnabled();
+			}
+
+			@Override
+			public void increaseNumberOfDirectories() {
+				backupInfos.increaseNumberOfDirectories();
+				
+			}
+
+			@Override
+			public void increaseNumberOfFiles() {
+				backupInfos.increaseNumberOfFiles();
+				
+			}
+
+			@Override
+			public void increaseSizeToCopyBy(double sizeToIncreaseBy) {
+				backupInfos.increaseSizeToCopyBy(sizeToIncreaseBy);
+				
+			}
+
+			@Override
+			public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
+				backupInfos.increaseSizeToLinkBy(sizeToIncreaseBy);
+				
 			}
 
 		};

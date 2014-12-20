@@ -34,6 +34,9 @@ public class NormalBackup implements Backupable {
 	 * runBackup() aufgerufen werden.
 	 */
 	private boolean preparationDone = false;
+	
+	//TODO: JavaDoc
+	private static final long BYTES_OF_A_MB = 1000000;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -155,11 +158,15 @@ public class NormalBackup implements Backupable {
 				File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 				elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(), true,
 						false));
+				listener.increaseNumberOfDirectories();
 				rekursivePreparation(files[i], newBackupDir);
 			} else {
 				File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 				elementQueue
 						.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
+				listener.increaseNumberOfFiles();
+				System.out.println(files[i].length());
+				listener.increaseSizeToCopyBy(files[i].length());
 			}
 		}
 	}
