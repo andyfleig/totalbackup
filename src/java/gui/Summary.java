@@ -7,8 +7,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ResourceBundle;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -42,13 +45,11 @@ public class Summary extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
-		{
-			JLabel lbl_taskName = new JLabel("Aktueller Backup-Task:");
-			lbl_taskName.setBounds(12, 10, 267, 15);
-			contentPanel.add(lbl_taskName);
-		}
-		
+
+		JLabel lbl_taskName = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Summary.lbl_taskName"));
+		lbl_taskName.setBounds(12, 10, 267, 15);
+		contentPanel.add(lbl_taskName);
+
 		JLabel lbl_taskNameDyn = new JLabel("");
 		lbl_taskNameDyn.setBounds(307, 10, 78, 15);
 		contentPanel.add(lbl_taskNameDyn);
@@ -57,8 +58,8 @@ public class Summary extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Start");
-				okButton.addActionListener(new ActionListener() {
+				JButton btn_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("Summary.btn_ok"));
+				btn_ok.addActionListener(new ActionListener() {
 					// Button Start:
 					public void actionPerformed(ActionEvent arg0) {
 						Summary.this.listener.startBackup();
@@ -66,26 +67,28 @@ public class Summary extends JDialog {
 						Summary.this.dispose();
 					}
 				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				btn_ok.setActionCommand("OK");
+				buttonPane.add(btn_ok);
+				getRootPane().setDefaultButton(btn_ok);
 			}
 			{
-				JButton cancelButton = new JButton("Abbrechen");
-				cancelButton.addActionListener(new ActionListener() {
+				JButton btn_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+						"Summary.btn_cancel"));
+				btn_cancel.addActionListener(new ActionListener() {
 					// Button Cancel:
 					public void actionPerformed(ActionEvent e) {
 						clearBackupInfos();
 						Summary.this.dispose();
 					}
 				});
-				//TODO: angelegten Backup-Ordner löschen
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				// TODO: angelegten Backup-Ordner löschen
+				btn_cancel.setActionCommand("Cancel");
+				buttonPane.add(btn_cancel);
 			}
 		}
-		
-		JLabel lbl_numberOfDirs = new JLabel("Anzahl der zu kopierenden Ordner:");
+
+		JLabel lbl_numberOfDirs = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"Summary.lbl_numberOfDirs"));
 		lbl_numberOfDirs.setBounds(12, 37, 267, 15);
 		contentPanel.add(lbl_numberOfDirs);
 
@@ -93,73 +96,69 @@ public class Summary extends JDialog {
 		lbl_numberOfDirsDyn.setBounds(307, 37, 78, 15);
 		contentPanel.add(lbl_numberOfDirsDyn);
 
-		JLabel lbl_numberOfFiles = new JLabel("Anzahl der zu kopierenden Dateien:");
+		JLabel lbl_numberOfFiles = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"Summary.lbl_numberOfFiles"));
 		lbl_numberOfFiles.setBounds(12, 64, 267, 15);
 		contentPanel.add(lbl_numberOfFiles);
 
 		JLabel lbl_numberOfFilesDyn = new JLabel((String) null);
 		lbl_numberOfFilesDyn.setBounds(307, 64, 78, 15);
 		contentPanel.add(lbl_numberOfFilesDyn);
-		
-		JLabel lbl_sizeToCopy = new JLabel("Größe der zu kopierenden Dateien:");
+
+		JLabel lbl_sizeToCopy = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Summary.lbl_sizeToCopy"));
 		lbl_sizeToCopy.setBounds(12, 91, 267, 15);
 		contentPanel.add(lbl_sizeToCopy);
-		
-		JLabel lbl_sizeToLink = new JLabel("Größe der zu verlinkenden Dateien:");
+
+		JLabel lbl_sizeToLink = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Summary.lbl_sizeToLink"));
 		lbl_sizeToLink.setBounds(12, 118, 267, 15);
 		contentPanel.add(lbl_sizeToLink);
-		
+
 		JLabel lbl_sizeToCopyDyn = new JLabel("0");
 		lbl_sizeToCopyDyn.setBounds(307, 91, 78, 15);
 		contentPanel.add(lbl_sizeToCopyDyn);
-		
+
 		JLabel lbl_sizeToLinkDyn = new JLabel("0");
 		lbl_sizeToLinkDyn.setBounds(307, 118, 78, 15);
 		contentPanel.add(lbl_sizeToLinkDyn);
-		
-		
-		
-		
-		
-		//Inhalte hinzufügen:
+
+		// Inhalte hinzufügen:
 		lbl_taskNameDyn.setText(listener.getTaskName());
 		lbl_numberOfFilesDyn.setText(String.valueOf(listener.getNumberOfFiles()).toString());
 		lbl_numberOfDirsDyn.setText(String.valueOf(listener.getNumberOfDirectories()).toString());
-		
-		//Größe der zu kopierenden Dateien:
+
+		// Größe der zu kopierenden Dateien:
 		double size = listener.getSizeToCopy();
 		if (size < 1000) {
 			String result = String.valueOf(listener.getSizeToCopy()) + "Byte";
 			lbl_sizeToCopyDyn.setText(result);
 		} else if (size < 1000000) {
-			String result = String.valueOf(listener.getSizeToCopy()/1000) + "kB";
+			String result = String.valueOf(listener.getSizeToCopy() / 1000) + "kB";
 			lbl_sizeToCopyDyn.setText(result);
 		} else if (size < 1000000000) {
-			String result = String.valueOf(listener.getSizeToCopy()/1000000) + "MB";
+			String result = String.valueOf(listener.getSizeToCopy() / 1000000) + "MB";
 			lbl_sizeToCopyDyn.setText(result);
 		} else {
-			String result = String.valueOf(listener.getSizeToCopy()/1000000000) + "GB";
+			String result = String.valueOf(listener.getSizeToCopy() / 1000000000) + "GB";
 			lbl_sizeToCopyDyn.setText(result);
 		}
-		
-		
-		//Größe der zu kopierenden Dateien:
-				size = listener.getSizeToLink();
-				if (size < 1000) {
-					String result = String.valueOf(listener.getSizeToLink()) + "Byte";
-					lbl_sizeToLinkDyn.setText(result);
-				} else if (size < 1000000) {
-					String result = String.valueOf(listener.getSizeToLink()/1000) + "kB";
-					lbl_sizeToLinkDyn.setText(result);
-				} else if (size < 1000000000) {
-					String result = String.valueOf(listener.getSizeToLink()/1000000) + "MB";
-					lbl_sizeToLinkDyn.setText(result);
-				} else {
-					String result = String.valueOf(listener.getSizeToLink()/1000000000) + "GB";
-					lbl_sizeToLinkDyn.setText(result);
-				}
+
+		// Größe der zu kopierenden Dateien:
+		size = listener.getSizeToLink();
+		if (size < 1000) {
+			String result = String.valueOf(listener.getSizeToLink()) + "Byte";
+			lbl_sizeToLinkDyn.setText(result);
+		} else if (size < 1000000) {
+			String result = String.valueOf(listener.getSizeToLink() / 1000) + "kB";
+			lbl_sizeToLinkDyn.setText(result);
+		} else if (size < 1000000000) {
+			String result = String.valueOf(listener.getSizeToLink() / 1000000) + "MB";
+			lbl_sizeToLinkDyn.setText(result);
+		} else {
+			String result = String.valueOf(listener.getSizeToLink() / 1000000000) + "GB";
+			lbl_sizeToLinkDyn.setText(result);
+		}
 	}
-	
+
 	private void clearBackupInfos() {
 		listener.clearBackupInfos();
 	}
