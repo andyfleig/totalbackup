@@ -196,7 +196,7 @@ public class Controller {
 
 		};
 
-		// Backup-Object in abhängigkeit des Backup-Modus erstellen:
+		// Backup-Objekt in Abhängigkeit des Backup-Modus erstellen:
 		if (task.getBackupMode() == 1) {
 			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
 			// sich um die erste Ausführung handelt:
