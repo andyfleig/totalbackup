@@ -240,7 +240,6 @@ public class HardlinkBackup implements Backupable {
 				}
 			}
 			// Eigentlicher Backup-Vorgang:
-			// HIER
 			while (!elementQueue.isEmpty()) {
 				BackupElement currentElement = elementQueue.pop();
 				if (currentElement.isDirectory()) {
