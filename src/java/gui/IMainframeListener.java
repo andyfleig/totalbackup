@@ -5,11 +5,17 @@ import java.util.ArrayList;
 import main.BackupTask;
 
 public interface IMainframeListener {
-	/**
-	 * Startet alle Backup-Tasks.
-	 */
-	public void startAllBackups();
 	
+	/**
+	 * Startet das Vorbereiten eines bestimmten Backup-Tasks.
+	 * @param task vorzubereitender Backup-Task
+	 */
+	public void startPreparation(BackupTask task);
+
+	/**
+	 * Startet einen bestimmten Backup-Task.
+	 * @param task zu startender Backup-Task
+	 */
 	public void startBackupTask(BackupTask task);
 	
 	/**

@@ -31,10 +31,13 @@ import javax.swing.SwingUtilities;
  */
 public class Controller {
 
+	// TODO: JavaDoc
 	private Mainframe mainframe;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 	private BackupTask currentTask = null;
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
+	private Backupable backup;
+	private IBackupListener backupListener;
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -46,8 +49,8 @@ public class Controller {
 					mainframe = new Mainframe(new IMainframeListener() {
 
 						@Override
-						public void startAllBackups() {
-							Controller.this.startAllBackups();
+						public void startPreparation(BackupTask task) {
+							Controller.this.startPreparation(task);
 						}
 
 						@Override
@@ -135,24 +138,22 @@ public class Controller {
 	/**
 	 * Startet alle Backup-Tasks.
 	 */
+	// TODO: Anpassen!
 	public void startAllBackups() {
 		for (int i = 0; i < backupTasks.size(); i++) {
 			startBackup(backupTasks.get(i));
 		}
 	}
-
+	
 	/**
-	 * Startet den Backup-Vorgang eines bestimmten Backup-Tasks.
-	 * 
-	 * @param task
-	 *            Backup-Task welcher ausgeführt werden soll
+	 * Startet die Backup-Vorbereitung.
 	 */
-	public void startBackup(BackupTask task) {
+	public void startPreparation(BackupTask task) {
 		mainframe.setButtonsToBackupRunning(false);
 		currentTask = task;
-		Backupable backup;
+
 		// Listener anlegen:
-		IBackupListener backupListener = new IBackupListener() {
+		backupListener = new IBackupListener() {
 
 			@Override
 			public void printOut(final String s, final boolean error) {
@@ -225,8 +226,38 @@ public class Controller {
 			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
 					task.getDestinationPath());
 		}
+		
 		try {
 			backup.runPreparation();
+		} catch (BackupCanceledException ex) {
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			printOut(output, false);
+			log(output, currentTask);
+		}
+
+		currentTask = null;
+		mainframe.setButtonsToBackupRunning(true);
+
+		task.setPrepared(true);
+	}
+
+	/**
+	 * Startet den Backup-Vorgang eines bestimmten Backup-Tasks.
+	 * 
+	 * @param task
+	 *            Backup-Task welcher ausgeführt werden soll
+	 */
+	public void startBackup(BackupTask task) {
+		mainframe.setButtonsToBackupRunning(false);
+		currentTask = task;
+		
+		if (!task.isPrepered()) {
+			currentTask = null;
+			mainframe.setButtonsToBackupRunning(true);
+			return;
+		}
+
+		try {
 			backup.runBackup(task.getTaskName());
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
@@ -261,6 +292,7 @@ public class Controller {
 		}
 		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
+		
 	}
 
 	/**

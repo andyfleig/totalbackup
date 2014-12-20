@@ -21,6 +21,7 @@ public class BackupTask implements Serializable {
 	private int backupMode;
 	private boolean autoCleanIsEnabled;
 	private int numberOfBackupsToKeep;
+	private boolean isPrepared = false;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -193,5 +194,15 @@ public class BackupTask implements Serializable {
 	 */
 	public int getNumberOfBackupsToKeep() {
 		return numberOfBackupsToKeep;
+	}
+	
+	//TODO: JavaDoc
+	public boolean isPrepered() {
+		return isPrepared;
+	}
+	
+	//TODO: JavaDoc
+	public void setPrepared(boolean prepared) {
+		this.isPrepared = prepared;
 	}
 }

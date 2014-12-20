@@ -58,6 +58,7 @@ public class Mainframe {
 	private final Action action_quit = new SA_Quit();
 	private JTextPane tp_Output;
 	private JList<BackupTask> list_Tasks;
+	private BackupTask selectedTask;
 
 	private JButton btn_StartAll;
 	private JButton btn_Add;
@@ -79,6 +80,8 @@ public class Mainframe {
 	private StyledDocument tpOutput_doc;
 
 	private Thread backupThread;
+	
+	
 
 	File sourceFile;
 	File destinationFile;
@@ -203,7 +206,7 @@ public class Mainframe {
 		panel_4.setLayout(new BorderLayout());
 		panel_4.add(scrollPane, BorderLayout.CENTER);
 
-		// Ceckbox erweiterte Ausgabe:
+		// Checkbox erweiterte Ausgabe:
 		cb_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString("Mainframe.cb_advancedOutput.text"));
 		panel_4.add(cb_advancedOutput, BorderLayout.SOUTH);
 
@@ -320,7 +323,20 @@ public class Mainframe {
 					@Override
 					public void run() {
 						if (!list_Tasks.isSelectionEmpty()) {
-							listener.startBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+							selectedTask = listModel.getElementAt(list_Tasks.getSelectedIndex());
+							//TODO: !!!
+							//Öffne bitte warten Fenster
+							listener.startPreparation(selectedTask);
+							Summary summary = new Summary(new ISummaryListener() {
+
+								@Override
+								public void startBackup() {
+									startBackupTask();
+								}
+								
+							});
+							summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							summary.setVisible(true);
 						}
 					}
 				});
@@ -359,12 +375,10 @@ public class Mainframe {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						listener.startAllBackups();
+						//TODO: früher: listener.startAllBackups();
 					}
 				});
 				backupThread.start();
-
-				// listener.startAllBackups();
 			}
 		});
 		panel_1.add(btnCancel);
@@ -382,6 +396,9 @@ public class Mainframe {
 		// this.controller = c;
 	}
 
+	private void startBackupTask() {
+		listener.startBackupTask(selectedTask);
+	}
 	private void addPopup(Component component, final JPopupMenu popup) {
 		component.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
