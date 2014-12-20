@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.File;
 import java.util.*;
 
-import javax.naming.directory.DirContext;
-
 public class NormalBackup implements Backupable {
 
 	/**

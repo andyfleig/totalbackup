@@ -244,6 +244,7 @@ public class Edit extends JDialog {
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			
 			{
 				// Button OK:
 				JButton btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Ok.text")); //$NON-NLS-1$ //$NON-NLS-2$
