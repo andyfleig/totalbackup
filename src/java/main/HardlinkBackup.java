@@ -244,7 +244,9 @@ public class HardlinkBackup implements Backupable {
 						rekursivePreparation(new File(sourcePaths.get(j)), f);
 					}
 				} catch (BackupCanceledException e) {
-					// TODO
+					outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+					listener.printOut(outprint, false);
+					listener.log(outprint, listener.getCurrentTask());
 				}
 			}
 		} catch (BackupCanceledException e) {

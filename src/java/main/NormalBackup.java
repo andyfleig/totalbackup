@@ -88,7 +88,9 @@ public class NormalBackup implements Backupable {
 						rekursivePreparation(new File(sourcePaths.get(j)), f);
 					}
 				} catch (BackupCanceledException e) {
-					// TODO
+					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+					listener.printOut(outprint, false);
+					listener.log(outprint, listener.getCurrentTask());
 				}
 			}
 		} catch (BackupCanceledException e) {
