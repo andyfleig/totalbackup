@@ -25,7 +25,7 @@ public class Summary extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Summary dialog = new Summary();
+			Summary dialog = new Summary(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
