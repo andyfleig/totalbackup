@@ -196,12 +196,18 @@ public class BackupTask implements Serializable {
 		return numberOfBackupsToKeep;
 	}
 	
-	//TODO: JavaDoc
+	/**
+	 * Gibt zurück ob dieser BackupTask vorbereitet (zur Ausführung bereit) ist
+	 * @return true wenn die Vorbereitungen getroffen wurden, false sonst
+	 */
 	public boolean isPrepered() {
 		return isPrepared;
 	}
 	
-	//TODO: JavaDoc
+	/**
+	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht vorbereitet.
+	 * @param prepared true = vorbereitet, false = nicht vorbereitet
+	 */
 	public void setPrepared(boolean prepared) {
 		this.isPrepared = prepared;
 	}

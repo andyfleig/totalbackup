@@ -82,6 +82,9 @@ public interface IMainframeListener {
 	 */
 	public double getSizeToLink();
 	
-	//TODO: JavaDoc
+	/**
+	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
+	 * Backup-Vorgangs nach der Übersicht)
+	 */
 	public void deleteEmptyBackupFolders(String path);
 }

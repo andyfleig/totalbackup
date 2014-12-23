@@ -31,7 +31,6 @@ import javax.swing.SwingUtilities;
  */
 public class Controller {
 
-	// TODO: JavaDoc
 	private Mainframe mainframe;
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 	private BackupTask currentTask = null;

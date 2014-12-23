@@ -60,7 +60,9 @@ public class HardlinkBackup implements Backupable {
 	 * Aktuelles Backup-Directory.
 	 */
 	File backupDir;
-	//TODO: JavaDoc
+	/**
+	 * Root-Verzeichnis der Quelle.
+	 */
 	String sourceRootDir;
 
 	/**

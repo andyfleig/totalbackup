@@ -32,9 +32,6 @@ public class NormalBackup implements Backupable {
 	 * runBackup() aufgerufen werden.
 	 */
 	private boolean preparationDone = false;
-	
-	//TODO: JavaDoc
-	private static final long BYTES_OF_A_MB = 1000000;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
