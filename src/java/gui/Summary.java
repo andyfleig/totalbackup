@@ -77,11 +77,12 @@ public class Summary extends JDialog {
 				btn_cancel.addActionListener(new ActionListener() {
 					// Button Cancel:
 					public void actionPerformed(ActionEvent e) {
+						// TODO: angelegten Backup-Ordner löschen
+						deleteEmptyBackupFolders();
 						clearBackupInfos();
 						Summary.this.dispose();
 					}
 				});
-				// TODO: angelegten Backup-Ordner löschen
 				btn_cancel.setActionCommand("Cancel");
 				buttonPane.add(btn_cancel);
 			}
@@ -161,5 +162,8 @@ public class Summary extends JDialog {
 
 	private void clearBackupInfos() {
 		listener.clearBackupInfos();
+	}
+	private void deleteEmptyBackupFolders() {
+		listener.deleteEmptyBackupFolders();
 	}
 }

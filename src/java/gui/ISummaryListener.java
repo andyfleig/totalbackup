@@ -35,4 +35,7 @@ public interface ISummaryListener {
 	 * @return Gesamtgröße der zu verlinkenden Dateien
 	 */
 	public double getSizeToLink();
+	
+	//TODO: JavaDoc
+	public void deleteEmptyBackupFolders();
 }

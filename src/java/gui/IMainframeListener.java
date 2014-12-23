@@ -81,4 +81,7 @@ public interface IMainframeListener {
 	 * @return Gesamtgröße der zu verlinkenden Dateien
 	 */
 	public double getSizeToLink();
+	
+	//TODO: JavaDoc
+	public void deleteEmptyBackupFolders(String path);
 }

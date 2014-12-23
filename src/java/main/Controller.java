@@ -112,6 +112,27 @@ public class Controller {
 							backupInfos.clear();
 						}
 
+						@Override
+						public void deleteEmptyBackupFolders(String path) {
+							File currentDest = new File(path);
+							File[] backupFolders = currentDest.listFiles();
+							for (int i = 0; i < backupFolders.length; i++) {
+								if (!backupFolders[i].isDirectory()) {
+									continue;
+								}
+								boolean deleteThisDir = true;
+								File[] filesInBackupFolder = backupFolders[i].listFiles();
+								for (int j = 0; j < filesInBackupFolder.length; j++) {
+									if (filesInBackupFolder[j].listFiles().length != 0) {
+										deleteThisDir = false;
+										break;
+									}
+								}
+								if (deleteThisDir) {
+									BackupHelper.deleteDirectory(backupFolders[i]);
+								}
+							}
+						}
 					});
 					mainframe.frmTotalbackup.setVisible(true);
 				}
@@ -171,7 +192,7 @@ public class Controller {
 			startBackup(backupTasks.get(i));
 		}
 	}
-	
+
 	/**
 	 * Startet die Backup-Vorbereitung.
 	 */
@@ -225,25 +246,25 @@ public class Controller {
 			@Override
 			public void increaseNumberOfDirectories() {
 				backupInfos.increaseNumberOfDirectories();
-				
+
 			}
 
 			@Override
 			public void increaseNumberOfFiles() {
 				backupInfos.increaseNumberOfFiles();
-				
+
 			}
 
 			@Override
 			public void increaseSizeToCopyBy(double sizeToIncreaseBy) {
 				backupInfos.increaseSizeToCopyBy(sizeToIncreaseBy);
-				
+
 			}
 
 			@Override
 			public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
 				backupInfos.increaseSizeToLinkBy(sizeToIncreaseBy);
-				
+
 			}
 
 		};
@@ -277,7 +298,7 @@ public class Controller {
 			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
 					task.getDestinationPath());
 		}
-		
+
 		try {
 			backup.runPreparation();
 		} catch (BackupCanceledException ex) {
@@ -301,7 +322,7 @@ public class Controller {
 	public void startBackup(BackupTask task) {
 		mainframe.setButtonsToBackupRunning(false);
 		currentTask = task;
-		
+
 		if (!task.isPrepered()) {
 			currentTask = null;
 			mainframe.setButtonsToBackupRunning(true);
@@ -343,7 +364,7 @@ public class Controller {
 		}
 		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
-		
+
 	}
 
 	/**

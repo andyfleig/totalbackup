@@ -364,6 +364,11 @@ public class Mainframe {
 									listener.clearBackupInfos();
 								}
 
+								@Override
+								public void deleteEmptyBackupFolders() {
+									listener.deleteEmptyBackupFolders(selectedTask.getDestinationPath());
+								}
+
 							});
 							summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 							summary.setVisible(true);
