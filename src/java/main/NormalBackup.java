@@ -55,9 +55,9 @@ public class NormalBackup implements Backupable {
 	public void runPreparation() {
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
 		if (dir == null) {
-			// listener.printOut(listener.getCurrentTask(),
-			// ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError"),
-			// 0, true);
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			listener.printOut(output, true);
+			listener.log(output, listener.getCurrentTask());
 			return;
 		}
 
@@ -78,6 +78,10 @@ public class NormalBackup implements Backupable {
 					listener.printOut(outprint, true);
 					listener.log(outprint, listener.getCurrentTask());
 				}
+				
+				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
+				listener.printOut(output, false);
+				listener.log(output, listener.getCurrentTask());
 
 				// Queueing:
 				try {
@@ -95,6 +99,9 @@ public class NormalBackup implements Backupable {
 			listener.printOut(outprint, false);
 			listener.log(outprint, listener.getCurrentTask());
 		}
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
+		listener.printOut(output, false);
+		listener.log(output, listener.getCurrentTask());
 		preparationDone = true;
 	}
 
@@ -112,6 +119,9 @@ public class NormalBackup implements Backupable {
 			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
 			return;
 		}
+		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup");
+		listener.printOut(output, false);
+		listener.log(output, listener.getCurrentTask());
 
 		try {
 			// Eigentlicher Backup-Vorgang:

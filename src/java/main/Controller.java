@@ -131,6 +131,16 @@ public class Controller {
 									BackupHelper.deleteDirectory(backupFolders[i]);
 								}
 							}
+							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.deletedBackupFolder");
+							backupListener.printOut(outprint, false);
+							backupListener.log(outprint, backupListener.getCurrentTask());
+						}
+
+						@Override
+						public void outprintBackupCanceled() {
+							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupCanceled");
+							backupListener.printOut(outprint, false);
+							backupListener.log(outprint, backupListener.getCurrentTask());
 						}
 					});
 					mainframe.frmTotalbackup.setVisible(true);

@@ -44,23 +44,30 @@ public interface IBackupListener {
 	 * @return Status der erweiterten Ausgabe
 	 */
 	public boolean advancedOutputIsEnabled();
-	
+
 	/**
 	 * Erhöht die Anzahl der zu bearbeitenden Ordner um 1.
 	 */
 	public void increaseNumberOfDirectories();
+
 	/**
 	 * Erhöht die Anzahl der zu bearbeitenden Ordner um 1.
 	 */
 	public void increaseNumberOfFiles();
+
 	/**
 	 * Erhöht die Gesamtgröße der zu kopierenden Dateien um den gegebenen Wert.
-	 * @param sizeToIncreaseBy Größe um die der Gesamtwert erhöht wird
+	 * 
+	 * @param sizeToIncreaseBy
+	 *            Größe um die der Gesamtwert erhöht wird
 	 */
 	public void increaseSizeToCopyBy(double sizeToIncreaseBy);
+
 	/**
 	 * Erhöht die Gesamtgröße der zu verlinkenden Dateien um den gegebenen Wert.
-	 * @param sizeToIncreaseBy Größe um die der Gesamtwert erhöht wird
+	 * 
+	 * @param sizeToIncreaseBy
+	 *            Größe um die der Gesamtwert erhöht wird
 	 */
 	public void increaseSizeToLinkBy(double sizeToIncreaseBy);
 }

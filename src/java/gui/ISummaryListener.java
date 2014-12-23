@@ -52,4 +52,10 @@ public interface ISummaryListener {
 	 * Backup-Vorgangs nach der Übersicht)
 	 */
 	public void deleteEmptyBackupFolders();
+
+	/**
+	 * Gibt eine Meldung aus, dass das laufende Backup (in der Zusammenfassung)
+	 * abgebrochen wurde.
+	 */
+	public void outprintBackupCanceled();
 }
