@@ -93,6 +93,7 @@ public final class BackupHelper {
 		listener.setStatus("");
 	}
 
+	//TODO: JavaDoc
 	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
 		if (listener.advancedOutputIsEnabled()) {
