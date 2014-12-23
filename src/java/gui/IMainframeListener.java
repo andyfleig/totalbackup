@@ -106,4 +106,25 @@ public interface IMainframeListener {
 	 * abgebrochen wurde.
 	 */
 	public void outprintBackupCanceled();
+	
+	/**
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
+	 * eine Fehlermeldung (rot) handelt oder nicht.
+	 * 
+	 * @param s
+	 *            auszugebender String
+	 * @param error
+	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
+	 */
+	public void printOut(String s, boolean error);
+	
+	/**
+	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
+	 * 
+	 * @param event
+	 *            zu loggender String
+	 * @param task
+	 *            zugehöriger Task
+	 */
+	public void log(String event, BackupTask task);
 }

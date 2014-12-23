@@ -142,6 +142,16 @@ public class Controller {
 							backupListener.printOut(outprint, false);
 							backupListener.log(outprint, backupListener.getCurrentTask());
 						}
+
+						@Override
+						public void printOut(String s, boolean error) {
+							Controller.this.printOut(s, error);
+						}
+
+						@Override
+						public void log(String event, BackupTask task) {
+							Controller.this.log(event, task);
+						}
 					});
 					mainframe.frmTotalbackup.setVisible(true);
 				}
@@ -398,7 +408,7 @@ public class Controller {
 	 * @param error
 	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
-	public void printOut(String s, boolean error) {
+	private void printOut(String s, boolean error) {
 		mainframe.addToOutput(s, error);
 	}
 
