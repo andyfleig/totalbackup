@@ -399,13 +399,14 @@ public class Mainframe {
 		btn_StartAll = new JButton(ResourceBundle.getBundle("gui.messages")
 				.getString("Mainframe.btnBackupStarten.text"));
 		panel_1.add(btn_StartAll);
+		btn_StartAll.setEnabled(false);
 
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						// TODO: Implementieren! Mit oben zusammenlegen?
+						// TODO: Implementieren! Mit oben zusammenlegen? (enable btn)
 						
 					}
 				});
