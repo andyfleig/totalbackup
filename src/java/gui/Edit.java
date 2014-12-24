@@ -127,116 +127,132 @@ public class Edit extends JDialog {
 			}
 		}
 		{
-			Panel panel = new Panel();
+			JPanel panel = new JPanel();
 			contentPanel.add(panel, BorderLayout.CENTER);
-			panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			JPanel panel_2 = new JPanel();
-			panel.add(panel_2);
-			panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-			JLabel lbl_Source = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Edit.lbl_Source.text")); //$NON-NLS-1$ //$NON-NLS-2$
-			panel_2.add(lbl_Source);
-			list_SourcePaths = new JList<String>(listModel);
-			list_SourcePaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			list_SourcePaths.setSelectedIndex(0);
-			list_SourcePaths.setVisibleRowCount(6);
-			JScrollPane listScroller = new JScrollPane(list_SourcePaths);
-			listScroller.setMaximumSize(new Dimension(200, 200));
-			listScroller.setMinimumSize(new Dimension(200, 200));
-			panel_2.add(listScroller);
 			{
-				Panel panel_1 = new Panel();
-				panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
-				panel_2.add(panel_1);
+				Panel panel_3 = new Panel();
+				panel.add(panel_3);
+				panel_3.setLayout(new BorderLayout(0, 0));
+				JPanel panel_2 = new JPanel();
+				panel_3.add(panel_2, BorderLayout.NORTH);
+				panel_2.setLayout(new BorderLayout(0, 0));
+				JLabel lbl_Source = new JLabel(ResourceBundle
+						.getBundle("gui.messages").getString("Edit.lbl_Source.text")); //$NON-NLS-1$ //$NON-NLS-2$
+				panel_2.add(lbl_Source, BorderLayout.NORTH);
 				{
-					// Button Add:
-					JButton btn_Add = new JButton(ResourceBundle
-							.getBundle("gui.messages").getString("Edit.btn_Add.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					btn_Add.setAlignmentX(CENTER_ALIGNMENT);
-					btn_Add.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							JFileChooser fc = new JFileChooser();
-							fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-							int state = fc.showOpenDialog(null);
+					JPanel panel_1 = new JPanel();
+					panel_2.add(panel_1, BorderLayout.CENTER);
+					panel_1.setLayout(new BorderLayout(0, 0));
+					list_SourcePaths = new JList<String>(listModel);
+					list_SourcePaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					list_SourcePaths.setSelectedIndex(0);
+					list_SourcePaths.setVisibleRowCount(6);
+					JScrollPane listScroller = new JScrollPane(list_SourcePaths);
+					panel_1.add(listScroller);
+					listScroller.setMaximumSize(new Dimension(200, 200));
+					listScroller.setMinimumSize(new Dimension(200, 200));
+					{
+						Panel panel_1_1 = new Panel();
+						panel_1.add(panel_1_1, BorderLayout.EAST);
+						panel_1_1.setLayout(new BoxLayout(panel_1_1, BoxLayout.Y_AXIS));
+						{
+							// Button Add:
+							JButton btn_Add = new JButton(ResourceBundle
+									.getBundle("gui.messages").getString("Edit.btn_Add.text")); //$NON-NLS-1$ //$NON-NLS-2$
+							btn_Add.setAlignmentX(CENTER_ALIGNMENT);
+							btn_Add.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									JFileChooser fc = new JFileChooser();
+									fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+									int state = fc.showOpenDialog(null);
 
-							if (state == JFileChooser.APPROVE_OPTION) {
-								sourceFile = fc.getSelectedFile();
-								if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
-									listModel.addElement(sourceFile.getAbsolutePath());
-								} else {
-									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
-											.getString("Edit.ErrSamePath"), ResourceBundle.getBundle("gui.messages")
-											.getString("Edit.ErrMsg"), JOptionPane.INFORMATION_MESSAGE);
+									if (state == JFileChooser.APPROVE_OPTION) {
+										sourceFile = fc.getSelectedFile();
+										if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
+											listModel.addElement(sourceFile.getAbsolutePath());
+										} else {
+											JOptionPane.showMessageDialog(null, ResourceBundle
+													.getBundle("gui.messages").getString("Edit.ErrSamePath"),
+													ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
+													JOptionPane.INFORMATION_MESSAGE);
+										}
+									}
+								}
+							});
+							panel_1_1.add(btn_Add);
+						}
+						{
+							// Button Delete:
+							JButton btn_Delete = new JButton(ResourceBundle
+									.getBundle("gui.messages").getString("Edit.btn_Delete.text")); //$NON-NLS-1$ //$NON-NLS-2$
+							btn_Delete.setAlignmentX(CENTER_ALIGNMENT);
+							btn_Delete.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									if (!list_SourcePaths.isSelectionEmpty()) {
+
+										listModel.remove(list_SourcePaths.getSelectedIndex());
+									}
+								}
+							});
+							{
+								JButton button = new JButton("Bearbeiten");
+								button.setAlignmentX(0.5f);
+								panel_1_1.add(button);
+							}
+							panel_1_1.add(btn_Delete);
+						}
+					}
+				}
+				{
+					Panel panel_1 = new Panel();
+					panel_3.add(panel_1, BorderLayout.CENTER);
+					{
+						JLabel lbl_Destination = new JLabel(ResourceBundle
+								.getBundle("gui.messages").getString("Edit.lbl_Destination.text")); //$NON-NLS-1$ //$NON-NLS-2$
+						panel_1.add(lbl_Destination);
+					}
+					{
+						tf_Destination = new JTextField();
+						panel_1.add(tf_Destination);
+						tf_Destination.setColumns(20);
+					}
+					{
+						// Button Find:
+						JButton btn_Find = new JButton(ResourceBundle
+								.getBundle("gui.messages").getString("Edit.btn_Find.text")); //$NON-NLS-1$ //$NON-NLS-2$
+						btn_Find.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								JFileChooser fc = new JFileChooser();
+								fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+								int state = fc.showOpenDialog(null);
+								if (state == JFileChooser.APPROVE_OPTION) {
+									sourceFile = fc.getSelectedFile();
+									tf_Destination.setText(sourceFile.getAbsolutePath());
 								}
 							}
-						}
-					});
-					panel_1.add(btn_Add);
+						});
+						panel_1.add(btn_Find);
+					}
 				}
 				{
-					// Button Delete:
-					JButton btn_Delete = new JButton(ResourceBundle
-							.getBundle("gui.messages").getString("Edit.btn_Delete.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					btn_Delete.setAlignmentX(CENTER_ALIGNMENT);
-					btn_Delete.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							if (!list_SourcePaths.isSelectionEmpty()) {
-
-								listModel.remove(list_SourcePaths.getSelectedIndex());
-							}
-						}
-					});
-					panel_1.add(btn_Delete);
-				}
-			}
-			{
-				Panel panel_1 = new Panel();
-				panel.add(panel_1);
-				{
-					JLabel lbl_Destination = new JLabel(ResourceBundle
-							.getBundle("gui.messages").getString("Edit.lbl_Destination.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					panel_1.add(lbl_Destination);
-				}
-				{
-					tf_Destination = new JTextField();
-					panel_1.add(tf_Destination);
-					tf_Destination.setColumns(20);
-				}
-				{
-					// Button Find:
-					JButton btn_Find = new JButton(ResourceBundle
-							.getBundle("gui.messages").getString("Edit.btn_Find.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					btn_Find.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							JFileChooser fc = new JFileChooser();
-							fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-							int state = fc.showOpenDialog(null);
-							if (state == JFileChooser.APPROVE_OPTION) {
-								sourceFile = fc.getSelectedFile();
-								tf_Destination.setText(sourceFile.getAbsolutePath());
-							}
-						}
-					});
-					panel_1.add(btn_Find);
-				}
-			}
-			{
-				JPanel p_autoremove = new JPanel();
-				panel.add(p_autoremove);
-				{
-					JLabel lbl_autoclean = new JLabel(ResourceBundle
-							.getBundle("gui.messages").getString("Edit.lblAutomatischesLschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					p_autoremove.add(lbl_autoclean);
-				}
-				{
-					cB_autoClean = new JCheckBox(ResourceBundle
-							.getBundle("gui.messages").getString("Edit.chckbxAnzahlZuBehlatender.text")); //$NON-NLS-1$ //$NON-NLS-2$
-					p_autoremove.add(cB_autoClean);
-				}
-				{
-					s_numberOfBackupsToKeep = new JSpinner();
-					s_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
-							new Integer(1)));
-					p_autoremove.add(s_numberOfBackupsToKeep);
+					JPanel p_autoremove = new JPanel();
+					panel_3.add(p_autoremove, BorderLayout.SOUTH);
+					{
+						JLabel lbl_autoclean = new JLabel(ResourceBundle
+								.getBundle("gui.messages").getString("Edit.lblAutomatischesLschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+						p_autoremove.add(lbl_autoclean);
+					}
+					{
+						cB_autoClean = new JCheckBox(ResourceBundle
+								.getBundle("gui.messages").getString("Edit.chckbxAnzahlZuBehlatender.text")); //$NON-NLS-1$ //$NON-NLS-2$
+						p_autoremove.add(cB_autoClean);
+					}
+					{
+						s_numberOfBackupsToKeep = new JSpinner();
+						s_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
+								new Integer(1)));
+						p_autoremove.add(s_numberOfBackupsToKeep);
+					}
 				}
 			}
 		}
@@ -244,7 +260,7 @@ public class Edit extends JDialog {
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			
+
 			{
 				// Button OK:
 				JButton btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Ok.text")); //$NON-NLS-1$ //$NON-NLS-2$

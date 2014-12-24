@@ -92,17 +92,17 @@ public class Mainframe {
 	 * 
 	 * @deprecated
 	 */
-	public void main(String[] args) {
-		/*
-		 * Mainframe window = new Mainframe(listener);
-		 * window.frmTotalbackup.setVisible(true);
-		 * 
-		 * EventQueue.invokeLater(new Runnable() { public void run() { try {
-		 * window = new Mainframe(listener);
-		 * window.frmTotalbackup.setVisible(true); } catch (Exception e) {
-		 * e.printStackTrace(); } } });
-		 */
-	}
+	// public void main(String[] args) {
+	//
+	// Mainframe window = new Mainframe(listener);
+	// window.frmTotalbackup.setVisible(true);
+	//
+	// EventQueue.invokeLater(new Runnable() { public void run() { try {
+	// window = new Mainframe(listener);
+	// window.frmTotalbackup.setVisible(true); } catch (Exception e) {
+	// e.printStackTrace(); } } });
+	//
+	// }
 
 	/**
 	 * Create the application.
@@ -327,15 +327,17 @@ public class Mainframe {
 							// Testen ob Quell- und Zielpfad(e) existieren:
 							ArrayList<String> sources = selectedTask.getSourcePaths();
 							for (int i = 0; i < sources.size(); i++) {
-								if (!(new File(sources.get(i))).exists()){
-									String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorSourceDontExists");
+								if (!(new File(sources.get(i))).exists()) {
+									String output = ResourceBundle.getBundle("gui.messages").getString(
+											"Mainframe.ErrorSourceDontExists");
 									listener.printOut(output, false);
 									listener.log(output, selectedTask);
 									return;
 								}
 							}
-							if (!(new File(selectedTask.getDestinationPath())).exists()){
-								String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorDestDontExists");
+							if (!(new File(selectedTask.getDestinationPath())).exists()) {
+								String output = ResourceBundle.getBundle("gui.messages").getString(
+										"Mainframe.ErrorDestDontExists");
 								listener.printOut(output, false);
 								return;
 							}
