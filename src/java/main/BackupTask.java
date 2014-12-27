@@ -16,7 +16,7 @@ public class BackupTask implements Serializable {
 	 */
 	private static final long serialVersionUID = 1212577706810419845L;
 	private String taskName;
-	private ArrayList<String> sourcePaths;
+	private ArrayList<Source> sourcePaths;
 	private String destinationPath;
 	private int backupMode;
 	private boolean autoCleanIsEnabled;
@@ -31,7 +31,7 @@ public class BackupTask implements Serializable {
 	 */
 	public BackupTask(String name) {
 		this.taskName = name;
-		sourcePaths = new ArrayList<String>();
+		sourcePaths = new ArrayList<Source>();
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class BackupTask implements Serializable {
 	 * 
 	 * @return alle Quellpfade
 	 */
-	public ArrayList<String> getSourcePaths() {
+	public ArrayList<Source> getSourcePaths() {
 		return sourcePaths;
 	}
 
@@ -58,8 +58,8 @@ public class BackupTask implements Serializable {
 	 * @param path
 	 *            hinzuzufügender Pfad
 	 */
-	public void addSourcePath(String path) {
-		sourcePaths.add(path.trim());
+	public void addSourcePath(Source source) {
+		sourcePaths.add(source);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class BackupTask implements Serializable {
 	 * @param sourcePaths
 	 *            festzulegende Quellpfade
 	 */
-	public void setSourcePaths(ArrayList<String> sourcePaths) {
+	public void setSourcePaths(ArrayList<Source> sourcePaths) {
 		this.sourcePaths = sourcePaths;
 	}
 

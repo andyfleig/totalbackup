@@ -2,6 +2,7 @@ package gui;
 
 import main.Controller;
 import main.BackupTask;
+import main.Source;
 import gui.About;
 import gui.Edit;
 import gui.IEditListener;
@@ -325,9 +326,9 @@ public class Mainframe {
 							selectedTask = listModel.getElementAt(list_Tasks.getSelectedIndex());
 
 							// Testen ob Quell- und Zielpfad(e) existieren:
-							ArrayList<String> sources = selectedTask.getSourcePaths();
+							ArrayList<Source> sources = selectedTask.getSourcePaths();
 							for (int i = 0; i < sources.size(); i++) {
-								if (!(new File(sources.get(i))).exists()) {
+								if (!(new File(sources.get(i).getPath())).exists()) {
 									String output = ResourceBundle.getBundle("gui.messages").getString(
 											"Mainframe.ErrorSourceDontExists");
 									listener.printOut(output, false);

@@ -22,7 +22,7 @@ public class HardlinkBackup implements Backupable {
 	/**
 	 * Liste der Quellpfade
 	 */
-	private ArrayList<String> sourcePaths;
+	private ArrayList<Source> sources;
 	/**
 	 * Name des zu bearbeitenden BackupTasks
 	 */
@@ -75,10 +75,10 @@ public class HardlinkBackup implements Backupable {
 	 * @param destination
 	 *            Zielpfad
 	 */
-	public HardlinkBackup(IBackupListener listener, String nameOfTask, ArrayList<String> sources, String destination) {
+	public HardlinkBackup(IBackupListener listener, String nameOfTask, ArrayList<Source> sources, String destination) {
 		this.listener = listener;
 		this.taskName = nameOfTask;
-		this.sourcePaths = sources;
+		this.sources = sources;
 		this.destinationPath = destination;
 		elementQueue = new LinkedList<BackupElement>();
 	}
@@ -225,8 +225,8 @@ public class HardlinkBackup implements Backupable {
 		}
 
 		try {
-			for (int i = 0; i < sourcePaths.size(); i++) {
-				File sourceFile = new File(sourcePaths.get(i));
+			for (int i = 0; i < sources.size(); i++) {
+				File sourceFile = new File(sources.get(i).getPath());
 
 				String folder = backupDir.getAbsolutePath() + File.separator + sourceFile.getName();
 				File f = new File(folder);
@@ -243,10 +243,10 @@ public class HardlinkBackup implements Backupable {
 				
 				// Queueing:
 				try {
-					for (int j = 0; j < sourcePaths.size(); j++) {
+					for (int j = 0; j < sources.size(); j++) {
 						sourceRootDir = sourceFile.getAbsolutePath().substring(0,
-								sourcePaths.get(j).length() - sourceFile.getName().length());
-						rekursivePreparation(new File(sourcePaths.get(j)), f);
+								sources.get(j).getPath().length() - sourceFile.getName().length());
+						rekursivePreparation(new File(sources.get(j).getPath()), f);
 					}
 				} catch (BackupCanceledException e) {
 					outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");

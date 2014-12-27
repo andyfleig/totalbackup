@@ -14,7 +14,7 @@ public class NormalBackup implements Backupable {
 	/**
 	 * Liste der Quellpfade
 	 */
-	private ArrayList<String> sourcePaths;
+	private ArrayList<Source> sources;
 	/**
 	 * Zielpfad
 	 */
@@ -43,10 +43,10 @@ public class NormalBackup implements Backupable {
 	 * @param destination
 	 *            Zielpfad
 	 */
-	public NormalBackup(IBackupListener listener, String nameOfTask, ArrayList<String> sources, String destination) {
+	public NormalBackup(IBackupListener listener, String nameOfTask, ArrayList<Source> sources, String destination) {
 		this.listener = listener;
 		this.taskName = nameOfTask;
-		this.sourcePaths = sources;
+		this.sources = sources;
 		this.destinationPath = destination;
 		elementQueue = new LinkedList<BackupElement>();
 	}
@@ -62,8 +62,8 @@ public class NormalBackup implements Backupable {
 		}
 
 		try {
-			for (int i = 0; i < sourcePaths.size(); i++) {
-				File sourceFile = new File(sourcePaths.get(i));
+			for (int i = 0; i < sources.size(); i++) {
+				File sourceFile = new File(sources.get(i).getPath());
 
 				String folder = dir + File.separator + sourceFile.getName();
 				File f = new File(folder);
@@ -85,8 +85,8 @@ public class NormalBackup implements Backupable {
 
 				// Queueing:
 				try {
-					for (int j = 0; j < sourcePaths.size(); j++) {
-						rekursivePreparation(new File(sourcePaths.get(j)), f);
+					for (int j = 0; j < sources.size(); j++) {
+						rekursivePreparation(new File(sources.get(j).getPath()), f);
 					}
 				} catch (BackupCanceledException e) {
 					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");

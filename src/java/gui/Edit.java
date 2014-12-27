@@ -1,13 +1,12 @@
 package gui;
 
 import main.BackupTask;
+import main.Source;
 import gui.IEditListener;
 
 import java.util.ResourceBundle;
 import java.util.ArrayList;
-
 import java.io.File;
-
 import java.awt.BorderLayout;
 import java.awt.Panel;
 import java.awt.FlowLayout;
@@ -42,8 +41,8 @@ public class Edit extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_Name;
 
-	private JList<String> list_SourcePaths;
-	private DefaultListModel<String> listModel;
+	private JList<Source> list_SourcePaths;
+	private DefaultListModel<Source> listModel;
 
 	private File sourceFile;
 	private JTextField tf_Destination;
@@ -53,6 +52,9 @@ public class Edit extends JDialog {
 
 	private JCheckBox cB_autoClean;
 	private JSpinner s_numberOfBackupsToKeep;
+	
+	private Sources sourcesDialog;
+	private ISourcesListener sourcesListener;
 
 	/**
 	 * @deprecated
@@ -92,6 +94,31 @@ public class Edit extends JDialog {
 				tf_Name.setColumns(10);
 			}
 		}
+		
+		// Sources-Listener:
+		sourcesListener = new ISourcesListener() {
+
+			@Override
+			public boolean isAlreadySourcePath(String path) {
+				return Edit.this.isAlreadySourcePath(path);
+			}
+
+			@Override
+			public void addSource(Source source) {
+				listModel.addElement(source);
+			}
+
+			@Override
+			public void deleteSource(String path) {
+				for (int i = 0; i < listModel.getSize(); i++) {
+					if (listModel.get(i).getPath().equals(path)){
+						listModel.remove(i);
+						return;
+					}
+				}
+			}
+		};
+		
 		{
 			JPanel panel = new JPanel();
 			contentPanel.add(panel, BorderLayout.SOUTH);
@@ -123,7 +150,7 @@ public class Edit extends JDialog {
 		{
 			{
 
-				listModel = new DefaultListModel<String>();
+				listModel = new DefaultListModel<Source>();
 			}
 		}
 		{
@@ -143,7 +170,7 @@ public class Edit extends JDialog {
 					JPanel panel_1 = new JPanel();
 					panel_2.add(panel_1, BorderLayout.CENTER);
 					panel_1.setLayout(new BorderLayout(0, 0));
-					list_SourcePaths = new JList<String>(listModel);
+					list_SourcePaths = new JList<Source>(listModel);
 					list_SourcePaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 					list_SourcePaths.setSelectedIndex(0);
 					list_SourcePaths.setVisibleRowCount(6);
@@ -162,6 +189,16 @@ public class Edit extends JDialog {
 							btn_Add.setAlignmentX(CENTER_ALIGNMENT);
 							btn_Add.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
+									//TODO: Warum try-catch Block?
+									try {
+										sourcesDialog = new Sources(sourcesListener);
+										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+										sourcesDialog.setVisible(true);
+									} catch (Exception ex) {
+										ex.printStackTrace();
+									}
+									
+									/*
 									JFileChooser fc = new JFileChooser();
 									fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 									int state = fc.showOpenDialog(null);
@@ -177,6 +214,7 @@ public class Edit extends JDialog {
 													JOptionPane.INFORMATION_MESSAGE);
 										}
 									}
+									*/
 								}
 							});
 							panel_1_1.add(btn_Add);
@@ -195,7 +233,27 @@ public class Edit extends JDialog {
 								}
 							});
 							{
+								// Button Bearbeiten:
 								JButton button = new JButton("Bearbeiten");
+								button.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										if (list_SourcePaths.isSelectionEmpty()) {
+											return;
+										}
+										sourcesDialog = new Sources(sourcesListener);
+										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+										sourcesDialog.setEditMode(true);
+										sourcesDialog.setOriginalPath(list_SourcePaths.getSelectedValue().getPath());
+										sourcesDialog.setSource(list_SourcePaths.getSelectedValue());
+										
+										//TODO: später: Filter!
+										
+										
+										
+										
+										sourcesDialog.setVisible(true);
+									}
+								});
 								button.setAlignmentX(0.5f);
 								panel_1_1.add(button);
 							}
@@ -274,7 +332,7 @@ public class Edit extends JDialog {
 							if (nameIsNotTaken(tf_Name.getText())) {
 								task = new BackupTask(tf_Name.getText());
 							} else {
-
+								//TODO: Sehr unschön (an isEditable() erkennen ob ich am bearbeiten oder neu erstellen bin)
 								if (tf_Name.isEditable()) {
 									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
 											.getString("Edit.ErrSameName"), ResourceBundle.getBundle("gui.messages")
@@ -297,7 +355,7 @@ public class Edit extends JDialog {
 							if (!listModel.isEmpty()) {
 								for (int i = 0; i < listModel.getSize(); i++) {
 									if (isValidPath(listModel.getElementAt(i).toString().trim())) {
-										task.addSourcePath(listModel.getElementAt(i).toString().trim());
+										task.addSourcePath(listModel.getElementAt(i));
 									} else {
 										// Mindestens ein Quellpfad ist ungültig
 										JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
@@ -437,7 +495,7 @@ public class Edit extends JDialog {
 	 * @param sourcePaths
 	 *            festzulegende Quellpfade
 	 */
-	public void setSourcePaths(ArrayList<String> sourcePaths) {
+	public void setSourcePaths(ArrayList<Source> sourcePaths) {
 		for (int i = 0; i < sourcePaths.size(); i++) {
 			listModel.addElement(sourcePaths.get(i));
 		}
@@ -461,7 +519,12 @@ public class Edit extends JDialog {
 	 * @return ob der Pfad bereits festgelegt ist
 	 */
 	private boolean isAlreadySourcePath(String path) {
-		return listModel.contains(path);
+		for (int i = 0; i < listModel.getSize(); i++) {
+			if (listModel.get(i).getPath().equals(path)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
