@@ -151,7 +151,7 @@ public class Sources extends JDialog {
 								public boolean isUnderSourceRoot(String path) {
 									return Sources.this.isUnderSourceRoot(path);
 								}
-								
+
 								@Override
 								public void deleteFilter(String path) {
 									Sources.this.deleteFilter(path);
@@ -173,7 +173,7 @@ public class Sources extends JDialog {
 							if (list_Filter.isSelectionEmpty()) {
 								return;
 							}
-							
+
 							filterDialog = new Filter(new IFilterListener() {
 
 								@Override
@@ -194,7 +194,7 @@ public class Sources extends JDialog {
 							filterDialog.setFilter(listModel.get(list_Filter.getSelectedIndex()));
 							filterDialog.setEditMode(true);
 							filterDialog.setOriginalPath(list_Filter.getSelectedValue());
-							
+
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 							filterDialog.setVisible(true);
 						}
@@ -237,7 +237,7 @@ public class Sources extends JDialog {
 							// Prüfen ob der gewählte Pfad bereits Quellpfad
 							// ist:
 							String test = tf_source.getText();
-							if (isAlreadySourcePath(tf_source.getText())) {
+							if (isAlreadySourcePath(tf_source.getText()) && !inEditMode) {
 								JOptionPane.showMessageDialog(null,
 										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrSamePath"),
 										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
@@ -247,6 +247,12 @@ public class Sources extends JDialog {
 
 							// Quellobjekt erzeugen und hinzufügen:
 							Source newSource = new Source(tf_source.getText());
+
+							// Filter hinzufügen:
+							for (int i = 0; i < listModel.getSize(); i++) {
+								newSource.addFilter(listModel.get(i));
+							}
+
 							// TODO: Filter hinzufügen
 
 							if (inEditMode) {
@@ -277,6 +283,7 @@ public class Sources extends JDialog {
 
 	}
 
+	// TODO: JavaDoc
 	private boolean isAlreadySourcePath(String path) {
 		return sourcesListener.isAlreadySourcePath(path);
 	}
@@ -300,19 +307,23 @@ public class Sources extends JDialog {
 	public void setOriginalPath(String originalPath) {
 		this.originalPath = originalPath;
 	}
-	
+
 	private boolean isUnderSourceRoot(String path) {
 		if (path.startsWith(tf_source.getText())) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	private void deleteFilter(String path) {
 		for (int i = 0; i < listModel.getSize(); i++) {
 			if (listModel.get(i).equals(path)) {
 				listModel.remove(i);
 			}
 		}
+	}
+
+	public void addFilter(String filter) {
+		listModel.addElement(filter);
 	}
 }

@@ -31,6 +31,7 @@ public class Source implements Serializable {
 	 */
 	public Source(String path) {
 		this.path = path;
+		dirFilter = new ArrayList<String>();
 	}
 
 	/**

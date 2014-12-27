@@ -243,13 +243,16 @@ public class Edit extends JDialog {
 										sourcesDialog = new Sources(sourcesListener);
 										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 										sourcesDialog.setEditMode(true);
-										sourcesDialog.setOriginalPath(list_SourcePaths.getSelectedValue().getPath());
-										sourcesDialog.setSource(list_SourcePaths.getSelectedValue());
 										
-										//TODO: später: Filter!
+										Source currentSource = list_SourcePaths.getSelectedValue();
+										sourcesDialog.setOriginalPath(currentSource.getPath());
+										sourcesDialog.setSource(currentSource);
 										
+										ArrayList<String> filterOfCurrentSource = currentSource.getFilter();
 										
-										
+										for (int i = 0; i < filterOfCurrentSource.size(); i++) {
+											sourcesDialog.addFilter(filterOfCurrentSource.get(i));
+										}
 										
 										sourcesDialog.setVisible(true);
 									}
