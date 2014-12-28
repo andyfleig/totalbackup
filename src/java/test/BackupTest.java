@@ -4,6 +4,7 @@ import main.BackupHelper;
 import main.BackupTask;
 import main.Controller;
 import main.NormalBackup;
+import main.Source;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -50,7 +51,7 @@ public class BackupTest {
 	@Test
 	public void testNormalBackupSingleFile() {
 		BackupTask task = new BackupTask("test");
-		task.addSourcePath(testFolder + "/source");
+		task.addSourcePath(new Source(testFolder + "/source"));
 		task.setDestinationPath(testFolder + "/dest");
 
 		Controller c = new Controller();
