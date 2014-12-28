@@ -57,7 +57,8 @@ public class Edit extends JDialog {
 	private ISourcesListener sourcesListener;
 
 	/**
-	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
+	 * erzeugt wird.
 	 */
 	private boolean inEditMode;
 
@@ -195,14 +196,10 @@ public class Edit extends JDialog {
 							btn_Add.setAlignmentX(CENTER_ALIGNMENT);
 							btn_Add.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									// TODO: Warum try-catch Block?
-									try {
-										sourcesDialog = new Sources(sourcesListener);
-										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-										sourcesDialog.setVisible(true);
-									} catch (Exception ex) {
-										ex.printStackTrace();
-									}
+									sourcesDialog = new Sources(sourcesListener);
+									sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									sourcesDialog.setVisible(true);
+
 								}
 							});
 							panel_1_1.add(btn_Add);
