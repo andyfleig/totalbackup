@@ -12,6 +12,7 @@ import java.awt.Dialog;
 import java.awt.Panel;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -200,6 +201,7 @@ public class Edit extends JDialog {
 								public void actionPerformed(ActionEvent e) {
 									sourcesDialog = new Sources(sourcesListener);
 									sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									sourcesDialog.setLocation(Edit.this.getLocationOnScreen());
 									sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 									sourcesDialog.setVisible(true);
 								}
@@ -240,8 +242,10 @@ public class Edit extends JDialog {
 										for (int i = 0; i < filterOfCurrentSource.size(); i++) {
 											sourcesDialog.addFilter(filterOfCurrentSource.get(i));
 										}
+										sourcesDialog.setLocation(Edit.this.getLocationOnScreen());
 										sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 										sourcesDialog.setVisible(true);
+										
 									}
 								});
 								button.setAlignmentX(0.5f);

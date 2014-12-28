@@ -20,6 +20,7 @@ import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
@@ -255,8 +256,10 @@ public class Mainframe extends JDialog {
 				try {
 					editDialog = new Edit(editListener);
 					editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 					editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 					editDialog.setVisible(true);
+					
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -283,7 +286,7 @@ public class Mainframe extends JDialog {
 						editDialog.setBackupMode(task.getBackupMode());
 						editDialog.setAutoCleanEnabled(task.autoCleanIsEnabled());
 						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
-						
+						editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 						editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
@@ -452,6 +455,9 @@ public class Mainframe extends JDialog {
 		});
 		frmTotalbackup.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		
+		summary.setLocation(frmTotalbackup.getLocationOnScreen());
+		summary.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		summary.setVisible(true);
 	}
 

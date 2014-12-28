@@ -170,6 +170,7 @@ public class Sources extends JDialog {
 								}
 							});
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							filterDialog.setLocation(Sources.this.getLocationOnScreen());
 							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 							filterDialog.setVisible(true);
 						}
@@ -214,6 +215,7 @@ public class Sources extends JDialog {
 							filterDialog.setOriginalPath(list_Filter.getSelectedValue());
 
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							filterDialog.setLocation(Sources.this.getLocationOnScreen());
 							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 							filterDialog.setVisible(true);
 						}
