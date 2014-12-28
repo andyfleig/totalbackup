@@ -25,7 +25,7 @@ public class Filter extends JDialog {
 
 	private IFilterListener listener;
 	/**
-	 * Legt fest, ob gerade ein exisitierende Filter bearbeitet, oder ein neuer erzeugt wird.
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
 	 */
 	private boolean inEditMode;
 	/**

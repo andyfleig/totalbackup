@@ -40,11 +40,18 @@ public class Sources extends JDialog {
 	private JList<String> list_Filter;
 	private DefaultListModel<String> listModel;
 
-	private boolean inEditMode;
-	private String originalPath;
-
 	private ISourcesListener sourcesListener;
 	private Filter filterDialog;
+	
+	/**
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
+	 * erzeugt wird.
+	 */
+	private boolean inEditMode;
+	/**
+	 * Speichert den Originalpfad der Qulle.
+	 */
+	private String originalPath;
 
 	/**
 	 * Launch the application.
@@ -290,41 +297,98 @@ public class Sources extends JDialog {
 
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Prüft für den gegebenen String ob dieser bereits Quellpfad ist.
+	 * 
+	 * @param path
+	 *            zu prüfender Quellpfad
+	 * @return ob der Pfad bereits Quellpfad ist
+	 */
 	private boolean isAlreadySourcePath(String path) {
 		return sourcesListener.isAlreadySourcePath(path);
 	}
 
+	/**
+	 * Fügt eine Quelle hinzu.
+	 * 
+	 * @param source
+	 *            hinzuzufügende Quelle.
+	 */
 	private void addSource(Source source) {
 		sourcesListener.addSource(source);
 	}
 
+	/**
+	 * Sucht nach einer Quelle mit dem gegebenen Pfad. Wird diese gefunden wird
+	 * sie gelöscht.
+	 * 
+	 * @param path
+	 *            zu löschende Quelle
+	 */
 	public void deleteSource(String path) {
 		sourcesListener.deleteSource(path);
 	}
 
+	/**
+	 * Setzt den Pfad der im Quellpfad-Textfeld angezeigt wird.
+	 * 
+	 * @param source
+	 *            zu setzender Pfad
+	 */
 	public void setSource(Source source) {
 		tf_source.setText(source.getPath());
 	}
 
+	/**
+	 * Schaltet den EditMode an bzw. aus.
+	 * 
+	 * @param editMode
+	 *            true = an, false = aus
+	 */
 	public void setEditMode(boolean inEditMode) {
 		this.inEditMode = inEditMode;
 	}
 
+	/**
+	 * Legt den Originalpfad fest.
+	 * 
+	 * @param originalPath
+	 *            festzulegender Originalpfad
+	 */
 	public void setOriginalPath(String originalPath) {
 		this.originalPath = originalPath;
 	}
 
+	/**
+	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
+	 * 
+	 * @param path
+	 *            zu prüfender Pfad
+	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
+	 */
 	private boolean isUnderSourceRoot(String path) {
 		if (path.startsWith(tf_source.getText())) {
 			return true;
 		}
 		return false;
 	}
+
+	/**
+	 * Gibt die Quelldatei zurück.
+	 * 
+	 * @return Quelldatei
+	 */
 	private File getSourceFile() {
 		return new File(tf_source.getText());
 	}
 
+	/**
+	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
+	 * mit diesem Pfad gefunden wird dieser gelöscht.
+	 * 
+	 * @param path
+	 *            zu löschender Filterpfad
+	 */
 	private void deleteFilter(String path) {
 		for (int i = 0; i < listModel.getSize(); i++) {
 			if (listModel.get(i).equals(path)) {
@@ -333,6 +397,12 @@ public class Sources extends JDialog {
 		}
 	}
 
+	/**
+	 * Fügt einen Filter zur Liste der Filter hinzu.
+	 * 
+	 * @param filter
+	 *            hinzuzufügender Filter
+	 */
 	public void addFilter(String filter) {
 		listModel.addElement(filter);
 	}

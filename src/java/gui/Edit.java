@@ -52,10 +52,13 @@ public class Edit extends JDialog {
 
 	private JCheckBox cB_autoClean;
 	private JSpinner s_numberOfBackupsToKeep;
-	
+
 	private Sources sourcesDialog;
 	private ISourcesListener sourcesListener;
-	
+
+	/**
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
+	 */
 	private boolean inEditMode;
 
 	/**
@@ -593,8 +596,13 @@ public class Edit extends JDialog {
 	public void setEditable(boolean editable) {
 		tf_Name.setEditable(editable);
 	}
-	
-	//TODO: JavaDoc (siehe andere setEditMode)
+
+	/**
+	 * Schaltet den EditMode an bzw. aus.
+	 * 
+	 * @param editMode
+	 *            true = an, false = aus
+	 */
 	public void setEditMode(boolean editMode) {
 		this.inEditMode = editMode;
 	}
