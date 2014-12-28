@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.util.ResourceBundle;
 
@@ -50,6 +51,7 @@ public class Filter extends JDialog {
 	 * Create the dialog.
 	 */
 	public Filter(IFilterListener listener) {
+		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
 		setBounds(100, 100, 400, 116);
 		getContentPane().setLayout(new BorderLayout());

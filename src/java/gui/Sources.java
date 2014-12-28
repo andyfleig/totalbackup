@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
@@ -68,6 +69,7 @@ public class Sources extends JDialog {
 	 * Create the dialog.
 	 */
 	public Sources(ISourcesListener sourcesListener) {
+		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.sourcesListener = sourcesListener;
 		setTitle("Quellen");
 		setBounds(100, 100, 450, 300);
@@ -168,6 +170,7 @@ public class Sources extends JDialog {
 								}
 							});
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 							filterDialog.setVisible(true);
 						}
 					});
@@ -211,6 +214,7 @@ public class Sources extends JDialog {
 							filterDialog.setOriginalPath(list_Filter.getSelectedValue());
 
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 							filterDialog.setVisible(true);
 						}
 					});

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -50,7 +51,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultCaret;
 
-public class Mainframe {
+public class Mainframe extends JDialog {
 
 	// Für main benötigt:
 	// private Mainframe window;
@@ -254,6 +255,7 @@ public class Mainframe {
 				try {
 					editDialog = new Edit(editListener);
 					editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 					editDialog.setVisible(true);
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -271,9 +273,7 @@ public class Mainframe {
 						// Neuen Edit-Dialog erzeugen:
 						editDialog = new Edit(editListener);
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						editDialog.setVisible(true);
 						editDialog.setEditMode(true);
-
 						// Gespeicherte Werte in den Edit-Dialog eintragen:
 						BackupTask task = list_Tasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
@@ -283,6 +283,9 @@ public class Mainframe {
 						editDialog.setBackupMode(task.getBackupMode());
 						editDialog.setAutoCleanEnabled(task.autoCleanIsEnabled());
 						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
+						
+						editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+						editDialog.setVisible(true);
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}

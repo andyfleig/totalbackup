@@ -8,12 +8,14 @@ import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.io.File;
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Panel;
 import java.awt.FlowLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JFrame;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -198,8 +200,8 @@ public class Edit extends JDialog {
 								public void actionPerformed(ActionEvent e) {
 									sourcesDialog = new Sources(sourcesListener);
 									sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+									sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 									sourcesDialog.setVisible(true);
-
 								}
 							});
 							panel_1_1.add(btn_Add);
@@ -238,7 +240,7 @@ public class Edit extends JDialog {
 										for (int i = 0; i < filterOfCurrentSource.size(); i++) {
 											sourcesDialog.addFilter(filterOfCurrentSource.get(i));
 										}
-
+										sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 										sourcesDialog.setVisible(true);
 									}
 								});
