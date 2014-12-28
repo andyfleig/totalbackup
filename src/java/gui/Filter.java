@@ -24,7 +24,13 @@ public class Filter extends JDialog {
 	private JTextField tf_filter;
 
 	private IFilterListener listener;
+	/**
+	 * Legt fest, ob gerade ein exisitierende Filter bearbeitet, oder ein neuer erzeugt wird.
+	 */
 	private boolean inEditMode;
+	/**
+	 * Speichert den Originalpfad der Qulle.
+	 */
 	private String originalPath;
 
 	/**
@@ -67,7 +73,7 @@ public class Filter extends JDialog {
 				public void actionPerformed(ActionEvent e) {
 					// Beschränkung des FC auf den Sourceroot:
 					FileSystemView fsv = new DirectoryRestrictedFileSystemView(getSourceFile());
-					
+
 					JFileChooser fc = new JFileChooser(fsv.getHomeDirectory(), fsv);
 					fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 					int state = fc.showOpenDialog(null);
@@ -95,14 +101,14 @@ public class Filter extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						//Pfad auf gültigkeit Prüfen:
+						// Pfad auf gültigkeit Prüfen:
 						if (!(new File(tf_filter.getText()).exists())) {
 							return;
 						}
 						if (inEditMode) {
 							deleteFilter(originalPath);
 						}
-						
+
 						addFilter(tf_filter.getText());
 						Filter.this.dispose();
 					}
@@ -125,30 +131,72 @@ public class Filter extends JDialog {
 		}
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Fügt einen Filter zur Liste der Filter hinzu.
+	 * 
+	 * @param filter
+	 *            hinzuzufügender Filter
+	 */
 	private void addFilter(String filter) {
 		listener.addFilter(filter);
 	}
 
+	/**
+	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
+	 * 
+	 * @param path
+	 *            zu prüfender Pfad
+	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
+	 */
 	private boolean isUnderSourceRoot(String path) {
 		return listener.isUnderSourceRoot(path);
 	}
-	
+
+	/**
+	 * Gibt die Quelldatei zurück.
+	 * 
+	 * @return Quelldatei
+	 */
 	private File getSourceFile() {
 		return listener.getSourceFile();
 	}
-	
+
+	/**
+	 * Setzt das Textfeld für den Filter-Pfad auf den gegebenen Pfad.
+	 * 
+	 * @param filter
+	 *            Pfad des Filters
+	 */
 	public void setFilter(String filter) {
 		tf_filter.setText(filter);
 	}
-	
+
+	/**
+	 * Schaltet den EditMode an bzw. aus.
+	 * 
+	 * @param editMode
+	 *            true = an, false = aus
+	 */
 	public void setEditMode(boolean editMode) {
 		this.inEditMode = editMode;
 	}
-	
+
+	/**
+	 * Legt den Originalpfad fest.
+	 * 
+	 * @param originalPath
+	 *            festzulegender Originalpfad
+	 */
 	public void setOriginalPath(String originalPath) {
 		this.originalPath = originalPath;
 	}
+
+	/**
+	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
+	 * mit diesem Pfad gefunden wird dieser gelöscht.
+	 * 
+	 * @param path zu löschender Filterpfad
+	 */
 	private void deleteFilter(String path) {
 		listener.deleteFilter(originalPath);
 	}
