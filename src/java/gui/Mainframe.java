@@ -323,83 +323,7 @@ public class Mainframe {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						if (!list_Tasks.isSelectionEmpty()) {
-							selectedTask = listModel.getElementAt(list_Tasks.getSelectedIndex());
-
-							// Testen ob Quell- und Zielpfad(e) existieren:
-							ArrayList<Source> sources = selectedTask.getSourcePaths();
-							for (int i = 0; i < sources.size(); i++) {
-								if (!(new File(sources.get(i).getPath())).exists()) {
-									String output = ResourceBundle.getBundle("gui.messages").getString(
-											"Mainframe.ErrorSourceDontExists");
-									listener.printOut(output, false);
-									listener.log(output, selectedTask);
-									return;
-								}
-							}
-							if (!(new File(selectedTask.getDestinationPath())).exists()) {
-								String output = ResourceBundle.getBundle("gui.messages").getString(
-										"Mainframe.ErrorDestDontExists");
-								listener.printOut(output, false);
-								return;
-							}
-							
-							frmTotalbackup.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-
-							listener.startPreparation(selectedTask);
-							Summary summary = new Summary(new ISummaryListener() {
-
-								@Override
-								public void startBackup() {
-									startBackupTask();
-								}
-
-								@Override
-								public String getTaskName() {
-									// TODO: schön?
-									return selectedTask.getTaskName();
-								}
-
-								@Override
-								public long getNumberOfDirectories() {
-									return listener.getNumberOfDirectories();
-								}
-
-								@Override
-								public long getNumberOfFiles() {
-									return listener.getNumberOfFiles();
-								}
-
-								@Override
-								public double getSizeToCopy() {
-									return listener.getSizeToCopy();
-								}
-
-								@Override
-								public double getSizeToLink() {
-									return listener.getSizeToLink();
-								}
-
-								@Override
-								public void clearBackupInfos() {
-									listener.clearBackupInfos();
-								}
-
-								@Override
-								public void deleteEmptyBackupFolders() {
-									listener.deleteEmptyBackupFolders(selectedTask.getDestinationPath());
-								}
-
-								@Override
-								public void outprintBackupCanceled() {
-									listener.outprintBackupCanceled();
-								}
-
-							});
-							frmTotalbackup.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-							summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							summary.setVisible(true);
-						}
+						prepareBackup(listModel.getElementAt(list_Tasks.getSelectedIndex()));
 					}
 				});
 				backupThread.start();
@@ -431,22 +355,100 @@ public class Mainframe {
 		btn_StartAll = new JButton(ResourceBundle.getBundle("gui.messages")
 				.getString("Mainframe.btnBackupStarten.text"));
 		panel_1.add(btn_StartAll);
-		btn_StartAll.setEnabled(false);
+		// btn_StartAll.setEnabled(false);
 
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						// TODO: Implementieren! Mit oben zusammenlegen? (enable
-						// btn)
-
+						ArrayList<BackupTask> backupTasks = listener.getBackupTasks();
+						for (int i = 0; i < backupTasks.size(); i++) {
+							prepareBackup(backupTasks.get(i));
+						}
 					}
 				});
 				backupThread.start();
+
 			}
 		});
 		panel_1.add(btnCancel);
+	}
+
+	private void prepareBackup(BackupTask task) {
+		selectedTask = task;
+
+		// Testen ob Quell- und Zielpfad(e) existieren:
+		ArrayList<Source> sources = selectedTask.getSourcePaths();
+		for (int i = 0; i < sources.size(); i++) {
+			if (!(new File(sources.get(i).getPath())).exists()) {
+				String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorSourceDontExists");
+				listener.printOut(output, false);
+				listener.log(output, selectedTask);
+				return;
+			}
+		}
+		if (!(new File(selectedTask.getDestinationPath())).exists()) {
+			String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorDestDontExists");
+			listener.printOut(output, false);
+			return;
+		}
+
+		frmTotalbackup.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
+		listener.startPreparation(selectedTask);
+		Summary summary = new Summary(new ISummaryListener() {
+
+			@Override
+			public void startBackup() {
+				startBackupTask();
+			}
+
+			@Override
+			public String getTaskName() {
+				// TODO: schön?
+				return selectedTask.getTaskName();
+			}
+
+			@Override
+			public long getNumberOfDirectories() {
+				return listener.getNumberOfDirectories();
+			}
+
+			@Override
+			public long getNumberOfFiles() {
+				return listener.getNumberOfFiles();
+			}
+
+			@Override
+			public double getSizeToCopy() {
+				return listener.getSizeToCopy();
+			}
+
+			@Override
+			public double getSizeToLink() {
+				return listener.getSizeToLink();
+			}
+
+			@Override
+			public void clearBackupInfos() {
+				listener.clearBackupInfos();
+			}
+
+			@Override
+			public void deleteEmptyBackupFolders() {
+				listener.deleteEmptyBackupFolders(selectedTask.getDestinationPath());
+			}
+
+			@Override
+			public void outprintBackupCanceled() {
+				listener.outprintBackupCanceled();
+			}
+
+		});
+		frmTotalbackup.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		summary.setVisible(true);
 	}
 
 	/**

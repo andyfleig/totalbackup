@@ -205,7 +205,6 @@ public class Controller {
 	/**
 	 * Startet alle Backup-Tasks.
 	 */
-	// TODO: Anpassen!
 	public void startAllBackups() {
 		for (int i = 0; i < backupTasks.size(); i++) {
 			startBackup(backupTasks.get(i));
