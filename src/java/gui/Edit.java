@@ -55,6 +55,8 @@ public class Edit extends JDialog {
 	
 	private Sources sourcesDialog;
 	private ISourcesListener sourcesListener;
+	
+	private boolean inEditMode;
 
 	/**
 	 * @deprecated
@@ -73,6 +75,7 @@ public class Edit extends JDialog {
 	 * 
 	 */
 	public Edit(IEditListener listener) {
+		inEditMode = false;
 		this.editListener = listener;
 		setBounds(100, 100, 511, 389);
 		getContentPane().setLayout(new BorderLayout());
@@ -335,8 +338,7 @@ public class Edit extends JDialog {
 							if (nameIsNotTaken(tf_Name.getText())) {
 								task = new BackupTask(tf_Name.getText());
 							} else {
-								//TODO: Sehr unschön (an isEditable() erkennen ob ich am bearbeiten oder neu erstellen bin)
-								if (tf_Name.isEditable()) {
+								if (!inEditMode) {
 									JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("gui.messages")
 											.getString("Edit.ErrSameName"), ResourceBundle.getBundle("gui.messages")
 											.getString("Edit.ErrMsg"), JOptionPane.INFORMATION_MESSAGE);
@@ -590,5 +592,10 @@ public class Edit extends JDialog {
 	 */
 	public void setEditable(boolean editable) {
 		tf_Name.setEditable(editable);
+	}
+	
+	//TODO: JavaDoc (siehe andere setEditMode)
+	public void setEditMode(boolean editMode) {
+		this.inEditMode = editMode;
 	}
 }

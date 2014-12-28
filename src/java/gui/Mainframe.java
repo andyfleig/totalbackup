@@ -272,6 +272,7 @@ public class Mainframe {
 						editDialog = new Edit(editListener);
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						editDialog.setVisible(true);
+						editDialog.setEditMode(true);
 
 						// Gespeicherte Werte in den Edit-Dialog eintragen:
 						BackupTask task = list_Tasks.getSelectedValue();
