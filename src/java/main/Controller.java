@@ -432,7 +432,7 @@ public class Controller {
 	private void log(String event, BackupTask task) {
 		// Log-Datei anlegen:
 		if (task == null) {
-			// TODO: Endlos-Schleife:
+			// TODO: Endlos-Schleife möglich?
 			return;
 		}
 		File log = new File(task.getDestinationPath() + File.separator + task.getTaskName() + ".log");
