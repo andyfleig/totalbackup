@@ -100,7 +100,7 @@ public class Edit extends JDialog {
 				tf_Name.setColumns(10);
 			}
 		}
-		
+
 		// Sources-Listener:
 		sourcesListener = new ISourcesListener() {
 
@@ -203,24 +203,6 @@ public class Edit extends JDialog {
 									} catch (Exception ex) {
 										ex.printStackTrace();
 									}
-									
-									/*
-									JFileChooser fc = new JFileChooser();
-									fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-									int state = fc.showOpenDialog(null);
-
-									if (state == JFileChooser.APPROVE_OPTION) {
-										sourceFile = fc.getSelectedFile();
-										if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
-											listModel.addElement(sourceFile.getAbsolutePath());
-										} else {
-											JOptionPane.showMessageDialog(null, ResourceBundle
-													.getBundle("gui.messages").getString("Edit.ErrSamePath"),
-													ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
-													JOptionPane.INFORMATION_MESSAGE);
-										}
-									}
-									*/
 								}
 							});
 							panel_1_1.add(btn_Add);
@@ -249,17 +231,17 @@ public class Edit extends JDialog {
 										sourcesDialog = new Sources(sourcesListener);
 										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 										sourcesDialog.setEditMode(true);
-										
+
 										Source currentSource = list_SourcePaths.getSelectedValue();
 										sourcesDialog.setOriginalPath(currentSource.getPath());
 										sourcesDialog.setSource(currentSource);
-										
+
 										ArrayList<String> filterOfCurrentSource = currentSource.getFilter();
-										
+
 										for (int i = 0; i < filterOfCurrentSource.size(); i++) {
 											sourcesDialog.addFilter(filterOfCurrentSource.get(i));
 										}
-										
+
 										sourcesDialog.setVisible(true);
 									}
 								});
