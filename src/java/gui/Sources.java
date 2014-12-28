@@ -156,6 +156,11 @@ public class Sources extends JDialog {
 								public void deleteFilter(String path) {
 									Sources.this.deleteFilter(path);
 								}
+
+								@Override
+								public File getSourceFile() {
+									return Sources.this.getSourceFile();
+								}
 							});
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 							filterDialog.setVisible(true);
@@ -189,6 +194,11 @@ public class Sources extends JDialog {
 								@Override
 								public void deleteFilter(String path) {
 									Sources.this.deleteFilter(path);
+								}
+
+								@Override
+								public File getSourceFile() {
+									return Sources.this.getSourceFile();
 								}
 							});
 							filterDialog.setFilter(listModel.get(list_Filter.getSelectedIndex()));
@@ -310,6 +320,9 @@ public class Sources extends JDialog {
 			return true;
 		}
 		return false;
+	}
+	private File getSourceFile() {
+		return new File(tf_source.getText());
 	}
 
 	private void deleteFilter(String path) {

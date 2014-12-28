@@ -10,6 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
@@ -64,7 +65,10 @@ public class Filter extends JDialog {
 			JButton btn_Find = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Find.text"));
 			btn_Find.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					JFileChooser fc = new JFileChooser();
+					// Beschränkung des FC auf den Sourceroot:
+					FileSystemView fsv = new DirectoryRestrictedFileSystemView(getSourceFile());
+					
+					JFileChooser fc = new JFileChooser(fsv.getHomeDirectory(), fsv);
 					fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 					int state = fc.showOpenDialog(null);
 					if (state == JFileChooser.APPROVE_OPTION) {
@@ -128,6 +132,10 @@ public class Filter extends JDialog {
 
 	private boolean isUnderSourceRoot(String path) {
 		return listener.isUnderSourceRoot(path);
+	}
+	
+	private File getSourceFile() {
+		return listener.getSourceFile();
 	}
 	
 	public void setFilter(String filter) {
