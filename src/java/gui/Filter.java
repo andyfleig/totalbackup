@@ -98,7 +98,7 @@ public class Filter extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				// Button OK:
-				JButton okButton = new JButton("OK");
+				JButton okButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Ok.text"));
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// Pfad auf gültigkeit Prüfen:
@@ -119,7 +119,7 @@ public class Filter extends JDialog {
 			}
 			{
 				// Button Abbrechen:
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("Summary.btn_cancel"));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Filter.this.dispose();

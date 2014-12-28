@@ -40,7 +40,7 @@ public class Sources extends JDialog {
 
 	private ISourcesListener sourcesListener;
 	private Filter filterDialog;
-	
+
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
 	 * erzeugt wird.
@@ -281,7 +281,8 @@ public class Sources extends JDialog {
 					getRootPane().setDefaultButton(okButton);
 				}
 				{
-					JButton cancelButton = new JButton("Cancel");
+					JButton cancelButton = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+							"Summary.btn_cancel"));
 					cancelButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							Sources.this.dispose();
