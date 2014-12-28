@@ -15,11 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 
-import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import main.Source;

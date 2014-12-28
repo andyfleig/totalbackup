@@ -117,14 +117,14 @@ public class Edit extends JDialog {
 			@Override
 			public void deleteSource(String path) {
 				for (int i = 0; i < listModel.getSize(); i++) {
-					if (listModel.get(i).getPath().equals(path)){
+					if (listModel.get(i).getPath().equals(path)) {
 						listModel.remove(i);
 						return;
 					}
 				}
 			}
 		};
-		
+
 		{
 			JPanel panel = new JPanel();
 			contentPanel.add(panel, BorderLayout.SOUTH);
@@ -195,7 +195,7 @@ public class Edit extends JDialog {
 							btn_Add.setAlignmentX(CENTER_ALIGNMENT);
 							btn_Add.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									//TODO: Warum try-catch Block?
+									// TODO: Warum try-catch Block?
 									try {
 										sourcesDialog = new Sources(sourcesListener);
 										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
