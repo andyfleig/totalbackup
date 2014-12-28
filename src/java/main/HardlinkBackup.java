@@ -59,11 +59,16 @@ public class HardlinkBackup implements Backupable {
 	/**
 	 * Aktuelles Backup-Directory.
 	 */
-	File backupDir;
+	private File backupDir;
 	/**
 	 * Root-Verzeichnis der Quelle.
 	 */
-	String sourceRootDir;
+	private String sourceRootDir;
+	/**
+	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden
+	 * Elemente).
+	 */
+	private Source currentSource;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -213,11 +218,11 @@ public class HardlinkBackup implements Backupable {
 		// Eigentliches Hardlink Backup:
 		// Backup-Ordner anlegen:
 		backupDir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
-		
+
 		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
 		listener.printOut(outprint, false);
 		listener.log(outprint, listener.getCurrentTask());
-		
+
 		if (backupDir == null) {
 			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(outprint, true);
@@ -226,6 +231,9 @@ public class HardlinkBackup implements Backupable {
 
 		try {
 			for (int i = 0; i < sources.size(); i++) {
+				// Für die Filterung:
+				currentSource = sources.get(i);
+
 				File sourceFile = new File(sources.get(i).getPath());
 
 				String folder = backupDir.getAbsolutePath() + File.separator + sourceFile.getName();
@@ -240,7 +248,7 @@ public class HardlinkBackup implements Backupable {
 					listener.printOut(outprint, true);
 					listener.log(outprint, listener.getCurrentTask());
 				}
-				
+
 				// Queueing:
 				try {
 					for (int j = 0; j < sources.size(); j++) {
@@ -332,103 +340,127 @@ public class HardlinkBackup implements Backupable {
 
 			return;
 		}
-		for (int j = 0; j < files.length; j++) {
+		for (int i = 0; i < files.length; i++) {
 			if (Thread.interrupted()) {
 				throw new BackupCanceledException();
 			}
-			if (files[j].isDirectory()) {
-				File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[j].getName());
-				elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newBackupDir.getAbsolutePath(), true,
-						false));
-				listener.increaseNumberOfDirectories();
-				rekursivePreparation(files[j], newBackupDir);
-			} else {
-				// Herausfinden ob zu kopieren oder zu verlinken:
-				// Entsprechendes StrucutreFile aus dem Index:
-
-				StructureFile fileInIndex = getStructureFileFromIndex(files[j], sourceRootDir);
-
-				File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[j].getName());
-
-				if (fileInIndex == null) {
-					// Befindet die Datei sich nicht im Index, wird sie kopiert
-					// (nicht verlinkt)
-					// Es handelt sich also um eine neue Datei (bisher nicht im
-					// Backup)
-					elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newFile.getAbsolutePath(), false,
-							false));
-					listener.increaseNumberOfFiles();
-					listener.increaseSizeToCopyBy(files[j].length());
-					continue;
+			if (files[i].isDirectory()) {
+				// Filtern:
+				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				boolean filterMatches = false;
+				for (int j = 0; j < filtersOfThisSource.size(); j++) {
+					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+						filterMatches = true;
+					}
 				}
-				if (files[j].lastModified() > fileInIndex.getLastModifiedDate()) {
-					// Datei liegt in einer älteren Version im Backup vor
-					// Datei zu kopieren:
-					elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newFile.getAbsolutePath(), false,
-							false));
-					listener.increaseNumberOfFiles();
-					listener.increaseSizeToCopyBy(files[j].length());
-				} else {
-					// Datei liegt in der aktuellen Version vor
+				if (!filterMatches) {
+					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
+					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
+							true, false));
+					listener.increaseNumberOfDirectories();
+					rekursivePreparation(files[i], newBackupDir);
+				}
 
-					// Test ob die Datei im Backup-Satz vorhanden ist:
-					File fileToLinkFrom = new File(destinationPath + File.separator + newestBackupPath
-							+ fileInIndex.getFilePath());
-					if (fileToLinkFrom.exists()) {
-						// Datei verlinken:
-						elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile.getAbsolutePath(),
-								false, true));
-						listener.increaseNumberOfFiles();
-						listener.increaseSizeToLinkBy(files[j].length());
-					} else {
-						// File exisitiert im Backup-Satz nicht (aber im Index)
-						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BadIndex");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
+			} else {
+				// Filtern:
+				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				boolean filterMatches = false;
+				for (int j = 0; j < filtersOfThisSource.size(); j++) {
+					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+						filterMatches = true;
+					}
+				}
+				if (!filterMatches) {
+					// Herausfinden ob zu kopieren oder zu verlinken:
+					// Entsprechendes StrucutreFile aus dem Index:
 
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.DeletingIndex");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
+					StructureFile fileInIndex = getStructureFileFromIndex(files[i], sourceRootDir);
 
-						// Root-Pfad des Index "sichern":
-						String rootPathForIndex = files[j].getAbsolutePath();
+					File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 
-						// Ungültiger Index wird gelöscht:
-						File badIndex = new File(files[j].getAbsolutePath() + directoryStructure.getFilePath());
-						badIndex.delete();
-
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexDeleted");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
-
-						// Neu indizieren:
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.Indexing");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
-						createIndex(new File(rootPathForIndex));
-
-						// Indizierung wurde abgebrochen:
-						if (directoryStructure == null) {
-							throw new BackupCanceledException();
-						}
-
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
-
-						serializeIndex(taskName, rootPathForIndex);
-
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved");
-						listener.printOut(outprint, false);
-						listener.log(outprint, listener.getCurrentTask());
-						// Datei zu kopieren:
-						elementQueue.add(new BackupElement(files[j].getAbsolutePath(), newFile.getAbsolutePath(),
+					if (fileInIndex == null) {
+						// Befindet die Datei sich nicht im Index, wird sie
+						// kopiert
+						// (nicht verlinkt)
+						// Es handelt sich also um eine neue Datei (bisher nicht
+						// im
+						// Backup)
+						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
 						listener.increaseNumberOfFiles();
-						listener.increaseSizeToCopyBy(files[j].length());
+						listener.increaseSizeToCopyBy(files[i].length());
+						continue;
+					}
+					if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
+						// Datei liegt in einer älteren Version im Backup vor
+						// Datei zu kopieren:
+						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
+								false, false));
+						listener.increaseNumberOfFiles();
+						listener.increaseSizeToCopyBy(files[i].length());
+					} else {
+						// Datei liegt in der aktuellen Version vor
+
+						// Test ob die Datei im Backup-Satz vorhanden ist:
+						File fileToLinkFrom = new File(destinationPath + File.separator + newestBackupPath
+								+ fileInIndex.getFilePath());
+						if (fileToLinkFrom.exists()) {
+							// Datei verlinken:
+							elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
+									.getAbsolutePath(), false, true));
+							listener.increaseNumberOfFiles();
+							listener.increaseSizeToLinkBy(files[i].length());
+						} else {
+							// File exisitiert im Backup-Satz nicht (aber im
+							// Index)
+							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BadIndex");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+
+							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.DeletingIndex");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+
+							// Root-Pfad des Index "sichern":
+							String rootPathForIndex = files[i].getAbsolutePath();
+
+							// Ungültiger Index wird gelöscht:
+							File badIndex = new File(files[i].getAbsolutePath() + directoryStructure.getFilePath());
+							badIndex.delete();
+
+							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexDeleted");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+
+							// Neu indizieren:
+							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.Indexing");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+							createIndex(new File(rootPathForIndex));
+
+							// Indizierung wurde abgebrochen:
+							if (directoryStructure == null) {
+								throw new BackupCanceledException();
+							}
+
+							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+
+							serializeIndex(taskName, rootPathForIndex);
+
+							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved");
+							listener.printOut(outprint, false);
+							listener.log(outprint, listener.getCurrentTask());
+							// Datei zu kopieren:
+							elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
+									false, false));
+							listener.increaseNumberOfFiles();
+							listener.increaseSizeToCopyBy(files[i].length());
+						}
 					}
 				}
 			}
