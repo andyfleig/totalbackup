@@ -236,7 +236,6 @@ public class Sources extends JDialog {
 
 							// Prüfen ob der gewählte Pfad bereits Quellpfad
 							// ist:
-							String test = tf_source.getText();
 							if (isAlreadySourcePath(tf_source.getText()) && !inEditMode) {
 								JOptionPane.showMessageDialog(null,
 										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrSamePath"),
@@ -252,8 +251,6 @@ public class Sources extends JDialog {
 							for (int i = 0; i < listModel.getSize(); i++) {
 								newSource.addFilter(listModel.get(i));
 							}
-
-							// TODO: Filter hinzufügen
 
 							if (inEditMode) {
 								deleteSource(originalPath);

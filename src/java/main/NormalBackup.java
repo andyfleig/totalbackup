@@ -34,6 +34,12 @@ public class NormalBackup implements Backupable {
 	private boolean preparationDone = false;
 
 	/**
+	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden
+	 * Elemente).
+	 */
+	private Source currentSource;
+
+	/**
 	 * Backup-Objekt zur Datensicherung.
 	 * 
 	 * @param c
@@ -63,6 +69,9 @@ public class NormalBackup implements Backupable {
 
 		try {
 			for (int i = 0; i < sources.size(); i++) {
+				// Für die Filterung:
+				currentSource = sources.get(i);
+
 				File sourceFile = new File(sources.get(i).getPath());
 
 				String folder = dir + File.separator + sourceFile.getName();
@@ -78,7 +87,7 @@ public class NormalBackup implements Backupable {
 					listener.printOut(outprint, true);
 					listener.log(outprint, listener.getCurrentTask());
 				}
-				
+
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
 				listener.printOut(output, false);
 				listener.log(output, listener.getCurrentTask());
@@ -162,17 +171,39 @@ public class NormalBackup implements Backupable {
 				throw new BackupCanceledException();
 			}
 			if (files[i].isDirectory()) {
-				File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
-				elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(), true,
-						false));
-				listener.increaseNumberOfDirectories();
-				rekursivePreparation(files[i], newBackupDir);
+				// Filtern:
+				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				boolean filterMatches = false;
+				for (int j = 0; j < filtersOfThisSource.size(); j++) {
+					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+						filterMatches = true;
+					}
+				}
+				if (!filterMatches) {
+					// Queuen:
+					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
+					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
+							true, false));
+					listener.increaseNumberOfDirectories();
+					rekursivePreparation(files[i], newBackupDir);
+				}
 			} else {
-				File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
-				elementQueue
-						.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
-				listener.increaseNumberOfFiles();
-				listener.increaseSizeToCopyBy(files[i].length());
+				// Filtern:
+				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				boolean filterMatches = false;
+				for (int j = 0; j < filtersOfThisSource.size(); j++) {
+					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+						filterMatches = true;
+					}
+				}
+				if (!filterMatches) {
+					// Queuen:
+					File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
+					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false,
+							false));
+					listener.increaseNumberOfFiles();
+					listener.increaseSizeToCopyBy(files[i].length());
+				}
 			}
 		}
 	}
