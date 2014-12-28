@@ -16,6 +16,7 @@ import java.lang.NullPointerException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.awt.BorderLayout;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
@@ -342,8 +343,8 @@ public class Mainframe {
 								listener.printOut(output, false);
 								return;
 							}
-
-							// TODO: Öffne bitte warten Fenster
+							
+							frmTotalbackup.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
 							listener.startPreparation(selectedTask);
 							Summary summary = new Summary(new ISummaryListener() {
@@ -395,6 +396,7 @@ public class Mainframe {
 								}
 
 							});
+							frmTotalbackup.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 							summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 							summary.setVisible(true);
 						}
