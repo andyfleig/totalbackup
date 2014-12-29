@@ -504,6 +504,8 @@ public class Mainframe extends JDialog {
 			try {
 				About dialog = new About();
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setLocation(frmTotalbackup.getLocationOnScreen());
+				dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 				dialog.setVisible(true);
 			} catch (Exception ex) {
 				ex.printStackTrace();
