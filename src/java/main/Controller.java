@@ -131,14 +131,16 @@ public class Controller {
 									BackupHelper.deleteDirectory(backupFolders[i]);
 								}
 							}
-							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.deletedBackupFolder");
+							String outprint = ResourceBundle.getBundle("gui.messages").getString(
+									"Messages.deletedBackupFolder");
 							backupListener.printOut(outprint, false);
 							backupListener.log(outprint, backupListener.getCurrentTask());
 						}
 
 						@Override
 						public void outprintBackupCanceled() {
-							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupCanceled");
+							String outprint = ResourceBundle.getBundle("gui.messages").getString(
+									"Messages.BackupCanceled");
 							backupListener.printOut(outprint, false);
 							backupListener.log(outprint, backupListener.getCurrentTask());
 						}
@@ -323,8 +325,7 @@ public class Controller {
 						task.getDestinationPath());
 			}
 		} else {
-			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
-					task.getDestinationPath());
+			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(), task.getDestinationPath());
 		}
 
 		try {
