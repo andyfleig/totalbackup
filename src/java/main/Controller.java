@@ -543,7 +543,7 @@ public class Controller {
 
 			try {
 				SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
-				Date date = sdfToDate.parse(backupDate);
+				sdfToDate.parse(backupDate);
 				backupCounter++;
 			} catch (ParseException e) {
 				// Offenbar kein gültiges Datum
