@@ -303,17 +303,17 @@ public class Controller {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup");
 				printOut(output, false);
 				log(output, currentTask);
-				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
+				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup");
 				printOut(output, false);
 				log(output, currentTask);
-				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
+				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			}
 		} else {
-			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSourcePaths(),
+			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
 					task.getDestinationPath());
 		}
 

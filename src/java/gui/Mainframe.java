@@ -281,7 +281,7 @@ public class Mainframe extends JDialog {
 						BackupTask task = list_Tasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
 						editDialog.setEditable(false);
-						editDialog.setSourcePaths(task.getSourcePaths());
+						editDialog.setSourcePaths(task.getSources());
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());
 						editDialog.setAutoCleanEnabled(task.autoCleanIsEnabled());
@@ -382,11 +382,12 @@ public class Mainframe extends JDialog {
 		panel_1.add(btnCancel);
 	}
 
+	//TODO: JavaDoc
 	private void prepareBackup(BackupTask task) {
 		selectedTask = task;
 
 		// Testen ob Quell- und Zielpfad(e) existieren:
-		ArrayList<Source> sources = selectedTask.getSourcePaths();
+		ArrayList<Source> sources = selectedTask.getSources();
 		for (int i = 0; i < sources.size(); i++) {
 			if (!(new File(sources.get(i).getPath())).exists()) {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorSourceDontExists");

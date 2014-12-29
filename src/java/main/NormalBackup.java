@@ -12,7 +12,7 @@ public class NormalBackup implements Backupable {
 	 */
 	private String taskName;
 	/**
-	 * Liste der Quellpfade
+	 * Liste der Quellen
 	 */
 	private ArrayList<Source> sources;
 	/**
@@ -42,10 +42,12 @@ public class NormalBackup implements Backupable {
 	/**
 	 * Backup-Objekt zur Datensicherung.
 	 * 
-	 * @param c
-	 *            Controller
-	 * @param source
-	 *            Quellpfade
+	 * @param listener
+	 *            Listener
+	 * @param nameOfTask
+	 *            Name des Backup-Tasks
+	 * @param sources
+	 *            Quellen
 	 * @param destination
 	 *            Zielpfad
 	 */

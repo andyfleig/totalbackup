@@ -338,7 +338,7 @@ public class Sources extends JDialog {
 	 * Setzt den Pfad der im Quellpfad-Textfeld angezeigt wird.
 	 * 
 	 * @param source
-	 *            zu setzender Pfad
+	 *            zu setzende Quelle
 	 */
 	public void setSource(Source source) {
 		tf_source.setText(source.getPath());

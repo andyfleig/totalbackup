@@ -20,7 +20,7 @@ import java.io.FilenameFilter;
 public class HardlinkBackup implements Backupable {
 
 	/**
-	 * Liste der Quellpfade
+	 * Liste der Quellen
 	 */
 	private ArrayList<Source> sources;
 	/**
@@ -75,8 +75,10 @@ public class HardlinkBackup implements Backupable {
 	 * 
 	 * @param listener
 	 *            Listener
-	 * @param source
-	 *            Quellpfade
+	 * @param nameOfTask
+	 *            Name des Backup-Tasks
+	 * @param sources
+	 *            Quellen
 	 * @param destination
 	 *            Zielpfad
 	 */

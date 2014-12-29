@@ -246,7 +246,7 @@ public class Edit extends JDialog {
 										sourcesDialog.setLocation(Edit.this.getLocationOnScreen());
 										sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 										sourcesDialog.setVisible(true);
-										
+
 									}
 								});
 								button.setAlignmentX(0.5f);
@@ -486,12 +486,12 @@ public class Edit extends JDialog {
 	/**
 	 * Legt die Quellpfade fest.
 	 * 
-	 * @param sourcePaths
-	 *            festzulegende Quellpfade
+	 * @param sources
+	 *            festzulegende Quellen
 	 */
-	public void setSourcePaths(ArrayList<Source> sourcePaths) {
-		for (int i = 0; i < sourcePaths.size(); i++) {
-			listModel.addElement(sourcePaths.get(i));
+	public void setSourcePaths(ArrayList<Source> sources) {
+		for (int i = 0; i < sources.size(); i++) {
+			listModel.addElement(sources.get(i));
 		}
 	}
 

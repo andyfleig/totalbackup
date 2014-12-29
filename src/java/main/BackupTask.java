@@ -16,7 +16,7 @@ public class BackupTask implements Serializable {
 	 */
 	private static final long serialVersionUID = 1212577706810419845L;
 	private String taskName;
-	private ArrayList<Source> sourcePaths;
+	private ArrayList<Source> sources;
 	private String destinationPath;
 	private int backupMode;
 	private boolean autoCleanIsEnabled;
@@ -31,7 +31,7 @@ public class BackupTask implements Serializable {
 	 */
 	public BackupTask(String name) {
 		this.taskName = name;
-		sourcePaths = new ArrayList<Source>();
+		sources = new ArrayList<Source>();
 	}
 
 	/**
@@ -44,22 +44,22 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gitb alle Quellpfade zurück.
+	 * Gibt alle Quellen zurück.
 	 * 
-	 * @return alle Quellpfade
+	 * @return alle Quellen
 	 */
-	public ArrayList<Source> getSourcePaths() {
-		return sourcePaths;
+	public ArrayList<Source> getSources() {
+		return sources;
 	}
 
 	/**
 	 * Fügt der Listen der zu sichernden Quellpfade einen Pfad hinzu.
 	 * 
-	 * @param path
-	 *            hinzuzufügender Pfad
+	 * @param source
+	 *            hinzuzufügende Quelle
 	 */
 	public void addSourcePath(Source source) {
-		sourcePaths.add(source);
+		sources.add(source);
 	}
 
 	/**
@@ -76,11 +76,11 @@ public class BackupTask implements Serializable {
 	 * Legt alle Quellpfade auf die übergebenen Quellpfade fest. Achtung, alle
 	 * existierenden Quellpfade werden überschrieben!
 	 * 
-	 * @param sourcePaths
-	 *            festzulegende Quellpfade
+	 * @param sources
+	 *            festzulegende Quellen
 	 */
-	public void setSourcePaths(ArrayList<Source> sourcePaths) {
-		this.sourcePaths = sourcePaths;
+	public void setSources(ArrayList<Source> sources) {
+		this.sources = sources;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class BackupTask implements Serializable {
 	public void deletePath(String path) {
 		int index = getIndexOfPath(path);
 		if (index != -1) {
-			sourcePaths.remove(index);
+			sources.remove(index);
 		}
 
 	}
@@ -114,8 +114,8 @@ public class BackupTask implements Serializable {
 	 * @return Index, -1 falls der gesuchte Pfad nicht gefunden wurde
 	 */
 	private int getIndexOfPath(String path) {
-		for (int i = 0; i < sourcePaths.size(); i++) {
-			if (sourcePaths.get(i).equals(path)) {
+		for (int i = 0; i < sources.size(); i++) {
+			if (sources.get(i).equals(path)) {
 				return i;
 			}
 		}
@@ -135,7 +135,7 @@ public class BackupTask implements Serializable {
 	 * Löscht alle Quell- und Zielpfade.
 	 */
 	public void resetPaths() {
-		sourcePaths.clear();
+		sources.clear();
 		destinationPath = null;
 	}
 
