@@ -213,8 +213,8 @@ public final class BackupHelper {
 		int nread = 0;
 		while ((nread = fis.read(dataBytes)) != -1) {
 			md.update(dataBytes, 0, nread);
-		}
-		;
+		};
+		fis.close();
 		byte[] mdbytes = md.digest();
 
 		StringBuffer sb = new StringBuffer();
