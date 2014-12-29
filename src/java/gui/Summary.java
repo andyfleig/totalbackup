@@ -38,7 +38,6 @@ public class Summary extends JDialog {
 	 * Create the dialog.
 	 */
 	public Summary(ISummaryListener listener) {
-		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
 		setResizable(false);
 		setAlwaysOnTop(true);
