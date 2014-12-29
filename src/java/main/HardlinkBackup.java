@@ -272,10 +272,16 @@ public class HardlinkBackup implements Backupable {
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
 		listener.printOut(output, false);
 		listener.log(output, listener.getCurrentTask());
+		preparationDone = true;
 	}
 
 	@Override
 	public void runBackup(String taskName) throws FileNotFoundException, IOException {
+		// Test ob die Vorbereitung durchgeführt wurden:
+		if (!preparationDone) {
+			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
+			return;
+		}
 
 		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup");
 		listener.printOut(outprint, false);
