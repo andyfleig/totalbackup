@@ -20,17 +20,19 @@ public class Preparing extends JDialog {
 	 * Create the panel.
 	 */
 	public Preparing(IPreparingListener listener) {
+		setSize(220, 80);
+		setResizable(false);
 		this.listener = listener;
 		
-		setLayout(new BorderLayout(0, 0));
+		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
-		add(panel, BorderLayout.NORTH);
+		getContentPane().add(panel, BorderLayout.NORTH);
 		JLabel lbl_preparing = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Preparing.lbl_preparing.text"));
 		panel.add(lbl_preparing);
 		
 		JPanel panel_1 = new JPanel();
-		add(panel_1, BorderLayout.SOUTH);
+		getContentPane().add(panel_1, BorderLayout.SOUTH);
 		
 		JButton btnNewButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("Preparing.btn_cancel.text"));
 		btnNewButton.addActionListener(new ActionListener() {
