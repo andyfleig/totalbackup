@@ -82,6 +82,7 @@ public class Edit extends JDialog {
 	 * 
 	 */
 	public Edit(IEditListener listener) {
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("Edit.title"));
 		inEditMode = false;
 		this.editListener = listener;
 		setBounds(100, 100, 511, 389);

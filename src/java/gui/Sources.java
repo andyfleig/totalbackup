@@ -71,7 +71,7 @@ public class Sources extends JDialog {
 	public Sources(ISourcesListener sourcesListener) {
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.sourcesListener = sourcesListener;
-		setTitle("Quellen");
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("Sources.title"));
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -82,7 +82,7 @@ public class Sources extends JDialog {
 			contentPanel.add(panel, BorderLayout.NORTH);
 			panel.setLayout(new BorderLayout(0, 0));
 			{
-				JLabel lbl_source = new JLabel("Quellpfad:");
+				JLabel lbl_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Sources.sourcePath"));
 				panel.add(lbl_source, BorderLayout.WEST);
 			}
 			{
@@ -133,7 +133,7 @@ public class Sources extends JDialog {
 			{
 
 				{
-					JLabel lbl_filter = new JLabel("Filter:");
+					JLabel lbl_filter = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Sources.filter"));
 					panel.add(lbl_filter, BorderLayout.NORTH);
 				}
 			}

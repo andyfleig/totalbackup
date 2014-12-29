@@ -51,6 +51,7 @@ public class Filter extends JDialog {
 	 * Create the dialog.
 	 */
 	public Filter(IFilterListener listener) {
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("Filter.title"));
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
 		setBounds(100, 100, 400, 116);
