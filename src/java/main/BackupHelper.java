@@ -16,8 +16,6 @@ import java.util.TimeZone;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.swing.JCheckBox;
-
 public final class BackupHelper {
 
 	/**
