@@ -254,7 +254,7 @@ public class Mainframe extends JDialog {
 					editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 					editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 					editDialog.setVisible(true);
-					
+
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -377,7 +377,7 @@ public class Mainframe extends JDialog {
 		panel_1.add(btnCancel);
 	}
 
-	//TODO: JavaDoc
+	// TODO: JavaDoc
 	private void prepareBackup(BackupTask task) {
 		selectedTask = task;
 
@@ -396,9 +396,9 @@ public class Mainframe extends JDialog {
 			listener.printOut(output, false);
 			return;
 		}
-		
+
 		Preparing prep = new Preparing(new IPreparingListener() {
-			
+
 			@Override
 			public void cancelBackup() {
 				int reply = JOptionPane.showConfirmDialog(null,
@@ -412,15 +412,15 @@ public class Mainframe extends JDialog {
 						backupThread.interrupt();
 					}
 				}
-				
+
 			}
 		});
-		
+
 		prep.setLocation(frmTotalbackup.getLocationOnScreen());
-		//TODO: Langfristige Lösung?
-		//prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		// TODO: Langfristige Lösung?
+		// prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		prep.setVisible(true);
-		
+
 		listener.startPreparation(selectedTask);
 		prep.dispose();
 		Summary summary = new Summary(new ISummaryListener() {
@@ -473,7 +473,7 @@ public class Mainframe extends JDialog {
 
 		});
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		
+
 		summary.setLocation(frmTotalbackup.getLocationOnScreen());
 		summary.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		summary.setVisible(true);
