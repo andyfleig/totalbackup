@@ -19,8 +19,6 @@ import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
@@ -41,7 +39,6 @@ import javax.swing.JTextPane;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JMenu;
-import javax.swing.JPopupMenu;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
@@ -497,26 +494,6 @@ public class Mainframe extends JDialog {
 		listener.startBackupTask(selectedTask);
 	}
 
-	private void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
-	}
-
 	private class SA_About extends AbstractAction {
 		public SA_About() {
 			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("About.this.title"));
@@ -627,22 +604,6 @@ public class Mainframe extends JDialog {
 	 */
 	public void setStatus(String status) {
 		tF_status.setText(status);
-	}
-
-	/**
-	 * Prüft einen Pfad auf Gültigkeit.
-	 * 
-	 * @deprecated
-	 * @param s
-	 *            Zu prüfender Pfad (als String)
-	 * @return Gültigkeit des Pfades
-	 */
-	private boolean checkPathValidity(String s) {
-		File f = new File(s);
-		if (f.exists()) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
