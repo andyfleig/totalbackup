@@ -417,7 +417,8 @@ public class Mainframe extends JDialog {
 		});
 		
 		prep.setLocation(frmTotalbackup.getLocationOnScreen());
-		prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		//TODO: Langfristige Lösung?
+		//prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		prep.setVisible(true);
 		
 		listener.startPreparation(selectedTask);
