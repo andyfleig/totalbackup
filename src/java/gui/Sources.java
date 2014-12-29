@@ -69,6 +69,7 @@ public class Sources extends JDialog {
 	 * Create the dialog.
 	 */
 	public Sources(ISourcesListener sourcesListener) {
+		setResizable(false);
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.sourcesListener = sourcesListener;
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("Sources.title"));
