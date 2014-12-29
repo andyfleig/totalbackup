@@ -400,10 +400,32 @@ public class Mainframe extends JDialog {
 			listener.printOut(output, false);
 			return;
 		}
-
-		frmTotalbackup.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-
+		
+		Preparing prep = new Preparing(new IPreparingListener() {
+			
+			@Override
+			public void cancelBackup() {
+				int reply = JOptionPane.showConfirmDialog(null,
+						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
+								.getBundle("gui.messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					Mainframe.this.addToOutput(
+							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
+					btnCancel.setEnabled(false);
+					if (backupThread != null) {
+						backupThread.interrupt();
+					}
+				}
+				
+			}
+		});
+		
+		prep.setLocation(frmTotalbackup.getLocationOnScreen());
+		prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		prep.setVisible(true);
+		
 		listener.startPreparation(selectedTask);
+		prep.dispose();
 		Summary summary = new Summary(new ISummaryListener() {
 
 			@Override
@@ -453,7 +475,6 @@ public class Mainframe extends JDialog {
 			}
 
 		});
-		frmTotalbackup.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		
 		summary.setLocation(frmTotalbackup.getLocationOnScreen());
