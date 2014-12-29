@@ -294,7 +294,17 @@ public class Controller {
 			File[] files = new File(task.getDestinationPath()).listFiles();
 			boolean backupSetFound = false;
 			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory() && files[i].getName().contains(task.getTaskName())) {
+				if (files[i].isDirectory()) {
+					// Namen des Ordners "zerlegen":
+					StringTokenizer tokenizer = new StringTokenizer(files[i].getName(), "_");
+					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+					if (tokenizer.countTokens() != 2) {
+						continue;
+					}
+					// Erster Token muss dem TaskName entsprechen:
+					if (!tokenizer.nextToken().equals(task.getTaskName())) {
+						continue;
+					}
 					backupSetFound = true;
 					break;
 				}
