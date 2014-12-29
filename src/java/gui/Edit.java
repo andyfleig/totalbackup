@@ -4,6 +4,7 @@ import main.BackupTask;
 import main.Source;
 import gui.IEditListener;
 
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.io.File;
@@ -26,6 +27,8 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JFileChooser;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JRadioButton;
@@ -34,6 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.text.AttributeSet;
 
 public class Edit extends JDialog {
 
@@ -101,6 +105,16 @@ public class Edit extends JDialog {
 				tf_Name = new JTextField();
 				panel.add(tf_Name);
 				tf_Name.setColumns(10);
+				final ArrayList<Character> forbiddenChars = new ArrayList<Character>(Arrays.asList('_'));
+				tf_Name.setDocument(new PlainDocument() {
+					@Override
+					public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+						for (Character c : forbiddenChars) {
+		                    str = str.replace(String.valueOf(c), "");
+		                }
+		                super.insertString(offs, str, a);
+					}
+				});
 			}
 		}
 
