@@ -165,7 +165,7 @@ public class Controller {
 	}
 
 	/**
-	 * Läd die serialisierten Einstellungen.
+	 * Lädt die serialisierten Einstellungen.
 	 */
 	private void loadSerialization() {
 		// Prüfen ob bereits Einstellungen gespeichert wurden:

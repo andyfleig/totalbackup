@@ -576,7 +576,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Läd einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE
+	 * Lädt einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE
 	 * zurück;
 	 * 
 	 * @param index
