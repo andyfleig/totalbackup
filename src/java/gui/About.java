@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 
 import java.awt.Color;
+import java.io.File;
 
 import javax.swing.JTextPane;
 
@@ -56,7 +57,7 @@ public class About extends JDialog {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("About.this.title"));
 		setModal(true);
 		setAlwaysOnTop(true);
-		setBounds(100, 100, 480, 240);
+		setBounds(100, 100, 479, 589);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
