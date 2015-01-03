@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
@@ -160,6 +161,8 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		frmTotalbackup.setIconImage(Toolkit.getDefaultToolkit().getImage("TB_logo.png"));
 
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
