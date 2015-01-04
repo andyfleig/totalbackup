@@ -161,7 +161,7 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		frmTotalbackup.setIconImage(Toolkit.getDefaultToolkit().getImage("TB_logo.png"));
 
 		JMenuBar menuBar = new JMenuBar();
@@ -380,7 +380,13 @@ public class Mainframe extends JDialog {
 		panel_1.add(btnCancel);
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Bereitet den gegebenen Task auf ein Hardlink-Backup vor (analysiert die
+	 * Quelle(n)).
+	 * 
+	 * @param task
+	 *            vorzubereitender Task
+	 */
 	private void prepareBackup(BackupTask task) {
 		selectedTask = task;
 
@@ -529,6 +535,9 @@ public class Mainframe extends JDialog {
 		}
 	}
 
+	/**
+	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
+	 */
 	private void saveProperties() {
 		File properties = new File("./properties.ser");
 		if (!properties.exists()) {

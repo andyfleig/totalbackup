@@ -31,12 +31,33 @@ import javax.swing.SwingUtilities;
  */
 public class Controller {
 
+	/**
+	 * Aktuelle Mainframe-Instanz.
+	 */
 	private Mainframe mainframe;
+	/**
+	 * Liste aller erstellten Backup-Tasks.
+	 */
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
+	/**
+	 * Aktueller Backup-Task.
+	 */
 	private BackupTask currentTask = null;
+	/**
+	 * Namen-Muster für die benennung der Backup-Ordner.
+	 */
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
+	/**
+	 * Aktuelle Backup(able)-Instanz.
+	 */
 	private Backupable backup;
+	/**
+	 * Aktuelle IBackupListener-Instanz.
+	 */
 	private IBackupListener backupListener;
+	/**
+	 * Informationen (der Vorbereitung) über den aktuellen Backup-Task.
+	 */
 	private BackupInfos backupInfos;
 
 	/**
