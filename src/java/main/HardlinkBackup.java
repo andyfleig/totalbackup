@@ -238,7 +238,19 @@ public class HardlinkBackup implements Backupable {
 
 				File sourceFile = new File(sources.get(i).getPath());
 
-				String folder = backupDir.getAbsolutePath() + File.separator + sourceFile.getName();
+				// Sonderbehandlung für Windows, wenn der SourcePath das
+				// root-dir eines Volume (z.B. C:/) ist:
+				String folder;
+				if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
+						&& sourceFile.getName().equals("")) {
+					// In diesem Sonderfall ergibt sich der Name nur aus dem
+					// Laufwerksbuchstaben:
+					String test = sourceFile.getAbsolutePath();
+					folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
+				} else {
+					folder = backupDir + File.separator + sourceFile.getName();
+				}
+
 				File f = new File(folder);
 
 				if (f.mkdir()) {

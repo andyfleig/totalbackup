@@ -76,7 +76,19 @@ public class NormalBackup implements Backupable {
 
 				File sourceFile = new File(sources.get(i).getPath());
 
-				String folder = dir + File.separator + sourceFile.getName();
+				// Sonderbehandlung für Windows, wenn der SourcePath das
+				// root-dir eines Volume (z.B. C:/) ist:
+				String folder;
+				if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
+						&& sourceFile.getName().equals("")) {
+					// In diesem Sonderfall ergibt sich der Name nur aus dem
+					// Laufwerksbuchstaben:
+					String test = sourceFile.getAbsolutePath();
+					folder = dir + File.separator + sourceFile.getAbsolutePath().charAt(0);
+				} else {
+					folder = dir + File.separator + sourceFile.getName();
+				}
+
 				File f = new File(folder);
 
 				if (f.mkdir()) {
