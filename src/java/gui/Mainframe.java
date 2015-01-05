@@ -81,6 +81,8 @@ public class Mainframe extends JDialog {
 
 	private Thread backupThread;
 
+	private Summary summary;
+
 	File sourceFile;
 	File destinationFile;
 
@@ -332,6 +334,16 @@ public class Mainframe extends JDialog {
 					}
 				});
 				backupThread.start();
+
+				// Warten bis der Thread sich beendet:
+				try {
+					backupThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					return;
+				}
+				showSummary();
+
 			}
 		});
 		panel_1.add(btnStartSelected);
@@ -360,8 +372,8 @@ public class Mainframe extends JDialog {
 		btn_StartAll = new JButton(ResourceBundle.getBundle("gui.messages")
 				.getString("Mainframe.btnBackupStarten.text"));
 		panel_1.add(btn_StartAll);
-		// btn_StartAll.setEnabled(false);
 
+		// btn_StartAll.setEnabled(false);
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				backupThread = new Thread(new Runnable() {
@@ -375,6 +387,14 @@ public class Mainframe extends JDialog {
 				});
 				backupThread.start();
 
+				// Warten bis der Thread sich beendet:
+				try {
+					backupThread.join();
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+					return;
+				}
+				showSummary();
 			}
 		});
 		panel_1.add(btnCancel);
@@ -424,15 +444,18 @@ public class Mainframe extends JDialog {
 
 			}
 		});
-
 		prep.setLocation(frmTotalbackup.getLocationOnScreen());
 		// TODO: Langfristige Lösung?
 		// prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-		prep.setVisible(true);
+		// prep.setVisible(true);
 
 		listener.startPreparation(selectedTask);
-		prep.dispose();
-		Summary summary = new Summary(new ISummaryListener() {
+		// prep.dispose();
+	}
+
+	// TODO: JavaDoc
+	private void showSummary() {
+		summary = new Summary(new ISummaryListener() {
 
 			@Override
 			public void startBackup() {
@@ -501,7 +524,16 @@ public class Mainframe extends JDialog {
 	}
 
 	private void startBackupTask() {
-		listener.startBackupTask(selectedTask);
+		summary.dispose();
+
+		backupThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				listener.startBackupTask(selectedTask);
+			}
+		});
+		backupThread.start();
+
 	}
 
 	private class SA_About extends AbstractAction {

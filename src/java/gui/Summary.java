@@ -62,9 +62,11 @@ public class Summary extends JDialog {
 				btn_ok.addActionListener(new ActionListener() {
 					// Button Start:
 					public void actionPerformed(ActionEvent arg0) {
-						Summary.this.listener.startBackup();
+
+						// TODO: !!!
+						// Summary.this.dispose();
 						clearBackupInfos();
-						Summary.this.dispose();
+						Summary.this.listener.startBackup();
 					}
 				});
 				btn_ok.setActionCommand("OK");
@@ -163,9 +165,11 @@ public class Summary extends JDialog {
 	private void clearBackupInfos() {
 		listener.clearBackupInfos();
 	}
+
 	private void deleteEmptyBackupFolders() {
 		listener.deleteEmptyBackupFolders();
 	}
+
 	private void outprintBackupCanceled() {
 		listener.outprintBackupCanceled();
 	}
