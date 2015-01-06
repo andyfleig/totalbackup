@@ -21,6 +21,7 @@ public final class BackupHelper {
 	/**
 	 * Kopiert ein Verzeichnis rekursiv.
 	 * 
+	 * @deprecated wird nichtmehr benötigt!?
 	 * @param source
 	 *            Quellverzeichnis
 	 * @param destination
@@ -211,7 +212,8 @@ public final class BackupHelper {
 		int nread = 0;
 		while ((nread = fis.read(dataBytes)) != -1) {
 			md.update(dataBytes, 0, nread);
-		};
+		}
+		;
 		fis.close();
 		byte[] mdbytes = md.digest();
 
