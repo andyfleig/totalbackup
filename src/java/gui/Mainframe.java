@@ -82,6 +82,8 @@ public class Mainframe extends JDialog {
 	private Thread backupThread;
 
 	private Summary summary;
+	
+	private Preparing prep;
 
 	File sourceFile;
 	File destinationFile;
@@ -342,6 +344,7 @@ public class Mainframe extends JDialog {
 					e.printStackTrace();
 					return;
 				}
+				prep.dispose();
 				showSummary();
 
 			}
@@ -373,7 +376,6 @@ public class Mainframe extends JDialog {
 				.getString("Mainframe.btnBackupStarten.text"));
 		panel_1.add(btn_StartAll);
 
-		// btn_StartAll.setEnabled(false);
 		btn_StartAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				backupThread = new Thread(new Runnable() {
@@ -394,6 +396,7 @@ public class Mainframe extends JDialog {
 					ex.printStackTrace();
 					return;
 				}
+				prep.dispose();
 				showSummary();
 			}
 		});
@@ -426,7 +429,7 @@ public class Mainframe extends JDialog {
 			return;
 		}
 
-		Preparing prep = new Preparing(new IPreparingListener() {
+		prep = new Preparing(new IPreparingListener() {
 
 			@Override
 			public void cancelBackup() {
@@ -446,11 +449,10 @@ public class Mainframe extends JDialog {
 		});
 		prep.setLocation(frmTotalbackup.getLocationOnScreen());
 		// TODO: Langfristige Lösung?
-		// prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-		// prep.setVisible(true);
+		//prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		prep.setVisible(true);
 
 		listener.startPreparation(selectedTask);
-		// prep.dispose();
 	}
 
 	// TODO: JavaDoc

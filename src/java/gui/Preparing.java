@@ -47,5 +47,4 @@ public class Preparing extends JDialog {
 	private void cancelBackup() {
 		listener.cancelBackup();
 	}
-
 }
