@@ -233,6 +233,9 @@ public class HardlinkBackup implements Backupable {
 
 		try {
 			for (int i = 0; i < sources.size(); i++) {
+				if (Thread.interrupted()) {
+					throw new BackupCanceledException();
+				}
 				// Für die Filterung:
 				currentSource = sources.get(i);
 
@@ -301,6 +304,9 @@ public class HardlinkBackup implements Backupable {
 		try {
 			// Eigentlicher Backup-Vorgang:
 			while (!elementQueue.isEmpty()) {
+				if (Thread.interrupted()) {
+					throw new BackupCanceledException();
+				}
 				BackupElement currentElement = elementQueue.pop();
 				if (currentElement.isDirectory()) {
 					(new File(currentElement.getDestPath())).mkdir();
@@ -351,6 +357,9 @@ public class HardlinkBackup implements Backupable {
 	 *            Ziel-Verzeichnis
 	 */
 	private void rekursivePreparation(File sourceFile, File backupDir) {
+		if (Thread.interrupted()) {
+			throw new BackupCanceledException();
+		}
 		File[] files = sourceFile.listFiles();
 		if (files == null) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "

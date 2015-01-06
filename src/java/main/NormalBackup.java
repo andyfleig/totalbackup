@@ -149,6 +149,9 @@ public class NormalBackup implements Backupable {
 		try {
 			// Eigentlicher Backup-Vorgang:
 			while (!elementQueue.isEmpty()) {
+				if (Thread.interrupted()) {
+					throw new BackupCanceledException();
+				}
 				BackupElement currentElement = elementQueue.pop();
 				if (currentElement.isDirectory()) {
 					(new File(currentElement.getDestPath())).mkdir();
@@ -169,6 +172,9 @@ public class NormalBackup implements Backupable {
 	}
 
 	private void rekursivePreparation(File sourceFile, File backupDir) {
+		if (Thread.interrupted()) {
+			throw new BackupCanceledException();
+		}
 		File[] files = sourceFile.listFiles();
 
 		if (files == null) {
