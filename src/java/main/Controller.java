@@ -143,7 +143,8 @@ public class Controller {
 								boolean deleteThisDir = true;
 								File[] filesInBackupFolder = backupFolders[i].listFiles();
 								for (int j = 0; j < filesInBackupFolder.length; j++) {
-									if (filesInBackupFolder[j].listFiles().length != 0) {
+									if (filesInBackupFolder[j].isDirectory()
+											&& filesInBackupFolder[j].listFiles().length != 0) {
 										deleteThisDir = false;
 										break;
 									}
@@ -229,7 +230,7 @@ public class Controller {
 	 * Startet alle Backup-Tasks.
 	 */
 	public void startAllBackups() {
-		//TODO: unnötig?
+		// TODO: unnötig?
 		for (int i = 0; i < backupTasks.size(); i++) {
 			startBackup(backupTasks.get(i));
 		}
@@ -358,7 +359,7 @@ public class Controller {
 			log(output, currentTask);
 		}
 
-		//TODO: In Mainframe (außerhalb des Threads)?
+		// TODO: In Mainframe (außerhalb des Threads)?
 		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
 
