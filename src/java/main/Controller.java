@@ -358,6 +358,7 @@ public class Controller {
 			log(output, currentTask);
 		}
 
+		//TODO: In Mainframe (außerhalb des Threads)?
 		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
 
