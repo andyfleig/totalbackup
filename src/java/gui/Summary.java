@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import javax.swing.JLabel;
@@ -128,36 +129,39 @@ public class Summary extends JDialog {
 		lbl_taskNameDyn.setText(listener.getTaskName());
 		lbl_numberOfFilesDyn.setText(String.valueOf(listener.getNumberOfFiles()).toString());
 		lbl_numberOfDirsDyn.setText(String.valueOf(listener.getNumberOfDirectories()).toString());
+		
+		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 
+		//TODO: schöner: in eigene Methode auslagern
 		// Größe der zu kopierenden Dateien:
 		double size = listener.getSizeToCopy();
 		if (size < 1000) {
-			String result = String.valueOf(listener.getSizeToCopy()) + "Byte";
+			String result = String.valueOf(decimalFormat.format(size)) + "Byte";
 			lbl_sizeToCopyDyn.setText(result);
 		} else if (size < 1000000) {
-			String result = String.valueOf(listener.getSizeToCopy() / 1000) + "kB";
+			String result = String.valueOf(decimalFormat.format(size / 1000)) + "kB";
 			lbl_sizeToCopyDyn.setText(result);
 		} else if (size < 1000000000) {
-			String result = String.valueOf(listener.getSizeToCopy() / 1000000) + "MB";
+			String result = String.valueOf(decimalFormat.format(size / 1000000)) + "MB";
 			lbl_sizeToCopyDyn.setText(result);
 		} else {
-			String result = String.valueOf(listener.getSizeToCopy() / 1000000000) + "GB";
+			String result = String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
 			lbl_sizeToCopyDyn.setText(result);
 		}
 
 		// Größe der zu kopierenden Dateien:
 		size = listener.getSizeToLink();
 		if (size < 1000) {
-			String result = String.valueOf(listener.getSizeToLink()) + "Byte";
+			String result = String.valueOf(decimalFormat.format(size)) + "Byte";
 			lbl_sizeToLinkDyn.setText(result);
 		} else if (size < 1000000) {
-			String result = String.valueOf(listener.getSizeToLink() / 1000) + "kB";
+			String result = String.valueOf(decimalFormat.format(size/ 1000)) + "kB";
 			lbl_sizeToLinkDyn.setText(result);
 		} else if (size < 1000000000) {
-			String result = String.valueOf(listener.getSizeToLink() / 1000000) + "MB";
+			String result = String.valueOf(decimalFormat.format(size / 1000000)) + "MB";
 			lbl_sizeToLinkDyn.setText(result);
 		} else {
-			String result = String.valueOf(listener.getSizeToLink() / 1000000000) + "GB";
+			String result = String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
 			lbl_sizeToLinkDyn.setText(result);
 		}
 	}
