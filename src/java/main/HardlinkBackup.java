@@ -409,11 +409,9 @@ public class HardlinkBackup implements Backupable {
 
 					if (fileInIndex == null) {
 						// Befindet die Datei sich nicht im Index, wird sie
-						// kopiert
-						// (nicht verlinkt)
+						// kopiert (nicht verlinkt)
 						// Es handelt sich also um eine neue Datei (bisher nicht
-						// im
-						// Backup)
+						// im Backup)
 						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
 						listener.increaseNumberOfFiles();
