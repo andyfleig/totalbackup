@@ -110,9 +110,9 @@ public class Edit extends JDialog {
 					@Override
 					public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 						for (Character c : forbiddenChars) {
-		                    str = str.replace(String.valueOf(c), "");
-		                }
-		                super.insertString(offs, str, a);
+							str = str.replace(String.valueOf(c), "");
+						}
+						super.insertString(offs, str, a);
 					}
 				});
 			}
@@ -228,9 +228,14 @@ public class Edit extends JDialog {
 							btn_Delete.setAlignmentX(CENTER_ALIGNMENT);
 							btn_Delete.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									if (!list_SourcePaths.isSelectionEmpty()) {
-
-										listModel.remove(list_SourcePaths.getSelectedIndex());
+									int reply = JOptionPane
+											.showConfirmDialog(null, ResourceBundle.getBundle("gui.messages")
+													.getString("Messages.DeleteSource"), null,
+													JOptionPane.YES_NO_OPTION);
+									if (reply == JOptionPane.YES_OPTION) {
+										if (!list_SourcePaths.isSelectionEmpty()) {
+											listModel.remove(list_SourcePaths.getSelectedIndex());
+										}
 									}
 								}
 							});

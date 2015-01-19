@@ -307,10 +307,14 @@ public class Mainframe extends JDialog {
 
 		btn_Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!list_Tasks.isSelectionEmpty()) {
-					listener.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+				int reply = JOptionPane.showConfirmDialog(null,
+						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,  JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					if (!list_Tasks.isSelectionEmpty()) {
+						listener.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+					}
+					saveProperties();
 				}
-				saveProperties();
 			}
 		});
 

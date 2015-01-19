@@ -26,7 +26,8 @@ public class Filter extends JDialog {
 
 	private IFilterListener listener;
 	/**
-	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
+	 * erzeugt wird.
 	 */
 	private boolean inEditMode;
 	/**
@@ -122,7 +123,8 @@ public class Filter extends JDialog {
 			}
 			{
 				// Button Abbrechen:
-				JButton cancelButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("Summary.btn_cancel"));
+				JButton cancelButton = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+						"Summary.btn_cancel"));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						Filter.this.dispose();
@@ -198,7 +200,8 @@ public class Filter extends JDialog {
 	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
 	 * mit diesem Pfad gefunden wird dieser gelöscht.
 	 * 
-	 * @param path zu löschender Filterpfad
+	 * @param path
+	 *            zu löschender Filterpfad
 	 */
 	private void deleteFilter(String path) {
 		listener.deleteFilter(originalPath);

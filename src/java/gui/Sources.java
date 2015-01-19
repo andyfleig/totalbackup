@@ -229,7 +229,11 @@ public class Sources extends JDialog {
 							"Edit.btn_Delete.text"));
 					button.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							listModel.remove(list_Filter.getSelectedIndex());
+							int reply = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("gui.messages")
+									.getString("Messages.DeleteFilter"), null, JOptionPane.YES_NO_OPTION);
+							if (reply == JOptionPane.YES_OPTION) {
+								listModel.remove(list_Filter.getSelectedIndex());
+							}
 						}
 					});
 					button.setAlignmentX(0.5f);
