@@ -100,35 +100,46 @@ public class Summary extends JDialog {
 		lbl_numberOfDirsDyn.setBounds(307, 37, 78, 15);
 		contentPanel.add(lbl_numberOfDirsDyn);
 
-		JLabel lbl_numberOfFiles = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"Summary.lbl_numberOfFiles"));
-		lbl_numberOfFiles.setBounds(12, 64, 267, 15);
-		contentPanel.add(lbl_numberOfFiles);
+		JLabel lbl_numberToCopy = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"Summary.lbl_numberOfFilesToCopy"));
+		lbl_numberToCopy.setBounds(12, 64, 267, 15);
+		contentPanel.add(lbl_numberToCopy);
 
-		JLabel lbl_numberOfFilesDyn = new JLabel((String) null);
-		lbl_numberOfFilesDyn.setBounds(307, 64, 78, 15);
-		contentPanel.add(lbl_numberOfFilesDyn);
+		JLabel lbl_numberToCopyDyn = new JLabel((String) null);
+		lbl_numberToCopyDyn.setBounds(307, 64, 78, 15);
+		contentPanel.add(lbl_numberToCopyDyn);
+		
+		JLabel lbl_numberToLink = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"Summary.lbl_numberOfFilesToLink"));
+		lbl_numberToLink.setBounds(12, 91, 267, 15);
+		contentPanel.add(lbl_numberToLink);
+		
+		JLabel lbl_numberToLinkDyn = new JLabel("0");
+		lbl_numberToLinkDyn.setBounds(307, 91, 78, 15);
+		contentPanel.add(lbl_numberToLinkDyn);
 
 		JLabel lbl_sizeToCopy = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Summary.lbl_sizeToCopy"));
-		lbl_sizeToCopy.setBounds(12, 91, 267, 15);
+		lbl_sizeToCopy.setBounds(12, 118, 267, 15);
 		contentPanel.add(lbl_sizeToCopy);
 
 		JLabel lbl_sizeToLink = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Summary.lbl_sizeToLink"));
-		lbl_sizeToLink.setBounds(12, 118, 267, 15);
+		lbl_sizeToLink.setBounds(12, 145, 267, 15);
 		contentPanel.add(lbl_sizeToLink);
 
 		JLabel lbl_sizeToCopyDyn = new JLabel("0");
-		lbl_sizeToCopyDyn.setBounds(307, 91, 78, 15);
+		lbl_sizeToCopyDyn.setBounds(307, 118, 78, 15);
 		contentPanel.add(lbl_sizeToCopyDyn);
 
 		JLabel lbl_sizeToLinkDyn = new JLabel("0");
-		lbl_sizeToLinkDyn.setBounds(307, 118, 78, 15);
+		lbl_sizeToLinkDyn.setBounds(307, 145, 78, 15);
 		contentPanel.add(lbl_sizeToLinkDyn);
 
 		// Inhalte hinzufügen:
 		lbl_taskNameDyn.setText(listener.getTaskName());
-		lbl_numberOfFilesDyn.setText(String.valueOf(listener.getNumberOfFiles()).toString());
+		lbl_numberToCopyDyn.setText(String.valueOf(listener.getNumberOfFilesToCopy()).toString());
+		lbl_numberToLinkDyn.setText(String.valueOf(listener.getNumberOfFilesToLink()).toString());
 		lbl_numberOfDirsDyn.setText(String.valueOf(listener.getNumberOfDirectories()).toString());
+		
 		
 		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 

@@ -221,7 +221,7 @@ public class NormalBackup implements Backupable {
 					File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false,
 							false));
-					listener.increaseNumberOfFiles();
+					listener.increaseNumberOfFilesToCopy();
 					listener.increaseSizeToCopyBy(files[i].length());
 				}
 			}

@@ -113,8 +113,13 @@ public class Controller {
 						}
 
 						@Override
-						public long getNumberOfFiles() {
-							return backupInfos.getNumberOfFiles();
+						public long getNumberOfFilesToCopy() {
+							return backupInfos.getNumberOfFilesToCopy();
+						}
+						
+						@Override
+						public long getNumberOfFilesToLink() {
+							return backupInfos.getNumberOfFilesToLink();
 						}
 
 						@Override
@@ -293,9 +298,13 @@ public class Controller {
 			}
 
 			@Override
-			public void increaseNumberOfFiles() {
-				backupInfos.increaseNumberOfFiles();
-
+			public void increaseNumberOfFilesToCopy() {
+				backupInfos.increaseNumberOfFilesToCopy();
+			}
+			
+			@Override
+			public void increaseNumberOfFilesToLink() {
+				backupInfos.increaseNumberOfFilesToLink();
 			}
 
 			@Override

@@ -51,9 +51,14 @@ public interface IBackupListener {
 	public void increaseNumberOfDirectories();
 
 	/**
-	 * Erhöht die Anzahl der zu bearbeitenden Ordner um 1.
+	 * Erhöht die Anzahl der zu kopierenden Dateien um 1.
 	 */
-	public void increaseNumberOfFiles();
+	public void increaseNumberOfFilesToCopy();
+	
+	/**
+	 * Erhöht die Anzahl der zu verlinkenden Dateien um 1.
+	 */
+	public void increaseNumberOfFilesToLink();
 
 	/**
 	 * Erhöht die Gesamtgröße der zu kopierenden Dateien um den gegebenen Wert.

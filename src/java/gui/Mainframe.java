@@ -480,8 +480,13 @@ public class Mainframe extends JDialog {
 			}
 
 			@Override
-			public long getNumberOfFiles() {
-				return listener.getNumberOfFiles();
+			public long getNumberOfFilesToCopy() {
+				return listener.getNumberOfFilesToCopy();
+			}
+			
+			@Override
+			public long getNumberOfFilesToLink() {
+				return listener.getNumberOfFilesToLink();
 			}
 
 			@Override

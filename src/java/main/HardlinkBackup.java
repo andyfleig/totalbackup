@@ -414,7 +414,7 @@ public class HardlinkBackup implements Backupable {
 						// im Backup)
 						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
-						listener.increaseNumberOfFiles();
+						listener.increaseNumberOfFilesToCopy();
 						listener.increaseSizeToCopyBy(files[i].length());
 						continue;
 					}
@@ -423,7 +423,7 @@ public class HardlinkBackup implements Backupable {
 						// Datei zu kopieren:
 						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
-						listener.increaseNumberOfFiles();
+						listener.increaseNumberOfFilesToCopy();
 						listener.increaseSizeToCopyBy(files[i].length());
 					} else {
 						// Datei liegt in der aktuellen Version vor
@@ -435,7 +435,7 @@ public class HardlinkBackup implements Backupable {
 							// Datei verlinken:
 							elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
 									.getAbsolutePath(), false, true));
-							listener.increaseNumberOfFiles();
+							listener.increaseNumberOfFilesToLink();
 							listener.increaseSizeToLinkBy(files[i].length());
 						} else {
 							// File exisitiert im Backup-Satz nicht (aber im
@@ -485,7 +485,7 @@ public class HardlinkBackup implements Backupable {
 							// Datei zu kopieren:
 							elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 									false, false));
-							listener.increaseNumberOfFiles();
+							listener.increaseNumberOfFilesToCopy();
 							listener.increaseSizeToCopyBy(files[i].length());
 						}
 					}

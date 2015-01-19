@@ -79,7 +79,13 @@ public interface IMainframeListener {
 	 * 
 	 * @return Anzahl der zu kopierenden Dateien
 	 */
-	public long getNumberOfFiles();
+	public long getNumberOfFilesToCopy();
+	/**
+	 * Gibt die Anzahl der zu verlinkenden Dateien zurück.
+	 * 
+	 * @return Anzahl der zu verlinkenden Dateien
+	 */
+	public long getNumberOfFilesToLink();
 
 	/**
 	 * Gibt die Gesamtgröße der zu kopierenden Dateien zurück.
