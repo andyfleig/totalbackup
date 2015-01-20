@@ -61,7 +61,7 @@ public class FilterDialog extends JDialog {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("Filter.title"));
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
-		setBounds(100, 100, 400, 188);
+		setBounds(100, 100, 462, 148);
 		getContentPane().setLayout(new BorderLayout());
 		{
 			JPanel panel = new JPanel();
@@ -70,8 +70,10 @@ public class FilterDialog extends JDialog {
 			rBtn_excludeFilter = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
 					"Filter.rBtnexcludeFilter.text"));
 			rBtn_excludeFilter.setSelected(true);
+			rBtn_excludeFilter.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("Filter.excludeToolTip"));
 			panel.add(rBtn_excludeFilter);
 			rBtn_useMD5 = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Filter.rBtnuseMD5.text"));
+			rBtn_useMD5.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("Filter.md5ToolTip"));
 			panel.add(rBtn_useMD5);
 
 			ButtonGroup rBtnGroup = new ButtonGroup();
