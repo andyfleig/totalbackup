@@ -1,6 +1,7 @@
 package gui;
 
 import main.BackupTask;
+import main.Filter;
 import main.Source;
 import gui.IEditListener;
 
@@ -255,10 +256,10 @@ public class Edit extends JDialog {
 										sourcesDialog.setOriginalPath(currentSource.getPath());
 										sourcesDialog.setSource(currentSource);
 
-										ArrayList<String> filterOfCurrentSource = currentSource.getFilter();
+										ArrayList<Filter> filterOfCurrentSource = currentSource.getFilter();
 
 										for (int i = 0; i < filterOfCurrentSource.size(); i++) {
-											sourcesDialog.addFilter(filterOfCurrentSource.get(i));
+											sourcesDialog.addFilter(filterOfCurrentSource.get(i).getPath(), filterOfCurrentSource.get(i).getMode());
 										}
 										sourcesDialog.setLocation(Edit.this.getLocationOnScreen());
 										sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);

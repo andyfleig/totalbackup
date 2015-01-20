@@ -192,29 +192,37 @@ public final class BackupHelper {
 	 * @param f
 	 *            Datei von der der Hadhwert berechnet werden soll
 	 * @return MD5-Hashwert der gegebenen Datei
-	 * @throws NoSuchAlgorithmException
-	 *             wird nie geworfen (da der Algorithmus hardcoded ist)
-	 * @throws FileNotFoundException
-	 *             Wird bei ungültiger gegebener Datei geworfen
-	 * @throws IOException
 	 */
-	public static String calcMD5(File f) throws NoSuchAlgorithmException, FileNotFoundException, IOException {
+	public static String calcMD5(File f) {
 		MessageDigest md;
 
-		md = MessageDigest.getInstance("MD5");
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			System.err.println("Error: NoSuchAlgorithmException in calcMD5");
+			return null;
+		}
 
 		FileInputStream fis;
 
-		fis = new FileInputStream(f.getAbsoluteFile());
+		try {
+			fis = new FileInputStream(f.getAbsoluteFile());
+		} catch (FileNotFoundException e) {
+			return null;
+		}
 
 		byte[] dataBytes = new byte[1024];
 
 		int nread = 0;
-		while ((nread = fis.read(dataBytes)) != -1) {
-			md.update(dataBytes, 0, nread);
+		try {
+			while ((nread = fis.read(dataBytes)) != -1) {
+				md.update(dataBytes, 0, nread);
+			}
+			fis.close();
+		} catch (IOException e) {
+			System.err.println("Error: IOException in calcMD5");
+			return null;
 		}
-		;
-		fis.close();
 		byte[] mdbytes = md.digest();
 
 		StringBuffer sb = new StringBuffer();

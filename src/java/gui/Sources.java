@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
+import main.Filter;
 import main.Source;
 
 import java.awt.event.ActionListener;
@@ -36,11 +37,11 @@ public class Sources extends JDialog {
 	private static final long serialVersionUID = 8855971977478046562L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_source;
-	private JList<String> list_Filter;
-	private DefaultListModel<String> listModel;
+	private JList<Filter> list_Filter;
+	private DefaultListModel<Filter> listModel;
 
 	private ISourcesListener sourcesListener;
-	private Filter filterDialog;
+	private FilterDialog filterDialog;
 
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
@@ -122,8 +123,8 @@ public class Sources extends JDialog {
 			contentPanel.add(panel, BorderLayout.CENTER);
 			panel.setLayout(new BorderLayout(0, 0));
 
-			listModel = new DefaultListModel<String>();
-			list_Filter = new JList<String>(listModel);
+			listModel = new DefaultListModel<Filter>();
+			list_Filter = new JList<Filter>(listModel);
 			list_Filter.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			list_Filter.setSelectedIndex(0);
 			list_Filter.setVisibleRowCount(6);
@@ -148,11 +149,11 @@ public class Sources extends JDialog {
 							.getString("Edit.btn_Add.text"));
 					button.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							filterDialog = new Filter(new IFilterListener() {
+							filterDialog = new FilterDialog(new IFilterDialogListener() {
 
 								@Override
-								public void addFilter(String path) {
-									listModel.addElement(path);
+								public void addFilter(String path, int mode) {
+									listModel.addElement(new Filter(path, mode));
 								}
 
 								@Override
@@ -189,11 +190,11 @@ public class Sources extends JDialog {
 								return;
 							}
 
-							filterDialog = new Filter(new IFilterListener() {
+							filterDialog = new FilterDialog(new IFilterDialogListener() {
 
 								@Override
-								public void addFilter(String path) {
-									listModel.addElement(path);
+								public void addFilter(String path, int mode) {
+									listModel.addElement(new Filter(path, mode));
 								}
 
 								@Override
@@ -211,9 +212,10 @@ public class Sources extends JDialog {
 									return Sources.this.getSourceFile();
 								}
 							});
-							filterDialog.setFilter(listModel.get(list_Filter.getSelectedIndex()));
+							filterDialog.setFilter(listModel.get(list_Filter.getSelectedIndex()).getPath());
 							filterDialog.setEditMode(true);
-							filterDialog.setOriginalPath(list_Filter.getSelectedValue());
+							filterDialog.setOriginalPath(list_Filter.getSelectedValue().getPath());
+							filterDialog.setMode(listModel.get(list_Filter.getSelectedIndex()).getMode());
 
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 							filterDialog.setLocation(Sources.this.getLocationOnScreen());
@@ -413,7 +415,7 @@ public class Sources extends JDialog {
 	 * @param filter
 	 *            hinzuzufügender Filter
 	 */
-	public void addFilter(String filter) {
-		listModel.addElement(filter);
+	public void addFilter(String filter, int mode) {
+		listModel.addElement(new Filter(filter, mode));
 	}
 }

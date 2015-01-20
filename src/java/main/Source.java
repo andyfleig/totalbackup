@@ -21,7 +21,7 @@ public class Source implements Serializable {
 	/**
 	 * Liste von Pfaden welche vom Backup ausgeschlossen werden sollen.
 	 */
-	private ArrayList<String> dirFilter;
+	private ArrayList<Filter> filterOfSource;
 
 	/**
 	 * Erstellt ein neues Quellobjekt.
@@ -31,7 +31,7 @@ public class Source implements Serializable {
 	 */
 	public Source(String path) {
 		this.path = path;
-		dirFilter = new ArrayList<String>();
+		filterOfSource = new ArrayList<Filter>();
 	}
 
 	/**
@@ -40,8 +40,8 @@ public class Source implements Serializable {
 	 * @param filter
 	 *            hinzuzufügender Filter
 	 */
-	public void addFilter(String filter) {
-		dirFilter.add(filter);
+	public void addFilter(Filter filter) {
+		filterOfSource.add(filter);
 	}
 
 	/**
@@ -49,8 +49,8 @@ public class Source implements Serializable {
 	 * 
 	 * @return Liste aller Filter für diese Quelle
 	 */
-	public ArrayList<String> getFilter() {
-		return dirFilter;
+	public ArrayList<Filter> getFilter() {
+		return filterOfSource;
 	}
 
 	/**

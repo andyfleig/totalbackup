@@ -375,10 +375,10 @@ public class HardlinkBackup implements Backupable {
 			}
 			if (files[i].isDirectory()) {
 				// Filtern:
-				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
 						filterMatches = true;
 					}
 				}
@@ -392,10 +392,11 @@ public class HardlinkBackup implements Backupable {
 
 			} else {
 				// Filtern:
-				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+					if (filtersOfThisSource.get(j).getMode() == 0
+							&& (files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
 						filterMatches = true;
 					}
 				}
@@ -432,11 +433,42 @@ public class HardlinkBackup implements Backupable {
 						File fileToLinkFrom = new File(destinationPath + File.separator + newestBackupPath
 								+ fileInIndex.getFilePath());
 						if (fileToLinkFrom.exists()) {
-							// Datei verlinken:
-							elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
-									.getAbsolutePath(), false, true));
-							listener.increaseNumberOfFilesToLink();
-							listener.increaseSizeToLinkBy(files[i].length());
+							// Filterung:
+							filterMatches = false;
+							for (int j = 0; j < filtersOfThisSource.size(); j++) {
+								if (filtersOfThisSource.get(j).getMode() == 1
+										&& (files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
+									filterMatches = true;
+								}
+							}
+							if (!filterMatches) {
+								// Datei verlinken:
+								elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
+										.getAbsolutePath(), false, true));
+								listener.increaseNumberOfFilesToLink();
+								listener.increaseSizeToLinkBy(files[i].length());
+							} else {
+								// Überprüfung der MD5 Summe:
+								// Gleiche MD5 heißt verlinken, unterschiedliche
+								// MD5 heißt kopieren:
+								String md5OfSourceFile = BackupHelper.calcMD5(files[i]);
+								String md5OfFileToLinkFrom = BackupHelper.calcMD5(fileToLinkFrom);
+								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null
+										&& md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
+									// Datei verlinken:
+									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
+											.getAbsolutePath(), false, true));
+									listener.increaseNumberOfFilesToLink();
+									listener.increaseSizeToLinkBy(files[i].length());
+								} else {
+									// Datei zu kopieren:
+									elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile
+											.getAbsolutePath(), false, false));
+									listener.increaseNumberOfFilesToCopy();
+									listener.increaseSizeToCopyBy(files[i].length());
+								}
+							}
+
 						} else {
 							// File exisitiert im Backup-Satz nicht (aber im
 							// Index)

@@ -2,8 +2,9 @@ package gui;
 
 import java.io.File;
 
-public interface IFilterListener {
-	public void addFilter(String filter);
+public interface IFilterDialogListener {
+	//TODO: JavaDoc
+	public void addFilter(String filter, int mode);
 
 	/**
 	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.

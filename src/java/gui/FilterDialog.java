@@ -5,6 +5,7 @@ import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.util.ResourceBundle;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -19,12 +20,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-public class Filter extends JDialog {
+import javax.swing.JRadioButton;
+
+public class FilterDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_filter;
 
-	private IFilterListener listener;
+	private IFilterDialogListener listener;
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
 	 * erzeugt wird.
@@ -34,13 +37,16 @@ public class Filter extends JDialog {
 	 * Speichert den Originalpfad der Qulle.
 	 */
 	private String originalPath;
+	// TODO: JavaDoc
+	private JRadioButton rBtn_excludeFilter;
+	private JRadioButton rBtn_useMD5;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			Filter dialog = new Filter(null);
+			FilterDialog dialog = new FilterDialog(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -51,12 +57,27 @@ public class Filter extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Filter(IFilterListener listener) {
+	public FilterDialog(IFilterDialogListener listener) {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("Filter.title"));
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
-		setBounds(100, 100, 400, 116);
+		setBounds(100, 100, 400, 188);
 		getContentPane().setLayout(new BorderLayout());
+		{
+			JPanel panel = new JPanel();
+			getContentPane().add(panel, BorderLayout.NORTH);
+
+			rBtn_excludeFilter = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
+					"Filter.rBtnexcludeFilter.text"));
+			rBtn_excludeFilter.setSelected(true);
+			panel.add(rBtn_excludeFilter);
+			rBtn_useMD5 = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Filter.rBtnuseMD5.text"));
+			panel.add(rBtn_useMD5);
+
+			ButtonGroup rBtnGroup = new ButtonGroup();
+			rBtnGroup.add(rBtn_excludeFilter);
+			rBtnGroup.add(rBtn_useMD5);
+		}
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
@@ -112,9 +133,13 @@ public class Filter extends JDialog {
 						if (inEditMode) {
 							deleteFilter(originalPath);
 						}
-
-						addFilter(tf_filter.getText());
-						Filter.this.dispose();
+						// Unterscheidung der verschiedenen Filter:
+						if (rBtn_excludeFilter.isSelected()) {
+							addFilter(tf_filter.getText(), 0);
+						} else if (rBtn_useMD5.isSelected()) {
+							addFilter(tf_filter.getText(), 1);
+						}
+						FilterDialog.this.dispose();
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -127,7 +152,7 @@ public class Filter extends JDialog {
 						"Summary.btn_cancel"));
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						Filter.this.dispose();
+						FilterDialog.this.dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
@@ -141,9 +166,15 @@ public class Filter extends JDialog {
 	 * 
 	 * @param filter
 	 *            hinzuzufügender Filter
+	 * @param mode
+	 *            Filter-Art - 0 = Exclusion-Filter; 1 = MD5Filter
 	 */
-	private void addFilter(String filter) {
-		listener.addFilter(filter);
+	private void addFilter(String filter, int mode) {
+		if (mode == 0) {
+			listener.addFilter(filter, 0);
+		} else if (mode == 1) {
+			listener.addFilter(filter, 1);
+		}
 	}
 
 	/**
@@ -205,5 +236,19 @@ public class Filter extends JDialog {
 	 */
 	private void deleteFilter(String path) {
 		listener.deleteFilter(originalPath);
+	}
+	
+	/**
+	 * Legt den gegebenen Modus in der GUI fest.
+	 * @param mode festzulegender Modus
+	 */
+	public void setMode(int mode) {
+		if (mode == 0) {
+			rBtn_excludeFilter.setSelected(true);
+			rBtn_useMD5.setSelected(false);
+		} else if (mode == 1) {
+			rBtn_excludeFilter.setSelected(false);
+			rBtn_useMD5.setSelected(true);
+		}
 	}
 }

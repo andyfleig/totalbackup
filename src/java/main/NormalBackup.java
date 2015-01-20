@@ -192,10 +192,10 @@ public class NormalBackup implements Backupable {
 			}
 			if (files[i].isDirectory()) {
 				// Filtern:
-				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
 						filterMatches = true;
 					}
 				}
@@ -209,10 +209,11 @@ public class NormalBackup implements Backupable {
 				}
 			} else {
 				// Filtern:
-				ArrayList<String> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j)))) {
+					if (filtersOfThisSource.get(j).getMode() == 0
+							&& files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath())) {
 						filterMatches = true;
 					}
 				}

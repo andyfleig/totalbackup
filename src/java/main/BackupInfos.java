@@ -115,6 +115,7 @@ public class BackupInfos {
 	public void clear() {
 		numberOfDirectories = 0;
 		numberOfFilesToCopy = 0;
+		numberOfFilesToLink = 0;
 		sizeToCopy = 0;
 		sizeToLink = 0;
 	}
