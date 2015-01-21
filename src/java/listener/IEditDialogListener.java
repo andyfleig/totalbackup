@@ -1,10 +1,10 @@
-package gui;
+package listener;
 
 import java.util.ArrayList;
 
-import main.BackupTask;
+import data.BackupTask;
 
-public interface IEditListener {
+public interface IEditDialogListener {
 	/**
 	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup
 	 * mit dem angegebenen Namen so wird null zurückgeliefert.

@@ -1,10 +1,5 @@
 package gui;
 
-import main.BackupTask;
-import main.Filter;
-import main.Source;
-import gui.IEditListener;
-
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
@@ -40,9 +35,15 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.AttributeSet;
 
-public class Edit extends JDialog {
+import listener.IEditDialogListener;
+import listener.ISourcesDialogListener;
+import data.BackupTask;
+import data.Filter;
+import data.Source;
 
-	private IEditListener editListener;
+public class EditDialog extends JDialog {
+
+	private IEditDialogListener editListener;
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField tf_Name;
@@ -59,8 +60,8 @@ public class Edit extends JDialog {
 	private JCheckBox cB_autoClean;
 	private JSpinner s_numberOfBackupsToKeep;
 
-	private Sources sourcesDialog;
-	private ISourcesListener sourcesListener;
+	private SourcesDialog sourcesDialog;
+	private ISourcesDialogListener sourcesListener;
 
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
@@ -84,7 +85,7 @@ public class Edit extends JDialog {
 	 * Erzeugt einen Edit-Dialog.
 	 * 
 	 */
-	public Edit(IEditListener listener) {
+	public EditDialog(IEditDialogListener listener) {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("Edit.title"));
 		inEditMode = false;
 		this.editListener = listener;
@@ -120,11 +121,11 @@ public class Edit extends JDialog {
 		}
 
 		// Sources-Listener:
-		sourcesListener = new ISourcesListener() {
+		sourcesListener = new ISourcesDialogListener() {
 
 			@Override
 			public boolean isAlreadySourcePath(String path) {
-				return Edit.this.isAlreadySourcePath(path);
+				return EditDialog.this.isAlreadySourcePath(path);
 			}
 
 			@Override
@@ -213,9 +214,9 @@ public class Edit extends JDialog {
 							btn_Add.setAlignmentX(CENTER_ALIGNMENT);
 							btn_Add.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									sourcesDialog = new Sources(sourcesListener);
+									sourcesDialog = new SourcesDialog(sourcesListener);
 									sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-									sourcesDialog.setLocation(Edit.this.getLocationOnScreen());
+									sourcesDialog.setLocation(EditDialog.this.getLocationOnScreen());
 									sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 									sourcesDialog.setVisible(true);
 								}
@@ -248,7 +249,7 @@ public class Edit extends JDialog {
 										if (list_SourcePaths.isSelectionEmpty()) {
 											return;
 										}
-										sourcesDialog = new Sources(sourcesListener);
+										sourcesDialog = new SourcesDialog(sourcesListener);
 										sourcesDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 										sourcesDialog.setEditMode(true);
 
@@ -261,7 +262,7 @@ public class Edit extends JDialog {
 										for (int i = 0; i < filterOfCurrentSource.size(); i++) {
 											sourcesDialog.addFilter(filterOfCurrentSource.get(i).getPath(), filterOfCurrentSource.get(i).getMode());
 										}
-										sourcesDialog.setLocation(Edit.this.getLocationOnScreen());
+										sourcesDialog.setLocation(EditDialog.this.getLocationOnScreen());
 										sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 										sourcesDialog.setVisible(true);
 
@@ -416,7 +417,7 @@ public class Edit extends JDialog {
 						// Einstellungen sichern (seriallisieren):
 						editListener.saveProperties();
 						if (allInputsAreValid) {
-							Edit.this.dispose();
+							EditDialog.this.dispose();
 						}
 					}
 				});
@@ -430,7 +431,7 @@ public class Edit extends JDialog {
 					.getBundle("gui.messages").getString("Edit.btn_Abbrechen.text")); //$NON-NLS-1$ //$NON-NLS-2$
 			btn_Abbrechen.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Edit.this.dispose();
+					EditDialog.this.dispose();
 				}
 			});
 			btn_Abbrechen.setActionCommand(ResourceBundle

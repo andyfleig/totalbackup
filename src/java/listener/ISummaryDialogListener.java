@@ -1,6 +1,6 @@
-package gui;
+package listener;
 
-public interface ISummaryListener {
+public interface ISummaryDialogListener {
 
 	/**
 	 * Startet den Backup-Vorgang.

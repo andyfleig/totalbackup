@@ -1,9 +1,7 @@
 package test;
 
 import main.BackupHelper;
-import main.BackupTask;
 import main.Controller;
-import main.Source;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -11,6 +9,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import data.BackupTask;
+import data.Source;
 
 import java.io.File;
 

@@ -10,16 +10,16 @@ import java.util.ResourceBundle;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import gui.IPreparingListener;
+import listener.IPreparingDialogListener;
 
-public class Preparing extends JDialog {
+public class PreparingDialog extends JDialog {
 	
-	private IPreparingListener listener;
+	private IPreparingDialogListener listener;
 	
 	/**
 	 * Create the panel.
 	 */
-	public Preparing(IPreparingListener listener) {
+	public PreparingDialog(IPreparingDialogListener listener) {
 		setSize(220, 80);
 		setResizable(false);
 		this.listener = listener;

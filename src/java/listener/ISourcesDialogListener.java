@@ -1,8 +1,8 @@
-package gui;
+package listener;
 
-import main.Source;
+import data.Source;
 
-public interface ISourcesListener {
+public interface ISourcesDialogListener {
 	/**
 	 * Prüft für den gegebenen String ob dieser bereits Quellpfad ist.
 	 * 

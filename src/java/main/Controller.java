@@ -1,9 +1,8 @@
 package main;
 
 import gui.Mainframe;
-import gui.IMainframeListener;
-import main.BackupTask;
-import main.IBackupListener;
+import listener.IBackupListener;
+import listener.IMainframeListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,6 +21,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.SwingUtilities;
+
+import data.BackupInfos;
+import data.BackupTask;
 
 /**
  * Controller zur Steuerung der Anwendung.

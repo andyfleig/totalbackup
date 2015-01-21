@@ -22,6 +22,8 @@ import java.io.File;
 
 import javax.swing.JRadioButton;
 
+import listener.IFilterDialogListener;
+
 public class FilterDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();

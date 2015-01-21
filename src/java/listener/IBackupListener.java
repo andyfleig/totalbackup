@@ -1,4 +1,6 @@
-package main;
+package listener;
+
+import data.BackupTask;
 
 public interface IBackupListener {
 

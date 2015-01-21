@@ -5,6 +5,11 @@ import java.io.IOException;
 import java.io.File;
 import java.util.*;
 
+import listener.IBackupListener;
+import data.BackupElement;
+import data.Filter;
+import data.Source;
+
 public class NormalBackup implements Backupable {
 
 	/**

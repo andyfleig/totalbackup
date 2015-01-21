@@ -21,15 +21,18 @@ import java.awt.Dimension;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
-import main.Filter;
-import main.Source;
+import data.Filter;
+import data.Source;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ResourceBundle;
 
-public class Sources extends JDialog {
+import listener.IFilterDialogListener;
+import listener.ISourcesDialogListener;
+
+public class SourcesDialog extends JDialog {
 
 	/**
 	 * 
@@ -40,7 +43,7 @@ public class Sources extends JDialog {
 	private JList<Filter> list_Filter;
 	private DefaultListModel<Filter> listModel;
 
-	private ISourcesListener sourcesListener;
+	private ISourcesDialogListener sourcesListener;
 	private FilterDialog filterDialog;
 
 	/**
@@ -58,7 +61,7 @@ public class Sources extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Sources dialog = new Sources(null);
+			SourcesDialog dialog = new SourcesDialog(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -69,7 +72,7 @@ public class Sources extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Sources(ISourcesListener sourcesListener) {
+	public SourcesDialog(ISourcesDialogListener sourcesListener) {
 		setResizable(false);
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.sourcesListener = sourcesListener;
@@ -158,21 +161,21 @@ public class Sources extends JDialog {
 
 								@Override
 								public boolean isUnderSourceRoot(String path) {
-									return Sources.this.isUnderSourceRoot(path);
+									return SourcesDialog.this.isUnderSourceRoot(path);
 								}
 
 								@Override
 								public void deleteFilter(String path) {
-									Sources.this.deleteFilter(path);
+									SourcesDialog.this.deleteFilter(path);
 								}
 
 								@Override
 								public File getSourceFile() {
-									return Sources.this.getSourceFile();
+									return SourcesDialog.this.getSourceFile();
 								}
 							});
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							filterDialog.setLocation(Sources.this.getLocationOnScreen());
+							filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
 							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 							filterDialog.setVisible(true);
 						}
@@ -199,17 +202,17 @@ public class Sources extends JDialog {
 
 								@Override
 								public boolean isUnderSourceRoot(String path) {
-									return Sources.this.isUnderSourceRoot(path);
+									return SourcesDialog.this.isUnderSourceRoot(path);
 								}
 
 								@Override
 								public void deleteFilter(String path) {
-									Sources.this.deleteFilter(path);
+									SourcesDialog.this.deleteFilter(path);
 								}
 
 								@Override
 								public File getSourceFile() {
-									return Sources.this.getSourceFile();
+									return SourcesDialog.this.getSourceFile();
 								}
 							});
 							filterDialog.setFilter(listModel.get(list_Filter.getSelectedIndex()).getPath());
@@ -218,7 +221,7 @@ public class Sources extends JDialog {
 							filterDialog.setMode(listModel.get(list_Filter.getSelectedIndex()).getMode());
 
 							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							filterDialog.setLocation(Sources.this.getLocationOnScreen());
+							filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
 							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 							filterDialog.setVisible(true);
 						}
@@ -285,7 +288,7 @@ public class Sources extends JDialog {
 							}
 
 							addSource(newSource);
-							Sources.this.dispose();
+							SourcesDialog.this.dispose();
 
 						}
 					});
@@ -298,7 +301,7 @@ public class Sources extends JDialog {
 							"Summary.btn_cancel"));
 					cancelButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							Sources.this.dispose();
+							SourcesDialog.this.dispose();
 						}
 					});
 					cancelButton.setActionCommand("Cancel");

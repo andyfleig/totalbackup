@@ -1,11 +1,12 @@
 package gui;
 
+import listener.IEditDialogListener;
+import listener.IMainframeListener;
+import listener.IPreparingDialogListener;
+import listener.ISummaryDialogListener;
 import main.Controller;
-import main.BackupTask;
-import main.Source;
-import gui.About;
-import gui.Edit;
-import gui.IEditListener;
+import gui.AboutDialog;
+import gui.EditDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +49,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultCaret;
 
+import data.BackupTask;
+import data.Source;
+
 public class Mainframe extends JDialog {
 
 	// Für main benötigt:
@@ -69,9 +73,9 @@ public class Mainframe extends JDialog {
 	private JTextField tF_status;
 	private JCheckBox cb_advancedOutput;
 
-	private IEditListener editListener;
+	private IEditDialogListener editListener;
 
-	private Edit editDialog;
+	private EditDialog editDialog;
 
 	private DefaultListModel<BackupTask> listModel;
 
@@ -81,9 +85,9 @@ public class Mainframe extends JDialog {
 
 	private Thread backupThread;
 
-	private Summary summary;
+	private SummaryDialog summary;
 	
-	private Preparing prep;
+	private PreparingDialog prep;
 
 	File sourceFile;
 	File destinationFile;
@@ -128,7 +132,7 @@ public class Mainframe extends JDialog {
 		StyleConstants.setForeground(redAS, Color.RED);
 
 		// Edit-Listener anlegen:
-		editListener = new IEditListener() {
+		editListener = new IEditDialogListener() {
 
 			@Override
 			public BackupTask getBackupTaskWithName(String name) {
@@ -256,7 +260,7 @@ public class Mainframe extends JDialog {
 		btn_Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					editDialog = new Edit(editListener);
+					editDialog = new EditDialog(editListener);
 					editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 					editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
@@ -276,7 +280,7 @@ public class Mainframe extends JDialog {
 				if (!list_Tasks.isSelectionEmpty()) {
 					try {
 						// Neuen Edit-Dialog erzeugen:
-						editDialog = new Edit(editListener);
+						editDialog = new EditDialog(editListener);
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						editDialog.setEditMode(true);
 						// Gespeicherte Werte in den Edit-Dialog eintragen:
@@ -433,7 +437,7 @@ public class Mainframe extends JDialog {
 			return;
 		}
 
-		prep = new Preparing(new IPreparingListener() {
+		prep = new PreparingDialog(new IPreparingDialogListener() {
 
 			@Override
 			public void cancelBackup() {
@@ -461,7 +465,7 @@ public class Mainframe extends JDialog {
 
 	// TODO: JavaDoc
 	private void showSummary() {
-		summary = new Summary(new ISummaryListener() {
+		summary = new SummaryDialog(new ISummaryDialogListener() {
 
 			@Override
 			public void startBackup() {
@@ -555,7 +559,7 @@ public class Mainframe extends JDialog {
 
 		public void actionPerformed(ActionEvent e) {
 			try {
-				About dialog = new About();
+				AboutDialog dialog = new AboutDialog();
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setLocation(frmTotalbackup.getLocationOnScreen());
 				dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);

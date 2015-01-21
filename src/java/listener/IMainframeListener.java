@@ -1,8 +1,8 @@
-package gui;
+package listener;
 
 import java.util.ArrayList;
 
-import main.BackupTask;
+import data.BackupTask;
 
 public interface IMainframeListener {
 

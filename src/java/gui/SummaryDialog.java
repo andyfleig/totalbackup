@@ -15,9 +15,11 @@ import java.util.ResourceBundle;
 
 import javax.swing.JLabel;
 
-public class Summary extends JDialog {
+import listener.ISummaryDialogListener;
 
-	private ISummaryListener listener;
+public class SummaryDialog extends JDialog {
+
+	private ISummaryDialogListener listener;
 	private final JPanel contentPanel = new JPanel();
 
 	/**
@@ -25,7 +27,7 @@ public class Summary extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			Summary dialog = new Summary(null);
+			SummaryDialog dialog = new SummaryDialog(null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -36,7 +38,7 @@ public class Summary extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public Summary(ISummaryListener listener) {
+	public SummaryDialog(ISummaryDialogListener listener) {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("Summary.title"));
 		this.listener = listener;
 		setResizable(false);
@@ -67,7 +69,7 @@ public class Summary extends JDialog {
 						// TODO: !!!
 						// Summary.this.dispose();
 						clearBackupInfos();
-						Summary.this.listener.startBackup();
+						SummaryDialog.this.listener.startBackup();
 					}
 				});
 				btn_ok.setActionCommand("OK");
@@ -83,7 +85,7 @@ public class Summary extends JDialog {
 						outprintBackupCanceled();
 						deleteEmptyBackupFolders();
 						clearBackupInfos();
-						Summary.this.dispose();
+						SummaryDialog.this.dispose();
 					}
 				});
 				btn_cancel.setActionCommand("Cancel");

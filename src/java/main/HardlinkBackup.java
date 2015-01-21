@@ -17,6 +17,12 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.io.FilenameFilter;
 
+import listener.IBackupListener;
+import data.BackupElement;
+import data.Filter;
+import data.Source;
+import data.StructureFile;
+
 public class HardlinkBackup implements Backupable {
 
 	/**

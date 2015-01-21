@@ -26,7 +26,7 @@ import javax.swing.JTextPane;
 
 import java.util.ResourceBundle;
 
-public class About extends JDialog {
+public class AboutDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private final Action action = new SA_ok();
@@ -52,7 +52,7 @@ public class About extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public About() {
+	public AboutDialog() {
 		setResizable(false);
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("About.this.title"));
 		setModal(true);
@@ -86,7 +86,7 @@ public class About extends JDialog {
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 		public void actionPerformed(ActionEvent e) {
-			About.this.dispose();
+			AboutDialog.this.dispose();
 		}
 	}
 }
