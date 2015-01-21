@@ -9,7 +9,7 @@ public interface IFilterDialogListener {
 	 * @param path
 	 *            Pfad des Filters
 	 * @param mode
-	 *            Filter-Modus 0 = Ausschluss-Filter; 1 = MD5-Filter
+	 *            Filter-Modus (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
 	public void addFilter(String path, int mode);
 

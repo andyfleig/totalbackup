@@ -415,10 +415,12 @@ public class SourcesDialog extends JDialog {
 	/**
 	 * Fügt einen Filter zur Liste der Filter hinzu.
 	 * 
-	 * @param filter
+	 * @param path
 	 *            hinzuzufügender Filter
+	 * @param mode
+	 *            Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
-	public void addFilter(String filter, int mode) {
-		listModel.addElement(new Filter(filter, mode));
+	public void addFilter(String path, int mode) {
+		listModel.addElement(new Filter(path, mode));
 	}
 }

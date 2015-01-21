@@ -174,16 +174,16 @@ public class FilterDialog extends JDialog {
 	/**
 	 * Fügt einen Filter zur Liste der Filter hinzu.
 	 * 
-	 * @param filter
+	 * @param path
 	 *            hinzuzufügender Filter
 	 * @param mode
 	 *            Filter-Art - 0 = Exclusion-Filter; 1 = MD5Filter
 	 */
-	private void addFilter(String filter, int mode) {
+	private void addFilter(String path, int mode) {
 		if (mode == 0) {
-			listener.addFilter(filter, 0);
+			listener.addFilter(path, 0);
 		} else if (mode == 1) {
-			listener.addFilter(filter, 1);
+			listener.addFilter(path, 1);
 		}
 	}
 
