@@ -139,7 +139,6 @@ public class HardlinkBackup implements Backupable {
 				}
 			}
 			// Falls kein index gefunden wurde, wird ein index angelegt:
-			// TODO: Unschön: Task jedes Mal neu holen...
 			if (indexExists == false) {
 				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing");
 				listener.printOut(outprint, false);

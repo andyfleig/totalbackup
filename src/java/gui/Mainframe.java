@@ -353,7 +353,7 @@ public class Mainframe extends JDialog {
 					return;
 				}
 				prep.dispose();
-				showSummary();
+				showSummaryDialog();
 
 			}
 		});
@@ -405,7 +405,7 @@ public class Mainframe extends JDialog {
 					return;
 				}
 				prep.dispose();
-				showSummary();
+				showSummaryDialog();
 			}
 		});
 		panel_1.add(btnCancel);
@@ -463,8 +463,10 @@ public class Mainframe extends JDialog {
 		listener.startPreparation(selectedTask);
 	}
 
-	// TODO: JavaDoc
-	private void showSummary() {
+	/**
+	 * Öffnet einen neuen SummeryDialog.
+	 */
+	private void showSummaryDialog() {
 		summary = new SummaryDialog(new ISummaryDialogListener() {
 
 			@Override

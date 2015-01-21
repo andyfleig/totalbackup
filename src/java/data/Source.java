@@ -35,7 +35,7 @@ public class Source implements Serializable {
 	}
 
 	/**
-	 * Fügt für diese Quelle einen Verzeichnisfilter hinzu.
+	 * Fügt für diese Quelle einen Filter hinzu.
 	 * 
 	 * @param filter
 	 *            hinzuzufügender Filter

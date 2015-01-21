@@ -36,11 +36,16 @@ public class FilterDialog extends JDialog {
 	 */
 	private boolean inEditMode;
 	/**
-	 * Speichert den Originalpfad der Qulle.
+	 * Speichert den Originalpfad der Quelle.
 	 */
 	private String originalPath;
-	// TODO: JavaDoc
+	/**
+	 * RadioButton für den Ausschluss-Filter.
+	 */
 	private JRadioButton rBtn_excludeFilter;
+	/**
+	 * RadioButton für den MD5-Filter.
+	 */
 	private JRadioButton rBtn_useMD5;
 
 	/**
@@ -72,7 +77,8 @@ public class FilterDialog extends JDialog {
 			rBtn_excludeFilter = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
 					"Filter.rBtnexcludeFilter.text"));
 			rBtn_excludeFilter.setSelected(true);
-			rBtn_excludeFilter.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("Filter.excludeToolTip"));
+			rBtn_excludeFilter.setToolTipText(ResourceBundle.getBundle("gui.messages").getString(
+					"Filter.excludeToolTip"));
 			panel.add(rBtn_excludeFilter);
 			rBtn_useMD5 = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Filter.rBtnuseMD5.text"));
 			rBtn_useMD5.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("Filter.md5ToolTip"));
@@ -241,10 +247,12 @@ public class FilterDialog extends JDialog {
 	private void deleteFilter(String path) {
 		listener.deleteFilter(originalPath);
 	}
-	
+
 	/**
 	 * Legt den gegebenen Modus in der GUI fest.
-	 * @param mode festzulegender Modus
+	 * 
+	 * @param mode
+	 *            festzulegender Modus
 	 */
 	public void setMode(int mode) {
 		if (mode == 0) {

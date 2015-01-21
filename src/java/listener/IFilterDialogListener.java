@@ -3,8 +3,15 @@ package listener;
 import java.io.File;
 
 public interface IFilterDialogListener {
-	//TODO: JavaDoc
-	public void addFilter(String filter, int mode);
+	/**
+	 * Fügt einen neuen Filter hinzu.
+	 * 
+	 * @param path
+	 *            Pfad des Filters
+	 * @param mode
+	 *            Filter-Modus 0 = Ausschluss-Filter; 1 = MD5-Filter
+	 */
+	public void addFilter(String path, int mode);
 
 	/**
 	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
