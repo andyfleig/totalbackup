@@ -86,7 +86,7 @@ public class Mainframe extends JDialog {
 	private Thread backupThread;
 
 	private SummaryDialog summary;
-	
+
 	private PreparingDialog prep;
 
 	File sourceFile;
@@ -214,10 +214,23 @@ public class Mainframe extends JDialog {
 		panel_4.setLayout(new BorderLayout());
 		panel_4.add(scrollPane, BorderLayout.CENTER);
 
+		JPanel panel_6 = new JPanel();
+		panel_4.add(panel_6, BorderLayout.SOUTH);
+		panel_6.setLayout(new BorderLayout(0, 0));
+
 		// Checkbox erweiterte Ausgabe:
 		cb_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
 				"Mainframe.cb_advancedOutput.text"));
-		panel_4.add(cb_advancedOutput, BorderLayout.SOUTH);
+		panel_6.add(cb_advancedOutput, BorderLayout.WEST);
+
+		JButton btn_clearOutput = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+				"Mainframe.btn_ClearOutput.text"));
+		btn_clearOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				tp_Output.setText("");
+			}
+		});
+		panel_6.add(btn_clearOutput, BorderLayout.EAST);
 
 		JPanel panel_5 = new JPanel();
 		panel_5.setLayout(new BorderLayout());
@@ -312,7 +325,8 @@ public class Mainframe extends JDialog {
 		btn_Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,  JOptionPane.YES_NO_OPTION);
+						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
+						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					if (!list_Tasks.isSelectionEmpty()) {
 						listener.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
@@ -457,7 +471,7 @@ public class Mainframe extends JDialog {
 		});
 		prep.setLocation(frmTotalbackup.getLocationOnScreen());
 		// TODO: Langfristige Lösung?
-		//prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		// prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		prep.setVisible(true);
 
 		listener.startPreparation(selectedTask);
@@ -489,7 +503,7 @@ public class Mainframe extends JDialog {
 			public long getNumberOfFilesToCopy() {
 				return listener.getNumberOfFilesToCopy();
 			}
-			
+
 			@Override
 			public long getNumberOfFilesToLink() {
 				return listener.getNumberOfFilesToLink();
