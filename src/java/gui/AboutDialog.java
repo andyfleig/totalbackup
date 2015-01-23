@@ -28,10 +28,10 @@ import java.util.ResourceBundle;
 
 public class AboutDialog extends JDialog {
 
-	private final JPanel contentPanel = new JPanel();
+	private final JPanel panel_main = new JPanel();
 	private final Action action = new SA_ok();
-	private JButton btn_Ok;
-	private JLabel txt_About;
+	private JButton button_ok;
+	private JLabel label_about;
 
 	/**
 	 * @deprecated
@@ -50,24 +50,24 @@ public class AboutDialog extends JDialog {
 	 */
 	public AboutDialog() {
 		setResizable(false);
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("About.this.title"));
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.title"));
 		setModal(true);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 479, 589);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
+		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(panel_main, BorderLayout.CENTER);
+		panel_main.setLayout(new BorderLayout(0, 0));
 
-		txt_About = new JLabel();
-		txt_About.setText(ResourceBundle.getBundle("gui.messages").getString("About.txtpnWarnungDieSoftware.text"));
-		contentPanel.add(txt_About, BorderLayout.CENTER);
+		label_about = new JLabel();
+		label_about.setText(ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.text"));
+		panel_main.add(label_about, BorderLayout.CENTER);
 
-		btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("About.okButton.text"));
-		contentPanel.add(btn_Ok, BorderLayout.SOUTH);
-		btn_Ok.setAction(action);
-		btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("About.okButton.actionCommand"));
-		getRootPane().setDefaultButton(btn_Ok);
+		button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		panel_main.add(button_ok, BorderLayout.SOUTH);
+		button_ok.setAction(action);
+		button_ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		getRootPane().setDefaultButton(button_ok);
 
 	}
 

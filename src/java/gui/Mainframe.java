@@ -60,18 +60,18 @@ public class Mainframe extends JDialog {
 	public JFrame frmTotalbackup;
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
-	private JTextPane tp_Output;
-	private JList<BackupTask> list_Tasks;
+	private JTextPane textpane_output;
+	private JList<BackupTask> list_tasks;
 	private BackupTask selectedTask;
 
-	private JButton btn_StartAll;
-	private JButton btn_Add;
-	private JButton btn_Edit;
-	private JButton btn_Delete;
-	private JButton btnCancel;
-	private JButton btnStartSelected;
-	private JTextField tF_status;
-	private JCheckBox cb_advancedOutput;
+	private JButton button_startAll;
+	private JButton button_add;
+	private JButton button_edit;
+	private JButton button_delete;
+	private JButton button_cancel;
+	private JButton button_startSelected;
+	private JTextField textfield_status;
+	private JCheckBox checkbox_advancedOutput;
 
 	private IEditDialogListener editListener;
 
@@ -163,7 +163,7 @@ public class Mainframe extends JDialog {
 		};
 
 		frmTotalbackup = new JFrame();
-		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("Mainframe.frmTotalbackup.title")); //$NON-NLS-1$ //$NON-NLS-2$
+		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"));
 		frmTotalbackup.setBounds(100, 100, 894, 569);
 		frmTotalbackup.setMinimumSize(new Dimension(500, 400));
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
@@ -175,102 +175,88 @@ public class Mainframe extends JDialog {
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
 
-		JMenu mn_File = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnFile.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JMenu mn_File = new JMenu(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_file"));
 		menuBar.add(mn_File);
 
-		JMenuItem mntm_Quit = new JMenuItem(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.mntmQuit.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JMenuItem mntm_Quit = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.menu_quit"));
 		mntm_Quit.setAction(action_quit);
 		mn_File.add(mntm_Quit);
 
-		JMenu mn_Help = new JMenu(ResourceBundle.getBundle("gui.messages").getString("Mainframe.mnHelp.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JMenu mn_Help = new JMenu(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_help"));
 		menuBar.add(mn_Help);
 
-		JMenuItem mntm_About = new JMenuItem(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.mntmAbout_1.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		JMenuItem mntm_About = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.menu_about"));
 		mntm_About.setAction(action_about);
 		mn_Help.add(mntm_About);
 
 		listModel = new DefaultListModel<BackupTask>();
 
-		tp_Output = new JTextPane() {
+		textpane_output = new JTextPane() {
 			public boolean getScrollableTracksViewportWidth() {
 				return getUI().getPreferredSize(this).width <= getParent().getSize().width;
 			}
 		};
-		tp_Output.setEditable(false);
+		textpane_output.setEditable(false);
 
-		DefaultCaret caret = (DefaultCaret) tp_Output.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		DefaultCaret caret = (DefaultCaret) textpane_output.getCaret();
 		// TODO: Kein Vertikales Autoscrollen
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-		tpOutput_doc = tp_Output.getStyledDocument();
+		tpOutput_doc = textpane_output.getStyledDocument();
 
-		JScrollPane scrollPane = new JScrollPane(tp_Output);
+		JScrollPane scrollPane_output = new JScrollPane(textpane_output);
 
-		JPanel panel_4 = new JPanel();
+		JPanel panel_statusAndLog = new JPanel();
 
-		frmTotalbackup.getContentPane().add(panel_4, BorderLayout.CENTER);
-		panel_4.setLayout(new BorderLayout());
-		panel_4.add(scrollPane, BorderLayout.CENTER);
-
-		JPanel panel_6 = new JPanel();
-		panel_4.add(panel_6, BorderLayout.SOUTH);
-		panel_6.setLayout(new BorderLayout(0, 0));
+		frmTotalbackup.getContentPane().add(panel_statusAndLog, BorderLayout.CENTER);
+		panel_statusAndLog.setLayout(new BorderLayout());
+		panel_statusAndLog.add(scrollPane_output, BorderLayout.CENTER);
 
 		// Checkbox erweiterte Ausgabe:
-		cb_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
-				"Mainframe.cb_advancedOutput.text"));
-		panel_6.add(cb_advancedOutput, BorderLayout.WEST);
+		checkbox_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.checkbox_advancedOutput"));
+		
+		JPanel panel_options = new JPanel();
+		panel_statusAndLog.add(panel_options, BorderLayout.SOUTH);
+		panel_options.setLayout(new BorderLayout(0, 0));
+		panel_options.add(checkbox_advancedOutput, BorderLayout.WEST);	
 
-		JButton btn_clearOutput = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-				"Mainframe.btn_ClearOutput.text"));
-		btn_clearOutput.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				tp_Output.setText("");
-			}
-		});
-		panel_6.add(btn_clearOutput, BorderLayout.EAST);
+		JPanel panel_tasks = new JPanel();
+		frmTotalbackup.getContentPane().add(panel_tasks, BorderLayout.NORTH);
+		panel_tasks.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_status = new JPanel();
+		panel_status.setLayout(new BorderLayout());
+		panel_statusAndLog.add(panel_status, BorderLayout.NORTH);
+		
+		textfield_status = new JTextField();
+		textfield_status.setEditable(false);
+		textfield_status.setPreferredSize(new Dimension(0, 25));
+		panel_status.add(textfield_status, BorderLayout.CENTER);
 
-		JPanel panel_5 = new JPanel();
-		panel_5.setLayout(new BorderLayout());
-		panel_4.add(panel_5, BorderLayout.NORTH);
+		JLabel label_status = new JLabel();
+		label_status.setPreferredSize(new Dimension(0, 25));
+		label_status.setText(" " + ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.label_status"));
+		panel_status.add(label_status, BorderLayout.NORTH);
 
-		tF_status = new JTextField();
-		tF_status.setEditable(false);
-		tF_status.setPreferredSize(new Dimension(0, 25));
-		panel_5.add(tF_status, BorderLayout.CENTER);
+		JLabel label_tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.label_tasks"));
+		panel_tasks.add(label_tasks, BorderLayout.NORTH);
+		label_tasks.setPreferredSize(new Dimension(0, 25));
 
-		JLabel lbl_status = new JLabel();
-		lbl_status.setPreferredSize(new Dimension(0, 25));
-		lbl_status.setText(" " + ResourceBundle.getBundle("gui.messages").getString("Mainframe.lbl_status.text"));
-		panel_5.add(lbl_status, BorderLayout.NORTH);
-
-		JPanel panel = new JPanel();
-		frmTotalbackup.getContentPane().add(panel, BorderLayout.NORTH);
-		panel.setLayout(new BorderLayout(0, 0));
-
-		JPanel panel_2 = new JPanel();
-		panel.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new BorderLayout(0, 0));
-
-		JLabel lbl_Tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Mainframe.lblTask.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		lbl_Tasks.setPreferredSize(new Dimension(0, 25));
-		panel_2.add(lbl_Tasks, BorderLayout.NORTH);
-
-		JScrollPane listScroller = new JScrollPane();
-
-		panel_2.add(listScroller, BorderLayout.WEST);
+		JScrollPane listScroller_tasks = new JScrollPane();
+		panel_tasks.add(listScroller_tasks, BorderLayout.WEST);
 
 		// Button Hinzufügen:
-		JPanel panel_3 = new JPanel();
-		panel_2.add(panel_3, BorderLayout.EAST);
-		panel_3.setLayout(new BoxLayout(panel_3, BoxLayout.Y_AXIS));
-		panel_3.setPreferredSize(new Dimension(140, 76));
-		btn_Add = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnHinzufuegen.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_3.add(btn_Add);
-		btn_Add.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btn_Add.addActionListener(new ActionListener() {
+		JPanel panel_configureTasks = new JPanel();
+		panel_tasks.add(panel_configureTasks, BorderLayout.EAST);
+		panel_configureTasks.setLayout(new BoxLayout(panel_configureTasks, BoxLayout.Y_AXIS));
+		panel_configureTasks.setPreferredSize(new Dimension(140, 76));
+		button_add = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_add"));
+		panel_configureTasks.add(button_add);
+		button_add.setAlignmentX(Component.CENTER_ALIGNMENT);
+		button_add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					editDialog = new EditDialog(editListener);
@@ -286,18 +272,18 @@ public class Mainframe extends JDialog {
 		});
 
 		// Button Bearbeiten:
-		btn_Edit = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnBearbeiten.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btn_Edit.addActionListener(new ActionListener() {
+		button_edit = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_edit"));
+		button_edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob ein Listenelement selektiert ist:
-				if (!list_Tasks.isSelectionEmpty()) {
+				if (!list_tasks.isSelectionEmpty()) {
 					try {
 						// Neuen Edit-Dialog erzeugen:
 						editDialog = new EditDialog(editListener);
 						editDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						editDialog.setEditMode(true);
 						// Gespeicherte Werte in den Edit-Dialog eintragen:
-						BackupTask task = list_Tasks.getSelectedValue();
+						BackupTask task = list_tasks.getSelectedValue();
 						editDialog.setBackupTaskName(task.getTaskName());
 						editDialog.setEditable(false);
 						editDialog.setSourcePaths(task.getSources());
@@ -314,47 +300,56 @@ public class Mainframe extends JDialog {
 				}
 			}
 		});
-		btn_Edit.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel_3.add(btn_Edit);
+		button_edit.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel_configureTasks.add(button_edit);
 
 		// Button Löschen:
-		btn_Delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnLoeschen.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_3.add(btn_Delete);
-		btn_Delete.setAlignmentX(Component.CENTER_ALIGNMENT);
+		button_delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_delete"));
+		panel_configureTasks.add(button_delete);
+		button_delete.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		btn_Delete.addActionListener(new ActionListener() {
+		button_delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
-					if (!list_Tasks.isSelectionEmpty()) {
-						listener.removeBackupTask(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+					if (!list_tasks.isSelectionEmpty()) {
+						listener.removeBackupTask(listModel.getElementAt(list_tasks.getSelectedIndex()));
 					}
 					saveProperties();
 				}
 			}
 		});
 
-		list_Tasks = new JList<BackupTask>(listModel);
-		panel_2.add(list_Tasks, BorderLayout.CENTER);
-		list_Tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_Tasks.setSelectedIndex(0);
-		list_Tasks.setVisibleRowCount(6);
+		list_tasks = new JList<BackupTask>(listModel);
+		panel_tasks.add(list_tasks, BorderLayout.CENTER);
+		list_tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list_tasks.setSelectedIndex(0);
+		list_tasks.setVisibleRowCount(6);
 
-		JPanel panel_1 = new JPanel();
-		frmTotalbackup.getContentPane().add(panel_1, BorderLayout.SOUTH);
+		JButton button_clearOutput = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.button_clearOutput"));
+		button_clearOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				textpane_output.setText("");
+			}
+		});
+		panel_options.add(button_clearOutput, BorderLayout.EAST);
+
+		JPanel panel_buttons = new JPanel();
+		frmTotalbackup.getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
 		// Button Ausgewähltes Backup starten:
-		btnStartSelected = new JButton(ResourceBundle
-				.getBundle("gui.messages").getString("Mainframe.btnStartSelected.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		button_startSelected = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.button_startSelectedBackup"));
 
-		btnStartSelected.addActionListener(new ActionListener() {
+		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						prepareBackup(listModel.getElementAt(list_Tasks.getSelectedIndex()));
+						prepareBackup(listModel.getElementAt(list_tasks.getSelectedIndex()));
 					}
 				});
 				backupThread.start();
@@ -371,13 +366,14 @@ public class Mainframe extends JDialog {
 
 			}
 		});
-		panel_1.add(btnStartSelected);
+		panel_buttons.add(button_startSelected);
 
 		// Button Backup Abbrechen:
-		btnCancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("Mainframe.btnCancel.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btnCancel.setEnabled(false);
+		button_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.button_cancelBackup"));
+		button_cancel.setEnabled(false);
 
-		btnCancel.addActionListener(new ActionListener() {
+		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
@@ -385,7 +381,7 @@ public class Mainframe extends JDialog {
 				if (reply == JOptionPane.YES_OPTION) {
 					Mainframe.this.addToOutput(
 							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
-					btnCancel.setEnabled(false);
+					button_cancel.setEnabled(false);
 					if (backupThread != null) {
 						backupThread.interrupt();
 					}
@@ -394,11 +390,11 @@ public class Mainframe extends JDialog {
 		});
 
 		// Button Alle-Backups-Starten:
-		btn_StartAll = new JButton(ResourceBundle.getBundle("gui.messages")
-				.getString("Mainframe.btnBackupStarten.text"));
-		panel_1.add(btn_StartAll);
+		button_startAll = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.Mainframe.button_startAllBackups"));
+		panel_buttons.add(button_startAll);
 
-		btn_StartAll.addActionListener(new ActionListener() {
+		button_startAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				backupThread = new Thread(new Runnable() {
 					@Override
@@ -422,7 +418,7 @@ public class Mainframe extends JDialog {
 				showSummaryDialog();
 			}
 		});
-		panel_1.add(btnCancel);
+		panel_buttons.add(button_cancel);
 	}
 
 	/**
@@ -439,14 +435,16 @@ public class Mainframe extends JDialog {
 		ArrayList<Source> sources = selectedTask.getSources();
 		for (int i = 0; i < sources.size(); i++) {
 			if (!(new File(sources.get(i).getPath())).exists()) {
-				String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorSourceDontExists");
+				String output = ResourceBundle.getBundle("gui.messages").getString(
+						"GUI.Mainframe.errorSourceDontExists");
 				listener.printOut(output, false);
 				listener.log(output, selectedTask);
 				return;
 			}
 		}
 		if (!(new File(selectedTask.getDestinationPath())).exists()) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Mainframe.ErrorDestDontExists");
+			String output = ResourceBundle.getBundle("gui.messages")
+					.getString("GUI.Mainframe.errDestinationDontExists");
 			listener.printOut(output, false);
 			return;
 		}
@@ -461,7 +459,7 @@ public class Mainframe extends JDialog {
 				if (reply == JOptionPane.YES_OPTION) {
 					Mainframe.this.addToOutput(
 							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
-					btnCancel.setEnabled(false);
+					button_cancel.setEnabled(false);
 					if (backupThread != null) {
 						backupThread.interrupt();
 					}
@@ -569,7 +567,7 @@ public class Mainframe extends JDialog {
 
 	private class SA_About extends AbstractAction {
 		public SA_About() {
-			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("About.this.title"));
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.title"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -588,7 +586,8 @@ public class Mainframe extends JDialog {
 
 	private class SA_Quit extends AbstractAction {
 		public SA_Quit() {
-			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("Mainframe.mntmQuit.text"));
+			// TODO: unnötig?
+			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_quit"));
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
@@ -681,7 +680,7 @@ public class Mainframe extends JDialog {
 	 *            auszugebender String
 	 */
 	public void setStatus(String status) {
-		tF_status.setText(status);
+		textfield_status.setText(status);
 	}
 
 	/**
@@ -737,12 +736,12 @@ public class Mainframe extends JDialog {
 	 *            Backup), true = entsperrt
 	 */
 	public void setButtonsToBackupRunning(boolean noBackupRunning) {
-		btnCancel.setEnabled(!noBackupRunning);
-		btnStartSelected.setEnabled(noBackupRunning);
-		btn_StartAll.setEnabled(noBackupRunning);
-		btn_Add.setEnabled(noBackupRunning);
-		btn_Edit.setEnabled(noBackupRunning);
-		btn_Delete.setEnabled(noBackupRunning);
+		button_cancel.setEnabled(!noBackupRunning);
+		button_startSelected.setEnabled(noBackupRunning);
+		button_startAll.setEnabled(noBackupRunning);
+		button_add.setEnabled(noBackupRunning);
+		button_edit.setEnabled(noBackupRunning);
+		button_delete.setEnabled(noBackupRunning);
 	}
 
 	/**
@@ -751,6 +750,6 @@ public class Mainframe extends JDialog {
 	 * @return Status der erweiterten Ausgabe
 	 */
 	public boolean advancedOutputIsEnabled() {
-		return cb_advancedOutput.isSelected();
+		return checkbox_advancedOutput.isSelected();
 	}
 }

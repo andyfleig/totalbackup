@@ -26,8 +26,8 @@ import listener.IFilterDialogListener;
 
 public class FilterDialog extends JDialog {
 
-	private final JPanel contentPanel = new JPanel();
-	private JTextField tf_filter;
+	private final JPanel panel_source = new JPanel();
+	private JTextField textfield_filter;
 
 	private IFilterDialogListener listener;
 	/**
@@ -42,11 +42,11 @@ public class FilterDialog extends JDialog {
 	/**
 	 * RadioButton für den Ausschluss-Filter.
 	 */
-	private JRadioButton rBtn_excludeFilter;
+	private JRadioButton radioButton_excludeFilter;
 	/**
 	 * RadioButton für den MD5-Filter.
 	 */
-	private JRadioButton rBtn_useMD5;
+	private JRadioButton radioButton_useMD5;
 
 	/**
 	 * Launch the application.
@@ -65,110 +65,108 @@ public class FilterDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public FilterDialog(IFilterDialogListener listener) {
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("Filter.title"));
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.title"));
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
 		setBounds(100, 100, 462, 148);
 		getContentPane().setLayout(new BorderLayout());
-		{
-			JPanel panel = new JPanel();
-			getContentPane().add(panel, BorderLayout.NORTH);
 
-			rBtn_excludeFilter = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
-					"Filter.rBtnexcludeFilter.text"));
-			rBtn_excludeFilter.setSelected(true);
-			rBtn_excludeFilter.setToolTipText(ResourceBundle.getBundle("gui.messages").getString(
-					"Filter.excludeToolTip"));
-			panel.add(rBtn_excludeFilter);
-			rBtn_useMD5 = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString("Filter.rBtnuseMD5.text"));
-			rBtn_useMD5.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("Filter.md5ToolTip"));
-			panel.add(rBtn_useMD5);
+		JPanel panel_filterType = new JPanel();
+		getContentPane().add(panel_filterType, BorderLayout.NORTH);
 
-			ButtonGroup rBtnGroup = new ButtonGroup();
-			rBtnGroup.add(rBtn_excludeFilter);
-			rBtnGroup.add(rBtn_useMD5);
-		}
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			tf_filter = new JTextField();
-			contentPanel.add(tf_filter);
-			tf_filter.setColumns(10);
-		}
-		{
-			JLabel lbl_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-					"Mainframe.lblQuelle.text"));
-			contentPanel.add(lbl_source, BorderLayout.NORTH);
-		}
-		{
-			// Button Durchsuchen:
-			JButton btn_Find = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Find.text"));
-			btn_Find.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					// Beschränkung des FC auf den Sourceroot:
-					FileSystemView fsv = new DirectoryRestrictedFileSystemView(getSourceFile());
+		radioButton_excludeFilter = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.FilterDialog.radioButton_excludeFilter"));
+		radioButton_excludeFilter.setSelected(true);
+		radioButton_excludeFilter.setToolTipText(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.FilterDialog.excludeToolTip"));
+		panel_filterType.add(radioButton_excludeFilter);
+		radioButton_useMD5 = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.FilterDialog.radioButton_useMD5"));
+		radioButton_useMD5.setToolTipText(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.FilterDialog.md5ToolTip"));
+		panel_filterType.add(radioButton_useMD5);
 
-					JFileChooser fc = new JFileChooser(fsv.getHomeDirectory(), fsv);
-					fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-					int state = fc.showOpenDialog(null);
-					if (state == JFileChooser.APPROVE_OPTION) {
-						File selectedFile = fc.getSelectedFile();
-						if (isUnderSourceRoot(selectedFile.getAbsolutePath())) {
-							tf_filter.setText(selectedFile.getAbsolutePath());
-						} else {
-							JOptionPane.showMessageDialog(null,
-									ResourceBundle.getBundle("gui.messages").getString("Filter.ErrNotUnderSourceRoot"),
-									ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
-									JOptionPane.INFORMATION_MESSAGE);
-						}
+		ButtonGroup rBtnGroup = new ButtonGroup();
+		rBtnGroup.add(radioButton_excludeFilter);
+		rBtnGroup.add(radioButton_useMD5);
+
+		panel_source.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(panel_source, BorderLayout.CENTER);
+		panel_source.setLayout(new BorderLayout(0, 0));
+
+		textfield_filter = new JTextField();
+		panel_source.add(textfield_filter);
+		textfield_filter.setColumns(10);
+
+		JLabel lbl_filter = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.FilterDialog.label_filter"));
+		panel_source.add(lbl_filter, BorderLayout.NORTH);
+
+		// Button Durchsuchen:
+		JButton button_Find = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_find"));
+		button_Find.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Beschränkung des FC auf den Sourceroot:
+				FileSystemView fsv = new DirectoryRestrictedFileSystemView(getSourceFile());
+
+				JFileChooser fc = new JFileChooser(fsv.getHomeDirectory(), fsv);
+				fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				int state = fc.showOpenDialog(null);
+				if (state == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = fc.getSelectedFile();
+					if (isUnderSourceRoot(selectedFile.getAbsolutePath())) {
+						textfield_filter.setText(selectedFile.getAbsolutePath());
+					} else {
+						JOptionPane.showMessageDialog(
+								null,
+								ResourceBundle.getBundle("gui.messages").getString(
+										"GUI.FilterDialog.errNotUnderSourceRoot"),
+								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
-			});
-			contentPanel.add(btn_Find, BorderLayout.EAST);
-		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				// Button OK:
-				JButton okButton = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Ok.text"));
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						// Pfad auf gültigkeit Prüfen:
-						if (!(new File(tf_filter.getText()).exists())) {
-							return;
-						}
-						if (inEditMode) {
-							deleteFilter(originalPath);
-						}
-						// Unterscheidung der verschiedenen Filter:
-						if (rBtn_excludeFilter.isSelected()) {
-							addFilter(tf_filter.getText(), 0);
-						} else if (rBtn_useMD5.isSelected()) {
-							addFilter(tf_filter.getText(), 1);
-						}
-						FilterDialog.this.dispose();
-					}
-				});
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
 			}
-			{
-				// Button Abbrechen:
-				JButton cancelButton = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-						"Summary.btn_cancel"));
-				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						FilterDialog.this.dispose();
-					}
-				});
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+		});
+		panel_source.add(button_Find, BorderLayout.EAST);
+
+		JPanel panel_buttons = new JPanel();
+		panel_buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(panel_buttons, BorderLayout.SOUTH);
+
+		// Button OK:
+		JButton button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		button_ok.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Pfad auf gültigkeit Prüfen:
+				if (!(new File(textfield_filter.getText()).exists())) {
+					return;
+				}
+				if (inEditMode) {
+					deleteFilter(originalPath);
+				}
+				// Unterscheidung der verschiedenen Filter:
+				if (radioButton_excludeFilter.isSelected()) {
+					addFilter(textfield_filter.getText(), 0);
+				} else if (radioButton_useMD5.isSelected()) {
+					addFilter(textfield_filter.getText(), 1);
+				}
+				FilterDialog.this.dispose();
 			}
-		}
+		});
+		button_ok.setActionCommand("OK");
+		panel_buttons.add(button_ok);
+		getRootPane().setDefaultButton(button_ok);
+
+		// Button Abbrechen:
+		JButton button_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_cancel"));
+		button_cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				FilterDialog.this.dispose();
+			}
+		});
+		button_cancel.setActionCommand("Cancel");
+		panel_buttons.add(button_cancel);
+
 	}
 
 	/**
@@ -214,7 +212,7 @@ public class FilterDialog extends JDialog {
 	 *            Pfad des Filters
 	 */
 	public void setFilter(String filter) {
-		tf_filter.setText(filter);
+		textfield_filter.setText(filter);
 	}
 
 	/**
@@ -256,11 +254,11 @@ public class FilterDialog extends JDialog {
 	 */
 	public void setMode(int mode) {
 		if (mode == 0) {
-			rBtn_excludeFilter.setSelected(true);
-			rBtn_useMD5.setSelected(false);
+			radioButton_excludeFilter.setSelected(true);
+			radioButton_useMD5.setSelected(false);
 		} else if (mode == 1) {
-			rBtn_excludeFilter.setSelected(false);
-			rBtn_useMD5.setSelected(true);
+			radioButton_excludeFilter.setSelected(false);
+			radioButton_useMD5.setSelected(true);
 		}
 	}
 }

@@ -38,9 +38,9 @@ public class SourcesDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 8855971977478046562L;
-	private final JPanel contentPanel = new JPanel();
-	private JTextField tf_source;
-	private JList<Filter> list_Filter;
+	private final JPanel panel_main = new JPanel();
+	private JTextField textfield_source;
+	private JList<Filter> list_filter;
 	private DefaultListModel<Filter> listModel;
 
 	private ISourcesDialogListener sourcesListener;
@@ -55,6 +55,11 @@ public class SourcesDialog extends JDialog {
 	 * Speichert den Originalpfad der Qulle.
 	 */
 	private String originalPath;
+	private JPanel panel_path;
+	private JPanel panel_filter;
+	private JButton button_find;
+	private JButton button_edit;
+	private JButton button_delete;
 
 	/**
 	 * Launch the application.
@@ -76,239 +81,226 @@ public class SourcesDialog extends JDialog {
 		setResizable(false);
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.sourcesListener = sourcesListener;
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("Sources.title"));
+		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.title"));
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			JPanel panel = new JPanel();
-			contentPanel.add(panel, BorderLayout.NORTH);
-			panel.setLayout(new BorderLayout(0, 0));
-			{
-				JLabel lbl_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Sources.sourcePath"));
-				panel.add(lbl_source, BorderLayout.WEST);
-			}
-			{
-				tf_source = new JTextField();
-				panel.add(tf_source);
-				tf_source.setColumns(10);
-			}
-			{
-				// Button Druchsuchen:
-				JButton button = new JButton(ResourceBundle.getBundle("gui.messages").getString("Edit.btn_Find.text"));
-				button.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						JFileChooser fc = new JFileChooser();
-						fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-						int state = fc.showOpenDialog(null);
+		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(panel_main, BorderLayout.CENTER);
+		panel_main.setLayout(new BorderLayout(0, 0));
 
-						if (state == JFileChooser.APPROVE_OPTION) {
-							File sourceFile = fc.getSelectedFile();
-							if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
-								tf_source.setText(sourceFile.getAbsolutePath());
-							} else {
-								JOptionPane.showMessageDialog(null,
-										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrSamePath"),
-										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
-										JOptionPane.INFORMATION_MESSAGE);
-							}
+		JPanel panel;
+		panel_path = new JPanel();
+		panel_main.add(panel_path, BorderLayout.NORTH);
+		panel_path.setLayout(new BorderLayout(0, 0));
+
+		JLabel label_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.SourcesDialog.sourcePath"));
+		panel_path.add(label_source, BorderLayout.WEST);
+
+		textfield_source = new JTextField();
+		panel_path.add(textfield_source);
+		textfield_source.setColumns(10);
+
+		// Button Druchsuchen:
+		JButton button;
+		button_find = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_find"));
+		button_find.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				int state = fc.showOpenDialog(null);
+
+				if (state == JFileChooser.APPROVE_OPTION) {
+					File sourceFile = fc.getSelectedFile();
+					if (!isAlreadySourcePath(sourceFile.getAbsolutePath())) {
+						textfield_source.setText(sourceFile.getAbsolutePath());
+					} else {
+						JOptionPane.showMessageDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.errSamePath"),
+								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			}
+		});
+		button_find.setAlignmentX(0.5f);
+		panel_path.add(button_find, BorderLayout.EAST);
+
+		JPanel panel_filter;
+		panel_filter = new JPanel();
+		panel_main.add(panel_filter, BorderLayout.CENTER);
+		panel_filter.setLayout(new BorderLayout(0, 0));
+
+		listModel = new DefaultListModel<Filter>();
+		list_filter = new JList<Filter>(listModel);
+		list_filter.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list_filter.setSelectedIndex(0);
+		list_filter.setVisibleRowCount(6);
+		JScrollPane listScroller_filter = new JScrollPane(list_filter);
+		panel_filter.add(listScroller_filter);
+		listScroller_filter.setMaximumSize(new Dimension(200, 200));
+		listScroller_filter.setMinimumSize(new Dimension(200, 200));
+
+		JLabel label_filter = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.filter"));
+		panel_filter.add(label_filter, BorderLayout.NORTH);
+
+		JPanel panel_ConfigurateFilter = new JPanel();
+		panel_filter.add(panel_ConfigurateFilter, BorderLayout.EAST);
+		panel_ConfigurateFilter.setLayout(new BoxLayout(panel_ConfigurateFilter, BoxLayout.Y_AXIS));
+		{
+			// Button Add:
+			JButton button_add = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_add"));
+			button_add.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					filterDialog = new FilterDialog(new IFilterDialogListener() {
+
+						@Override
+						public void addFilter(String path, int mode) {
+							listModel.addElement(new Filter(path, mode));
 						}
+
+						@Override
+						public boolean isUnderSourceRoot(String path) {
+							return SourcesDialog.this.isUnderSourceRoot(path);
+						}
+
+						@Override
+						public void deleteFilter(String path) {
+							SourcesDialog.this.deleteFilter(path);
+						}
+
+						@Override
+						public File getSourceFile() {
+							return SourcesDialog.this.getSourceFile();
+						}
+					});
+					filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
+					filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+					filterDialog.setVisible(true);
+				}
+			});
+			button_add.setAlignmentX(0.5f);
+			panel_ConfigurateFilter.add(button_add);
+		}
+
+		// Button Bearbeiten:
+		JButton button_edit;
+		button_edit = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_edit"));
+		button_edit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (list_filter.isSelectionEmpty()) {
+					return;
+				}
+
+				filterDialog = new FilterDialog(new IFilterDialogListener() {
+
+					@Override
+					public void addFilter(String path, int mode) {
+						listModel.addElement(new Filter(path, mode));
+					}
+
+					@Override
+					public boolean isUnderSourceRoot(String path) {
+						return SourcesDialog.this.isUnderSourceRoot(path);
+					}
+
+					@Override
+					public void deleteFilter(String path) {
+						SourcesDialog.this.deleteFilter(path);
+					}
+
+					@Override
+					public File getSourceFile() {
+						return SourcesDialog.this.getSourceFile();
 					}
 				});
-				button.setAlignmentX(0.5f);
-				panel.add(button, BorderLayout.EAST);
+				filterDialog.setFilter(listModel.get(list_filter.getSelectedIndex()).getPath());
+				filterDialog.setEditMode(true);
+				filterDialog.setOriginalPath(list_filter.getSelectedValue().getPath());
+				filterDialog.setMode(listModel.get(list_filter.getSelectedIndex()).getMode());
+
+				filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
+				filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+				filterDialog.setVisible(true);
 			}
-		}
-		{
-			JPanel panel = new JPanel();
-			contentPanel.add(panel, BorderLayout.CENTER);
-			panel.setLayout(new BorderLayout(0, 0));
+		});
+		button_edit.setAlignmentX(0.5f);
+		panel_ConfigurateFilter.add(button_edit);
 
-			listModel = new DefaultListModel<Filter>();
-			list_Filter = new JList<Filter>(listModel);
-			list_Filter.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			list_Filter.setSelectedIndex(0);
-			list_Filter.setVisibleRowCount(6);
-			JScrollPane listScroller = new JScrollPane(list_Filter);
-			panel.add(listScroller);
-			listScroller.setMaximumSize(new Dimension(200, 200));
-			listScroller.setMinimumSize(new Dimension(200, 200));
-			{
-
-				{
-					JLabel lbl_filter = new JLabel(ResourceBundle.getBundle("gui.messages").getString("Sources.filter"));
-					panel.add(lbl_filter, BorderLayout.NORTH);
-				}
-			}
-			{
-				JPanel panel_1 = new JPanel();
-				panel.add(panel_1, BorderLayout.EAST);
-				panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
-				{
-					// Button Add:
-					JButton button = new JButton(ResourceBundle.getBundle("gui.messages")
-							.getString("Edit.btn_Add.text"));
-					button.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							filterDialog = new FilterDialog(new IFilterDialogListener() {
-
-								@Override
-								public void addFilter(String path, int mode) {
-									listModel.addElement(new Filter(path, mode));
-								}
-
-								@Override
-								public boolean isUnderSourceRoot(String path) {
-									return SourcesDialog.this.isUnderSourceRoot(path);
-								}
-
-								@Override
-								public void deleteFilter(String path) {
-									SourcesDialog.this.deleteFilter(path);
-								}
-
-								@Override
-								public File getSourceFile() {
-									return SourcesDialog.this.getSourceFile();
-								}
-							});
-							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
-							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-							filterDialog.setVisible(true);
-						}
-					});
-					button.setAlignmentX(0.5f);
-					panel_1.add(button);
-				}
-				{
-					// Button Bearbeiten:
-					JButton button = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-							"Mainframe.btnBearbeiten.text"));
-					button.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							if (list_Filter.isSelectionEmpty()) {
-								return;
-							}
-
-							filterDialog = new FilterDialog(new IFilterDialogListener() {
-
-								@Override
-								public void addFilter(String path, int mode) {
-									listModel.addElement(new Filter(path, mode));
-								}
-
-								@Override
-								public boolean isUnderSourceRoot(String path) {
-									return SourcesDialog.this.isUnderSourceRoot(path);
-								}
-
-								@Override
-								public void deleteFilter(String path) {
-									SourcesDialog.this.deleteFilter(path);
-								}
-
-								@Override
-								public File getSourceFile() {
-									return SourcesDialog.this.getSourceFile();
-								}
-							});
-							filterDialog.setFilter(listModel.get(list_Filter.getSelectedIndex()).getPath());
-							filterDialog.setEditMode(true);
-							filterDialog.setOriginalPath(list_Filter.getSelectedValue().getPath());
-							filterDialog.setMode(listModel.get(list_Filter.getSelectedIndex()).getMode());
-
-							filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
-							filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-							filterDialog.setVisible(true);
-						}
-					});
-					button.setAlignmentX(0.5f);
-					panel_1.add(button);
-				}
-				{
-					JButton button = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-							"Edit.btn_Delete.text"));
-					button.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							int reply = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("gui.messages")
-									.getString("Messages.DeleteFilter"), null, JOptionPane.YES_NO_OPTION);
-							if (reply == JOptionPane.YES_OPTION) {
-								listModel.remove(list_Filter.getSelectedIndex());
-							}
-						}
-					});
-					button.setAlignmentX(0.5f);
-					panel_1.add(button);
+		JButton button_delete;
+		button_delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_delete"));
+		button_delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int reply = JOptionPane.showConfirmDialog(null,
+						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteFilter"), null,
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					listModel.remove(list_filter.getSelectedIndex());
 				}
 			}
-			{
-				JPanel buttonPane = new JPanel();
-				buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-				getContentPane().add(buttonPane, BorderLayout.SOUTH);
-				{
-					// Button OK:
-					JButton okButton = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-							"Edit.btn_Ok.text"));
-					okButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							// Quellpfad prüfen:
-							File source = new File(tf_source.getText());
-							if (!source.exists()) {
-								JOptionPane.showMessageDialog(null,
-										ResourceBundle.getBundle("gui.messages").getString("Sources.ErrIllegalSource"),
-										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
-										JOptionPane.INFORMATION_MESSAGE);
-								return;
-							}
+		});
+		button_delete.setAlignmentX(0.5f);
+		panel_ConfigurateFilter.add(button_delete);
 
-							// Prüfen ob der gewählte Pfad bereits Quellpfad
-							// ist:
-							if (isAlreadySourcePath(tf_source.getText()) && !inEditMode) {
-								JOptionPane.showMessageDialog(null,
-										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrSamePath"),
-										ResourceBundle.getBundle("gui.messages").getString("Edit.ErrMsg"),
-										JOptionPane.INFORMATION_MESSAGE);
-								return;
-							}
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-							// Quellobjekt erzeugen und hinzufügen:
-							Source newSource = new Source(tf_source.getText());
-
-							// Filter hinzufügen:
-							for (int i = 0; i < listModel.getSize(); i++) {
-								newSource.addFilter(listModel.get(i));
-							}
-
-							if (inEditMode) {
-								deleteSource(originalPath);
-							}
-
-							addSource(newSource);
-							SourcesDialog.this.dispose();
-
-						}
-					});
-					okButton.setActionCommand("OK");
-					buttonPane.add(okButton);
-					getRootPane().setDefaultButton(okButton);
+		// Button OK:
+		JButton button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		button_ok.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Quellpfad prüfen:
+				File source = new File(textfield_source.getText());
+				if (!source.exists()) {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.errIllegalSource"),
+							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
-				{
-					JButton cancelButton = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-							"Summary.btn_cancel"));
-					cancelButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							SourcesDialog.this.dispose();
-						}
-					});
-					cancelButton.setActionCommand("Cancel");
-					buttonPane.add(cancelButton);
+
+				// Prüfen ob der gewählte Pfad bereits Quellpfad
+				// ist:
+				if (isAlreadySourcePath(textfield_source.getText()) && !inEditMode) {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.errSamePath"),
+							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
 				}
+
+				// Quellobjekt erzeugen und hinzufügen:
+				Source newSource = new Source(textfield_source.getText());
+
+				// Filter hinzufügen:
+				for (int i = 0; i < listModel.getSize(); i++) {
+					newSource.addFilter(listModel.get(i));
+				}
+
+				if (inEditMode) {
+					deleteSource(originalPath);
+				}
+
+				addSource(newSource);
+				SourcesDialog.this.dispose();
+
 			}
-		}
+		});
+		button_ok.setActionCommand("OK");
+		buttonPane.add(button_ok);
+		getRootPane().setDefaultButton(button_ok);
+
+		JButton button_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_cancel"));
+		button_cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SourcesDialog.this.dispose();
+			}
+		});
+		button_cancel.setActionCommand("Cancel");
+		buttonPane.add(button_cancel);
 
 	}
 
@@ -351,7 +343,7 @@ public class SourcesDialog extends JDialog {
 	 *            zu setzende Quelle
 	 */
 	public void setSource(Source source) {
-		tf_source.setText(source.getPath());
+		textfield_source.setText(source.getPath());
 	}
 
 	/**
@@ -382,7 +374,7 @@ public class SourcesDialog extends JDialog {
 	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
 	 */
 	private boolean isUnderSourceRoot(String path) {
-		if (path.startsWith(tf_source.getText())) {
+		if (path.startsWith(textfield_source.getText())) {
 			return true;
 		}
 		return false;
@@ -394,7 +386,7 @@ public class SourcesDialog extends JDialog {
 	 * @return Quelldatei
 	 */
 	private File getSourceFile() {
-		return new File(tf_source.getText());
+		return new File(textfield_source.getText());
 	}
 
 	/**
