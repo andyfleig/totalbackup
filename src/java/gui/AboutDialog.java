@@ -33,20 +33,16 @@ public class AboutDialog extends JDialog {
 	private JButton btn_Ok;
 	private JLabel txt_About;
 
-
 	/**
 	 * @deprecated
 	 */
 	public static void main(String[] args) {
 		/*
-		try {
-			About dialog = new About();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		*/
+		 * try { About dialog = new About();
+		 * dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		 * dialog.setVisible(true); } catch (Exception e) { e.printStackTrace();
+		 * }
+		 */
 	}
 
 	/**
@@ -62,22 +58,17 @@ public class AboutDialog extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
-		{
-			txt_About = new JLabel();
-			txt_About.setText(ResourceBundle.getBundle("gui.messages").getString("About.txtpnWarnungDieSoftware.text"));
-			contentPanel.add(txt_About, BorderLayout.CENTER);
-		}
-		{
-			btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("About.okButton.text"));
-			contentPanel.add(btn_Ok, BorderLayout.SOUTH);
-			btn_Ok.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-				}
-			});
-			btn_Ok.setAction(action);
-			btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("About.okButton.actionCommand"));
-			getRootPane().setDefaultButton(btn_Ok);
-		}
+
+		txt_About = new JLabel();
+		txt_About.setText(ResourceBundle.getBundle("gui.messages").getString("About.txtpnWarnungDieSoftware.text"));
+		contentPanel.add(txt_About, BorderLayout.CENTER);
+
+		btn_Ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("About.okButton.text"));
+		contentPanel.add(btn_Ok, BorderLayout.SOUTH);
+		btn_Ok.setAction(action);
+		btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("About.okButton.actionCommand"));
+		getRootPane().setDefaultButton(btn_Ok);
+
 	}
 
 	private class SA_ok extends AbstractAction {
@@ -85,6 +76,7 @@ public class AboutDialog extends JDialog {
 			putValue(NAME, "OK");
 			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
+
 		public void actionPerformed(ActionEvent e) {
 			AboutDialog.this.dispose();
 		}
