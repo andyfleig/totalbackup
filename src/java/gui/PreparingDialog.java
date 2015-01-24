@@ -13,9 +13,9 @@ import java.awt.event.ActionEvent;
 import listener.IPreparingDialogListener;
 
 public class PreparingDialog extends JDialog {
-	
+
 	private IPreparingDialogListener listener;
-	
+
 	/**
 	 * Create the panel.
 	 */
@@ -23,27 +23,28 @@ public class PreparingDialog extends JDialog {
 		setSize(220, 80);
 		setResizable(false);
 		this.listener = listener;
-		
+
 		getContentPane().setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel_message = new JPanel();
 		getContentPane().add(panel_message, BorderLayout.NORTH);
-		JLabel label_preparing = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.PreparingDialog.label_preparing"));
+		JLabel label_preparing = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.PreparingDialog.label_preparing"));
 		panel_message.add(label_preparing);
-		
+
 		JPanel panel_button = new JPanel();
 		getContentPane().add(panel_button, BorderLayout.SOUTH);
-		
-		JButton button_cancelBackup = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.PreparingDialog.button_cancelBackup"));
+
+		JButton button_cancelBackup = new JButton(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.PreparingDialog.button_cancelBackup"));
 		button_cancelBackup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelBackup();
 			}
 		});
 		panel_button.add(button_cancelBackup);
-
 	}
-	
+
 	private void cancelBackup() {
 		listener.cancelBackup();
 	}

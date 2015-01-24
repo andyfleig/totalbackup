@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.lang.NullPointerException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.awt.BorderLayout;
@@ -47,6 +48,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultCaret;
 
 import data.BackupTask;
@@ -88,6 +90,11 @@ public class Mainframe extends JDialog {
 	private SummaryDialog summary;
 
 	private PreparingDialog prep;
+
+	/**
+	 * Gibt an ob der Backup-Vorgang abgebrochen wurde.
+	 */
+	private boolean isCanceled = false;
 
 	File sourceFile;
 	File destinationFile;
@@ -217,20 +224,20 @@ public class Mainframe extends JDialog {
 		// Checkbox erweiterte Ausgabe:
 		checkbox_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
 				"GUI.Mainframe.checkbox_advancedOutput"));
-		
+
 		JPanel panel_options = new JPanel();
 		panel_statusAndLog.add(panel_options, BorderLayout.SOUTH);
 		panel_options.setLayout(new BorderLayout(0, 0));
-		panel_options.add(checkbox_advancedOutput, BorderLayout.WEST);	
+		panel_options.add(checkbox_advancedOutput, BorderLayout.WEST);
 
 		JPanel panel_tasks = new JPanel();
 		frmTotalbackup.getContentPane().add(panel_tasks, BorderLayout.NORTH);
 		panel_tasks.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel_status = new JPanel();
 		panel_status.setLayout(new BorderLayout());
 		panel_statusAndLog.add(panel_status, BorderLayout.NORTH);
-		
+
 		textfield_status = new JTextField();
 		textfield_status.setEditable(false);
 		textfield_status.setPreferredSize(new Dimension(0, 25));
@@ -346,6 +353,28 @@ public class Mainframe extends JDialog {
 
 		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				prep = new PreparingDialog(new IPreparingDialogListener() {
+
+					@Override
+					public void cancelBackup() {
+						int reply = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.CancelBackup"), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
+						if (reply == JOptionPane.YES_OPTION) {
+							Mainframe.this.addToOutput(
+									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
+									false);
+							button_cancel.setEnabled(false);
+							if (backupThread != null) {
+								backupThread.interrupt();
+								isCanceled = true;
+							}
+						}
+
+					}
+				});
+				prep.setLocation(frmTotalbackup.getLocationOnScreen());
+
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -353,16 +382,8 @@ public class Mainframe extends JDialog {
 					}
 				});
 				backupThread.start();
-
-				// Warten bis der Thread sich beendet:
-				try {
-					backupThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					return;
-				}
-				prep.dispose();
-				showSummaryDialog();
+				prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+				prep.setVisible(true);
 
 			}
 		});
@@ -396,6 +417,28 @@ public class Mainframe extends JDialog {
 
 		button_startAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				prep = new PreparingDialog(new IPreparingDialogListener() {
+
+					@Override
+					public void cancelBackup() {
+						int reply = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.CancelBackup"), ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
+						if (reply == JOptionPane.YES_OPTION) {
+							Mainframe.this.addToOutput(
+									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
+									false);
+							button_cancel.setEnabled(false);
+							if (backupThread != null) {
+								backupThread.interrupt();
+								isCanceled = true;
+							}
+						}
+
+					}
+				});
+				prep.setLocation(frmTotalbackup.getLocationOnScreen());
+
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -406,18 +449,12 @@ public class Mainframe extends JDialog {
 					}
 				});
 				backupThread.start();
-
-				// Warten bis der Thread sich beendet:
-				try {
-					backupThread.join();
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-					return;
-				}
-				prep.dispose();
-				showSummaryDialog();
+				prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+				prep.setVisible(true);
 			}
 		});
+		// Wieder implementieren:
+		button_startAll.setEnabled(false);
 		panel_buttons.add(button_cancel);
 	}
 
@@ -429,6 +466,8 @@ public class Mainframe extends JDialog {
 	 *            vorzubereitender Task
 	 */
 	private void prepareBackup(BackupTask task) {
+
+		isCanceled = false;
 		selectedTask = task;
 
 		// Testen ob Quell- und Zielpfad(e) existieren:
@@ -449,30 +488,12 @@ public class Mainframe extends JDialog {
 			return;
 		}
 
-		prep = new PreparingDialog(new IPreparingDialogListener() {
-
-			@Override
-			public void cancelBackup() {
-				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
-								.getBundle("gui.messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
-				if (reply == JOptionPane.YES_OPTION) {
-					Mainframe.this.addToOutput(
-							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
-					button_cancel.setEnabled(false);
-					if (backupThread != null) {
-						backupThread.interrupt();
-					}
-				}
-
-			}
-		});
-		prep.setLocation(frmTotalbackup.getLocationOnScreen());
-		// TODO: Langfristige Lösung?
-		// prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-		prep.setVisible(true);
-
 		listener.startPreparation(selectedTask);
+		prep.dispose();
+
+		if (!isCanceled) {
+			showSummaryDialog();
+		}
 	}
 
 	/**
