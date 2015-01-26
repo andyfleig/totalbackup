@@ -354,6 +354,9 @@ public class Mainframe extends JDialog {
 
 		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if (list_tasks.getSelectedIndex() == -1) {
+					return;
+				}
 				prep = new PreparingDialog(new IPreparingDialogListener() {
 
 					@Override
