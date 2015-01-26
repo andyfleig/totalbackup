@@ -22,6 +22,7 @@ public class BackupTask implements Serializable {
 	private boolean autoCleanIsEnabled;
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
+	private boolean autostart = false;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -195,20 +196,40 @@ public class BackupTask implements Serializable {
 	public int getNumberOfBackupsToKeep() {
 		return numberOfBackupsToKeep;
 	}
-	
+
 	/**
 	 * Gibt zurück ob dieser BackupTask vorbereitet (zur Ausführung bereit) ist
+	 * 
 	 * @return true wenn die Vorbereitungen getroffen wurden, false sonst
 	 */
 	public boolean isPrepered() {
 		return isPrepared;
 	}
-	
+
 	/**
-	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht vorbereitet.
-	 * @param prepared true = vorbereitet, false = nicht vorbereitet
+	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht
+	 * vorbereitet.
+	 * 
+	 * @param prepared
+	 *            true = vorbereitet, false = nicht vorbereitet
 	 */
 	public void setPrepared(boolean prepared) {
 		this.isPrepared = prepared;
+	}
+
+	/**
+	 * Setzt die Autostart-Option.
+	 * @param autostart zu setzenden Autostart-Option
+	 */
+	public void setAutostart(boolean autostart) {
+		this.autostart = autostart;
+	}
+
+	/**
+	 * Gibt zurück ob die Autostart-Option aktiviert ist.
+	 * @return ob die Autostart-Option aktiviert ist
+	 */
+	public boolean getAutostart() {
+		return autostart;
 	}
 }

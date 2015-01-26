@@ -67,9 +67,6 @@ public class SummaryDialog extends JDialog {
 		btn_ok.addActionListener(new ActionListener() {
 			// Button Start:
 			public void actionPerformed(ActionEvent arg0) {
-
-				// TODO: ?
-				// Summary.this.dispose();
 				clearBackupInfos();
 				SummaryDialog.this.listener.startBackup();
 			}

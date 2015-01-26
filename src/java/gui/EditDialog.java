@@ -59,6 +59,7 @@ public class EditDialog extends JDialog {
 	private JRadioButton radioButton_hardlinkBackup;
 
 	private JCheckBox checkBox_autoClean;
+	private JCheckBox checkBox_autostart;
 	private JSpinner spinner_numberOfBackupsToKeep;
 
 	private SourcesDialog sourcesDialog;
@@ -88,7 +89,7 @@ public class EditDialog extends JDialog {
 	 */
 	public EditDialog(IEditDialogListener listener) {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.title"));
-		setBounds(100, 100, 511, 330);
+		setBounds(100, 100, 525, 369);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -153,7 +154,8 @@ public class EditDialog extends JDialog {
 		JPanel panel_source = new JPanel();
 		panel_setup.add(panel_source, BorderLayout.NORTH);
 		panel_source.setLayout(new BorderLayout(0, 0));
-		JLabel label_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_sources"));
+		JLabel label_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_sources"));
 		panel_source.add(label_source, BorderLayout.NORTH);
 
 		JPanel panel_sourcePaths = new JPanel();
@@ -161,7 +163,7 @@ public class EditDialog extends JDialog {
 		panel_sourcePaths.setLayout(new BorderLayout(0, 0));
 
 		listModel = new DefaultListModel<Source>();
-		
+
 		list_sourcePaths = new JList<Source>(listModel);
 		list_sourcePaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list_sourcePaths.setSelectedIndex(0);
@@ -266,8 +268,12 @@ public class EditDialog extends JDialog {
 
 		panel_destination.add(button_find);
 
+		JPanel panel_otherSettings = new JPanel();
+		panel_setup.add(panel_otherSettings, BorderLayout.SOUTH);
+		panel_otherSettings.setLayout(new BorderLayout(0, 0));
+
 		JPanel panel_autoremove = new JPanel();
-		panel_setup.add(panel_autoremove, BorderLayout.SOUTH);
+		panel_otherSettings.add(panel_autoremove, BorderLayout.NORTH);
 
 		JLabel label_autoclean = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
 				"GUI.EditDialog.label_autoClean"));
@@ -281,6 +287,13 @@ public class EditDialog extends JDialog {
 		spinner_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
 				new Integer(1)));
 		panel_autoremove.add(spinner_numberOfBackupsToKeep);
+
+		JPanel panel_autostart = new JPanel();
+		panel_otherSettings.add(panel_autostart, BorderLayout.SOUTH);
+
+		checkBox_autostart = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.autostart"));
+		panel_autostart.add(checkBox_autostart);
 
 		JPanel panel_backupType = new JPanel();
 		panel_main.add(panel_backupType, BorderLayout.SOUTH);
@@ -306,7 +319,6 @@ public class EditDialog extends JDialog {
 		// JRadioButtons zum Panel hinzufügen:
 		panel_backupType.add(radioButton_normalBackup);
 		panel_backupType.add(radioButton_hardlinkBackup);
-
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -342,6 +354,9 @@ public class EditDialog extends JDialog {
 					} else if (radioButton_hardlinkBackup.isSelected()) {
 						task.setBackupMode(1);
 					}
+					
+					// Autostart-Option sichern:
+					task.setAutostart(checkBox_autostart.isSelected());
 
 					// Prüfen ob Quellpfade eingefügt wurden:
 					if (!listModel.isEmpty()) {
@@ -590,5 +605,13 @@ public class EditDialog extends JDialog {
 	 */
 	public void setEditMode(boolean editMode) {
 		this.inEditMode = editMode;
+	}
+	
+	/**
+	 * Aktiviert bzw. deaktiviert den Autostart-Modus.
+	 * @param autostart zu setzender Autostart-Modus
+	 */
+	public void setAutostart(boolean autostart) {
+		checkBox_autostart.setSelected(autostart);
 	}
 }

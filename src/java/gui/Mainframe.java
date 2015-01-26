@@ -297,6 +297,7 @@ public class Mainframe extends JDialog {
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());
 						editDialog.setAutoCleanEnabled(task.autoCleanIsEnabled());
+						editDialog.setAutostart(task.getAutostart());
 						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
 						editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 						editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
@@ -492,7 +493,12 @@ public class Mainframe extends JDialog {
 		prep.dispose();
 
 		if (!isCanceled) {
-			showSummaryDialog();
+			if (!selectedTask.getAutostart()) {
+				showSummaryDialog();
+			} else {
+				listener.clearBackupInfos();
+				startBackupTask();
+			}
 		}
 	}
 
@@ -574,7 +580,9 @@ public class Mainframe extends JDialog {
 	}
 
 	private void startBackupTask() {
-		summary.dispose();
+		if (!selectedTask.getAutostart()) {
+			summary.dispose();
+		}
 
 		backupThread = new Thread(new Runnable() {
 			@Override
