@@ -296,7 +296,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	@Override
-	public void runBackup(String taskName) throws FileNotFoundException, IOException {
+	public void runBackup(String taskName) throws FileNotFoundException {
 		// Test ob die Vorbereitung durchgeführt wurden:
 		if (!preparationDone) {
 			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
@@ -320,8 +320,16 @@ public class HardlinkBackup implements Backupable {
 						BackupHelper.hardlinkFile(new File(currentElement.getSourcePath()),
 								new File(currentElement.getDestPath()), listener);
 					} else {
-						BackupHelper.copyFile(new File(currentElement.getSourcePath()),
-								new File(currentElement.getDestPath()), listener);
+						try {
+							BackupHelper.copyFile(new File(currentElement.getSourcePath()),
+									new File(currentElement.getDestPath()), listener);
+						} catch (IOException e) {
+							String msg = ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg1")
+									+ currentElement.getSourcePath()
+									+ ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg2");
+							listener.printOut(msg, true);
+							listener.log(msg, listener.getCurrentTask());
+						}
 					}
 				}
 			}
