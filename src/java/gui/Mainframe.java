@@ -17,11 +17,17 @@ import java.lang.NullPointerException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Component;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
@@ -175,7 +181,6 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.setMinimumSize(new Dimension(500, 400));
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
-		frmTotalbackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frmTotalbackup.setIconImage(Toolkit.getDefaultToolkit().getImage("TB_logo.png"));
 
@@ -457,9 +462,50 @@ public class Mainframe extends JDialog {
 				prep.setVisible(true);
 			}
 		});
-		// Wieder implementieren:
+		// TODO: Wieder implementieren:
 		button_startAll.setEnabled(false);
 		panel_buttons.add(button_cancel);
+
+		// TODO: Test für Tray-Icon:
+		if (SystemTray.isSupported()) {
+			SystemTray systemTray = SystemTray.getSystemTray();
+
+			Image image = Toolkit.getDefaultToolkit().getImage("TB_logo.png");
+
+			PopupMenu trayPopupMenu = new PopupMenu();
+
+			MenuItem action = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_show"));
+			action.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					frmTotalbackup.setVisible(true);
+
+				}
+			});
+			trayPopupMenu.add(action);
+
+			MenuItem close = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_close"));
+			close.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+				}
+			});
+			trayPopupMenu.add(close);
+
+			TrayIcon trayIcon = new TrayIcon(image, "SystemTray Demo", trayPopupMenu);
+
+			trayIcon.setImageAutoSize(true);
+
+			try {
+				systemTray.add(trayIcon);
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+
+		}
+		frmTotalbackup.setVisible(true);
 	}
 
 	/**

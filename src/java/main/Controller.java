@@ -4,6 +4,15 @@ import gui.Mainframe;
 import listener.IBackupListener;
 import listener.IMainframeListener;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.FileInputStream;
@@ -20,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import data.BackupInfos;
@@ -118,7 +128,7 @@ public class Controller {
 						public long getNumberOfFilesToCopy() {
 							return backupInfos.getNumberOfFilesToCopy();
 						}
-						
+
 						@Override
 						public long getNumberOfFilesToLink() {
 							return backupInfos.getNumberOfFilesToLink();
@@ -184,7 +194,6 @@ public class Controller {
 							Controller.this.log(event, task);
 						}
 					});
-					mainframe.frmTotalbackup.setVisible(true);
 				}
 			});
 			loadSerialization();
@@ -303,7 +312,7 @@ public class Controller {
 			public void increaseNumberOfFilesToCopy() {
 				backupInfos.increaseNumberOfFilesToCopy();
 			}
-			
+
 			@Override
 			public void increaseNumberOfFilesToLink() {
 				backupInfos.increaseNumberOfFilesToLink();
