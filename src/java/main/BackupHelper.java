@@ -74,6 +74,10 @@ public final class BackupHelper {
 	 */
 	public static void copyFile(File source, File destination, IBackupListener listener) throws FileNotFoundException,
 			IOException {
+		
+		if (!source.isFile()) {
+			return;
+		}
 
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.copying") + " " + source.getPath();
 		listener.setStatus(output);
@@ -81,7 +85,6 @@ public final class BackupHelper {
 			listener.printOut(output, false);
 		}
 		listener.log(output, listener.getCurrentTask());
-
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
@@ -103,6 +106,10 @@ public final class BackupHelper {
 	 *            Ziel-Datei des Hardlinks
 	 */
 	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
+		if (!source.isFile()) {
+			return;
+		}
+		
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
 		if (listener.advancedOutputIsEnabled()) {
 			listener.printOut(output, false);
