@@ -466,7 +466,6 @@ public class Mainframe extends JDialog {
 		button_startAll.setEnabled(false);
 		panel_buttons.add(button_cancel);
 
-		// TODO: Test für Tray-Icon:
 		if (SystemTray.isSupported()) {
 			SystemTray systemTray = SystemTray.getSystemTray();
 
@@ -494,7 +493,7 @@ public class Mainframe extends JDialog {
 			});
 			trayPopupMenu.add(close);
 
-			TrayIcon trayIcon = new TrayIcon(image, "SystemTray Demo", trayPopupMenu);
+			TrayIcon trayIcon = new TrayIcon(image, ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"), trayPopupMenu);
 
 			trayIcon.setImageAutoSize(true);
 
