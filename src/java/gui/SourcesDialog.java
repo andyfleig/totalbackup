@@ -254,7 +254,7 @@ public class SourcesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Quellpfad prüfen:
 				File source = new File(textfield_source.getText());
-				if (!source.exists()) {
+				if (!source.exists() || !source.isDirectory()) {
 					JOptionPane.showMessageDialog(null,
 							ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.errIllegalSource"),
 							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),

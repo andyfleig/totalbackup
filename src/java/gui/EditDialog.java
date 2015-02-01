@@ -354,7 +354,7 @@ public class EditDialog extends JDialog {
 					} else if (radioButton_hardlinkBackup.isSelected()) {
 						task.setBackupMode(1);
 					}
-					
+
 					// Autostart-Option sichern:
 					task.setAutostart(checkBox_autostart.isSelected());
 
@@ -436,7 +436,9 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Prüft den gegebenen Pfad auf Gültigkeit.
+	 * Prüft den gegebenen Pfad auf Gültigkeit. Dabei ist ein Pfad genau dann
+	 * Gültig wenn er existiert und der root keine Datei sondern ein Verzeichnis
+	 * ist.
 	 * 
 	 * @param s
 	 *            zu prüfender Pfad
@@ -444,7 +446,7 @@ public class EditDialog extends JDialog {
 	 */
 	private boolean isValidPath(String pfad) {
 		File f = new File(pfad);
-		if (f.exists()) {
+		if (f.exists() && f.isDirectory()) {
 			return true;
 		}
 		return false;
@@ -606,10 +608,12 @@ public class EditDialog extends JDialog {
 	public void setEditMode(boolean editMode) {
 		this.inEditMode = editMode;
 	}
-	
+
 	/**
 	 * Aktiviert bzw. deaktiviert den Autostart-Modus.
-	 * @param autostart zu setzender Autostart-Modus
+	 * 
+	 * @param autostart
+	 *            zu setzender Autostart-Modus
 	 */
 	public void setAutostart(boolean autostart) {
 		checkBox_autostart.setSelected(autostart);

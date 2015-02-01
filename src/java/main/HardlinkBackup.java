@@ -370,6 +370,7 @@ public class HardlinkBackup implements Backupable {
 	 *            Ziel-Verzeichnis
 	 */
 	private void rekursivePreparation(File sourceFile, File backupDir) {
+		
 		if (Thread.interrupted()) {
 			throw new BackupCanceledException();
 		}

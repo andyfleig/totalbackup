@@ -186,6 +186,7 @@ public class NormalBackup implements Backupable {
 	}
 
 	private void rekursivePreparation(File sourceFile, File backupDir) {
+
 		if (Thread.interrupted()) {
 			throw new BackupCanceledException();
 		}
