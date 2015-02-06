@@ -217,6 +217,18 @@ public class BackupTask implements Serializable {
 	public void setBackupsToKeep(String[] backupsToKeep) {
 		this.backupsToKeep = backupsToKeep;
 	}
+	
+	public int[] getThreshold() {
+		return threshold;
+	}
+	
+	public String[] getThresholdUnits() {
+		return thresholdUnits;
+	}
+	
+	public String[] getBackupsToKeep() {
+		return backupsToKeep;
+	}
 
 	/**
 	 * Löscht alle gesetzten Einstellungen/ Informationen des

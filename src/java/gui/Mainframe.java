@@ -306,6 +306,9 @@ public class Mainframe extends JDialog {
 						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
 						editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 						editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+						editDialog.setExtendedAutoCleanSettings(task.getThreshold(), task.getThresholdUnits(),
+								task.getBackupsToKeep());
+						
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
 						ex.printStackTrace();
@@ -493,7 +496,8 @@ public class Mainframe extends JDialog {
 			});
 			trayPopupMenu.add(close);
 
-			TrayIcon trayIcon = new TrayIcon(image, ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"), trayPopupMenu);
+			TrayIcon trayIcon = new TrayIcon(image, ResourceBundle.getBundle("gui.messages").getString(
+					"GUI.Mainframe.title"), trayPopupMenu);
 
 			trayIcon.setImageAutoSize(true);
 
