@@ -24,7 +24,7 @@ public class BackupTask implements Serializable {
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
 	private boolean autostart = false;
-	
+
 	// Für das erweiterte AutoClean:
 	private int[] threshold = new int[5];
 	private String[] thresholdUnits = new String[5];
@@ -174,7 +174,7 @@ public class BackupTask implements Serializable {
 	public void setSimpleAutoCleanEnabled(boolean enabled) {
 		simpleAutoCleanIsEnabled = enabled;
 	}
-	
+
 	/**
 	 * Aktiviert bzw. Deaktiviert die erweiterte Auto-Clean Funktion.
 	 * 
@@ -186,38 +186,41 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert
+	 * (false) ist.
 	 * 
 	 * @return Zustand der Auto-Clean Funktion
 	 */
 	public boolean simpleAutoCleanIsEnabled() {
 		return simpleAutoCleanIsEnabled;
 	}
-	
+
 	/**
-	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert
+	 * (false) ist.
 	 * 
 	 * @return Zustand der Auto-Clean Funktion
 	 */
 	public boolean extendedAutoCleanIsEnabled() {
 		return simpleAutoCleanIsEnabled;
 	}
-	
-	//TODO: JavaDoc (ganze Klasse)
+
+	// TODO: JavaDoc (ganze Klasse)
 	public void setThreshold(int[] thresholdToSet) {
 		this.threshold = thresholdToSet;
 	}
-	
+
 	public void setThresholdUnits(String[] thresholdUnitsToSet) {
 		this.thresholdUnits = thresholdUnitsToSet;
 	}
-	
+
 	public void setBackupsToKeep(String[] backupsToKeep) {
 		this.backupsToKeep = backupsToKeep;
 	}
-	
+
 	/**
-	 * Löscht alle gesetzten Einstellungen/ Informationen des AutoClean-Features.
+	 * Löscht alle gesetzten Einstellungen/ Informationen des
+	 * AutoClean-Features.
 	 */
 	public void clearAutoCleanInformations() {
 		simpleAutoCleanIsEnabled = false;
@@ -269,7 +272,9 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Setzt die Autostart-Option.
-	 * @param autostart zu setzenden Autostart-Option
+	 * 
+	 * @param autostart
+	 *            zu setzenden Autostart-Option
 	 */
 	public void setAutostart(boolean autostart) {
 		this.autostart = autostart;
@@ -277,6 +282,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt zurück ob die Autostart-Option aktiviert ist.
+	 * 
 	 * @return ob die Autostart-Option aktiviert ist
 	 */
 	public boolean getAutostart() {
