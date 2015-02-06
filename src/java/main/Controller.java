@@ -412,7 +412,7 @@ public class Controller {
 			log(output, currentTask);
 		}
 		// alte Backups aufräumen (wenn gewünscht):
-		if (currentTask.autoCleanIsEnabled()) {
+		if (currentTask.simpleAutoCleanIsEnabled()) {
 			try {
 				while (this.calcNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
 

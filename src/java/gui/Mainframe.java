@@ -301,7 +301,7 @@ public class Mainframe extends JDialog {
 						editDialog.setSourcePaths(task.getSources());
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());
-						editDialog.setAutoCleanEnabled(task.autoCleanIsEnabled());
+						editDialog.setAutoCleanEnabled(task.simpleAutoCleanIsEnabled());
 						editDialog.setAutostart(task.getAutostart());
 						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
 						editDialog.setLocation(frmTotalbackup.getLocationOnScreen());

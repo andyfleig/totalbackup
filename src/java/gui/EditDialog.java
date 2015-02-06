@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.io.File;
-
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Panel;
@@ -13,6 +12,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.JFormattedTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -42,6 +43,13 @@ import data.BackupTask;
 import data.Filter;
 import data.Source;
 
+import javax.swing.JSlider;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.JTabbedPane;
+
 public class EditDialog extends JDialog {
 
 	private IEditDialogListener editListener;
@@ -58,12 +66,51 @@ public class EditDialog extends JDialog {
 	private JRadioButton radioButton_normalBackup;
 	private JRadioButton radioButton_hardlinkBackup;
 
-	private JCheckBox checkBox_autoClean;
+	private JCheckBox checkBox_toggleSimpleSettings;
 	private JCheckBox checkBox_autostart;
 	private JSpinner spinner_numberOfBackupsToKeep;
 
 	private SourcesDialog sourcesDialog;
 	private ISourcesDialogListener sourcesListener;
+
+	// Vorlagen für die Spinner:
+	private int[] template_number_min = { 1, 1, 59, 1 };
+	private int[] template_number_h = { 1, 1, 23, 1 };
+	private int[] template_number_d = { 1, 1, 29, 1 };
+	private int[] template_number_m = { 1, 1, 11, 1 };
+	private int[] template_number_y = { 1, 1, 10, 1 };
+
+	// Vorlagen für die Komboboxen mit den Zeitintervallen:
+	String[] template_timeInterval_all = { "inf", "min", "h", "d", "m", "y" };
+	String[] template_timeInterval_h = { "inf", "h", "d", "m", "y" };
+	String[] template_timeInterval_d = { "inf", "d", "m", "y" };
+	String[] template_timeInterval_m = { "inf", "m", "y" };
+	String[] template_timeInterval_y = { "inf", "y" };
+
+	String[] template_backupSets = { "all", "50", "45", "40", "35", "30", "25", "20", "15", "10", "9", "8", "7", "6",
+			"5", "4", "3", "2", "1" };
+
+	private JComboBox[] unitComboBoxes;
+	private JComboBox[] toKeepComboBoxes;
+	private JSpinner[] spinners;
+
+	private JLabel label_eS1_from;
+	private JLabel label_eS2_from;
+	private JLabel label_eS3_from;
+	private JLabel label_eS4_from;
+	private JLabel label_eS5_from;
+	private JLabel label_eS1_to;
+	private JLabel label_eS2_to;
+	private JLabel label_eS3_to;
+	private JLabel label_eS4_to;
+	private JLabel label_eS5_to;
+	private JLabel label_eS1_toKeep;
+	private JLabel label_eS2_toKeep;
+	private JLabel label_eS3_toKeep;
+	private JLabel label_eS4_toKeep;
+	private JLabel label_eS5_toKeep;
+
+	private int numberOfExtendedAutoCleanRules = 1;
 
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
@@ -88,8 +135,25 @@ public class EditDialog extends JDialog {
 	 * 
 	 */
 	public EditDialog(IEditDialogListener listener) {
+		JComboBox comboBox_eS1_unit;
+		JComboBox comboBox_eS2_unit;
+		JComboBox comboBox_eS3_unit;
+		JComboBox comboBox_eS4_unit;
+		JComboBox comboBox_eS5_unit;
+		JComboBox comboBox_eS1_toKeep;
+		JComboBox comboBox_eS2_toKeep;
+		JComboBox comboBox_eS3_toKeep;
+		JComboBox comboBox_eS4_toKeep;
+		JComboBox comboBox_eS5_toKeep;
+		JSpinner spinner_eS1;
+		JSpinner spinner_eS2;
+		JSpinner spinner_eS3;
+		JSpinner spinner_eS4;
+		JSpinner spinner_eS5;
+
+		setResizable(false);
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.title"));
-		setBounds(100, 100, 525, 369);
+		setBounds(100, 100, 513, 562);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -272,28 +336,376 @@ public class EditDialog extends JDialog {
 		panel_setup.add(panel_otherSettings, BorderLayout.SOUTH);
 		panel_otherSettings.setLayout(new BorderLayout(0, 0));
 
-		JPanel panel_autoremove = new JPanel();
-		panel_otherSettings.add(panel_autoremove, BorderLayout.NORTH);
-
-		JLabel label_autoclean = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.EditDialog.label_autoClean"));
-		panel_autoremove.add(label_autoclean);
-
-		checkBox_autoClean = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.EditDialog.checkbox_numberOfBackupsToKeep"));
-		panel_autoremove.add(checkBox_autoClean);
-
-		spinner_numberOfBackupsToKeep = new JSpinner();
-		spinner_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
-				new Integer(1)));
-		panel_autoremove.add(spinner_numberOfBackupsToKeep);
-
 		JPanel panel_autostart = new JPanel();
-		panel_otherSettings.add(panel_autostart, BorderLayout.SOUTH);
+		panel_otherSettings.add(panel_autostart, BorderLayout.NORTH);
 
 		checkBox_autostart = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
 				"GUI.EditDialog.autostart"));
 		panel_autostart.add(checkBox_autostart);
+
+		JPanel panel_autoremove = new JPanel();
+		panel_otherSettings.add(panel_autoremove, BorderLayout.SOUTH);
+		panel_autoremove.setLayout(new BorderLayout(0, 0));
+
+		JLabel label_autoclean = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_autoClean"));
+		panel_autoremove.add(label_autoclean, BorderLayout.NORTH);
+
+		// Autoclean:
+
+		JPanel panel_autoclean_settings = new JPanel();
+		panel_autoremove.add(panel_autoclean_settings);
+		panel_autoclean_settings.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_simpleSettings = new JPanel();
+		panel_simpleSettings.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_toggleSimpleSettings = new JPanel();
+		panel_simpleSettings.add(panel_toggleSimpleSettings, BorderLayout.NORTH);
+		panel_toggleSimpleSettings.setLayout(new BorderLayout(0, 0));
+
+		checkBox_toggleSimpleSettings = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.checkbox_numberOfBackupsToKeep"));
+		checkBox_toggleSimpleSettings.setHorizontalAlignment(SwingConstants.LEFT);
+		panel_toggleSimpleSettings.add(checkBox_toggleSimpleSettings);
+
+		// Textfeld des Spinners nicht editierbar machen:
+		// spinner_numberOfBackupsToKeep.setEditor(new
+		// JSpinner.DefaultEditor(spinner_numberOfBackupsToKeep));
+
+		JPanel panel_extendedSettings = new JPanel();
+
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		panel_autoclean_settings.add(tabbedPane);
+		tabbedPane.addTab("einfach", panel_simpleSettings);
+
+		JPanel panel_settingsSimpleSettings = new JPanel();
+		panel_simpleSettings.add(panel_settingsSimpleSettings);
+
+		JLabel label_simple = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.lblNewLabel.text_6"));
+		panel_settingsSimpleSettings.add(label_simple);
+
+		spinner_numberOfBackupsToKeep = new JSpinner();
+		panel_settingsSimpleSettings.add(spinner_numberOfBackupsToKeep);
+		spinner_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
+				new Integer(1)));
+		tabbedPane.addTab("erweitert", panel_extendedSettings);
+		panel_autoclean_settings.add(tabbedPane, BorderLayout.WEST);
+		panel_extendedSettings.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_toggleExtendedSettings = new JPanel();
+		panel_extendedSettings.add(panel_toggleExtendedSettings, BorderLayout.NORTH);
+		panel_toggleExtendedSettings.setLayout(new BorderLayout(0, 0));
+
+		JCheckBox checkBox_toggleExtendedSettings = new JCheckBox("aktiviert");
+		checkBox_toggleExtendedSettings.setHorizontalAlignment(SwingConstants.LEFT);
+		panel_toggleExtendedSettings.add(checkBox_toggleExtendedSettings);
+
+		checkBox_toggleSimpleSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				checkBox_toggleExtendedSettings.setSelected(false);
+			}
+		});
+		checkBox_toggleExtendedSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				checkBox_toggleSimpleSettings.setSelected(false);
+			}
+		});
+
+		JPanel panel_settingsExtendedSettings = new JPanel();
+		panel_settingsExtendedSettings.setLayout(new BoxLayout(panel_settingsExtendedSettings, BoxLayout.Y_AXIS));
+		panel_extendedSettings.add(panel_settingsExtendedSettings);
+
+		JPanel panel_eS1 = new JPanel();
+		panel_settingsExtendedSettings.add(panel_eS1);
+		FlowLayout flowLayout = (FlowLayout) panel_eS1.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+
+		label_eS1_from = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.lblNewLabel.text_3"));
+		panel_eS1.add(label_eS1_from);
+
+		label_eS1_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.lblNewLabel.text_4"));
+		panel_eS1.add(label_eS1_to);
+
+		spinner_eS1 = new JSpinner();
+		spinner_eS1.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+		// spinner_eS1.setEditor(new JSpinner.DefaultEditor(spinner_eS1));
+
+		panel_eS1.add(spinner_eS1);
+
+		comboBox_eS1_unit = new JComboBox();
+		comboBox_eS1_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
+		panel_eS1.add(comboBox_eS1_unit);
+
+		label_eS1_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.lblNewLabel.text_5"));
+		panel_eS1.add(label_eS1_toKeep);
+
+		comboBox_eS1_toKeep = new JComboBox();
+		comboBox_eS1_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
+		panel_eS1.add(comboBox_eS1_toKeep);
+
+		JPanel panel_eS2 = new JPanel();
+		panel_settingsExtendedSettings.add(panel_eS2);
+		FlowLayout flowLayout_1 = (FlowLayout) panel_eS2.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+
+		label_eS2_from = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.lblInf.text"));
+		label_eS2_from.setEnabled(false);
+		panel_eS2.add(label_eS2_from);
+
+		label_eS2_to = new JLabel("bis");
+		label_eS2_to.setEnabled(false);
+		panel_eS2.add(label_eS2_to);
+
+		spinner_eS2 = new JSpinner();
+		spinner_eS2.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+		panel_eS2.add(spinner_eS2);
+		// TODO: Nach letztem "setEditor"! Möglich? (bei allen Vorkommen von
+		// setEditor)
+		spinner_eS2.setEnabled(false);
+		// spinner_eS2.setEditor(new JSpinner.DefaultEditor(spinner_eS2));
+
+		comboBox_eS2_unit = new JComboBox();
+		comboBox_eS2_unit.setEnabled(false);
+		comboBox_eS2_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
+		panel_eS2.add(comboBox_eS2_unit);
+
+		label_eS2_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.lblZuBehaltendeBackupstze.text"));
+		label_eS2_toKeep.setEnabled(false);
+		panel_eS2.add(label_eS2_toKeep);
+
+		comboBox_eS2_toKeep = new JComboBox();
+		comboBox_eS2_toKeep.setEnabled(false);
+		comboBox_eS2_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
+		panel_eS2.add(comboBox_eS2_toKeep);
+
+		JPanel panel_eS3 = new JPanel();
+		panel_settingsExtendedSettings.add(panel_eS3);
+		FlowLayout fl_panel_eS3 = (FlowLayout) panel_eS3.getLayout();
+		fl_panel_eS3.setAlignment(FlowLayout.LEFT);
+
+		label_eS3_from = new JLabel("inf");
+		label_eS3_from.setEnabled(false);
+		panel_eS3.add(label_eS3_from);
+
+		label_eS3_to = new JLabel("bis");
+		label_eS3_to.setEnabled(false);
+		panel_eS3.add(label_eS3_to);
+
+		spinner_eS3 = new JSpinner();
+		spinner_eS3.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+		panel_eS3.add(spinner_eS3);
+		spinner_eS3.setEnabled(false);
+
+		comboBox_eS3_unit = new JComboBox();
+		comboBox_eS3_unit.setEnabled(false);
+		comboBox_eS3_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
+		panel_eS3.add(comboBox_eS3_unit);
+
+		label_eS3_toKeep = new JLabel("Zu behaltende Backupsätze (max):");
+		label_eS3_toKeep.setEnabled(false);
+		panel_eS3.add(label_eS3_toKeep);
+
+		comboBox_eS3_toKeep = new JComboBox();
+		comboBox_eS3_toKeep.setEnabled(false);
+		comboBox_eS3_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
+		panel_eS3.add(comboBox_eS3_toKeep);
+
+		JPanel panel_eS4 = new JPanel();
+		panel_settingsExtendedSettings.add(panel_eS4);
+		FlowLayout fl_panel_eS4 = (FlowLayout) panel_eS4.getLayout();
+		fl_panel_eS4.setAlignment(FlowLayout.LEFT);
+
+		label_eS4_from = new JLabel("inf");
+		label_eS4_from.setEnabled(false);
+		panel_eS4.add(label_eS4_from);
+
+		label_eS4_to = new JLabel("bis");
+		label_eS4_to.setEnabled(false);
+		panel_eS4.add(label_eS4_to);
+
+		spinner_eS4 = new JSpinner();
+		spinner_eS4.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+		panel_eS4.add(spinner_eS4);
+		spinner_eS4.setEnabled(false);
+
+		comboBox_eS4_unit = new JComboBox();
+		comboBox_eS4_unit.setEnabled(false);
+		comboBox_eS4_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
+		panel_eS4.add(comboBox_eS4_unit);
+
+		label_eS4_toKeep = new JLabel("Zu behaltende Backupsätze (max):");
+		label_eS4_toKeep.setEnabled(false);
+		panel_eS4.add(label_eS4_toKeep);
+
+		comboBox_eS4_toKeep = new JComboBox();
+		comboBox_eS4_toKeep.setEnabled(false);
+		comboBox_eS4_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
+		panel_eS4.add(comboBox_eS4_toKeep);
+
+		JPanel panel_eS5 = new JPanel();
+		panel_settingsExtendedSettings.add(panel_eS5);
+		FlowLayout flowLayout_2 = (FlowLayout) panel_eS5.getLayout();
+		flowLayout_2.setAlignment(FlowLayout.LEFT);
+
+		label_eS5_from = new JLabel("inf");
+		label_eS5_from.setEnabled(false);
+		panel_eS5.add(label_eS5_from);
+
+		label_eS5_to = new JLabel("bis");
+		label_eS5_to.setEnabled(false);
+		panel_eS5.add(label_eS5_to);
+
+		spinner_eS5 = new JSpinner();
+		spinner_eS5.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+		panel_eS5.add(spinner_eS5);
+		spinner_eS5.setEnabled(false);
+
+		comboBox_eS5_unit = new JComboBox();
+		comboBox_eS5_unit.setEnabled(false);
+		comboBox_eS5_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
+		panel_eS5.add(comboBox_eS5_unit);
+
+		label_eS5_toKeep = new JLabel("Zu behaltende Backupsätze (max):");
+		label_eS5_toKeep.setEnabled(false);
+		panel_eS5.add(label_eS5_toKeep);
+
+		comboBox_eS5_toKeep = new JComboBox();
+		comboBox_eS5_toKeep.setEnabled(false);
+		comboBox_eS5_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
+		panel_eS5.add(comboBox_eS5_toKeep);
+
+		// Für eS4:
+		comboBox_eS4_unit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeCBTime(comboBox_eS4_unit, spinner_eS4);
+				changeFromTextForEntrie(comboBox_eS4_unit, spinner_eS4, label_eS5_from);
+				if (comboBox_eS4_unit.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+					numberOfExtendedAutoCleanRules = 4;
+					setLayerEnabled(5, false);
+				} else {
+					numberOfExtendedAutoCleanRules = 5;
+					setLayerEnabled(5, true);
+				}
+
+				changeModelOfTimeIntervalCheckbox(comboBox_eS4_unit, comboBox_eS5_unit);
+				// spinner_eS4.setEditor(new
+				// JSpinner.DefaultEditor(spinner_eS4));
+			}
+		});
+
+		spinner_eS4.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				changeFromTextForEntrie(comboBox_eS4_unit, spinner_eS4, label_eS5_from);
+			}
+		});
+		// Für eS3:
+		comboBox_eS3_unit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeCBTime(comboBox_eS3_unit, spinner_eS3);
+				changeFromTextForEntrie(comboBox_eS3_unit, spinner_eS3, label_eS4_from);
+				if (comboBox_eS3_unit.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+					numberOfExtendedAutoCleanRules = 3;
+					setLayerEnabled(4, false);
+					setLayerEnabled(5, false);
+				} else {
+					numberOfExtendedAutoCleanRules = 4;
+					setLayerEnabled(4, true);
+				}
+
+				changeModelOfTimeIntervalCheckbox(comboBox_eS3_unit, comboBox_eS4_unit);
+				// spinner_eS3.setEditor(new
+				// JSpinner.DefaultEditor(spinner_eS3));
+			}
+		});
+
+		spinner_eS3.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				changeFromTextForEntrie(comboBox_eS3_unit, spinner_eS3, label_eS4_from);
+			}
+		});
+		// Für eS2:
+		comboBox_eS2_unit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeCBTime(comboBox_eS2_unit, spinner_eS2);
+				changeFromTextForEntrie(comboBox_eS2_unit, spinner_eS2, label_eS3_from);
+				if (comboBox_eS2_unit.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+					numberOfExtendedAutoCleanRules = 2;
+					setLayerEnabled(3, false);
+					setLayerEnabled(4, false);
+					setLayerEnabled(5, false);
+				} else {
+					numberOfExtendedAutoCleanRules = 3;
+					setLayerEnabled(3, true);
+				}
+
+				changeModelOfTimeIntervalCheckbox(comboBox_eS2_unit, comboBox_eS3_unit);
+				// spinner_eS2.setEditor(new
+				// JSpinner.DefaultEditor(spinner_eS2));
+			}
+		});
+
+		spinner_eS2.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				changeFromTextForEntrie(comboBox_eS2_unit, spinner_eS2, label_eS3_from);
+			}
+		});
+
+		unitComboBoxes = new JComboBox[5];
+		unitComboBoxes[0] = comboBox_eS1_unit;
+		unitComboBoxes[1] = comboBox_eS2_unit;
+		unitComboBoxes[2] = comboBox_eS3_unit;
+		unitComboBoxes[3] = comboBox_eS4_unit;
+		unitComboBoxes[4] = comboBox_eS5_unit;
+
+		toKeepComboBoxes = new JComboBox[5];
+		toKeepComboBoxes[0] = comboBox_eS1_toKeep;
+		toKeepComboBoxes[1] = comboBox_eS2_toKeep;
+		toKeepComboBoxes[2] = comboBox_eS3_toKeep;
+		toKeepComboBoxes[3] = comboBox_eS4_toKeep;
+		toKeepComboBoxes[4] = comboBox_eS5_toKeep;
+
+		spinners = new JSpinner[5];
+		spinners[0] = spinner_eS1;
+		spinners[1] = spinner_eS2;
+		spinners[2] = spinner_eS3;
+		spinners[3] = spinner_eS4;
+		spinners[4] = spinner_eS5;
+
+		// Listener:
+		// Für eS1:
+		comboBox_eS1_unit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeCBTime(comboBox_eS1_unit, spinner_eS1);
+				changeFromTextForEntrie(comboBox_eS1_unit, spinner_eS1, label_eS2_from);
+				if (comboBox_eS1_unit.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+					numberOfExtendedAutoCleanRules = 1;
+					setLayerEnabled(2, false);
+					setLayerEnabled(3, false);
+					setLayerEnabled(4, false);
+					setLayerEnabled(5, false);
+				} else {
+					// TODO: richtig? Was passiert wenn ein z.B. 3. gesetzt war
+					// und dann über 2. deaktiviert und wieder aktiviert wird?
+					// Korrekter Reset?
+					numberOfExtendedAutoCleanRules = 2;
+					setLayerEnabled(2, true);
+				}
+
+				changeModelOfTimeIntervalCheckbox(comboBox_eS1_unit, comboBox_eS2_unit);
+				// spinner_eS1.setEditor(new
+				// JSpinner.DefaultEditor(spinner_eS1));
+			}
+		});
+
+		spinner_eS1.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				changeFromTextForEntrie(comboBox_eS1_unit, spinner_eS1, label_eS2_from);
+			}
+		});
 
 		JPanel panel_backupType = new JPanel();
 		panel_main.add(panel_backupType, BorderLayout.SOUTH);
@@ -399,10 +811,34 @@ public class EditDialog extends JDialog {
 						return;
 					}
 
-					// Einstellungen für das automatische Aufräumen
-					// sichern:
-					task.setAutoCleanEnabled(checkBox_autoClean.isSelected());
-					task.setNumberOfBackupsToKeep((Integer) spinner_numberOfBackupsToKeep.getValue());
+					// Einstellungen für das automatische Aufräumen sichern:
+					// Unterscheidung für einfaches und erweitertes Aufräumen:
+
+					// TODO: funktionalität prüfen, ev. problem wenn kein
+					// autoClean aktiviert ist...
+					if (checkBox_toggleSimpleSettings.isSelected()) {
+						task.clearAutoCleanInformations();
+						task.setSimpleAutoCleanEnabled(checkBox_toggleSimpleSettings.isSelected());
+						task.setNumberOfBackupsToKeep((Integer) spinner_numberOfBackupsToKeep.getValue());
+					} else if (checkBox_toggleExtendedSettings.isSelected()) {
+						task.clearAutoCleanInformations();
+						task.setExtendedAutoCleanEnabled(checkBox_toggleSimpleSettings.isSelected());
+						int[] threshold = new int[numberOfExtendedAutoCleanRules - 1];
+						for (int i = 0; i < (threshold.length - 1); i++) {
+							threshold[i] = (int) unitComboBoxes[i].getSelectedItem();
+						}
+						task.setThreshold(threshold);
+						String[] thresholdUnits = new String[numberOfExtendedAutoCleanRules];
+						for (int i = 0; i < thresholdUnits.length; i++) {
+							thresholdUnits[i] = unitComboBoxes[i].getSelectedItem().toString();
+						}
+						task.setThresholdUnits(thresholdUnits);
+						String[] backupsToKeep = new String[numberOfExtendedAutoCleanRules];
+						for (int i = 0; i < backupsToKeep.length; i++) {
+							backupsToKeep[i] = spinners[i].getValue().toString();
+						}
+						task.setBackupsToKeep(backupsToKeep);
+					}
 
 				} else {
 					// Ungültiger Name:
@@ -575,7 +1011,7 @@ public class EditDialog extends JDialog {
 	 *            Auto-Clean Funktion aktiviert (true) oder Deaktiviert (false)
 	 */
 	public void setAutoCleanEnabled(boolean enabled) {
-		checkBox_autoClean.setSelected(enabled);
+		checkBox_toggleSimpleSettings.setSelected(enabled);
 	}
 
 	/**
@@ -617,5 +1053,99 @@ public class EditDialog extends JDialog {
 	 */
 	public void setAutostart(boolean autostart) {
 		checkBox_autostart.setSelected(autostart);
+	}
+
+	// TODO: JavaDoc
+	private void changeCBTime(JComboBox comboBox, JSpinner spinner) {
+		if (comboBox.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+			spinner.setEnabled(false);
+		} else {
+			spinner.setEnabled(true);
+			if (comboBox.getSelectedItem().toString().equalsIgnoreCase("min")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("h")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_h));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("d")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_d));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("m")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_m));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("y")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_y));
+			}
+		}
+		// TODO: Nur auf default setzen wenn der alte Wert im neuen Model
+		// ungültig ist
+		spinner.setValue(1);
+	}
+
+	private void changeFromTextForEntrie(JComboBox comboBox, JSpinner spinner, JLabel label) {
+		if (comboBox.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+			label.setText(comboBox.getSelectedItem().toString());
+		} else {
+			label.setText((spinner.getValue().toString() + " " + comboBox.getSelectedItem().toString()));
+		}
+	}
+
+	/**
+	 * 
+	 * @param upperBox
+	 * @param lowerBox
+	 */
+	private void changeModelOfTimeIntervalCheckbox(JComboBox upperBox, JComboBox lowerBox) {
+		if (upperBox.getSelectedItem().toString().equalsIgnoreCase("min")) {
+			lowerBox.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
+		} else if (upperBox.getSelectedItem().toString().equalsIgnoreCase("h")) {
+			lowerBox.setModel(createComboBoxModelFromTemplate(template_timeInterval_h));
+		} else if (upperBox.getSelectedItem().toString().equalsIgnoreCase("d")) {
+			lowerBox.setModel(createComboBoxModelFromTemplate(template_timeInterval_d));
+		} else if (upperBox.getSelectedItem().toString().equalsIgnoreCase("m")) {
+			lowerBox.setModel(createComboBoxModelFromTemplate(template_timeInterval_m));
+		} else if (upperBox.getSelectedItem().toString().equalsIgnoreCase("y")) {
+			lowerBox.setModel(createComboBoxModelFromTemplate(template_timeInterval_y));
+		}
+	}
+
+	private DefaultComboBoxModel<String> createComboBoxModelFromTemplate(String[] template) {
+		DefaultComboBoxModel<String> result = new DefaultComboBoxModel<String>();
+		for (int i = 0; i < template.length; i++) {
+			result.addElement(template[i]);
+		}
+		return result;
+	}
+
+	private SpinnerNumberModel createSpinnerNumberModelFromTemplate(int[] template) {
+		return new SpinnerNumberModel(template[0], template[1], template[2], template[3]);
+	}
+
+	private void setLayerEnabled(int layerToDisable, boolean enabled) {
+		if (layerToDisable == 2) {
+			unitComboBoxes[1].setEnabled(enabled);
+			toKeepComboBoxes[1].setEnabled(enabled);
+			spinners[1].setEnabled(enabled);
+			label_eS2_from.setEnabled(enabled);
+			label_eS2_to.setEnabled(enabled);
+			label_eS2_toKeep.setEnabled(enabled);
+		} else if (layerToDisable == 3) {
+			unitComboBoxes[2].setEnabled(enabled);
+			toKeepComboBoxes[2].setEnabled(enabled);
+			spinners[2].setEnabled(enabled);
+			label_eS3_from.setEnabled(enabled);
+			label_eS3_to.setEnabled(enabled);
+			label_eS3_toKeep.setEnabled(enabled);
+		} else if (layerToDisable == 4) {
+			unitComboBoxes[3].setEnabled(enabled);
+			toKeepComboBoxes[3].setEnabled(enabled);
+			spinners[3].setEnabled(enabled);
+			label_eS4_from.setEnabled(enabled);
+			label_eS4_to.setEnabled(enabled);
+			label_eS4_toKeep.setEnabled(enabled);
+		} else if (layerToDisable == 5) {
+			unitComboBoxes[4].setEnabled(enabled);
+			toKeepComboBoxes[4].setEnabled(enabled);
+			spinners[4].setEnabled(enabled);
+			label_eS5_from.setEnabled(enabled);
+			label_eS5_to.setEnabled(enabled);
+			label_eS5_toKeep.setEnabled(enabled);
+		}
 	}
 }

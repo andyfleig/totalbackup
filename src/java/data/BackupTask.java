@@ -19,10 +19,16 @@ public class BackupTask implements Serializable {
 	private ArrayList<Source> sources;
 	private String destinationPath;
 	private int backupMode;
-	private boolean autoCleanIsEnabled;
+	private boolean simpleAutoCleanIsEnabled;
+	private boolean extendedAutoCleanIsEnabled;
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
 	private boolean autostart = false;
+	
+	// Für das erweiterte AutoClean:
+	private int[] threshold = new int[5];
+	private String[] thresholdUnits = new String[5];
+	private String[] backupsToKeep = new String[5];
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -160,22 +166,66 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Aktiviert bzw. Deaktiviert die Auto-Clean Funktion.
+	 * Aktiviert bzw. Deaktiviert die einfache Auto-Clean Funktion.
 	 * 
 	 * @param enabled
 	 *            Auto-Clean aktivieren
 	 */
-	public void setAutoCleanEnabled(boolean enabled) {
-		autoCleanIsEnabled = enabled;
+	public void setSimpleAutoCleanEnabled(boolean enabled) {
+		simpleAutoCleanIsEnabled = enabled;
+	}
+	
+	/**
+	 * Aktiviert bzw. Deaktiviert die erweiterte Auto-Clean Funktion.
+	 * 
+	 * @param enabled
+	 *            Auto-Clean aktivieren
+	 */
+	public void setExtendedAutoCleanEnabled(boolean enabled) {
+		extendedAutoCleanIsEnabled = enabled;
 	}
 
 	/**
-	 * Gibt zurück ob Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
 	 * 
 	 * @return Zustand der Auto-Clean Funktion
 	 */
-	public boolean autoCleanIsEnabled() {
-		return autoCleanIsEnabled;
+	public boolean simpleAutoCleanIsEnabled() {
+		return simpleAutoCleanIsEnabled;
+	}
+	
+	/**
+	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * 
+	 * @return Zustand der Auto-Clean Funktion
+	 */
+	public boolean extendedAutoCleanIsEnabled() {
+		return simpleAutoCleanIsEnabled;
+	}
+	
+	//TODO: JavaDoc (ganze Klasse)
+	public void setThreshold(int[] thresholdToSet) {
+		this.threshold = thresholdToSet;
+	}
+	
+	public void setThresholdUnits(String[] thresholdUnitsToSet) {
+		this.thresholdUnits = thresholdUnitsToSet;
+	}
+	
+	public void setBackupsToKeep(String[] backupsToKeep) {
+		this.backupsToKeep = backupsToKeep;
+	}
+	
+	/**
+	 * Löscht alle gesetzten Einstellungen/ Informationen des AutoClean-Features.
+	 */
+	public void clearAutoCleanInformations() {
+		simpleAutoCleanIsEnabled = false;
+		extendedAutoCleanIsEnabled = false;
+		numberOfBackupsToKeep = 0;
+		threshold = null;
+		thresholdUnits = null;
+		backupsToKeep = null;
 	}
 
 	/**
