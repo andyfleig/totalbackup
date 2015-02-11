@@ -634,6 +634,7 @@ public class EditDialog extends JDialog {
 		// Listener:
 		comboBox_eS1_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				changeCBTime(unitComboBoxes[0], spinners[0]);
 				if (unitComboBoxes[0].getSelectedItem().toString().equals("inf")) {
 					spinners[0].setEnabled(false);
 				} else {
@@ -643,6 +644,7 @@ public class EditDialog extends JDialog {
 		});
 		comboBox_eS2_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				changeCBTime(unitComboBoxes[1], spinners[1]);
 				if (unitComboBoxes[1].getSelectedItem().toString().equals("inf")) {
 					spinners[1].setEnabled(false);
 				} else {
@@ -652,6 +654,7 @@ public class EditDialog extends JDialog {
 		});
 		comboBox_eS3_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				changeCBTime(unitComboBoxes[2], spinners[2]);
 				if (unitComboBoxes[2].getSelectedItem().toString().equals("inf")) {
 					spinners[2].setEnabled(false);
 				} else {
@@ -661,6 +664,7 @@ public class EditDialog extends JDialog {
 		});
 		comboBox_eS4_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				changeCBTime(unitComboBoxes[3], spinners[3]);
 				if (unitComboBoxes[3].getSelectedItem().toString().equals("inf")) {
 					spinners[3].setEnabled(false);
 				} else {
@@ -764,6 +768,17 @@ public class EditDialog extends JDialog {
 								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
 								JOptionPane.INFORMATION_MESSAGE);
 						return;
+					}
+
+					// Erweiterte AutoClean Einstellungen prüfen:
+					if (checkBox_toggleExtendedSettings.isSelected()) {
+						if (!checkExtendedAutoCleanSettings()) {
+							JOptionPane
+									.showMessageDialog(null, "Ungültige AutoClean Einstellungen", ResourceBundle
+											.getBundle("gui.messages").getString("GUI.errMsg"),
+											JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
 					}
 
 					// Einstellungen für das automatische Aufräumen sichern:
@@ -1047,10 +1062,12 @@ public class EditDialog extends JDialog {
 		}
 	}
 
-	public void setExtendedAutoCleanSettings(int numberOfRules, int[] threshold, String[] thresholdUnits, String[] backupsToKeep) {
+	public void setExtendedAutoCleanSettings(int numberOfRules, int[] threshold, String[] thresholdUnits,
+			String[] backupsToKeep) {
 		// TODO: !!! Funktioniert noch nicht, wahrscheinlich gibts noch Probleme
 		// durch das Überschreiben der Model,...
-		checkBox_toggleExtendedSettings.setSelected(true);;
+		checkBox_toggleExtendedSettings.setSelected(true);
+		;
 		comboBox_numberOfRules.setSelectedIndex(numberOfRules - 1);
 		for (int i = 0; i < threshold.length; i++) {
 			spinners[i].setValue((int) threshold[i]);
@@ -1062,5 +1079,130 @@ public class EditDialog extends JDialog {
 			toKeepComboBoxes[i].setSelectedItem(backupsToKeep[i]);
 		}
 
+	}
+
+	// TODO: JavaDoc
+	private void changeCBTime(JComboBox comboBox, JSpinner spinner) {
+		if (comboBox.getSelectedItem().toString().equalsIgnoreCase("inf")) {
+			spinner.setEnabled(false);
+		} else {
+			spinner.setEnabled(true);
+			if (comboBox.getSelectedItem().toString().equalsIgnoreCase("min")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("h")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_h));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("d")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_d));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("m")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_m));
+			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("y")) {
+				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_y));
+			}
+		}
+		// TODO: Nur auf default setzen wenn der alte Wert im neuen Model
+		// ungültig ist
+		spinner.setValue(1);
+	}
+
+	private boolean checkExtendedAutoCleanSettings() {
+		int numberOfRules = Integer.valueOf(comboBox_numberOfRules.getSelectedItem().toString());
+		// Letzte Regel muss bis "inf" gehen:
+		if (numberOfRules < 5 && !unitComboBoxes[numberOfRules - 1].getSelectedItem().toString().equals("inf")) {
+			return false;
+		}
+		// Restliche Regeln müssen ungleich "inf" sein:
+		for (int i = 0; i < (numberOfRules - 1); i++) {
+			if (unitComboBoxes[i].getSelectedItem().toString().equals("inf")) {
+				return false;
+			}
+		}
+		// Jede Regel muss später Enden, als die Regel davor endet (der gewählte
+		// Bereich muss > 0 sein und sie dürfen sich nicht überlappen):
+		// Für die 1. Regel existieren keine Abhängigkeiten
+		switch (numberOfRules) {
+		case 1:
+			return true;
+		case 2:
+			return checkRulesUntit(1);
+		case 3:
+			return checkRulesUntit(2);
+		case 4:
+			return checkRulesUntit(3);
+		case 5:
+			return checkRulesUntit(4);
+		}
+		return true;
+	}
+
+	private boolean checkRulesUntit(int endIndex) {
+		// Da die 5. Regel nicht überprüft werden muss:
+		if (endIndex == 4) {
+			endIndex--;
+		}
+		for (int i = 1; i <= endIndex; i++) {
+			if (!checkUnitDependenciesOfRule(i) || !checkSpinnerDependencies(i)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Prüpft die Abhängigkeiten der Einheiten für die Combobox index zu ihrem
+	 * Vorgänger.
+	 * 
+	 * @param index
+	 *            index Index (also eS - 1) der Regel
+	 * @return true wenn die Einstellungen gültig sind, false sonst
+	 */
+	private boolean checkUnitDependenciesOfRule(int index) {
+		String currentUnit = unitComboBoxes[index].getSelectedItem().toString();
+		String unitAboveCurrent = unitComboBoxes[index - 1].getSelectedItem().toString();
+		switch (unitAboveCurrent) {
+		case "min":
+			return true;
+		case "h":
+			if (!currentUnit.equals("min")) {
+				return true;
+			}
+			return false;
+		case "d":
+			if (!currentUnit.equals("min") && !currentUnit.equals("h")) {
+				return true;
+			}
+			return false;
+		case "m":
+			if (currentUnit.equals("m") || currentUnit.equals("y")) {
+				return true;
+			}
+			return false;
+		case "y":
+			if (currentUnit.equals("y")) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Prüft die Abhängigkeiten der Spinner, wenn die Combobox index die gleiche
+	 * Einheit wie die ComboBox index - 1 hat.
+	 * 
+	 * @param index
+	 *            Index (also eS - 1) der Regel
+	 * @return true wenn die Einstellungen gültig sind, false sonst
+	 */
+	private boolean checkSpinnerDependencies(int index) {
+		String currentUnit = unitComboBoxes[index].getSelectedItem().toString();
+		String unitAboveCurrent = unitComboBoxes[index - 1].getSelectedItem().toString();
+		if (currentUnit.equals(unitAboveCurrent)) {
+			if (Integer.valueOf(spinners[index - 1].getValue().toString()) < Integer.valueOf(spinners[index].getValue()
+					.toString())) {
+				return true;
+			}
+			return false;
+		}
+		return true;
 	}
 }
