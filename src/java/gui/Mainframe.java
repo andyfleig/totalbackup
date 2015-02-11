@@ -301,14 +301,17 @@ public class Mainframe extends JDialog {
 						editDialog.setSourcePaths(task.getSources());
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());
-						editDialog.setAutoCleanEnabled(task.simpleAutoCleanIsEnabled());
 						editDialog.setAutostart(task.getAutostart());
-						editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
 						editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 						editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-						editDialog.setExtendedAutoCleanSettings(task.getThreshold(), task.getThresholdUnits(),
-								task.getBackupsToKeep());
-						
+						if (task.simpleAutoCleanIsEnabled()) {
+							editDialog.setAutoCleanEnabled(true);
+							editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
+						} else if (task.extendedAutoCleanIsEnabled()) {
+							editDialog.setExtendedAutoCleanSettings(task.getNumberOfExtendedCleanRules(),
+								task.getThreshold(), task.getThresholdUnits(), task.getBackupsToKeep());
+						}
+
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
 						ex.printStackTrace();

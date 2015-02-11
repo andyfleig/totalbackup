@@ -21,6 +21,7 @@ public class BackupTask implements Serializable {
 	private int backupMode;
 	private boolean simpleAutoCleanIsEnabled;
 	private boolean extendedAutoCleanIsEnabled;
+	private int numberOfExtendedCleanRules;
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
 	private boolean autostart = false;
@@ -202,7 +203,7 @@ public class BackupTask implements Serializable {
 	 * @return Zustand der Auto-Clean Funktion
 	 */
 	public boolean extendedAutoCleanIsEnabled() {
-		return simpleAutoCleanIsEnabled;
+		return extendedAutoCleanIsEnabled;
 	}
 
 	// TODO: JavaDoc (ganze Klasse)
@@ -299,5 +300,21 @@ public class BackupTask implements Serializable {
 	 */
 	public boolean getAutostart() {
 		return autostart;
+	}
+	
+	/**
+	 * Setzt die Anzhal der Regeln des erweiterten AutoClean.
+	 * @param numberOfRules Anzahl der Regeln
+	 */
+	public void setNumberOfExtendedAutoCleanRules(int numberOfRules) {
+		this.numberOfExtendedCleanRules = numberOfRules;
+	}
+	
+	/**
+	 * Gibt die Anzahl der Regeln des erweiterten AutoClean zurück.
+	 * @return Anzhal der Regeln
+	 */
+	public int getNumberOfExtendedCleanRules() {
+		return this.numberOfExtendedCleanRules;
 	}
 }
