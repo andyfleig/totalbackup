@@ -218,15 +218,15 @@ public class BackupTask implements Serializable {
 	public void setBackupsToKeep(String[] backupsToKeep) {
 		this.backupsToKeep = backupsToKeep;
 	}
-	
+
 	public int[] getThreshold() {
 		return threshold;
 	}
-	
+
 	public String[] getThresholdUnits() {
 		return thresholdUnits;
 	}
-	
+
 	public String[] getBackupsToKeep() {
 		return backupsToKeep;
 	}
@@ -301,20 +301,37 @@ public class BackupTask implements Serializable {
 	public boolean getAutostart() {
 		return autostart;
 	}
-	
+
 	/**
 	 * Setzt die Anzhal der Regeln des erweiterten AutoClean.
-	 * @param numberOfRules Anzahl der Regeln
+	 * 
+	 * @param numberOfRules
+	 *            Anzahl der Regeln
 	 */
 	public void setNumberOfExtendedAutoCleanRules(int numberOfRules) {
 		this.numberOfExtendedCleanRules = numberOfRules;
 	}
-	
+
 	/**
 	 * Gibt die Anzahl der Regeln des erweiterten AutoClean zurück.
+	 * 
 	 * @return Anzhal der Regeln
 	 */
 	public int getNumberOfExtendedCleanRules() {
 		return this.numberOfExtendedCleanRules;
+	}
+
+	/**
+	 * Gibt eine Liste von Strings zurück, wobei die Strings für die
+	 * verschiedenen Regeln eine Kombination von Zahl_Zeiteinheit ist.
+	 * 
+	 * @return Liste von Strings welche die Grenzwerte beschreiben
+	 */
+	public String[] getBoundaries() {
+		String[] result = new String[numberOfExtendedCleanRules - 1];
+		for (int i = 0; i < (numberOfExtendedCleanRules - 1); i++) {
+			result[i] = threshold[i] + "_" + thresholdUnits[i];
+		}
+		return result;
 	}
 }

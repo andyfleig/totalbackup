@@ -21,12 +21,16 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Date;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JOptionPane;
@@ -415,8 +419,9 @@ public class Controller {
 		if (currentTask.simpleAutoCleanIsEnabled()) {
 			try {
 				while (this.calcNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
-
-					File toDelete = new File(currentTask.getDestinationPath() + File.separator + findOldestBackup());
+					File toDelete = new File(currentTask.getDestinationPath() + File.separator
+							+ findOldestBackup(new ArrayList<File>(Arrays.asList((new File(currentTask
+									.getDestinationPath()).listFiles())))));
 
 					String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
 							+ toDelete.getAbsolutePath();
@@ -434,7 +439,10 @@ public class Controller {
 				printOut(outprint, false);
 				log(outprint, currentTask);
 			}
+		} else if (currentTask.extendedAutoCleanIsEnabled()) {
+			runExtendedClean();
 		}
+
 		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
 
@@ -578,10 +586,19 @@ public class Controller {
 	 */
 	private int calcNumberOfBackups() {
 		File dest = new File(currentTask.getDestinationPath());
-		File[] files = dest.listFiles();
+		return findBackupSets(dest).size();
+	}
 
-		// Gültige Backup-Sätze suchen:
-		int backupCounter = 0;
+	/**
+	 * Gibt eine Liste aller Backupsätze im gegebenen Verzeichnis zurück.
+	 * 
+	 * @param dir
+	 *            zu durchsuchendes Verzeichnis
+	 * @return Liste aller gefundenen Backupsätze
+	 */
+	private ArrayList<File> findBackupSets(File dir) {
+		File[] files = dir.listFiles();
+		ArrayList<File> foundBackupsets = new ArrayList<File>();
 		for (int i = 0; i < files.length; i++) {
 			// Namen des Ordners "zerlegen":
 			StringTokenizer tokenizer = new StringTokenizer(files[i].getName(), "_");
@@ -599,31 +616,31 @@ public class Controller {
 			try {
 				SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
 				sdfToDate.parse(backupDate);
-				backupCounter++;
+				foundBackupsets.add(files[i]);
 			} catch (ParseException e) {
 				// Offenbar kein gültiges Datum
 				continue;
 			}
 		}
-		return backupCounter;
+		return foundBackupsets;
 	}
 
 	/**
 	 * Gibt den Pfad des ältesten Backup-Satzes zurück.
 	 * 
+	 * @param root
+	 *            Ordner in dem der älteste Backupsatz gefunden werden soll
 	 * @return Pfad des ältesten Backup-Satzes
 	 */
-	private String findOldestBackup() {
-		File root = new File(currentTask.getDestinationPath());
-		File[] directories = root.listFiles();
+	private String findOldestBackup(ArrayList<File> directories) {
 
 		Date oldestDate = null;
 		String oldestBackupPath = null;
 		Date foundDate;
-		for (int i = 0; i < directories.length; i++) {
-			if (directories[i].isDirectory()) {
+		for (int i = 0; i < directories.size(); i++) {
+			if (directories.get(i).isDirectory()) {
 				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(directories[i].getName(), "_");
+				StringTokenizer tokenizer = new StringTokenizer(directories.get(i).getName(), "_");
 				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 				if (tokenizer.countTokens() != 2) {
 					continue;
@@ -644,15 +661,140 @@ public class Controller {
 				}
 				if (oldestDate == null) {
 					oldestDate = foundDate;
-					oldestBackupPath = directories[i].getName();
+					oldestBackupPath = directories.get(i).getName();
 				} else {
 					if (oldestDate.compareTo(foundDate) > 0) {
 						oldestDate = foundDate;
-						oldestBackupPath = directories[i].getName();
+						oldestBackupPath = directories.get(i).getName();
 					}
 				}
 			}
 		}
 		return oldestBackupPath;
+	}
+
+	private void runExtendedClean() {
+		// aktuelle SystemZeit:
+		LocalDateTime currentSystemTime = LocalDateTime.now();
+		
+		// Liste aller existenten Backupsätze anlegen:
+		ArrayList<File> backupSets = findBackupSets(new File(currentTask.getDestinationPath()));
+		
+		if (backupSets.size() == 0) {
+			return;
+		}
+		// Buckets anlegen (Anzahl = Menge der Regeln):
+		ArrayList<File> bucket1 = new ArrayList<File>();
+		ArrayList<File> bucket2 = new ArrayList<File>();
+		ArrayList<File> bucket3 = new ArrayList<File>();
+		ArrayList<File> bucket4 = new ArrayList<File>();
+		ArrayList<File> bucket5 = new ArrayList<File>();
+		
+		
+		// Dates für die Bucket-Grenzen erstellen:
+		LocalDateTime[] boundaries = new LocalDateTime[currentTask.getNumberOfExtendedCleanRules() - 1];
+		String[] boundaryStrings = currentTask.getBoundaries();
+		for (int i = 0; i < boundaries.length; i++) {
+			DateFormat formatter;
+			StringTokenizer tokanizer = new StringTokenizer(boundaryStrings[i], "_");
+			String threshold = tokanizer.nextToken();
+			switch (tokanizer.nextToken()) {
+			case "min":
+				boundaries[i] = currentSystemTime.minusMinutes(Long.parseLong(threshold));
+			case "h":
+				boundaries[i] = currentSystemTime.minusHours(Long.parseLong(threshold));
+			case "d":
+				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold));
+			case "m":
+				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 30);
+			case "y":
+				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 256);
+			}
+		}
+		
+		// Bäckupsätze in die Buckets sortieren
+		for (File backupSet : backupSets) {
+			StringTokenizer tokenizer = new StringTokenizer(backupSet.getName(), "_");
+			tokenizer.nextToken();
+			String currentBackupSet = tokenizer.nextToken();
+			Date dateOfCurrentBackupSet = new Date();
+			try {
+				SimpleDateFormat sdfOfCurrentBackupSet = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+				dateOfCurrentBackupSet = sdfOfCurrentBackupSet.parse(currentBackupSet);
+			} catch (ParseException e) {
+				System.err.println("Error while parsing date");
+			}
+			// dateOfCurrentBackupSet in LocalTimeDate umwandeln:
+			LocalDateTime ltmOfCurrentBackupSet = LocalDateTime.ofInstant(dateOfCurrentBackupSet.toInstant(), ZoneId.systemDefault());
+			
+			// Richtiges Bucket finden und einfügen:
+			switch (currentTask.getNumberOfExtendedCleanRules()) {
+			case 1:
+				bucket1.add(backupSet);
+			case 2:
+				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+					bucket1.add(backupSet);
+				} else {
+					bucket2.add(backupSet);
+				}
+			case 3:
+				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+					bucket1.add(backupSet);
+				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
+					bucket2.add(backupSet);
+				} else {
+					bucket3.add(backupSet);
+				}
+			case 4:
+				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+					bucket1.add(backupSet);
+				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
+					bucket2.add(backupSet);
+				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[2])) {
+					bucket3.add(backupSet);
+				} else {
+					bucket4.add(backupSet);
+				}
+			case 5:
+				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+					bucket1.add(backupSet);
+				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
+					bucket2.add(backupSet);
+				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[2])) {
+					bucket3.add(backupSet);
+				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[3])) {
+					bucket4.add(backupSet);
+				} else {
+					bucket5.add(backupSet);
+				}
+			}
+		}
+		
+		// Alle Buckets der maximalgröße Entsprechend "ausmisten":
+		while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
+			if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket1)))) {
+				System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+			}
+		}
+		while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
+			if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket2)))) {
+				System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+			}
+		}
+		while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
+			if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket3)))) {
+				System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+			}
+		}
+		while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
+			if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket4)))) {
+				System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+			}
+		}
+		while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
+			if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket5)))) {
+				System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+			}
+		}
 	}
 }
