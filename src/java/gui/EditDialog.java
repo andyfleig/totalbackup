@@ -86,10 +86,10 @@ public class EditDialog extends JDialog {
 	String[] template_backupSets = { "all", "50", "45", "40", "35", "30", "25", "20", "15", "10", "9", "8", "7", "6",
 			"5", "4", "3", "2", "1" };
 
-	private JComboBox[] unitComboBoxes;
-	private JComboBox[] toKeepComboBoxes;
+	private JComboBox<String>[] unitComboBoxes;
+	private JComboBox<String>[] toKeepComboBoxes;
 	private JSpinner[] spinners;
-	private JComboBox comboBox_numberOfRules;
+	private JComboBox<String> comboBox_numberOfRules;
 
 	private JLabel label_eS1_from;
 	private JLabel label_eS1_to;
@@ -103,6 +103,8 @@ public class EditDialog extends JDialog {
 	private JLabel label_eS4_toKeep;
 	private JLabel label_eS5_toKeep;
 	private JLabel label_eS5_inf;
+
+	private static final int MAX_NUMBER_OF_RULES = 5;
 
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
@@ -127,15 +129,15 @@ public class EditDialog extends JDialog {
 	 * 
 	 */
 	public EditDialog(IEditDialogListener listener) {
-		JComboBox comboBox_eS1_unit;
-		JComboBox comboBox_eS2_unit;
-		JComboBox comboBox_eS3_unit;
-		JComboBox comboBox_eS4_unit;
-		JComboBox comboBox_eS1_toKeep;
-		JComboBox comboBox_eS2_toKeep;
-		JComboBox comboBox_eS3_toKeep;
-		JComboBox comboBox_eS4_toKeep;
-		JComboBox comboBox_eS5_toKeep;
+		JComboBox<String> comboBox_eS1_unit;
+		JComboBox<String> comboBox_eS2_unit;
+		JComboBox<String> comboBox_eS3_unit;
+		JComboBox<String> comboBox_eS4_unit;
+		JComboBox<String> comboBox_eS1_toKeep;
+		JComboBox<String> comboBox_eS2_toKeep;
+		JComboBox<String> comboBox_eS3_toKeep;
+		JComboBox<String> comboBox_eS4_toKeep;
+		JComboBox<String> comboBox_eS5_toKeep;
 		JSpinner spinner_eS1;
 		JSpinner spinner_eS2;
 		JSpinner spinner_eS3;
@@ -399,7 +401,7 @@ public class EditDialog extends JDialog {
 				.getBundle("gui.messages").getString("EditDialog.lblNewLabel.text_9")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_numberOfRules.add(label_numberOfRules);
 
-		comboBox_numberOfRules = new JComboBox();
+		comboBox_numberOfRules = new JComboBox<String>();
 		comboBox_numberOfRules.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch (comboBox_numberOfRules.getSelectedItem().toString()) {
@@ -436,7 +438,7 @@ public class EditDialog extends JDialog {
 				}
 			}
 		});
-		comboBox_numberOfRules.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5" }));
+		comboBox_numberOfRules.setModel(new DefaultComboBoxModel<String>(new String[] { "1", "2", "3", "4", "5" }));
 		panel_numberOfRules.add(comboBox_numberOfRules);
 
 		checkBox_toggleSimpleSettings.addActionListener(new ActionListener() {
@@ -471,7 +473,7 @@ public class EditDialog extends JDialog {
 
 		panel_eS1.add(spinner_eS1);
 
-		comboBox_eS1_unit = new JComboBox();
+		comboBox_eS1_unit = new JComboBox<String>();
 		comboBox_eS1_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS1.add(comboBox_eS1_unit);
 
@@ -479,7 +481,7 @@ public class EditDialog extends JDialog {
 				"EditDialog.lblNewLabel.text_5"));
 		panel_eS1.add(label_eS1_toKeep);
 
-		comboBox_eS1_toKeep = new JComboBox();
+		comboBox_eS1_toKeep = new JComboBox<String>();
 		comboBox_eS1_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS1.add(comboBox_eS1_toKeep);
 
@@ -500,7 +502,7 @@ public class EditDialog extends JDialog {
 		spinner_eS2.setEnabled(false);
 		// spinner_eS2.setEditor(new JSpinner.DefaultEditor(spinner_eS2));
 
-		comboBox_eS2_unit = new JComboBox();
+		comboBox_eS2_unit = new JComboBox<String>();
 		comboBox_eS2_unit.setEnabled(false);
 		comboBox_eS2_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS2.add(comboBox_eS2_unit);
@@ -510,7 +512,7 @@ public class EditDialog extends JDialog {
 		label_eS2_toKeep.setEnabled(false);
 		panel_eS2.add(label_eS2_toKeep);
 
-		comboBox_eS2_toKeep = new JComboBox();
+		comboBox_eS2_toKeep = new JComboBox<String>();
 		comboBox_eS2_toKeep.setEnabled(false);
 		comboBox_eS2_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS2.add(comboBox_eS2_toKeep);
@@ -529,7 +531,7 @@ public class EditDialog extends JDialog {
 		panel_eS3.add(spinner_eS3);
 		spinner_eS3.setEnabled(false);
 
-		comboBox_eS3_unit = new JComboBox();
+		comboBox_eS3_unit = new JComboBox<String>();
 		comboBox_eS3_unit.setEnabled(false);
 		comboBox_eS3_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS3.add(comboBox_eS3_unit);
@@ -538,7 +540,7 @@ public class EditDialog extends JDialog {
 		label_eS3_toKeep.setEnabled(false);
 		panel_eS3.add(label_eS3_toKeep);
 
-		comboBox_eS3_toKeep = new JComboBox();
+		comboBox_eS3_toKeep = new JComboBox<String>();
 		comboBox_eS3_toKeep.setEnabled(false);
 		comboBox_eS3_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS3.add(comboBox_eS3_toKeep);
@@ -557,7 +559,7 @@ public class EditDialog extends JDialog {
 		panel_eS4.add(spinner_eS4);
 		spinner_eS4.setEnabled(false);
 
-		comboBox_eS4_unit = new JComboBox();
+		comboBox_eS4_unit = new JComboBox<String>();
 		comboBox_eS4_unit.setEnabled(false);
 		comboBox_eS4_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS4.add(comboBox_eS4_unit);
@@ -566,7 +568,7 @@ public class EditDialog extends JDialog {
 		label_eS4_toKeep.setEnabled(false);
 		panel_eS4.add(label_eS4_toKeep);
 
-		comboBox_eS4_toKeep = new JComboBox();
+		comboBox_eS4_toKeep = new JComboBox<String>();
 		comboBox_eS4_toKeep.setEnabled(false);
 		comboBox_eS4_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS4.add(comboBox_eS4_toKeep);
@@ -588,27 +590,25 @@ public class EditDialog extends JDialog {
 		label_eS5_toKeep.setEnabled(false);
 		panel_eS5.add(label_eS5_toKeep);
 
-		comboBox_eS5_toKeep = new JComboBox();
+		comboBox_eS5_toKeep = new JComboBox<String>();
 		comboBox_eS5_toKeep.setEnabled(false);
 		comboBox_eS5_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS5.add(comboBox_eS5_toKeep);
 
-		unitComboBoxes = new JComboBox[4];
+		unitComboBoxes = new JComboBox[MAX_NUMBER_OF_RULES - 1];
 		unitComboBoxes[0] = comboBox_eS1_unit;
 		unitComboBoxes[1] = comboBox_eS2_unit;
 		unitComboBoxes[2] = comboBox_eS3_unit;
 		unitComboBoxes[3] = comboBox_eS4_unit;
 
-		// TODO: 5 mit Konstante ersetzen (ganze Klasse)
-		toKeepComboBoxes = new JComboBox[5];
+		toKeepComboBoxes = new JComboBox[MAX_NUMBER_OF_RULES];
 		toKeepComboBoxes[0] = comboBox_eS1_toKeep;
 		toKeepComboBoxes[1] = comboBox_eS2_toKeep;
 		toKeepComboBoxes[2] = comboBox_eS3_toKeep;
 		toKeepComboBoxes[3] = comboBox_eS4_toKeep;
 		toKeepComboBoxes[4] = comboBox_eS5_toKeep;
 
-		// TODO: Konstante auch
-		spinners = new JSpinner[4];
+		spinners = new JSpinner[MAX_NUMBER_OF_RULES - 1];
 		spinners[0] = spinner_eS1;
 		spinners[1] = spinner_eS2;
 		spinners[2] = spinner_eS3;
@@ -777,10 +777,7 @@ public class EditDialog extends JDialog {
 					}
 
 					// Einstellungen für das automatische Aufräumen sichern:
-					// Unterscheidung für einfaches und erweitertes Aufräumen:
-
-					// TODO: funktionalität prüfen, ev. problem wenn kein
-					// autoClean aktiviert ist...
+					// Unterscheidung für einfaches und erweitertes Aufräumen:.
 					task.clearAutoCleanInformations();
 					if (checkBox_toggleSimpleSettings.isSelected()) {
 						task.setSimpleAutoCleanEnabled(true);
@@ -1074,7 +1071,7 @@ public class EditDialog extends JDialog {
 	}
 
 	// TODO: JavaDoc
-	private void changeCBTime(JComboBox comboBox, JSpinner spinner) {
+	private void changeCBTime(JComboBox<String> comboBox, JSpinner spinner) {
 		if (comboBox.getSelectedItem().toString().equalsIgnoreCase("inf")) {
 			spinner.setEnabled(false);
 		} else {
@@ -1099,7 +1096,8 @@ public class EditDialog extends JDialog {
 	private boolean checkExtendedAutoCleanSettings() {
 		int numberOfRules = Integer.valueOf(comboBox_numberOfRules.getSelectedItem().toString());
 		// Letzte Regel muss bis "inf" gehen:
-		if (numberOfRules < 5 && !unitComboBoxes[numberOfRules - 1].getSelectedItem().toString().equals("inf")) {
+		if (numberOfRules < MAX_NUMBER_OF_RULES
+				&& !unitComboBoxes[numberOfRules - 1].getSelectedItem().toString().equals("inf")) {
 			return false;
 		}
 		// Restliche Regeln müssen ungleich "inf" sein:
