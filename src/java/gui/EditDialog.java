@@ -629,7 +629,7 @@ public class EditDialog extends JDialog {
 		// Listener:
 		comboBox_eS1_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				changeCBTime(unitComboBoxes[0], spinners[0]);
+				changeSpinner(unitComboBoxes[0], spinners[0]);
 				if (unitComboBoxes[0].getSelectedItem().toString().equals("inf")) {
 					spinners[0].setEnabled(false);
 				} else {
@@ -639,7 +639,7 @@ public class EditDialog extends JDialog {
 		});
 		comboBox_eS2_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				changeCBTime(unitComboBoxes[1], spinners[1]);
+				changeSpinner(unitComboBoxes[1], spinners[1]);
 				if (unitComboBoxes[1].getSelectedItem().toString().equals("inf")) {
 					spinners[1].setEnabled(false);
 				} else {
@@ -649,7 +649,7 @@ public class EditDialog extends JDialog {
 		});
 		comboBox_eS3_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				changeCBTime(unitComboBoxes[2], spinners[2]);
+				changeSpinner(unitComboBoxes[2], spinners[2]);
 				if (unitComboBoxes[2].getSelectedItem().toString().equals("inf")) {
 					spinners[2].setEnabled(false);
 				} else {
@@ -659,7 +659,7 @@ public class EditDialog extends JDialog {
 		});
 		comboBox_eS4_unit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				changeCBTime(unitComboBoxes[3], spinners[3]);
+				changeSpinner(unitComboBoxes[3], spinners[3]);
 				if (unitComboBoxes[3].getSelectedItem().toString().equals("inf")) {
 					spinners[3].setEnabled(false);
 				} else {
@@ -1018,6 +1018,14 @@ public class EditDialog extends JDialog {
 		checkBox_autostart.setSelected(autostart);
 	}
 
+	/**
+	 * Gibt ein neues DefaultComboBoxModel zurück, welches aus der gegebenen
+	 * Vorlage erstellt wird.
+	 * 
+	 * @param template
+	 *            Vorlage
+	 * @return DefaultComboBoxModel
+	 */
 	private DefaultComboBoxModel<String> createComboBoxModelFromTemplate(String[] template) {
 		DefaultComboBoxModel<String> result = new DefaultComboBoxModel<String>();
 		for (int i = 0; i < template.length; i++) {
@@ -1026,10 +1034,26 @@ public class EditDialog extends JDialog {
 		return result;
 	}
 
+	/**
+	 * Gibt ein neues SpinnerNumberModel zurück, welches aus der gegebenen
+	 * Vorlage erstellt wird.
+	 * 
+	 * @param template
+	 *            Vorlage
+	 * @return SpinnerNumberModel
+	 */
 	private SpinnerNumberModel createSpinnerNumberModelFromTemplate(int[] template) {
 		return new SpinnerNumberModel(template[0], template[1], template[2], template[3]);
 	}
 
+	/**
+	 * Aktiviert bzw. deaktiviert ein bestimmtes Regel-Layer (eine Regel-Zeile)
+	 * 
+	 * @param layerToDisable
+	 *            Layer welches aktiviert bzw. deaktiviert werden soll
+	 * @param enabled
+	 *            true = aktivieren, false = deaktivieren
+	 */
 	private void setLayerEnabled(int layerToDisable, boolean enabled) {
 		if (layerToDisable == 2) {
 			unitComboBoxes[1].setEnabled(enabled);
@@ -1054,6 +1078,19 @@ public class EditDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * Legt die Einstellungen des erweiterten AutoClean in der GUI fest (zum
+	 * erstellen der GUI mit vorhandenen Einstellugen)
+	 * 
+	 * @param numberOfRules
+	 *            Anzahl der aktivierten Regeln
+	 * @param threshold
+	 *            Threshold-Zahlen (siehe BackupTask)
+	 * @param thresholdUnits
+	 *            Threshold-Eiheiten (siehe BackupTask)
+	 * @param backupsToKeep
+	 *            Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
+	 */
 	public void setExtendedAutoCleanSettings(int numberOfRules, int[] threshold, String[] thresholdUnits,
 			String[] backupsToKeep) {
 		checkBox_toggleExtendedSettings.setSelected(true);
@@ -1070,8 +1107,15 @@ public class EditDialog extends JDialog {
 
 	}
 
-	// TODO: JavaDoc
-	private void changeCBTime(JComboBox<String> comboBox, JSpinner spinner) {
+	/**
+	 * Passt den Spinner an die Auswahl in der ComboBox an.
+	 * 
+	 * @param comboBox
+	 *            ComboBox an die die Spinner angepasst werden sollen
+	 * @param spinner
+	 *            anzupassende Spinner
+	 */
+	private void changeSpinner(JComboBox<String> comboBox, JSpinner spinner) {
 		if (comboBox.getSelectedItem().toString().equalsIgnoreCase("inf")) {
 			spinner.setEnabled(false);
 		} else {
@@ -1093,6 +1137,11 @@ public class EditDialog extends JDialog {
 		spinner.setValue(1);
 	}
 
+	/**
+	 * Prüft die eingestellten extended AutoClean Einstellungen auf gültigkeit.
+	 * 
+	 * @return true wenn die Einstekllungen gültig sind, false sonst
+	 */
 	private boolean checkExtendedAutoCleanSettings() {
 		int numberOfRules = Integer.valueOf(comboBox_numberOfRules.getSelectedItem().toString());
 		// Letzte Regel muss bis "inf" gehen:
@@ -1113,18 +1162,25 @@ public class EditDialog extends JDialog {
 		case 1:
 			return true;
 		case 2:
-			return checkRulesUntit(1);
+			return checkRulesUnit(1);
 		case 3:
-			return checkRulesUntit(2);
+			return checkRulesUnit(2);
 		case 4:
-			return checkRulesUntit(3);
+			return checkRulesUnit(3);
 		case 5:
-			return checkRulesUntit(4);
+			return checkRulesUnit(4);
 		}
 		return true;
 	}
 
-	private boolean checkRulesUntit(int endIndex) {
+	/**
+	 * Prüft die Abhängigkeiten aller Regeln bis zum gegebenen Index.
+	 * 
+	 * @param endIndex
+	 *            index bis zu welchem die Regeln geprüft werden sollen
+	 * @return true, wenn alle Regeln gültig sind, false sonst
+	 */
+	private boolean checkRulesUnit(int endIndex) {
 		// Da die 5. Regel nicht überprüft werden muss:
 		if (endIndex == 4) {
 			endIndex--;
@@ -1138,7 +1194,7 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Prüpft die Abhängigkeiten der Einheiten für die Combobox index zu ihrem
+	 * Prüft die Abhängigkeiten der Einheiten für die Combobox index zu ihrem
 	 * Vorgänger.
 	 * 
 	 * @param index
