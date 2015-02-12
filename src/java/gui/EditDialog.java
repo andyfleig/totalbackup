@@ -497,8 +497,7 @@ public class EditDialog extends JDialog {
 		spinner_eS2 = new JSpinner();
 		spinner_eS2.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
 		panel_eS2.add(spinner_eS2);
-		// TODO: Nach letztem "setEditor"! Möglich? (bei allen Vorkommen von
-		// setEditor)
+		// TODO: Spinner vor Eingabe sperren
 		spinner_eS2.setEnabled(false);
 		// spinner_eS2.setEditor(new JSpinner.DefaultEditor(spinner_eS2));
 
