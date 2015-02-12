@@ -311,7 +311,7 @@ public class Mainframe extends JDialog {
 							editDialog.setExtendedAutoCleanSettings(task.getNumberOfExtendedCleanRules(),
 								task.getThreshold(), task.getThresholdUnits(), task.getBackupsToKeep());
 						}
-
+						
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
 						ex.printStackTrace();

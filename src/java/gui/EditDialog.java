@@ -13,7 +13,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
+import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -1064,16 +1066,13 @@ public class EditDialog extends JDialog {
 
 	public void setExtendedAutoCleanSettings(int numberOfRules, int[] threshold, String[] thresholdUnits,
 			String[] backupsToKeep) {
-		// TODO: !!! Funktioniert noch nicht, wahrscheinlich gibts noch Probleme
-		// durch das Überschreiben der Model,...
 		checkBox_toggleExtendedSettings.setSelected(true);
-		;
 		comboBox_numberOfRules.setSelectedIndex(numberOfRules - 1);
-		for (int i = 0; i < threshold.length; i++) {
-			spinners[i].setValue((int) threshold[i]);
-		}
 		for (int i = 0; i < thresholdUnits.length; i++) {
 			unitComboBoxes[i].setSelectedItem(thresholdUnits[i]);
+		}
+		for (int i = 0; i < threshold.length; i++) {
+			spinners[i].setValue(threshold[i]);
 		}
 		for (int i = 0; i < backupsToKeep.length; i++) {
 			toKeepComboBoxes[i].setSelectedItem(backupsToKeep[i]);
