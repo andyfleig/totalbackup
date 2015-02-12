@@ -701,14 +701,19 @@ public class Controller {
 			switch (tokanizer.nextToken()) {
 			case "min":
 				boundaries[i] = currentSystemTime.minusMinutes(Long.parseLong(threshold));
+				break;
 			case "h":
 				boundaries[i] = currentSystemTime.minusHours(Long.parseLong(threshold));
+				break;
 			case "d":
 				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold));
+				break;
 			case "m":
 				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 30);
+				break;
 			case "y":
 				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 256);
+				break;
 			}
 		}
 
@@ -732,12 +737,14 @@ public class Controller {
 			switch (currentTask.getNumberOfExtendedCleanRules()) {
 			case 1:
 				bucket1.add(backupSet);
+				break;
 			case 2:
 				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
 					bucket1.add(backupSet);
 				} else {
 					bucket2.add(backupSet);
 				}
+				break;
 			case 3:
 				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
 					bucket1.add(backupSet);
@@ -746,6 +753,7 @@ public class Controller {
 				} else {
 					bucket3.add(backupSet);
 				}
+				break;
 			case 4:
 				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
 					bucket1.add(backupSet);
@@ -756,6 +764,7 @@ public class Controller {
 				} else {
 					bucket4.add(backupSet);
 				}
+				break;
 			case 5:
 				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
 					bucket1.add(backupSet);
@@ -768,50 +777,62 @@ public class Controller {
 				} else {
 					bucket5.add(backupSet);
 				}
+				break;
 			}
 		}
 
 		// Alle Buckets der maximalgröße Entsprechend "ausmisten":
 		// Kontrolle auf Wert "all":
-		if (!currentTask.getBackupsToKeep()[0].equals("all")) {
+		if (currentTask.getBackupsToKeep().length > 0 && !currentTask.getBackupsToKeep()[0].equals("all")) {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
-				if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket1)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket1)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					break;
 				}
 			}
 		}
-
-		if (!currentTask.getBackupsToKeep()[1].equals("all")) {
+		
+		if (currentTask.getBackupsToKeep().length > 1 && !currentTask.getBackupsToKeep()[1].equals("all")) {
 			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(currentTask.getBackupsToKeep()[1])) {
-				if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket2)))) {
+				File oldestBackupSet = new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket2));
+				if (!BackupHelper.deleteDirectory(oldestBackupSet)) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					break;
 				}
+				bucket2.remove(oldestBackupSet);
 			}
 		}
 
-		if (!currentTask.getBackupsToKeep()[2].equals("all")) {
+		if (currentTask.getBackupsToKeep().length > 2 && !currentTask.getBackupsToKeep()[2].equals("all")) {
 			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(currentTask.getBackupsToKeep()[2])) {
-				if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket3)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket3)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					break;
 				}
 			}
 		}
 
-		if (!currentTask.getBackupsToKeep()[3].equals("all")) {
+		if (currentTask.getBackupsToKeep().length > 3 && !currentTask.getBackupsToKeep()[3].equals("all")) {
 			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(currentTask.getBackupsToKeep()[3])) {
-				if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket4)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket4)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					break;
 				}
 			}
 		}
 
-		if (!currentTask.getBackupsToKeep()[4].equals("all")) {
+		if (currentTask.getBackupsToKeep().length > 4 && !currentTask.getBackupsToKeep()[4].equals("all")) {
 			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(currentTask.getBackupsToKeep()[4])) {
-				if (!BackupHelper.deleteDirectory(new File(findOldestBackup(bucket5)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket5)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					break;
 				}
 			}
 		}
-
+		bucket1 = null;
+		bucket2 = null;
+		bucket3 = null;
+		bucket4 = null;
+		bucket5 = null;
 	}
 }
