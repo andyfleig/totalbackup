@@ -91,7 +91,7 @@ public class EditDialog extends JDialog {
 	private JSpinner[] spinners;
 	private JComboBox<String> comboBox_numberOfRules;
 
-	private JLabel label_eS1_from;
+	private JLabel label_eS1_now;
 	private JLabel label_eS1_to;
 	private JLabel label_eS2_to;
 	private JLabel label_eS3_to;
@@ -357,7 +357,7 @@ public class EditDialog extends JDialog {
 		panel_toggleSimpleSettings.setLayout(new BorderLayout(0, 0));
 
 		checkBox_toggleSimpleSettings = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.EditDialog.checkbox_numberOfBackupsToKeep"));
+				"GUI.EditDialog.activated"));
 		checkBox_toggleSimpleSettings.setHorizontalAlignment(SwingConstants.LEFT);
 		panel_toggleSimpleSettings.add(checkBox_toggleSimpleSettings);
 
@@ -369,20 +369,22 @@ public class EditDialog extends JDialog {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panel_autoclean_settings.add(tabbedPane);
-		tabbedPane.addTab("einfach", panel_simpleSettings);
+		tabbedPane.addTab(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.simple"),
+				panel_simpleSettings);
 
 		JPanel panel_settingsSimpleSettings = new JPanel();
 		panel_simpleSettings.add(panel_settingsSimpleSettings);
 
 		JLabel label_simple = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"EditDialog.lblNewLabel.text_6"));
+				"GUI.EditDialog.label_simple"));
 		panel_settingsSimpleSettings.add(label_simple);
 
 		spinner_numberOfBackupsToKeep = new JSpinner();
 		panel_settingsSimpleSettings.add(spinner_numberOfBackupsToKeep);
 		spinner_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
 				new Integer(1)));
-		tabbedPane.addTab("erweitert", panel_extendedSettings);
+		tabbedPane.addTab(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.extended"),
+				panel_extendedSettings);
 		panel_autoclean_settings.add(tabbedPane, BorderLayout.WEST);
 		panel_extendedSettings.setLayout(new BorderLayout(0, 0));
 
@@ -390,15 +392,16 @@ public class EditDialog extends JDialog {
 		panel_extendedSettings.add(panel_toggleExtendedSettings, BorderLayout.NORTH);
 		panel_toggleExtendedSettings.setLayout(new BorderLayout(0, 0));
 
-		checkBox_toggleExtendedSettings = new JCheckBox("aktiviert");
+		checkBox_toggleExtendedSettings = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.activated"));
 		checkBox_toggleExtendedSettings.setHorizontalAlignment(SwingConstants.LEFT);
 		panel_toggleExtendedSettings.add(checkBox_toggleExtendedSettings, BorderLayout.WEST);
 
 		JPanel panel_numberOfRules = new JPanel();
 		panel_toggleExtendedSettings.add(panel_numberOfRules, BorderLayout.EAST);
 
-		JLabel label_numberOfRules = new JLabel(ResourceBundle
-				.getBundle("gui.messages").getString("EditDialog.lblNewLabel.text_9")); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel label_numberOfRules = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_numberOfRules"));
 		panel_numberOfRules.add(label_numberOfRules);
 
 		comboBox_numberOfRules = new JComboBox<String>();
@@ -461,10 +464,10 @@ public class EditDialog extends JDialog {
 		FlowLayout flowLayout = (FlowLayout) panel_eS1.getLayout();
 		flowLayout.setAlignment(FlowLayout.RIGHT);
 
-		label_eS1_from = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.lblNewLabel.text_3"));
-		panel_eS1.add(label_eS1_from);
+		label_eS1_now = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_now"));
+		panel_eS1.add(label_eS1_now);
 
-		label_eS1_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.lblNewLabel.text_4"));
+		label_eS1_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_eSX_to"));
 		panel_eS1.add(label_eS1_to);
 
 		spinner_eS1 = new JSpinner();
@@ -478,7 +481,7 @@ public class EditDialog extends JDialog {
 		panel_eS1.add(comboBox_eS1_unit);
 
 		label_eS1_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"EditDialog.lblNewLabel.text_5"));
+				"GUI.EditDialog.label_eSX_toKeep"));
 		panel_eS1.add(label_eS1_toKeep);
 
 		comboBox_eS1_toKeep = new JComboBox<String>();
@@ -490,7 +493,7 @@ public class EditDialog extends JDialog {
 		FlowLayout flowLayout_1 = (FlowLayout) panel_eS2.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.RIGHT);
 
-		label_eS2_to = new JLabel("bis");
+		label_eS2_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_eSX_to"));
 		label_eS2_to.setEnabled(false);
 		panel_eS2.add(label_eS2_to);
 
@@ -507,7 +510,7 @@ public class EditDialog extends JDialog {
 		panel_eS2.add(comboBox_eS2_unit);
 
 		label_eS2_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"EditDialog.lblZuBehaltendeBackupstze.text"));
+				"GUI.EditDialog.label_eSX_toKeep"));
 		label_eS2_toKeep.setEnabled(false);
 		panel_eS2.add(label_eS2_toKeep);
 
@@ -521,7 +524,7 @@ public class EditDialog extends JDialog {
 		FlowLayout fl_panel_eS3 = (FlowLayout) panel_eS3.getLayout();
 		fl_panel_eS3.setAlignment(FlowLayout.RIGHT);
 
-		label_eS3_to = new JLabel("bis");
+		label_eS3_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_eSX_to"));
 		label_eS3_to.setEnabled(false);
 		panel_eS3.add(label_eS3_to);
 
@@ -535,7 +538,8 @@ public class EditDialog extends JDialog {
 		comboBox_eS3_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS3.add(comboBox_eS3_unit);
 
-		label_eS3_toKeep = new JLabel("Zu behaltende Backupsätze (max):");
+		label_eS3_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_eSX_toKeep"));
 		label_eS3_toKeep.setEnabled(false);
 		panel_eS3.add(label_eS3_toKeep);
 
@@ -549,7 +553,7 @@ public class EditDialog extends JDialog {
 		FlowLayout fl_panel_eS4 = (FlowLayout) panel_eS4.getLayout();
 		fl_panel_eS4.setAlignment(FlowLayout.RIGHT);
 
-		label_eS4_to = new JLabel("bis");
+		label_eS4_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_eSX_to"));
 		label_eS4_to.setEnabled(false);
 		panel_eS4.add(label_eS4_to);
 
@@ -563,7 +567,8 @@ public class EditDialog extends JDialog {
 		comboBox_eS4_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS4.add(comboBox_eS4_unit);
 
-		label_eS4_toKeep = new JLabel("Zu behaltende Backupsätze (max):");
+		label_eS4_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_eSX_toKeep"));
 		label_eS4_toKeep.setEnabled(false);
 		panel_eS4.add(label_eS4_toKeep);
 
@@ -577,15 +582,16 @@ public class EditDialog extends JDialog {
 		FlowLayout flowLayout_2 = (FlowLayout) panel_eS5.getLayout();
 		flowLayout_2.setAlignment(FlowLayout.RIGHT);
 
-		label_eS5_to = new JLabel("bis");
+		label_eS5_to = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_eSX_to"));
 		label_eS5_to.setEnabled(false);
 		panel_eS5.add(label_eS5_to);
 
-		label_eS5_inf = new JLabel("inf");
+		label_eS5_inf = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.label_eS5_inf"));
 		label_eS5_inf.setEnabled(false);
 		panel_eS5.add(label_eS5_inf);
 
-		label_eS5_toKeep = new JLabel("Zu behaltende Backupsätze (max):");
+		label_eS5_toKeep = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_eSX_toKeep"));
 		label_eS5_toKeep.setEnabled(false);
 		panel_eS5.add(label_eS5_toKeep);
 

@@ -337,7 +337,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Setzt die Anzhal der Regeln des erweiterten AutoClean.
+	 * Setzt die Anzahl der Regeln des erweiterten AutoClean.
 	 * 
 	 * @param numberOfRules
 	 *            Anzahl der Regeln
@@ -349,7 +349,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt die Anzahl der Regeln des erweiterten AutoClean zurück.
 	 * 
-	 * @return Anzhal der Regeln
+	 * @return Anzahl der Regeln
 	 */
 	public int getNumberOfExtendedCleanRules() {
 		return this.numberOfExtendedCleanRules;
