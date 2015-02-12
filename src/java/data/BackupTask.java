@@ -206,27 +206,61 @@ public class BackupTask implements Serializable {
 		return extendedAutoCleanIsEnabled;
 	}
 
-	// TODO: JavaDoc (ganze Klasse)
+	/**
+	 * Legt den Threshold des BackupTasks fest.
+	 * 
+	 * @param thresholdToSet
+	 *            festzulegender Threshold
+	 */
 	public void setThreshold(int[] thresholdToSet) {
 		this.threshold = thresholdToSet;
 	}
 
+	/**
+	 * Legt die Threshold-Einheiten des BackupTasks fest.
+	 * 
+	 * @param thresholdUnitsToSet
+	 *            festzulegende Threshold-Einheiten
+	 */
 	public void setThresholdUnits(String[] thresholdUnitsToSet) {
 		this.thresholdUnits = thresholdUnitsToSet;
 	}
 
+	/**
+	 * Legt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
+	 * fest.
+	 * 
+	 * @param backupsToKeep
+	 *            festzulegende Werte
+	 */
 	public void setBackupsToKeep(String[] backupsToKeep) {
 		this.backupsToKeep = backupsToKeep;
 	}
 
+	/**
+	 * Gibt den Threshold zurück
+	 * 
+	 * @return Threshold
+	 */
 	public int[] getThreshold() {
 		return threshold;
 	}
 
+	/**
+	 * Gibt die Threshold-Einheiten zurück.
+	 * 
+	 * @return Threshold-Einheiten
+	 */
 	public String[] getThresholdUnits() {
 		return thresholdUnits;
 	}
 
+	/**
+	 * Gibt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
+	 * zurück.
+	 * 
+	 * @return Anzahl der zu behaltenden Backupsätze
+	 */
 	public String[] getBackupsToKeep() {
 		return backupsToKeep;
 	}
