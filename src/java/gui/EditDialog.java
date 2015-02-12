@@ -12,10 +12,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.ListSelectionModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -45,11 +41,8 @@ import data.BackupTask;
 import data.Filter;
 import data.Source;
 
-import javax.swing.JSlider;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.JTabbedPane;
 
 public class EditDialog extends JDialog {
