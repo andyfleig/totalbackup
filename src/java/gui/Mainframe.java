@@ -8,13 +8,21 @@ import main.Controller;
 import gui.AboutDialog;
 import gui.EditDialog;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.lang.NullPointerException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.awt.AWTException;
@@ -55,6 +63,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.text.DefaultCaret;
 
 import data.BackupTask;
@@ -66,6 +75,7 @@ public class Mainframe extends JDialog {
 	// private Mainframe window;
 
 	public JFrame frmTotalbackup;
+
 	private final Action action_about = new SA_About();
 	private final Action action_quit = new SA_Quit();
 	private JTextPane textpane_output;
@@ -96,6 +106,8 @@ public class Mainframe extends JDialog {
 	private SummaryDialog summary;
 
 	private PreparingDialog prep;
+
+	private Socket socket = null;
 
 	/**
 	 * Gibt an ob der Backup-Vorgang abgebrochen wurde.
@@ -309,9 +321,9 @@ public class Mainframe extends JDialog {
 							editDialog.setNumberOfBackupsToKeep(task.getNumberOfBackupsToKeep());
 						} else if (task.extendedAutoCleanIsEnabled()) {
 							editDialog.setExtendedAutoCleanSettings(task.getNumberOfExtendedCleanRules(),
-								task.getThreshold(), task.getThresholdUnits(), task.getBackupsToKeep());
+									task.getThreshold(), task.getThresholdUnits(), task.getBackupsToKeep());
 						}
-						
+
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
 						ex.printStackTrace();
@@ -472,46 +484,123 @@ public class Mainframe extends JDialog {
 		button_startAll.setEnabled(false);
 		panel_buttons.add(button_cancel);
 
-		if (SystemTray.isSupported()) {
-			SystemTray systemTray = SystemTray.getSystemTray();
-
-			Image image = Toolkit.getDefaultToolkit().getImage("TB_logo.png");
-
-			PopupMenu trayPopupMenu = new PopupMenu();
-
-			MenuItem action = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_show"));
-			action.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					frmTotalbackup.setVisible(true);
-
-				}
-			});
-			trayPopupMenu.add(action);
-
-			MenuItem close = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_close"));
-			close.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
-				}
-			});
-			trayPopupMenu.add(close);
-
-			TrayIcon trayIcon = new TrayIcon(image, ResourceBundle.getBundle("gui.messages").getString(
-					"GUI.Mainframe.title"), trayPopupMenu);
-
-			trayIcon.setImageAutoSize(true);
-
+		// Entscheidung für den Tray-Typ treffen:
+		// TODO: verbessern
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (!OS.contains("win")) {
+			// QT-App starten:
+			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
-				systemTray.add(trayIcon);
-			} catch (AWTException e) {
+				Process p = builder.start();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			// Thread für recv anlegen und starten:
+			Thread recvThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					recvLoop();
+				}
+			});
+			recvThread.start();
+		} else {
+			if (SystemTray.isSupported()) {
+				SystemTray systemTray = SystemTray.getSystemTray();
+
+				Image image = Toolkit.getDefaultToolkit().getImage("TB_logo.png");
+
+				PopupMenu trayPopupMenu = new PopupMenu();
+
+				MenuItem action = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_show"));
+				action.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						frmTotalbackup.setVisible(true);
+
+					}
+				});
+				trayPopupMenu.add(action);
+
+				MenuItem close = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_close"));
+				close.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						System.exit(0);
+					}
+				});
+				trayPopupMenu.add(close);
+
+				TrayIcon trayIcon = new TrayIcon(image, ResourceBundle.getBundle("gui.messages").getString(
+						"GUI.Mainframe.title"), trayPopupMenu);
+
+				trayIcon.setImageAutoSize(true);
+
+				try {
+					systemTray.add(trayIcon);
+				} catch (AWTException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+		frmTotalbackup.setVisible(true);
+
+	}
+
+	private void recvLoop() {
+		// TODO: unterbrechbar machen
+		// TODO: beim schließen der anwenung closen
+		while (true) {
+			// 1. Socket aufbauen:
+			ServerSocket server = null;
+			try {
+				server = new ServerSocket(1234);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
+			// 2. Verbinden:
+			try {
+				socket = server.accept();
+			} catch (IOException e) {
+				// FEHLER
+			}
+
+			try {
+				DataInputStream in = new DataInputStream(socket.getInputStream());
+
+				int msg = in.readInt();
+				if (msg == 0) {
+					System.exit(0);
+					in.close();
+					break;
+				} else if (msg == 1) {
+					if (frmTotalbackup.isVisible()) {
+						frmTotalbackup.setVisible(false);
+					} else {
+						frmTotalbackup.setVisible(true);
+					}
+				}
+
+			} catch (IOException e) {
+				System.err.println("Fehler");
+			}
+
+			// Socket closen:
+			try {
+				socket.close();
+				server.close();
+				server = null;
+			} catch (IOException e) {
+				// Fehler
+			}
 		}
-		frmTotalbackup.setVisible(true);
 	}
 
 	/**
@@ -678,6 +767,7 @@ public class Mainframe extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			saveProperties();
 			System.exit(0);
+			// TODO: qt tray beenden falls nötig
 		}
 	}
 

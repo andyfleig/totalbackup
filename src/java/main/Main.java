@@ -1,5 +1,7 @@
 package main;
 
+import javax.swing.UIManager;
+
 import main.Controller;
 
 public class Main {
@@ -9,7 +11,6 @@ public class Main {
 	 * @param args Start-Argumente
 	 */
 	public static void main(String[] args) {
-		
 		
 
 		Controller c = new Controller();
