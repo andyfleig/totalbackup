@@ -2,3 +2,4 @@ src/bin/
 .directory
 *.class
 *.ser
+src/cpp/build/
