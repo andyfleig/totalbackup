@@ -44,6 +44,7 @@ import data.Source;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
+import java.awt.GridLayout;
 
 public class EditDialog extends JDialog {
 
@@ -90,6 +91,8 @@ public class EditDialog extends JDialog {
 	private JComboBox<String>[] toKeepComboBoxes;
 	private JSpinner[] spinners;
 	private JComboBox<String> comboBox_numberOfRules;
+	
+	private JCheckBox[] dayOfWeekCheckboxes;
 
 	private JLabel label_eS1_now;
 	private JLabel label_eS1_to;
@@ -111,6 +114,8 @@ public class EditDialog extends JDialog {
 	 * erzeugt wird.
 	 */
 	private boolean inEditMode;
+	private JTextField textField_timeToStart;
+	private JTextField textField_interval;
 
 	/**
 	 * @deprecated
@@ -143,9 +148,15 @@ public class EditDialog extends JDialog {
 		JSpinner spinner_eS3;
 		JSpinner spinner_eS4;
 
+		unitComboBoxes = new JComboBox[MAX_NUMBER_OF_RULES - 1];
+		toKeepComboBoxes = new JComboBox[MAX_NUMBER_OF_RULES];
+		spinners = new JSpinner[MAX_NUMBER_OF_RULES - 1];
+		
+		dayOfWeekCheckboxes = new JCheckBox[31];
+
 		setResizable(false);
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.title"));
-		setBounds(100, 100, 513, 571);
+		setBounds(100, 100, 515, 631);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -335,19 +346,283 @@ public class EditDialog extends JDialog {
 				"GUI.EditDialog.autostart"));
 		panel_autostart.add(checkBox_autostart);
 
-		JPanel panel_autoremove = new JPanel();
-		panel_otherSettings.add(panel_autoremove, BorderLayout.SOUTH);
-		panel_autoremove.setLayout(new BorderLayout(0, 0));
+		JTabbedPane tabbedPane_auto = new JTabbedPane(JTabbedPane.TOP);
+		panel_otherSettings.add(tabbedPane_auto, BorderLayout.SOUTH);
 
-		JLabel label_autoclean = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.EditDialog.label_autoClean"));
-		panel_autoremove.add(label_autoclean, BorderLayout.NORTH);
+		JTabbedPane tabbedPane_autostart = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane_auto
+				.addTab(ResourceBundle.getBundle("gui.messages").getString("EditDialog.tabbedPane_autostart.title"), null, tabbedPane_autostart, null); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		JPanel panel_time = new JPanel();
+		tabbedPane_autostart.addTab(ResourceBundle.getBundle("gui.messages").getString("EditDialog.panel.title_2"), null, panel_time, null); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_time.setLayout(new BorderLayout(0, 0));
 
-		// Autoclean:
+		JTabbedPane tabbedPane_time = new JTabbedPane(JTabbedPane.TOP);
+		panel_time.add(tabbedPane_time);
 
-		JPanel panel_autoclean_settings = new JPanel();
-		panel_autoremove.add(panel_autoclean_settings);
-		panel_autoclean_settings.setLayout(new BorderLayout(0, 0));
+		JPanel panel_day = new JPanel();
+		tabbedPane_time
+				.addTab(ResourceBundle.getBundle("gui.messages").getString("EditDialog.panel_day.title"), null, panel_day, null); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_day.setLayout(new BorderLayout(0, 0));
+
+		JCheckBox checkBox_toggleWeekday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxNewCheckBox.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_day.add(checkBox_toggleWeekday, BorderLayout.NORTH);
+
+		JPanel panel_daySelection = new JPanel();
+		panel_day.add(panel_daySelection, BorderLayout.CENTER);
+		panel_daySelection.setLayout(new BorderLayout(0, 0));
+
+		JLabel label_daySelection = new JLabel(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.lblTageAnDenen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		label_daySelection.setHorizontalAlignment(SwingConstants.LEFT);
+		panel_daySelection.add(label_daySelection, BorderLayout.NORTH);
+
+		JPanel panel_weekdays = new JPanel();
+		panel_weekdays.setLayout(new BoxLayout(panel_weekdays, BoxLayout.Y_AXIS));
+		panel_daySelection.add(panel_weekdays, BorderLayout.CENTER);
+
+		JCheckBox checkBox_monday = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.chckbxNewCheckBox.text_1"));
+		panel_weekdays.add(checkBox_monday);
+
+		JCheckBox checkBox_tuesday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxDienstag.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_weekdays.add(checkBox_tuesday);
+
+		JCheckBox checkbox_wednesday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxMittwoch.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_weekdays.add(checkbox_wednesday);
+
+		JCheckBox checkbox_thursday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxDonnerstag.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_weekdays.add(checkbox_thursday);
+
+		JCheckBox checkBox_friday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxFreitag.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_weekdays.add(checkBox_friday);
+
+		JCheckBox checkBox_saturday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxSamstag.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_weekdays.add(checkBox_saturday);
+
+		JCheckBox checkBox_sunday = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxSonntag.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_weekdays.add(checkBox_sunday);
+
+		JPanel panel_dayInMonth = new JPanel();
+		tabbedPane_time
+				.addTab(ResourceBundle.getBundle("gui.messages").getString("EditDialog.panel_dayInMonth.title"), null, panel_dayInMonth, null); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_dayInMonth.setLayout(new BorderLayout(0, 0));
+
+		JCheckBox checkBox_toggleDayInMonth = new JCheckBox("aktiviert");
+		panel_dayInMonth.add(checkBox_toggleDayInMonth, BorderLayout.NORTH);
+
+		JPanel panel_dayInMonthSelection = new JPanel();
+		panel_dayInMonth.add(panel_dayInMonthSelection, BorderLayout.CENTER);
+		panel_dayInMonthSelection.setLayout(new BorderLayout(0, 0));
+
+		JLabel label_dayInMonthSelection = new JLabel("Tage an denen gesichert werden soll:");
+		label_dayInMonthSelection.setHorizontalAlignment(SwingConstants.LEFT);
+		panel_dayInMonthSelection.add(label_dayInMonthSelection, BorderLayout.NORTH);
+
+		JPanel panel_days = new JPanel();
+		panel_dayInMonthSelection.add(panel_days, BorderLayout.CENTER);
+		panel_days.setLayout(new GridLayout(4, 8, 0, 0));
+
+		JCheckBox checkBox_day1 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.chckbxNewCheckBox.text_2"));
+		panel_days.add(checkBox_day1);
+
+		// Checkboxen für die Tage im Monat:
+		JCheckBox checkBox_day2 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_1.text"));
+		panel_days.add(checkBox_day2);
+
+		JCheckBox checkBox_day3 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_1.text_1"));
+		panel_days.add(checkBox_day3);
+
+		JCheckBox checkBox_day4 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_1.text_2"));
+		panel_days.add(checkBox_day4);
+
+		JCheckBox checkBox_day5 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_1.text_3"));
+		panel_days.add(checkBox_day5);
+
+		JCheckBox checkBox_day6 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_1.text_4"));
+		panel_days.add(checkBox_day6);
+
+		JCheckBox checkBox_day7 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day7.text"));
+		panel_days.add(checkBox_day7);
+
+		JCheckBox checkBox_day8 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day8.text"));
+		panel_days.add(checkBox_day8);
+
+		JCheckBox checkBox_day9 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day9.text"));
+		panel_days.add(checkBox_day9);
+
+		JCheckBox checkBox_day10 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day10.text"));
+		panel_days.add(checkBox_day10);
+
+		JCheckBox checkBox_day11 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day11.text"));
+		panel_days.add(checkBox_day11);
+
+		JCheckBox checkBox_day12 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day12.text"));
+		panel_days.add(checkBox_day12);
+
+		JCheckBox checkBox_day13 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day13.text"));
+		panel_days.add(checkBox_day13);
+
+		JCheckBox checkBox_day14 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day14.text"));
+		panel_days.add(checkBox_day14);
+
+		JCheckBox checkBox_day15 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day15.text"));
+		panel_days.add(checkBox_day15);
+
+		JCheckBox checkBox_day16 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day16.text"));
+		panel_days.add(checkBox_day16);
+
+		JCheckBox checkBox_day17 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day17.text"));
+		panel_days.add(checkBox_day17);
+
+		JCheckBox checkBox_day18 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day18.text"));
+		panel_days.add(checkBox_day18);
+
+		JCheckBox checkBox_day19 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day19.text"));
+		panel_days.add(checkBox_day19);
+
+		JCheckBox checkBox_day20 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day20.text"));
+		panel_days.add(checkBox_day20);
+
+		JCheckBox checkBox_day21 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day21.text"));
+		panel_days.add(checkBox_day21);
+
+		JCheckBox checkBox_day22 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day22.text"));
+		panel_days.add(checkBox_day22);
+
+		JCheckBox checkBox_day23 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day23.text"));
+		panel_days.add(checkBox_day23);
+
+		JCheckBox checkBox_day24 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day24.text"));
+		panel_days.add(checkBox_day24);
+
+		JCheckBox checkBox_day25 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day25.text"));
+		panel_days.add(checkBox_day25);
+
+		JCheckBox checkBox_day26 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day26.text"));
+		panel_days.add(checkBox_day26);
+
+		JCheckBox checkBox_day27 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day27.text"));
+		panel_days.add(checkBox_day27);
+
+		JCheckBox checkBox_day28 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day28.text"));
+		panel_days.add(checkBox_day28);
+
+		JCheckBox checkBox_day29 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day29.text"));
+		panel_days.add(checkBox_day29);
+
+		JCheckBox checkBox_day30 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day30.text"));
+		panel_days.add(checkBox_day30);
+
+		JCheckBox checkBox_day31 = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_day31.text"));
+		panel_days.add(checkBox_day31);
+		
+		dayOfWeekCheckboxes[0] = checkBox_day1;
+		dayOfWeekCheckboxes[1] = checkBox_day2;
+		dayOfWeekCheckboxes[2] = checkBox_day3;
+		dayOfWeekCheckboxes[3] = checkBox_day4;
+		dayOfWeekCheckboxes[4] = checkBox_day5;
+		dayOfWeekCheckboxes[5] = checkBox_day6;
+		dayOfWeekCheckboxes[6] = checkBox_day7;
+		dayOfWeekCheckboxes[7] = checkBox_day8;
+		dayOfWeekCheckboxes[8] = checkBox_day9;
+		dayOfWeekCheckboxes[9] = checkBox_day10;
+		dayOfWeekCheckboxes[10] = checkBox_day11;
+		dayOfWeekCheckboxes[11] = checkBox_day12;
+		dayOfWeekCheckboxes[12] = checkBox_day13;
+		dayOfWeekCheckboxes[13] = checkBox_day14;
+		dayOfWeekCheckboxes[14] = checkBox_day15;
+		dayOfWeekCheckboxes[15] = checkBox_day16;
+		dayOfWeekCheckboxes[16] = checkBox_day17;
+		dayOfWeekCheckboxes[17] = checkBox_day18;
+		dayOfWeekCheckboxes[18] = checkBox_day19;
+		dayOfWeekCheckboxes[19] = checkBox_day20;
+		dayOfWeekCheckboxes[20] = checkBox_day21;
+		dayOfWeekCheckboxes[21] = checkBox_day22;
+		dayOfWeekCheckboxes[22] = checkBox_day23;
+		dayOfWeekCheckboxes[23] = checkBox_day24;
+		dayOfWeekCheckboxes[24] = checkBox_day25;
+		dayOfWeekCheckboxes[25] = checkBox_day26;
+		dayOfWeekCheckboxes[26] = checkBox_day27;
+		dayOfWeekCheckboxes[27] = checkBox_day28;
+		dayOfWeekCheckboxes[28] = checkBox_day29;
+		dayOfWeekCheckboxes[29] = checkBox_day30;
+		dayOfWeekCheckboxes[30] = checkBox_day31;
+		
+		JPanel panel_timeToStart = new JPanel();
+		panel_time.add(panel_timeToStart, BorderLayout.SOUTH);
+		
+		JLabel label_startAt = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.label.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_timeToStart.add(label_startAt);
+		
+		textField_timeToStart = new JTextField();
+		textField_timeToStart.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("EditDialog.textField_timeToStart.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_timeToStart.add(textField_timeToStart);
+		textField_timeToStart.setColumns(10);
+		
+		JPanel panel_interval = new JPanel();
+		tabbedPane_autostart
+				.addTab(ResourceBundle.getBundle("gui.messages").getString("EditDialog.panel_interval.title"), null, panel_interval, null); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_interval.setLayout(new BorderLayout(0, 0));
+		
+		JCheckBox checkBox_toggleInterval = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString("EditDialog.chckbxNewCheckBox.text_3")); //$NON-NLS-1$ //$NON-NLS-2$
+		panel_interval.add(checkBox_toggleInterval, BorderLayout.NORTH);
+		
+		JPanel panel_intervalSettings = new JPanel();
+		panel_interval.add(panel_intervalSettings);
+		
+		JLabel label_all = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.lblAlle.text"));
+		panel_intervalSettings.add(label_all);
+		
+		textField_interval = new JTextField();
+		panel_intervalSettings.add(textField_interval);
+		textField_interval.setColumns(10);
+		
+		JComboBox<String> comboBox = new JComboBox();
+		panel_intervalSettings.add(comboBox);
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Minuten", "Stunden", "Tage", "Monate"}));
+
+		JPanel panel_dynamic = new JPanel();
+		tabbedPane_autostart.addTab(ResourceBundle.getBundle("gui.messages")
+				.getString("EditDialog.panel_dynamic.title"), null, panel_dynamic, null);
 
 		JPanel panel_simpleSettings = new JPanel();
 		panel_simpleSettings.setLayout(new BorderLayout(0, 0));
@@ -367,9 +642,10 @@ public class EditDialog extends JDialog {
 
 		JPanel panel_extendedSettings = new JPanel();
 
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		panel_autoclean_settings.add(tabbedPane);
-		tabbedPane.addTab(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.simple"),
+		JTabbedPane tabbedPane_autoclean = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane_auto
+				.addTab(ResourceBundle.getBundle("gui.messages").getString("EditDialog.tabbedPane_autoclean.title"), null, tabbedPane_autoclean, null); //$NON-NLS-1$ //$NON-NLS-2$
+		tabbedPane_autoclean.addTab(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.simple"),
 				panel_simpleSettings);
 
 		JPanel panel_settingsSimpleSettings = new JPanel();
@@ -383,9 +659,8 @@ public class EditDialog extends JDialog {
 		panel_settingsSimpleSettings.add(spinner_numberOfBackupsToKeep);
 		spinner_numberOfBackupsToKeep.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null,
 				new Integer(1)));
-		tabbedPane.addTab(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.extended"),
+		tabbedPane_autoclean.addTab(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.extended"),
 				panel_extendedSettings);
-		panel_autoclean_settings.add(tabbedPane, BorderLayout.WEST);
 		panel_extendedSettings.setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_toggleExtendedSettings = new JPanel();
@@ -599,37 +874,19 @@ public class EditDialog extends JDialog {
 		comboBox_eS5_toKeep.setEnabled(false);
 		comboBox_eS5_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS5.add(comboBox_eS5_toKeep);
-
-		unitComboBoxes = new JComboBox[MAX_NUMBER_OF_RULES - 1];
 		unitComboBoxes[0] = comboBox_eS1_unit;
 		unitComboBoxes[1] = comboBox_eS2_unit;
 		unitComboBoxes[2] = comboBox_eS3_unit;
 		unitComboBoxes[3] = comboBox_eS4_unit;
-
-		toKeepComboBoxes = new JComboBox[MAX_NUMBER_OF_RULES];
 		toKeepComboBoxes[0] = comboBox_eS1_toKeep;
 		toKeepComboBoxes[1] = comboBox_eS2_toKeep;
 		toKeepComboBoxes[2] = comboBox_eS3_toKeep;
 		toKeepComboBoxes[3] = comboBox_eS4_toKeep;
 		toKeepComboBoxes[4] = comboBox_eS5_toKeep;
-
-		spinners = new JSpinner[MAX_NUMBER_OF_RULES - 1];
 		spinners[0] = spinner_eS1;
 		spinners[1] = spinner_eS2;
 		spinners[2] = spinner_eS3;
 		spinners[3] = spinner_eS4;
-
-		JPanel panel_backupType = new JPanel();
-		panel_main.add(panel_backupType, BorderLayout.SOUTH);
-
-		JLabel label_properties = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.EditDialog.label_backupType"));
-		panel_backupType.add(label_properties);
-
-		// Spinner deaktivieren (default):
-		for (JSpinner s : spinners) {
-			s.setEnabled(false);
-		}
 
 		// Listener:
 		comboBox_eS1_unit.addActionListener(new ActionListener() {
@@ -672,6 +929,18 @@ public class EditDialog extends JDialog {
 				}
 			}
 		});
+
+		JPanel panel_backupType = new JPanel();
+		panel_main.add(panel_backupType, BorderLayout.SOUTH);
+
+		JLabel label_properties = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
+				"GUI.EditDialog.label_backupType"));
+		panel_backupType.add(label_properties);
+
+		// Spinner deaktivieren (default):
+		for (JSpinner s : spinners) {
+			s.setEnabled(false);
+		}
 
 		// JRadioButtons anlegen:
 		radioButton_normalBackup = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
@@ -837,6 +1106,25 @@ public class EditDialog extends JDialog {
 		btn_Abbrechen.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("GUI.button_cancel"));
 		buttonPane.add(btn_Abbrechen);
 
+		
+		checkBox_toggleWeekday.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				checkBox_toggleDayInMonth.setSelected(false);
+				checkBox_toggleInterval.setSelected(false);
+			}
+		});
+		checkBox_toggleDayInMonth.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				checkBox_toggleWeekday.setSelected(false);
+				checkBox_toggleInterval.setSelected(false);
+			}
+		});
+		checkBox_toggleInterval.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				checkBox_toggleWeekday.setSelected(false);
+				checkBox_toggleDayInMonth.setSelected(false);
+			}
+		});
 	}
 
 	/**
