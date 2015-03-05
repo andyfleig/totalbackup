@@ -74,7 +74,7 @@ public final class BackupHelper {
 	 */
 	public static void copyFile(File source, File destination, IBackupListener listener) throws FileNotFoundException,
 			IOException {
-		
+
 		if (!source.isFile()) {
 			return;
 		}
@@ -109,7 +109,7 @@ public final class BackupHelper {
 		if (!source.isFile()) {
 			return;
 		}
-		
+
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
 		if (listener.advancedOutputIsEnabled()) {
 			listener.printOut(output, false);

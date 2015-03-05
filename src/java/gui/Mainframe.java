@@ -392,6 +392,8 @@ public class Mainframe extends JDialog {
 				if (list_tasks.getSelectedIndex() == -1) {
 					return;
 				}
+				BackupTask taskToRun = listModel.getElementAt(list_tasks.getSelectedIndex());
+				listener.taskStarted(taskToRun.getTaskName());
 				prep = new PreparingDialog(new IPreparingDialogListener() {
 
 					@Override
@@ -417,7 +419,7 @@ public class Mainframe extends JDialog {
 				backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						prepareBackup(listModel.getElementAt(list_tasks.getSelectedIndex()));
+						prepareBackup(taskToRun);
 					}
 				});
 				backupThread.start();
@@ -713,6 +715,12 @@ public class Mainframe extends JDialog {
 			@Override
 			public void outprintBackupCanceled() {
 				listener.outprintBackupCanceled();
+			}
+
+			@Override
+			public void taskFinished(String taskName) {
+				listener.taskFinished(taskName);
+
 			}
 
 		});

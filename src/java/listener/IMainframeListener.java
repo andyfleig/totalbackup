@@ -80,6 +80,7 @@ public interface IMainframeListener {
 	 * @return Anzahl der zu kopierenden Dateien
 	 */
 	public long getNumberOfFilesToCopy();
+
 	/**
 	 * Gibt die Anzahl der zu verlinkenden Dateien zurück.
 	 * 
@@ -112,7 +113,7 @@ public interface IMainframeListener {
 	 * abgebrochen wurde.
 	 */
 	public void outprintBackupCanceled();
-	
+
 	/**
 	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
 	 * eine Fehlermeldung (rot) handelt oder nicht.
@@ -123,7 +124,7 @@ public interface IMainframeListener {
 	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	public void printOut(String s, boolean error);
-	
+
 	/**
 	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
 	 * 
@@ -133,4 +134,20 @@ public interface IMainframeListener {
 	 *            zugehöriger Task
 	 */
 	public void log(String event, BackupTask task);
+
+	/**
+	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
+	 * 
+	 * @param taskName
+	 *            Name des hinzuzufügenden Backup-Tasks
+	 */
+	public void taskStarted(String taskName);
+
+	/**
+	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
+	 * 
+	 * @param taskName
+	 *            Name des zu entfernenden Backup-Tasks
+	 */
+	public void taskFinished(String taskName);
 }

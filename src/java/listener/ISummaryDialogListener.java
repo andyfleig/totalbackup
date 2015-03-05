@@ -32,7 +32,7 @@ public interface ISummaryDialogListener {
 	 * @return Anzahl der zu kopierenden Dateien
 	 */
 	public long getNumberOfFilesToCopy();
-	
+
 	/**
 	 * Gibt die Anzahl der zu verlinkenden Dateien zurück.
 	 * 
@@ -65,4 +65,12 @@ public interface ISummaryDialogListener {
 	 * abgebrochen wurde.
 	 */
 	public void outprintBackupCanceled();
+
+	/**
+	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
+	 * 
+	 * @param taskName
+	 *            Name des zu entfernenden Backup-Tasks
+	 */
+	public void taskFinished(String taskName);
 }

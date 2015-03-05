@@ -16,11 +16,15 @@ import java.util.ResourceBundle;
 import javax.swing.JLabel;
 
 import listener.ISummaryDialogListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class SummaryDialog extends JDialog {
 
 	private ISummaryDialogListener listener;
 	private final JPanel panel_main = new JPanel();
+	private boolean backupCanceled;
+	private boolean backupIsNotFinished;
 
 	/**
 	 * Launch the application.
@@ -39,6 +43,14 @@ public class SummaryDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public SummaryDialog(ISummaryDialogListener listener) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent arg0) {
+				if (!backupCanceled && !backupIsNotFinished) {
+					cancelBackup();
+				}
+			}
+		});
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.title"));
 		this.listener = listener;
 		setResizable(false);
@@ -67,6 +79,7 @@ public class SummaryDialog extends JDialog {
 		btn_ok.addActionListener(new ActionListener() {
 			// Button Start:
 			public void actionPerformed(ActionEvent arg0) {
+				backupIsNotFinished = true;
 				clearBackupInfos();
 				SummaryDialog.this.listener.startBackup();
 			}
@@ -79,10 +92,8 @@ public class SummaryDialog extends JDialog {
 		btn_cancel.addActionListener(new ActionListener() {
 			// Button Cancel:
 			public void actionPerformed(ActionEvent e) {
-				outprintBackupCanceled();
-				deleteEmptyBackupFolders();
-				clearBackupInfos();
-				SummaryDialog.this.dispose();
+				backupCanceled = true;
+				cancelBackup();
 			}
 		});
 		btn_cancel.setActionCommand("Cancel");
@@ -173,6 +184,14 @@ public class SummaryDialog extends JDialog {
 			String result = String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
 			label_sizeToLinkDyn.setText(result);
 		}
+	}
+	
+	private void cancelBackup() {
+		outprintBackupCanceled();
+		listener.taskFinished(listener.getTaskName());
+		deleteEmptyBackupFolders();
+		clearBackupInfos();
+		SummaryDialog.this.dispose();
 	}
 
 	private void clearBackupInfos() {

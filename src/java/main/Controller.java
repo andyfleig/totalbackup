@@ -75,6 +75,10 @@ public class Controller {
 	 * Informationen (der Vorbereitung) über den aktuellen Backup-Task.
 	 */
 	private BackupInfos backupInfos;
+	/**
+	 * Alle laufenden Backup-Taks
+	 */
+	private ArrayList<String> runningBackupTasks = new ArrayList<String>();
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -196,6 +200,18 @@ public class Controller {
 						@Override
 						public void log(String event, BackupTask task) {
 							Controller.this.log(event, task);
+						}
+
+						@Override
+						public void taskStarted(String taskName) {
+							Controller.this.taskStarted(taskName);
+
+						}
+
+						@Override
+						public void taskFinished(String taskName) {
+							Controller.this.taskFinished(taskName);
+
 						}
 					});
 				}
@@ -331,6 +347,18 @@ public class Controller {
 			@Override
 			public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
 				backupInfos.increaseSizeToLinkBy(sizeToIncreaseBy);
+
+			}
+
+			@Override
+			public void taskStarted(String taskName) {
+				Controller.this.taskStarted(taskName);
+
+			}
+
+			@Override
+			public void taskFinished(String taskName) {
+				Controller.this.taskFinished(taskName);
 
 			}
 
@@ -785,13 +813,14 @@ public class Controller {
 		// Kontrolle auf Wert "all":
 		if (currentTask.getBackupsToKeep().length > 0 && !currentTask.getBackupsToKeep()[0].equals("all")) {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket1)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
+						+ findOldestBackup(bucket1)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
 			}
 		}
-		
+
 		if (currentTask.getBackupsToKeep().length > 1 && !currentTask.getBackupsToKeep()[1].equals("all")) {
 			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(currentTask.getBackupsToKeep()[1])) {
 				File oldestBackupSet = new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket2));
@@ -805,7 +834,8 @@ public class Controller {
 
 		if (currentTask.getBackupsToKeep().length > 2 && !currentTask.getBackupsToKeep()[2].equals("all")) {
 			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(currentTask.getBackupsToKeep()[2])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket3)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
+						+ findOldestBackup(bucket3)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -814,7 +844,8 @@ public class Controller {
 
 		if (currentTask.getBackupsToKeep().length > 3 && !currentTask.getBackupsToKeep()[3].equals("all")) {
 			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(currentTask.getBackupsToKeep()[3])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket4)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
+						+ findOldestBackup(bucket4)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -823,7 +854,8 @@ public class Controller {
 
 		if (currentTask.getBackupsToKeep().length > 4 && !currentTask.getBackupsToKeep()[4].equals("all")) {
 			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(currentTask.getBackupsToKeep()[4])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket5)))) {
+				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
+						+ findOldestBackup(bucket5)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -834,5 +866,29 @@ public class Controller {
 		bucket3 = null;
 		bucket4 = null;
 		bucket5 = null;
+	}
+
+	/**
+	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
+	 * 
+	 * @param taskName
+	 *            Name des hinzuzufügenden Backup-Tasks
+	 */
+	private void taskStarted(String taskName) {
+		runningBackupTasks.add(taskName);
+		System.out.println("Task started:" + taskName);
+	}
+
+	/**
+	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
+	 * 
+	 * @param taskName
+	 *            Name des zu entfernenden Backup-Tasks
+	 */
+	private void taskFinished(String taskName) {
+		if (!runningBackupTasks.remove(taskName)) {
+			System.err.println("Error: This task isn't running");
+		}
+		System.out.println("Task finished:" + taskName);
 	}
 }

@@ -56,7 +56,7 @@ public interface IBackupListener {
 	 * Erhöht die Anzahl der zu kopierenden Dateien um 1.
 	 */
 	public void increaseNumberOfFilesToCopy();
-	
+
 	/**
 	 * Erhöht die Anzahl der zu verlinkenden Dateien um 1.
 	 */
@@ -77,4 +77,20 @@ public interface IBackupListener {
 	 *            Größe um die der Gesamtwert erhöht wird
 	 */
 	public void increaseSizeToLinkBy(double sizeToIncreaseBy);
+
+	/**
+	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
+	 * 
+	 * @param taskName
+	 *            Name des hinzuzufügenden Backup-Tasks
+	 */
+	public void taskStarted(String taskName);
+
+	/**
+	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
+	 * 
+	 * @param taskName
+	 *            Name des zu entfernenden Backup-Tasks
+	 */
+	public void taskFinished(String taskName);
 }
