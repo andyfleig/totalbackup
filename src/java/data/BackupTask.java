@@ -1,6 +1,7 @@
 package data;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 /**
@@ -30,6 +31,14 @@ public class BackupTask implements Serializable {
 	private int[] threshold = new int[5];
 	private String[] thresholdUnits = new String[5];
 	private String[] backupsToKeep = new String[5];
+
+	// Für AutoBackup:
+	private int autoBackupMode;
+	private boolean[] weekdays = new boolean[7];
+	private boolean[] backupDaysInMonth = new boolean[31];
+	private LocalTime backupStartTime;
+	private int intervalTime;
+	private String intervalUnit;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -367,5 +376,131 @@ public class BackupTask implements Serializable {
 			result[i] = threshold[i] + "_" + thresholdUnits[i];
 		}
 		return result;
+	}
+
+	/**
+	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
+	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall, 4 =
+	 * dynamisch.
+	 * 
+	 * @param mode
+	 *            Backup-Modus
+	 */
+	public void setAutoBackupMode(int mode) {
+		this.backupMode = mode;
+	}
+
+	/**
+	 * Gibt den Backup-Modus zurück. 0 = Auto-Backup deaktiviert, 1 =
+	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall, 4 =
+	 * dynamisch.
+	 * 
+	 * @return Backup-Modus
+	 */
+	public int getAutoBackupMode() {
+		return autoBackupMode;
+	}
+
+	/**
+	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die
+	 * Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
+	 * Sonntag.
+	 * 
+	 * @param weekdays
+	 *            Wochentage an denen gesichert werden soll
+	 */
+	public void setBackupWeekdays(boolean[] weekdays) {
+		this.weekdays = weekdays;
+	}
+
+	/**
+	 * Gibt die Wochentage zurück an denen das Backup ausgeführt werden soll.
+	 * Die Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
+	 * Sonntag.
+	 * 
+	 * @return Wochentage an denen gesichert werden soll
+	 */
+	public boolean[] getBackupWeekdays() {
+		return weekdays;
+	}
+
+	/**
+	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll.
+	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
+	 * 31.
+	 * 
+	 * @param daysInMonth
+	 *            Tage im Monat an denen das Backup ausgeführt werden soll.
+	 */
+	public void setBackupDaysInMonth(boolean[] daysInMonth) {
+		this.backupDaysInMonth = daysInMonth;
+	}
+
+	/**
+	 * Gibt die Tage im Monat zurück an denen das Backup ausgeführt werden soll.
+	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
+	 * 31.
+	 * 
+	 * @return Tage im Monat an denen das Backup ausgeführt werden soll.
+	 */
+	public boolean[] getBackupDaysInMonth() {
+		return backupDaysInMonth;
+	}
+
+	/**
+	 * Legt die Startzeit für das AutoBackup fest.
+	 * 
+	 * @param startTime
+	 *            festzulegende Startzeit
+	 */
+	public void setBackupStartTime(LocalTime startTime) {
+		this.backupStartTime = startTime;
+	}
+
+	/**
+	 * Gibt die Startzeit des AutoBackups zurück.
+	 * 
+	 * @return Startzeit des AutoBackups
+	 */
+	public LocalTime getStartTime() {
+		return backupStartTime;
+	}
+
+	/**
+	 * Legt die Intervallzeit fest.
+	 * 
+	 * @param time
+	 *            Intervallzeit
+	 */
+	public void setIntervalTime(int time) {
+		this.intervalTime = time;
+	}
+
+	/**
+	 * Gibt die Intervallzeit zurück.
+	 * 
+	 * @return Intervallzeit
+	 */
+	public int getIntervalTime() {
+		return intervalTime;
+	}
+
+	/**
+	 * Legt die Intervalleinheit fest.
+	 * 
+	 * @param intervalUnit
+	 *            Intervalleinheit
+	 */
+	public void setIntervalUnit(String intervalUnit) {
+		this.intervalUnit = intervalUnit;
+	}
+
+	/**
+	 * Gibt die Intervalleinheit zurück.
+	 * 
+	 * @return Intervalleinheit
+	 */
+	public String getIntervalUnit() {
+		return intervalUnit;
 	}
 }

@@ -323,6 +323,18 @@ public class Mainframe extends JDialog {
 							editDialog.setExtendedAutoCleanSettings(task.getNumberOfExtendedCleanRules(),
 									task.getThreshold(), task.getThresholdUnits(), task.getBackupsToKeep());
 						}
+						int autoBackupMode = task.getAutoBackupMode();
+						editDialog.setAutoBackupMode(autoBackupMode);
+						if (autoBackupMode == 1) {
+							editDialog.setBackupWeekdays(task.getBackupWeekdays());
+							editDialog.setBackupStartTime(task.getStartTime());
+						} else if (autoBackupMode == 2) {
+							editDialog.setBackupDaysInMonth(task.getBackupDaysInMonth());
+							editDialog.setBackupStartTime(task.getStartTime());
+						} else if (autoBackupMode == 3) {
+							editDialog.setIntervalTime(task.getIntervalTime());
+							editDialog.setIntervalUnit(task.getIntervalUnit());
+						}
 
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
