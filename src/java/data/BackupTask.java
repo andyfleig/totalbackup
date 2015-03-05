@@ -387,7 +387,7 @@ public class BackupTask implements Serializable {
 	 *            Backup-Modus
 	 */
 	public void setAutoBackupMode(int mode) {
-		this.backupMode = mode;
+		this.autoBackupMode = mode;
 	}
 
 	/**

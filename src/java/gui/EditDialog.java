@@ -1047,9 +1047,11 @@ public class EditDialog extends JDialog {
 									JOptionPane.INFORMATION_MESSAGE);
 							return;
 						} else {
-							task = editListener.getBackupTaskWithName(textfield_name.getText());
+							// task =
+							// editListener.getBackupTaskWithName(textfield_name.getText());
+							task = new BackupTask(textfield_name.getText());
 							deleteOldTask = true;
-							task.resetPaths();
+							// task.resetPaths();
 						}
 					}
 					// Backup-Modus speichern:
@@ -1148,17 +1150,23 @@ public class EditDialog extends JDialog {
 						boolean[] weekdays = new boolean[7];
 						if (checkBox_monday.isSelected()) {
 							weekdays[0] = true;
-						} else if (checkBox_tuesday.isSelected()) {
+						}
+						if (checkBox_tuesday.isSelected()) {
 							weekdays[1] = true;
-						} else if (checkBox_wednesday.isSelected()) {
+						}
+						if (checkBox_wednesday.isSelected()) {
 							weekdays[2] = true;
-						} else if (checkBox_thursday.isSelected()) {
+						}
+						if (checkBox_thursday.isSelected()) {
 							weekdays[3] = true;
-						} else if (checkBox_friday.isSelected()) {
+						}
+						if (checkBox_friday.isSelected()) {
 							weekdays[4] = true;
-						} else if (checkBox_saturday.isSelected()) {
+						}
+						if (checkBox_saturday.isSelected()) {
 							weekdays[5] = true;
-						} else if (checkBox_sunday.isSelected()) {
+						}
+						if (checkBox_sunday.isSelected()) {
 							weekdays[6] = true;
 						}
 						task.setBackupWeekdays(weekdays);
@@ -1209,7 +1217,8 @@ public class EditDialog extends JDialog {
 				}
 
 				if (deleteOldTask) {
-					editListener.removeBackupTask(task);
+					// alte Version des Tasks löschen:
+					editListener.removeBackupTask(editListener.getBackupTaskWithName(textfield_name.getText()));
 				}
 				editListener.addBackupTask(task);
 
@@ -1547,13 +1556,13 @@ public class EditDialog extends JDialog {
 	 */
 	public void setAutoBackupMode(int mode) {
 		if (mode == 1) {
-			checkBox_toggleWeekday.setEnabled(true);
+			checkBox_toggleWeekday.setSelected(true);
 		} else if (mode == 2) {
-			checkBox_toggleDayInMonth.setEnabled(true);
+			checkBox_toggleDayInMonth.setSelected(true);
 		} else if (mode == 3) {
-			checkBox_toggleInterval.setEnabled(true);
+			checkBox_toggleInterval.setSelected(true);
 		} else if (mode == 4) {
-			checkBox_toggleDynamic.setEnabled(true);
+			checkBox_toggleDynamic.setSelected(true);
 		}
 	}
 
@@ -1568,17 +1577,23 @@ public class EditDialog extends JDialog {
 	public void setBackupWeekdays(boolean[] weekdays) {
 		if (weekdays[0] == true) {
 			checkBox_monday.setSelected(true);
-		} else if (weekdays[1] == true) {
+		}
+		if (weekdays[1] == true) {
 			checkBox_tuesday.setSelected(true);
-		} else if (weekdays[2] == true) {
+		}
+		if (weekdays[2] == true) {
 			checkBox_wednesday.setSelected(true);
-		} else if (weekdays[3] == true) {
+		}
+		if (weekdays[3] == true) {
 			checkBox_thursday.setSelected(true);
-		} else if (weekdays[4] == true) {
+		}
+		if (weekdays[4] == true) {
 			checkBox_friday.setSelected(true);
-		} else if (weekdays[5] == true) {
+		}
+		if (weekdays[5] == true) {
 			checkBox_saturday.setSelected(true);
-		} else if (weekdays[6] == true) {
+		}
+		if (weekdays[6] == true) {
 			checkBox_sunday.setSelected(true);
 		}
 	}
@@ -1606,7 +1621,7 @@ public class EditDialog extends JDialog {
 	 *            festzulegende Startzeit
 	 */
 	public void setBackupStartTime(LocalTime startTime) {
-		textField_interval.setText(startTime.toString());
+		textField_timeToStart.setText(startTime.toString());
 	}
 
 	/**
