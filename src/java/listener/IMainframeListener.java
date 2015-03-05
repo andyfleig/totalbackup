@@ -105,14 +105,20 @@ public interface IMainframeListener {
 	/**
 	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
 	 * Backup-Vorgangs nach der Übersicht)
+	 * 
+	 * @param task
+	 *            entsprechernder BackupTask
 	 */
-	public void deleteEmptyBackupFolders(String path);
+	public void deleteEmptyBackupFolders(String path, BackupTask task);
 
 	/**
 	 * Gibt eine Meldung aus, dass das laufende Backup (in der Zusammenfassung)
 	 * abgebrochen wurde.
+	 * 
+	 * @param task
+	 *            entpsrechender BackupTask
 	 */
-	public void outprintBackupCanceled();
+	public void outprintBackupCanceled(BackupTask task);
 
 	/**
 	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um

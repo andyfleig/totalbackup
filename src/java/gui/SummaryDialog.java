@@ -15,7 +15,9 @@ import java.util.ResourceBundle;
 
 import javax.swing.JLabel;
 
+import data.BackupTask;
 import listener.ISummaryDialogListener;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -28,10 +30,12 @@ public class SummaryDialog extends JDialog {
 
 	/**
 	 * Launch the application.
+	 * 
+	 * @deprecated
 	 */
 	public static void main(String[] args) {
 		try {
-			SummaryDialog dialog = new SummaryDialog(null);
+			SummaryDialog dialog = new SummaryDialog(null, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -39,15 +43,13 @@ public class SummaryDialog extends JDialog {
 		}
 	}
 
-	/**
-	 * Create the dialog.
-	 */
-	public SummaryDialog(ISummaryDialogListener listener) {
+	// TODO: JavaDoc
+	public SummaryDialog(ISummaryDialogListener listener, BackupTask task) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
 				if (!backupCanceled && !backupIsNotFinished) {
-					cancelBackup();
+					cancelBackup(task);
 				}
 			}
 		});
@@ -93,7 +95,7 @@ public class SummaryDialog extends JDialog {
 			// Button Cancel:
 			public void actionPerformed(ActionEvent e) {
 				backupCanceled = true;
-				cancelBackup();
+				cancelBackup(task);
 			}
 		});
 		btn_cancel.setActionCommand("Cancel");
@@ -185,11 +187,12 @@ public class SummaryDialog extends JDialog {
 			label_sizeToLinkDyn.setText(result);
 		}
 	}
-	
-	private void cancelBackup() {
-		outprintBackupCanceled();
+
+	// TODO: JavaDoc
+	private void cancelBackup(BackupTask task) {
+		outprintBackupCanceled(task);
 		listener.taskFinished(listener.getTaskName());
-		deleteEmptyBackupFolders();
+		deleteEmptyBackupFolders(task);
 		clearBackupInfos();
 		SummaryDialog.this.dispose();
 	}
@@ -198,11 +201,11 @@ public class SummaryDialog extends JDialog {
 		listener.clearBackupInfos();
 	}
 
-	private void deleteEmptyBackupFolders() {
-		listener.deleteEmptyBackupFolders();
+	private void deleteEmptyBackupFolders(BackupTask task) {
+		listener.deleteEmptyBackupFolders(task);
 	}
 
-	private void outprintBackupCanceled() {
-		listener.outprintBackupCanceled();
+	private void outprintBackupCanceled(BackupTask task) {
+		listener.outprintBackupCanceled(task);
 	}
 }

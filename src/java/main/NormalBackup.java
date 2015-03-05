@@ -7,6 +7,7 @@ import java.util.*;
 
 import listener.IBackupListener;
 import data.BackupElement;
+import data.BackupTask;
 import data.Filter;
 import data.Source;
 
@@ -65,12 +66,12 @@ public class NormalBackup implements Backupable {
 	}
 
 	@Override
-	public void runPreparation() {
-		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener);
+	public void runPreparation(BackupTask task) {
+		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener, task);
 		if (dir == null) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true);
-			listener.log(output, listener.getCurrentTask());
+			listener.log(output, task);
 			return;
 		}
 
@@ -99,49 +100,49 @@ public class NormalBackup implements Backupable {
 				if (f.mkdir()) {
 					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
 					listener.printOut(outprint, false);
-					listener.log(outprint, listener.getCurrentTask());
+					listener.log(outprint, task);
 				} else {
 					String outprint = ResourceBundle.getBundle("gui.messages")
 							.getString("Messages.FolderCreationError");
 					listener.printOut(outprint, true);
-					listener.log(outprint, listener.getCurrentTask());
+					listener.log(outprint, task);
 				}
 
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
 				listener.printOut(output, false);
-				listener.log(output, listener.getCurrentTask());
+				listener.log(output, task);
 
 				// Queueing:
 				try {
 					for (int j = 0; j < sources.size(); j++) {
-						rekursivePreparation(new File(sources.get(j).getPath()), f);
+						rekursivePreparation(new File(sources.get(j).getPath()), f, task);
 					}
 				} catch (BackupCanceledException e) {
 					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 					listener.printOut(outprint, false);
-					listener.log(outprint, listener.getCurrentTask());
+					listener.log(outprint, task);
 				}
 			}
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false);
-			listener.log(outprint, listener.getCurrentTask());
+			listener.log(outprint, task);
 		}
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
 		listener.printOut(output, false);
-		listener.log(output, listener.getCurrentTask());
+		listener.log(output, task);
 		preparationDone = true;
 	}
 
 	/**
 	 * Startet den Backup-Vorgang.
 	 * 
-	 * @param taskName
-	 *            Name des Backup-Tasks welcher ausgeführt wird
+	 * @param task
+	 *            Backup-Tasks welcher ausgeführt wird
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void runBackup(String taskName) throws FileNotFoundException {
+	public void runBackup(BackupTask task) throws FileNotFoundException {
 		// Test ob die Vorbereitung durchgeführt wurden:
 		if (!preparationDone) {
 			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
@@ -149,7 +150,7 @@ public class NormalBackup implements Backupable {
 		}
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup");
 		listener.printOut(output, false);
-		listener.log(output, listener.getCurrentTask());
+		listener.log(output, task);
 
 		try {
 			// Eigentlicher Backup-Vorgang:
@@ -163,13 +164,13 @@ public class NormalBackup implements Backupable {
 				} else {
 					try {
 						BackupHelper.copyFile(new File(currentElement.getSourcePath()),
-								new File(currentElement.getDestPath()), listener);
+								new File(currentElement.getDestPath()), listener, task);
 					} catch (IOException e) {
 						String msg = ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg1")
 								+ currentElement.getSourcePath()
 								+ ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg2");
 						listener.printOut(msg, true);
-						listener.log(msg, listener.getCurrentTask());
+						listener.log(msg, task);
 					}
 
 				}
@@ -177,16 +178,17 @@ public class NormalBackup implements Backupable {
 
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false);
-			listener.log(outprint, listener.getCurrentTask());
+			listener.log(outprint, task);
 			listener.taskFinished(taskName);
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false);
-			listener.log(outprint, listener.getCurrentTask());
+			listener.log(outprint, task);
 		}
 	}
 
-	private void rekursivePreparation(File sourceFile, File backupDir) {
+	// TODO: JavaDoc
+	private void rekursivePreparation(File sourceFile, File backupDir, BackupTask task) {
 
 		if (Thread.interrupted()) {
 			throw new BackupCanceledException();
@@ -197,7 +199,7 @@ public class NormalBackup implements Backupable {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "
 					+ sourceFile.getPath();
 			listener.printOut(outprint, true);
-			listener.log(outprint, listener.getCurrentTask());
+			listener.log(outprint, task);
 
 			return;
 		}
@@ -221,7 +223,7 @@ public class NormalBackup implements Backupable {
 					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
 							true, false));
 					listener.increaseNumberOfDirectories();
-					rekursivePreparation(files[i], newBackupDir);
+					rekursivePreparation(files[i], newBackupDir, task);
 				}
 			} else {
 				// Filtern:

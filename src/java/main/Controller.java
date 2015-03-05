@@ -56,10 +56,6 @@ public class Controller {
 	 */
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 	/**
-	 * Aktueller Backup-Task.
-	 */
-	private BackupTask currentTask = null;
-	/**
 	 * Namen-Muster für die benennung der Backup-Ordner.
 	 */
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
@@ -158,7 +154,7 @@ public class Controller {
 						}
 
 						@Override
-						public void deleteEmptyBackupFolders(String path) {
+						public void deleteEmptyBackupFolders(String path, BackupTask task) {
 							File currentDest = new File(path);
 							File[] backupFolders = currentDest.listFiles();
 							for (int i = 0; i < backupFolders.length; i++) {
@@ -181,15 +177,15 @@ public class Controller {
 							String outprint = ResourceBundle.getBundle("gui.messages").getString(
 									"Messages.deletedBackupFolder");
 							backupListener.printOut(outprint, false);
-							backupListener.log(outprint, backupListener.getCurrentTask());
+							backupListener.log(outprint, task);
 						}
 
 						@Override
-						public void outprintBackupCanceled() {
+						public void outprintBackupCanceled(BackupTask task) {
 							String outprint = ResourceBundle.getBundle("gui.messages").getString(
 									"Messages.BackupCanceled");
 							backupListener.printOut(outprint, false);
-							backupListener.log(outprint, backupListener.getCurrentTask());
+							backupListener.log(outprint, task);
 						}
 
 						@Override
@@ -277,7 +273,6 @@ public class Controller {
 	 */
 	public void startPreparation(BackupTask task) {
 		mainframe.setButtonsToBackupRunning(false);
-		currentTask = task;
 
 		// Listener anlegen:
 		backupListener = new IBackupListener() {
@@ -292,11 +287,6 @@ public class Controller {
 					}
 
 				});
-			}
-
-			@Override
-			public BackupTask getCurrentTask() {
-				return Controller.this.getCurrentTask();
 			}
 
 			@Override
@@ -389,13 +379,13 @@ public class Controller {
 			if (backupSetFound) {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup");
 				printOut(output, false);
-				log(output, currentTask);
+				log(output, task);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup");
 				printOut(output, false);
-				log(output, currentTask);
+				log(output, task);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			}
@@ -404,15 +394,14 @@ public class Controller {
 		}
 
 		try {
-			backup.runPreparation();
+			backup.runPreparation(task);
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			printOut(output, false);
-			log(output, currentTask);
+			log(output, task);
 		}
 
 		// TODO: In Mainframe (außerhalb des Threads)?
-		currentTask = null;
 		mainframe.setButtonsToBackupRunning(true);
 
 		task.setPrepared(true);
@@ -426,36 +415,35 @@ public class Controller {
 	 */
 	public void startBackup(BackupTask task) {
 		mainframe.setButtonsToBackupRunning(false);
-		currentTask = task;
 
 		if (!task.isPrepered()) {
-			currentTask = null;
 			mainframe.setButtonsToBackupRunning(true);
 			return;
 		}
 
 		try {
-			backup.runBackup(task.getTaskName());
+			backup.runBackup(task);
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			printOut(output, false);
-			log(output, currentTask);
+			log(output, task);
 		}
 		// alte Backups aufräumen (wenn gewünscht):
-		if (currentTask.simpleAutoCleanIsEnabled()) {
+		if (task.simpleAutoCleanIsEnabled()) {
 			try {
-				while (this.calcNumberOfBackups() > currentTask.getNumberOfBackupsToKeep()) {
-					File toDelete = new File(currentTask.getDestinationPath()
+				while (this.calcNumberOfBackups(task) > task.getNumberOfBackupsToKeep()) {
+					File toDelete = new File(task.getDestinationPath()
 							+ File.separator
-							+ findOldestBackup(new ArrayList<File>(Arrays.asList((new File(currentTask
-									.getDestinationPath()).listFiles())))));
+							+ findOldestBackup(
+									new ArrayList<File>(
+											Arrays.asList((new File(task.getDestinationPath()).listFiles()))), task));
 
 					String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
 							+ toDelete.getAbsolutePath();
 					setStatus(output);
-					log(output, currentTask);
+					log(output, task);
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
@@ -466,13 +454,13 @@ public class Controller {
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 				printOut(outprint, false);
-				log(outprint, currentTask);
+				log(outprint, task);
 			}
-		} else if (currentTask.extendedAutoCleanIsEnabled()) {
-			runExtendedClean();
+		} else if (task.extendedAutoCleanIsEnabled()) {
+			runExtendedClean(task);
 		}
 
-		currentTask = null;
+		task = null;
 		mainframe.setButtonsToBackupRunning(true);
 
 	}
@@ -591,15 +579,6 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den aktuell laufenden Task zurück.
-	 * 
-	 * @return aktuell laufender Task
-	 */
-	public BackupTask getCurrentTask() {
-		return currentTask;
-	}
-
-	/**
 	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
 	 * 
 	 * @return Status der erweiterten Ausgabe
@@ -609,13 +588,15 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt die Anzahl der Backup-Sätze zum aktuellen Backup-Task zurück.
+	 * Gibt die Anzahl der Backup-Sätze zum gegebenen Backup-Task zurück.
 	 * 
-	 * @return Anzahl der Backup-Sätze zum aktuellen Backup-Task
+	 * @param task
+	 *            betreffender BackupTask
+	 * @return Anzahl der Backup-Sätze zum gegebenen Backup-Task
 	 */
-	private int calcNumberOfBackups() {
-		File dest = new File(currentTask.getDestinationPath());
-		return findBackupSets(dest).size();
+	private int calcNumberOfBackups(BackupTask task) {
+		File dest = new File(task.getDestinationPath());
+		return findBackupSets(dest, task).size();
 	}
 
 	/**
@@ -623,9 +604,11 @@ public class Controller {
 	 * 
 	 * @param dir
 	 *            zu durchsuchendes Verzeichnis
+	 * @param task
+	 *            betreffender BackupTask
 	 * @return Liste aller gefundenen Backupsätze
 	 */
-	private ArrayList<File> findBackupSets(File dir) {
+	private ArrayList<File> findBackupSets(File dir, BackupTask task) {
 		File[] files = dir.listFiles();
 		ArrayList<File> foundBackupsets = new ArrayList<File>();
 		for (int i = 0; i < files.length; i++) {
@@ -636,7 +619,7 @@ public class Controller {
 				continue;
 			}
 			// Erster Token muss dem TaskName entsprechen:
-			if (!tokenizer.nextToken().equals(currentTask.getTaskName())) {
+			if (!tokenizer.nextToken().equals(task.getTaskName())) {
 				continue;
 			}
 			// Zweiter Token muss analysiert werden:
@@ -659,9 +642,11 @@ public class Controller {
 	 * 
 	 * @param root
 	 *            Ordner in dem der älteste Backupsatz gefunden werden soll
+	 * @param task
+	 *            betreffender BackupTask
 	 * @return Pfad des ältesten Backup-Satzes
 	 */
-	private String findOldestBackup(ArrayList<File> directories) {
+	private String findOldestBackup(ArrayList<File> directories, BackupTask task) {
 
 		Date oldestDate = null;
 		String oldestBackupPath = null;
@@ -675,7 +660,7 @@ public class Controller {
 					continue;
 				}
 				// Erster Token muss dem TaskName entsprechen:
-				if (!tokenizer.nextToken().equals(currentTask.getTaskName())) {
+				if (!tokenizer.nextToken().equals(task.getTaskName())) {
 					continue;
 				}
 				// Zweiter Token muss analysiert werden:
@@ -702,12 +687,13 @@ public class Controller {
 		return oldestBackupPath;
 	}
 
-	private void runExtendedClean() {
+	// TODO: JavaDoc
+	private void runExtendedClean(BackupTask task) {
 		// aktuelle SystemZeit:
 		LocalDateTime currentSystemTime = LocalDateTime.now();
 
 		// Liste aller existenten Backupsätze anlegen:
-		ArrayList<File> backupSets = findBackupSets(new File(currentTask.getDestinationPath()));
+		ArrayList<File> backupSets = findBackupSets(new File(task.getDestinationPath()), task);
 
 		if (backupSets.size() == 0) {
 			return;
@@ -720,8 +706,8 @@ public class Controller {
 		ArrayList<File> bucket5 = new ArrayList<File>();
 
 		// Dates für die Bucket-Grenzen erstellen:
-		LocalDateTime[] boundaries = new LocalDateTime[currentTask.getNumberOfExtendedCleanRules() - 1];
-		String[] boundaryStrings = currentTask.getBoundaries();
+		LocalDateTime[] boundaries = new LocalDateTime[task.getNumberOfExtendedCleanRules() - 1];
+		String[] boundaryStrings = task.getBoundaries();
 		for (int i = 0; i < boundaries.length; i++) {
 			DateFormat formatter;
 			StringTokenizer tokanizer = new StringTokenizer(boundaryStrings[i], "_");
@@ -762,7 +748,7 @@ public class Controller {
 					ZoneId.systemDefault());
 
 			// Richtiges Bucket finden und einfügen:
-			switch (currentTask.getNumberOfExtendedCleanRules()) {
+			switch (task.getNumberOfExtendedCleanRules()) {
 			case 1:
 				bucket1.add(backupSet);
 				break;
@@ -811,19 +797,19 @@ public class Controller {
 
 		// Alle Buckets der maximalgröße Entsprechend "ausmisten":
 		// Kontrolle auf Wert "all":
-		if (currentTask.getBackupsToKeep().length > 0 && !currentTask.getBackupsToKeep()[0].equals("all")) {
-			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(currentTask.getBackupsToKeep()[0])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
-						+ findOldestBackup(bucket1)))) {
+		if (task.getBackupsToKeep().length > 0 && !task.getBackupsToKeep()[0].equals("all")) {
+			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
+				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
+						+ findOldestBackup(bucket1, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
 			}
 		}
 
-		if (currentTask.getBackupsToKeep().length > 1 && !currentTask.getBackupsToKeep()[1].equals("all")) {
-			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(currentTask.getBackupsToKeep()[1])) {
-				File oldestBackupSet = new File(currentTask.getDestinationPath() + "/" + findOldestBackup(bucket2));
+		if (task.getBackupsToKeep().length > 1 && !task.getBackupsToKeep()[1].equals("all")) {
+			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(task.getBackupsToKeep()[1])) {
+				File oldestBackupSet = new File(task.getDestinationPath() + "/" + findOldestBackup(bucket2, task));
 				if (!BackupHelper.deleteDirectory(oldestBackupSet)) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
@@ -832,30 +818,30 @@ public class Controller {
 			}
 		}
 
-		if (currentTask.getBackupsToKeep().length > 2 && !currentTask.getBackupsToKeep()[2].equals("all")) {
-			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(currentTask.getBackupsToKeep()[2])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
-						+ findOldestBackup(bucket3)))) {
+		if (task.getBackupsToKeep().length > 2 && !task.getBackupsToKeep()[2].equals("all")) {
+			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(task.getBackupsToKeep()[2])) {
+				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
+						+ findOldestBackup(bucket3, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
 			}
 		}
 
-		if (currentTask.getBackupsToKeep().length > 3 && !currentTask.getBackupsToKeep()[3].equals("all")) {
-			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(currentTask.getBackupsToKeep()[3])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
-						+ findOldestBackup(bucket4)))) {
+		if (task.getBackupsToKeep().length > 3 && !task.getBackupsToKeep()[3].equals("all")) {
+			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(task.getBackupsToKeep()[3])) {
+				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
+						+ findOldestBackup(bucket4, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
 			}
 		}
 
-		if (currentTask.getBackupsToKeep().length > 4 && !currentTask.getBackupsToKeep()[4].equals("all")) {
-			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(currentTask.getBackupsToKeep()[4])) {
-				if (!BackupHelper.deleteDirectory(new File(currentTask.getDestinationPath() + "/"
-						+ findOldestBackup(bucket5)))) {
+		if (task.getBackupsToKeep().length > 4 && !task.getBackupsToKeep()[4].equals("all")) {
+			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(task.getBackupsToKeep()[4])) {
+				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
+						+ findOldestBackup(bucket5, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}

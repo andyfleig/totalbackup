@@ -652,7 +652,7 @@ public class Mainframe extends JDialog {
 
 		if (!isCanceled) {
 			if (!selectedTask.getAutostart()) {
-				showSummaryDialog();
+				showSummaryDialog(task);
 			} else {
 				listener.clearBackupInfos();
 				startBackupTask();
@@ -662,8 +662,11 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Öffnet einen neuen SummeryDialog.
+	 * 
+	 * @param task
+	 *            entsprechender BackupTask
 	 */
-	private void showSummaryDialog() {
+	private void showSummaryDialog(BackupTask task) {
 		summary = new SummaryDialog(new ISummaryDialogListener() {
 
 			@Override
@@ -708,13 +711,13 @@ public class Mainframe extends JDialog {
 			}
 
 			@Override
-			public void deleteEmptyBackupFolders() {
-				listener.deleteEmptyBackupFolders(selectedTask.getDestinationPath());
+			public void deleteEmptyBackupFolders(BackupTask task) {
+				listener.deleteEmptyBackupFolders(selectedTask.getDestinationPath(), task);
 			}
 
 			@Override
-			public void outprintBackupCanceled() {
-				listener.outprintBackupCanceled();
+			public void outprintBackupCanceled(BackupTask task) {
+				listener.outprintBackupCanceled(task);
 			}
 
 			@Override
@@ -723,7 +726,7 @@ public class Mainframe extends JDialog {
 
 			}
 
-		});
+		}, task);
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		summary.setLocation(frmTotalbackup.getLocationOnScreen());

@@ -34,13 +34,6 @@ public interface IBackupListener {
 	public void setStatus(String status);
 
 	/**
-	 * Gibt den aktuell laufenden Task zurück.
-	 * 
-	 * @return aktuell laufender Task
-	 */
-	public BackupTask getCurrentTask();
-
-	/**
 	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
 	 * 
 	 * @return Status der erweiterten Ausgabe

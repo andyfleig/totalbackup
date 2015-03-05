@@ -16,51 +16,10 @@ import java.util.TimeZone;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import data.BackupTask;
 import listener.IBackupListener;
 
 public final class BackupHelper {
-
-	/**
-	 * Kopiert ein Verzeichnis rekursiv.
-	 * 
-	 * @deprecated wird nichtmehr benötigt!?
-	 * @param source
-	 *            Quellverzeichnis
-	 * @param destination
-	 *            Zielverzeichnis
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public static void copyDirectory(File source, File destination, IBackupListener listener)
-			throws FileNotFoundException, IOException {
-		File[] files = source.listFiles();
-		File newFile = null;
-
-		destination.mkdirs();
-
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				if (Thread.interrupted()) {
-					throw new BackupCanceledException();
-				}
-				newFile = new File(destination.getAbsolutePath() + File.separator + files[i].getName());
-				if (files[i].isDirectory()) {
-					copyDirectory(files[i], newFile, listener);
-				} else {
-					try {
-						copyFile(files[i], newFile, listener);
-					} catch (IOException e) {
-						// Fehler beim kopieren einer Datei (z.B. wegen
-						// fehlenden Rechten)
-						String output = ResourceBundle.getBundle("gui.messages").getString("Messages.IOError")
-								+ File.separator + source.getPath();
-						listener.printOut(output, true);
-						listener.log(output, listener.getCurrentTask());
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * Kopiert eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
@@ -72,8 +31,8 @@ public final class BackupHelper {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void copyFile(File source, File destination, IBackupListener listener) throws FileNotFoundException,
-			IOException {
+	public static void copyFile(File source, File destination, IBackupListener listener, BackupTask currentTask)
+			throws FileNotFoundException, IOException {
 
 		if (!source.isFile()) {
 			return;
@@ -84,7 +43,7 @@ public final class BackupHelper {
 		if (listener.advancedOutputIsEnabled()) {
 			listener.printOut(output, false);
 		}
-		listener.log(output, listener.getCurrentTask());
+		listener.log(output, currentTask);
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
@@ -104,8 +63,10 @@ public final class BackupHelper {
 	 *            Quell-Datei des Hardlinks
 	 * @param destination
 	 *            Ziel-Datei des Hardlinks
+	 * @param backupTask
+	 *            entsprechender BackupTask
 	 */
-	public static void hardlinkFile(File source, File destination, IBackupListener listener) {
+	public static void hardlinkFile(File source, File destination, IBackupListener listener, BackupTask task) {
 		if (!source.isFile()) {
 			return;
 		}
@@ -115,7 +76,7 @@ public final class BackupHelper {
 			listener.printOut(output, false);
 		}
 		listener.setStatus(output);
-		listener.log(output, listener.getCurrentTask());
+		listener.log(output, task);
 
 		try {
 			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
@@ -134,9 +95,12 @@ public final class BackupHelper {
 	 *            werden soll)
 	 * @param taskName
 	 *            Name des Backup-Tasks
+	 * @param backupTask
+	 *            entsprechender BackupTask
 	 * @return angelegter Root-Ordner
 	 */
-	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener) {
+	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener,
+			BackupTask task) {
 
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
@@ -147,7 +111,7 @@ public final class BackupHelper {
 		if (!destinationFile.exists()) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true);
-			listener.log(output, listener.getCurrentTask());
+			listener.log(output, task);
 			;
 			return null;
 		}
@@ -158,12 +122,12 @@ public final class BackupHelper {
 		if (dir.mkdir()) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated");
 			listener.printOut(output, false);
-			listener.log(output, listener.getCurrentTask());
+			listener.log(output, task);
 			;
 		} else {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true);
-			listener.log(output, listener.getCurrentTask());
+			listener.log(output, task);
 			;
 			return null;
 		}

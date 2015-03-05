@@ -66,11 +66,11 @@ public class BackupTest {
 			return;
 		}
 		try {
-			backupHash =  BackupHelper.calcMD5(testFile);
+			backupHash = BackupHelper.calcMD5(testFile);
 		} catch (Exception e) {
 			return;
 		}
-		
+
 		assertTrue(originalHash.equals(backupHash));
 
 		// Backup löschen:
