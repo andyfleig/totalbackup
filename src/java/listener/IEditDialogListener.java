@@ -42,4 +42,7 @@ public interface IEditDialogListener {
 	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
 	 */
 	public void saveProperties();
+
+	// TODO: JavaDoc
+	public void scheduleBackupTasks();
 }

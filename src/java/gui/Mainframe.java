@@ -185,6 +185,11 @@ public class Mainframe extends JDialog {
 				Mainframe.this.saveProperties();
 			}
 
+			@Override
+			public void scheduleBackupTasks() {
+				listener.scheduleBackupTasks();
+			}
+
 		};
 
 		frmTotalbackup = new JFrame();
@@ -624,7 +629,7 @@ public class Mainframe extends JDialog {
 	 * @param task
 	 *            vorzubereitender Task
 	 */
-	private void prepareBackup(BackupTask task) {
+	public void prepareBackup(BackupTask task) {
 
 		isCanceled = false;
 		selectedTask = task;
@@ -648,7 +653,9 @@ public class Mainframe extends JDialog {
 		}
 
 		listener.startPreparation(selectedTask);
-		prep.dispose();
+		if (prep != null) {
+			prep.dispose();
+		}
 
 		if (!isCanceled) {
 			if (!selectedTask.getAutostart()) {

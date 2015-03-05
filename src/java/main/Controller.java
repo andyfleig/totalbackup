@@ -25,12 +25,22 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JOptionPane;
@@ -75,6 +85,10 @@ public class Controller {
 	 * Alle laufenden Backup-Taks
 	 */
 	private ArrayList<String> runningBackupTasks = new ArrayList<String>();
+	/**
+	 * Timer für die AutoBackup-Funktion.
+	 */
+	private Timer timer;
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -209,10 +223,16 @@ public class Controller {
 							Controller.this.taskFinished(taskName);
 
 						}
+
+						@Override
+						public void scheduleBackupTasks() {
+							Controller.this.scheduleBackupTasks();
+						}
 					});
 				}
 			});
 			loadSerialization();
+			scheduleBackupTasks();
 		} catch (Exception ex) {
 			System.err.println(ex);
 		}
@@ -876,5 +896,165 @@ public class Controller {
 			System.err.println("Error: This task isn't running");
 		}
 		System.out.println("Task finished:" + taskName);
+		scheduleBackupTasks();
+	}
+
+	// TODO: JavaDoc
+	public void scheduleBackupTasks() {
+		// Einstellungen aus dem Backup-Task holen und im LocalTime Objekte
+		// "umwandeln" (für jeden Task)
+		for (BackupTask task : backupTasks) {
+			// Kontrollieren ob dieser Task bereits läuft:
+			if (runningBackupTasks.contains(task.getTaskName())) {
+				continue;
+			}
+			LocalDateTime nextExecutionTime = null;
+			int autoBackupMode = task.getAutoBackupMode();
+			if (autoBackupMode == 0) {
+				continue;
+			} else if (autoBackupMode == 1) {
+				nextExecutionTime = calcTimeFromWeekdays(task.getBackupWeekdays(), task.getStartTime());
+			} else if (autoBackupMode == 2) {
+				nextExecutionTime = calcTimeFromDaysInMonth(task.getBackupWeekdays(), task.getStartTime());
+			} else if (autoBackupMode == 3) {
+				nextExecutionTime = calcTimeFromInterval(task.getIntervalTime(), task.getIntervalUnit());
+			} else if (autoBackupMode == 4) {
+				// TODO
+			}
+			// LocalDateTime in date umwandeln:
+			// TODO: Problem mit Zeitumstellung!
+			Instant instant = nextExecutionTime.toInstant(ZoneOffset.of("+1"));
+			Date nextExecutionTimeAsDate = Date.from(instant);
+			// Tautostart für diesen Task aktivieren:
+			task.setAutostart(true);
+			// TODO: autostart deaktivieren?
+			// scheduling:
+			TimerTask backup = new TimerTask() {
+				public void run() {
+					// TODO: Task als beendet markieren?
+					taskStarted(task.getTaskName());
+					mainframe.prepareBackup(task);
+				}
+			};
+			timer = new Timer();
+			timer.schedule(backup, nextExecutionTimeAsDate);
+		}
+	}
+
+	/**
+	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den
+	 * gegebenen weekdays.
+	 * 
+	 * @param weekdays
+	 *            Wochentage an denen gesichert werden soll
+	 * @param time
+	 *            Zeit zu der gesichert werden soll
+	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
+	 */
+	private LocalDateTime calcTimeFromWeekdays(boolean[] weekdays, LocalTime time) {
+		DayOfWeek currentWeekday = LocalDate.now().getDayOfWeek();
+		int weekdayNumber = currentWeekday.getValue() - 1;
+		// Heute?:
+		if (weekdays[weekdayNumber]) {
+			// Heute istBackup-Tag, also muss die Zeit betrachet werden:
+			if (LocalTime.now().isBefore(time)) {
+				LocalDateTime result = time.atDate(LocalDate.now());
+				return result;
+			}
+		}
+
+		int wNumber = weekdayNumber + 1;
+		int daysFromTodayCounter = 1;
+		while (wNumber < 7) {
+			if (weekdays[wNumber]) {
+				LocalDate date = LocalDate.now().plusDays(daysFromTodayCounter);
+				LocalDateTime result = time.atDate(date);
+				return result;
+			}
+			daysFromTodayCounter++;
+		}
+		wNumber = 0;
+		while (wNumber < 7) {
+			if (weekdays[wNumber]) {
+				if (daysFromTodayCounter > 7) {
+					// TODO: raus
+					System.err.println("Error: Weekday more than 7 days in future is not possible");
+				}
+				LocalDate date = LocalDate.now().plusDays(daysFromTodayCounter);
+				LocalDateTime result = time.atDate(date);
+				return result;
+			}
+			daysFromTodayCounter++;
+		}
+		return null;
+	}
+
+	/**
+	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den
+	 * gegebenen daysInMonth.
+	 * 
+	 * @param daysInMonth
+	 *            Tage im Monat an denen gesichert werden soll
+	 * @param time
+	 *            Zeit zu der gesichert werden soll
+	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
+	 */
+	private LocalDateTime calcTimeFromDaysInMonth(boolean[] daysInMonth, LocalTime time) {
+		int currentDayInMonth = LocalDate.now().getDayOfMonth() - 1;
+		// Heute?:
+		if (daysInMonth[currentDayInMonth]) {
+			// Heute istBackup-Tag, also muss die Zeit betrachet werden:
+			if (LocalTime.now().isBefore(time)) {
+				LocalDateTime result = time.atDate(LocalDate.now());
+				return result;
+			}
+		}
+
+		int mNumber = currentDayInMonth + 1;
+		int daysFromTodayCounter = 1;
+		while (mNumber <= (LocalDate.now().lengthOfMonth() - 1)) {
+			if (daysInMonth[mNumber]) {
+				LocalDate date = LocalDate.now().withDayOfMonth(daysFromTodayCounter);
+				LocalDateTime result = time.atDate(date);
+				return result;
+			}
+			daysFromTodayCounter++;
+		}
+		mNumber = 0;
+		daysFromTodayCounter = 0;
+		while (mNumber <= (LocalDate.now().lengthOfMonth() - 1)) {
+			if (daysInMonth[mNumber]) {
+				LocalDate date = LocalDate.now().withDayOfMonth(daysFromTodayCounter);
+				LocalDateTime result = time.atDate(date);
+				return result;
+			}
+			daysFromTodayCounter++;
+		}
+		return null;
+	}
+
+	/**
+	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus dem
+	 * gegebenen Intervall.
+	 * 
+	 * @param interval
+	 *            gegebenes Intervall
+	 * @param intervalUnit
+	 *            Einheit des Intervals (min, h, d, m)
+	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
+	 */
+	private LocalDateTime calcTimeFromInterval(int interval, String intervalUnit) {
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		switch (intervalUnit) {
+		case "min":
+			return currentDateTime.plusMinutes(interval);
+		case "h":
+			return currentDateTime.plusHours(interval);
+		case "d":
+			return currentDateTime.plusDays(interval);
+		case "m":
+			return currentDateTime.plusMonths(interval);
+		}
+		return null;
 	}
 }

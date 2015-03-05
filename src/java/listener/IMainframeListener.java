@@ -156,4 +156,7 @@ public interface IMainframeListener {
 	 *            Name des zu entfernenden Backup-Tasks
 	 */
 	public void taskFinished(String taskName);
+
+	// TODO: JavaDoc
+	public void scheduleBackupTasks();
 }

@@ -672,7 +672,7 @@ public class EditDialog extends JDialog {
 		comboBox_intervalUnit = new JComboBox();
 		panel_intervalSettings.add(comboBox_intervalUnit);
 		comboBox_intervalUnit
-				.setModel(new DefaultComboBoxModel(new String[] { "Minuten", "Stunden", "Tage", "Monate" }));
+				.setModel(new DefaultComboBoxModel(new String[] {"min", "h", "d", "m"}));
 
 		JPanel panel_dynamic = new JPanel();
 		tabbedPane_autostart.addTab(ResourceBundle.getBundle("gui.messages")
@@ -1227,6 +1227,7 @@ public class EditDialog extends JDialog {
 				if (allInputsAreValid) {
 					EditDialog.this.dispose();
 				}
+				listener.scheduleBackupTasks();
 			}
 		});
 		btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
