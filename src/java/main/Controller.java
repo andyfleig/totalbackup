@@ -915,12 +915,15 @@ public class Controller {
 			} else if (autoBackupMode == 1) {
 				nextExecutionTime = calcTimeFromWeekdays(task.getBackupWeekdays(), task.getStartTime());
 			} else if (autoBackupMode == 2) {
-				nextExecutionTime = calcTimeFromDaysInMonth(task.getBackupWeekdays(), task.getStartTime());
+				nextExecutionTime = calcTimeFromDaysInMonth(task.getBackupDaysInMonth(), task.getStartTime());
 			} else if (autoBackupMode == 3) {
 				nextExecutionTime = calcTimeFromInterval(task.getIntervalTime(), task.getIntervalUnit());
 			} else if (autoBackupMode == 4) {
 				// TODO
 			}
+			// TODO: Debugging-Ausgabe raus:
+			System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
+
 			// LocalDateTime in date umwandeln:
 			// TODO: Problem mit Zeitumstellung!
 			Instant instant = nextExecutionTime.toInstant(ZoneOffset.of("+1"));
@@ -971,6 +974,7 @@ public class Controller {
 				LocalDateTime result = time.atDate(date);
 				return result;
 			}
+			wNumber++;
 			daysFromTodayCounter++;
 		}
 		wNumber = 0;
@@ -984,6 +988,7 @@ public class Controller {
 				LocalDateTime result = time.atDate(date);
 				return result;
 			}
+			wNumber++;
 			daysFromTodayCounter++;
 		}
 		return null;
@@ -1018,6 +1023,7 @@ public class Controller {
 				LocalDateTime result = time.atDate(date);
 				return result;
 			}
+			mNumber++;
 			daysFromTodayCounter++;
 		}
 		mNumber = 0;
@@ -1028,6 +1034,7 @@ public class Controller {
 				LocalDateTime result = time.atDate(date);
 				return result;
 			}
+			mNumber++;
 			daysFromTodayCounter++;
 		}
 		return null;
