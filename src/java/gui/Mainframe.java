@@ -364,6 +364,7 @@ public class Mainframe extends JDialog {
 				if (reply == JOptionPane.YES_OPTION) {
 					if (!list_tasks.isSelectionEmpty()) {
 						listener.removeBackupTask(listModel.getElementAt(list_tasks.getSelectedIndex()));
+						listener.scheduleBackupTasks();
 					}
 					saveProperties();
 				}
