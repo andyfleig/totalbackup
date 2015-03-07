@@ -88,7 +88,7 @@ public class Controller {
 	/**
 	 * Timer für die AutoBackup-Funktion.
 	 */
-	private Timer timer;
+	private Timer timer = new Timer();
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -423,7 +423,7 @@ public class Controller {
 
 		// TODO: In Mainframe (außerhalb des Threads)?
 		mainframe.setButtonsToBackupRunning(true);
-
+		// TODO: Probleme mit setPrepared bei abbruch?
 		task.setPrepared(true);
 	}
 
@@ -902,6 +902,8 @@ public class Controller {
 
 	// TODO: JavaDoc
 	public void scheduleBackupTasks() {
+		timer.cancel();
+		timer = new Timer();
 		// Einstellungen aus dem Backup-Task holen und im LocalTime Objekte
 		// "umwandeln" (für jeden Task)
 		for (final BackupTask task : backupTasks) {
@@ -940,7 +942,6 @@ public class Controller {
 					mainframe.prepareBackup(task);
 				}
 			};
-			timer = new Timer();
 			timer.schedule(backup, nextExecutionTimeAsDate);
 		}
 	}
