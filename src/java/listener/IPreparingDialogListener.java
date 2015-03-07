@@ -1,5 +1,5 @@
 package listener;
 
 public interface IPreparingDialogListener {
-	public void cancelBackup();
+	public void cancelBackup(String taskName);
 }

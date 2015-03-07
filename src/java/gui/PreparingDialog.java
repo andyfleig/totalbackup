@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 
+import data.BackupTask;
+
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 import java.awt.event.ActionListener;
@@ -19,7 +21,7 @@ public class PreparingDialog extends JDialog {
 	/**
 	 * Create the panel.
 	 */
-	public PreparingDialog(IPreparingDialogListener listener) {
+	public PreparingDialog(IPreparingDialogListener listener, final BackupTask task) {
 		setSize(220, 80);
 		setResizable(false);
 		this.listener = listener;
@@ -39,13 +41,13 @@ public class PreparingDialog extends JDialog {
 				"GUI.PreparingDialog.button_cancelBackup"));
 		button_cancelBackup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cancelBackup();
+				cancelBackup(task.getTaskName());
 			}
 		});
 		panel_button.add(button_cancelBackup);
 	}
 
-	private void cancelBackup() {
-		listener.cancelBackup();
+	private void cancelBackup(String taskName) {
+		listener.cancelBackup(taskName);
 	}
 }
