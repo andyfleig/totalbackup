@@ -3,3 +3,4 @@ src/bin/
 *.class
 *.ser
 src/cpp/build/
+src/cpp/.kdev4/TotalBackupTray.kdev4
