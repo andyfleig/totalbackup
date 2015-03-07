@@ -72,7 +72,6 @@ void TotalBackupTray::quitTB() {
     printf ("%s \n", "error: could not close socket");
   }
   QCoreApplication::exit(0);
-  //TODO: TrayIcon beenden
 }
 
 void TotalBackupTray::showTB() {
