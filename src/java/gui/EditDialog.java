@@ -671,8 +671,7 @@ public class EditDialog extends JDialog {
 
 		comboBox_intervalUnit = new JComboBox();
 		panel_intervalSettings.add(comboBox_intervalUnit);
-		comboBox_intervalUnit
-				.setModel(new DefaultComboBoxModel(new String[] {"min", "h", "d", "m"}));
+		comboBox_intervalUnit.setModel(new DefaultComboBoxModel(new String[] { "min", "h", "d", "m" }));
 
 		JPanel panel_dynamic = new JPanel();
 		tabbedPane_autostart.addTab(ResourceBundle.getBundle("gui.messages")
@@ -682,6 +681,8 @@ public class EditDialog extends JDialog {
 		checkBox_toggleDynamic = new JCheckBox(ResourceBundle
 				.getBundle("gui.messages").getString("EditDialog.chckbxAktivieren.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_dynamic.add(checkBox_toggleDynamic, BorderLayout.NORTH);
+		// TODO: dyn Backup?
+		checkBox_toggleDynamic.setEnabled(false);
 
 		JPanel panel = new JPanel();
 		panel_dynamic.add(panel, BorderLayout.CENTER);
