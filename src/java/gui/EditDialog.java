@@ -1227,7 +1227,7 @@ public class EditDialog extends JDialog {
 				if (allInputsAreValid) {
 					EditDialog.this.dispose();
 				}
-				listener.scheduleBackupTasks();
+				editListener.scheduleBackupTasks();
 			}
 		});
 		btn_Ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));

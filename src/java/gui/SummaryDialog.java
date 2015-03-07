@@ -44,7 +44,7 @@ public class SummaryDialog extends JDialog {
 	}
 
 	// TODO: JavaDoc
-	public SummaryDialog(ISummaryDialogListener listener, BackupTask task) {
+	public SummaryDialog(ISummaryDialogListener listener, final BackupTask task) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {

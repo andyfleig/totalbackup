@@ -903,7 +903,7 @@ public class Controller {
 	public void scheduleBackupTasks() {
 		// Einstellungen aus dem Backup-Task holen und im LocalTime Objekte
 		// "umwandeln" (für jeden Task)
-		for (BackupTask task : backupTasks) {
+		for (final BackupTask task : backupTasks) {
 			// Kontrollieren ob dieser Task bereits läuft:
 			if (runningBackupTasks.contains(task.getTaskName())) {
 				continue;

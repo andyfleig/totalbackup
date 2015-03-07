@@ -397,7 +397,7 @@ public class Mainframe extends JDialog {
 				if (list_tasks.getSelectedIndex() == -1) {
 					return;
 				}
-				BackupTask taskToRun = listModel.getElementAt(list_tasks.getSelectedIndex());
+				final BackupTask taskToRun = listModel.getElementAt(list_tasks.getSelectedIndex());
 				listener.taskStarted(taskToRun.getTaskName());
 				prep = new PreparingDialog(new IPreparingDialogListener() {
 
