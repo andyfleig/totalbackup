@@ -410,7 +410,7 @@ public class Mainframe extends JDialog {
 						if (reply == JOptionPane.YES_OPTION) {
 							Mainframe.this.addToOutput(
 									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
-									false);
+									false, taskToRun.getTaskName());
 							button_cancel.setEnabled(false);
 							if (backupThread != null) {
 								backupThread.interrupt();
@@ -447,8 +447,10 @@ public class Mainframe extends JDialog {
 						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
 								.getBundle("gui.messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
-					Mainframe.this.addToOutput(
-							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false);
+					Mainframe.this
+							.addToOutput(
+									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
+									false, null);
 					button_cancel.setEnabled(false);
 					if (backupThread != null) {
 						backupThread.interrupt();
@@ -474,7 +476,7 @@ public class Mainframe extends JDialog {
 						if (reply == JOptionPane.YES_OPTION) {
 							Mainframe.this.addToOutput(
 									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
-									false);
+									false, null);
 							button_cancel.setEnabled(false);
 							if (backupThread != null) {
 								backupThread.interrupt();
@@ -641,7 +643,7 @@ public class Mainframe extends JDialog {
 			if (!(new File(sources.get(i).getPath())).exists()) {
 				String output = ResourceBundle.getBundle("gui.messages").getString(
 						"GUI.Mainframe.errorSourceDontExists");
-				listener.printOut(output, false);
+				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, selectedTask);
 				return;
 			}
@@ -649,7 +651,7 @@ public class Mainframe extends JDialog {
 		if (!(new File(selectedTask.getDestinationPath())).exists()) {
 			String output = ResourceBundle.getBundle("gui.messages")
 					.getString("GUI.Mainframe.errDestinationDontExists");
-			listener.printOut(output, false);
+			listener.printOut(output, false, task.getTaskName());
 			return;
 		}
 
@@ -849,12 +851,16 @@ public class Mainframe extends JDialog {
 	 * @param error
 	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
 	 *            (schrift schwarz)
+	 * @param taskName
+	 *            Name des aktuellen Tasks
 	 */
-	public void addToOutput(String output, boolean error) {
+	public void addToOutput(String output, boolean error, String taskName) {
 		if (output == null) {
 			throw new NullPointerException();
 		}
-
+		if (taskName != null) {
+			output = "[" + taskName + "]" + output;
+		}
 		if (!error) {
 			try {
 				if (tpOutput_doc.getLength() < 1) {

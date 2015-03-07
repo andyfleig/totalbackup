@@ -207,7 +207,7 @@ public class EditDialog extends JDialog {
 
 		setResizable(false);
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.title"));
-		setBounds(100, 100, 515, 631);
+		setBounds(100, 100, 515, 646);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);

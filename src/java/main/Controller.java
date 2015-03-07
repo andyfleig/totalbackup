@@ -190,7 +190,7 @@ public class Controller {
 							}
 							String outprint = ResourceBundle.getBundle("gui.messages").getString(
 									"Messages.deletedBackupFolder");
-							backupListener.printOut(outprint, false);
+							backupListener.printOut(outprint, false, task.getTaskName());
 							backupListener.log(outprint, task);
 						}
 
@@ -198,13 +198,13 @@ public class Controller {
 						public void outprintBackupCanceled(BackupTask task) {
 							String outprint = ResourceBundle.getBundle("gui.messages").getString(
 									"Messages.BackupCanceled");
-							backupListener.printOut(outprint, false);
+							backupListener.printOut(outprint, false, task.getTaskName());
 							backupListener.log(outprint, task);
 						}
 
 						@Override
-						public void printOut(String s, boolean error) {
-							Controller.this.printOut(s, error);
+						public void printOut(String s, boolean error, String taskName) {
+							Controller.this.printOut(s, error, taskName);
 						}
 
 						@Override
@@ -298,12 +298,12 @@ public class Controller {
 		backupListener = new IBackupListener() {
 
 			@Override
-			public void printOut(final String s, final boolean error) {
+			public void printOut(final String s, final boolean error, final String taskName) {
 				SwingUtilities.invokeLater(new Runnable() {
 
 					@Override
 					public void run() {
-						Controller.this.printOut(s, error);
+						Controller.this.printOut(s, error, taskName);
 					}
 
 				});
@@ -398,13 +398,13 @@ public class Controller {
 			}
 			if (backupSetFound) {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup");
-				printOut(output, false);
+				printOut(output, false, task.getTaskName());
 				log(output, task);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup");
-				printOut(output, false);
+				printOut(output, false, task.getTaskName());
 				log(output, task);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
@@ -417,7 +417,7 @@ public class Controller {
 			backup.runPreparation(task);
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
-			printOut(output, false);
+			printOut(output, false, task.getTaskName());
 			log(output, task);
 		}
 
@@ -447,7 +447,7 @@ public class Controller {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
-			printOut(output, false);
+			printOut(output, false, task.getTaskName());
 			log(output, task);
 		}
 		// alte Backups aufräumen (wenn gewünscht):
@@ -469,11 +469,12 @@ public class Controller {
 					}
 					printOut(
 							toDelete.getAbsolutePath() + " "
-									+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"), false);
+									+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"), false,
+							task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
-				printOut(outprint, false);
+				printOut(outprint, false, task.getTaskName());
 				log(outprint, task);
 			}
 		} else if (task.extendedAutoCleanIsEnabled()) {
@@ -507,8 +508,8 @@ public class Controller {
 	 * @param error
 	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
-	private void printOut(String s, boolean error) {
-		mainframe.addToOutput(s, error);
+	private void printOut(String s, boolean error, String taskName) {
+		mainframe.addToOutput(s, error, taskName);
 	}
 
 	/**

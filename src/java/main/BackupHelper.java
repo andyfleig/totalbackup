@@ -41,7 +41,7 @@ public final class BackupHelper {
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.copying") + " " + source.getPath();
 		listener.setStatus(output);
 		if (listener.advancedOutputIsEnabled()) {
-			listener.printOut(output, false);
+			listener.printOut(output, false, currentTask.getTaskName());
 		}
 		listener.log(output, currentTask);
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
@@ -73,7 +73,7 @@ public final class BackupHelper {
 
 		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
 		if (listener.advancedOutputIsEnabled()) {
-			listener.printOut(output, false);
+			listener.printOut(output, false, task.getTaskName());
 		}
 		listener.setStatus(output);
 		listener.log(output, task);
@@ -110,7 +110,7 @@ public final class BackupHelper {
 		File destinationFile = new File(destinationPath);
 		if (!destinationFile.exists()) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
-			listener.printOut(output, true);
+			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
 			;
 			return null;
@@ -121,12 +121,12 @@ public final class BackupHelper {
 		// Backup-Ordner anlegen:
 		if (dir.mkdir()) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated");
-			listener.printOut(output, false);
+			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
 			;
 		} else {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
-			listener.printOut(output, true);
+			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
 			;
 			return null;

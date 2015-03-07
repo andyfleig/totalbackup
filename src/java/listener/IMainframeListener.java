@@ -128,8 +128,10 @@ public interface IMainframeListener {
 	 *            auszugebender String
 	 * @param error
 	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
+	 * @param taskName
+	 *            Name des entsprechenen Tasks
 	 */
-	public void printOut(String s, boolean error);
+	public void printOut(String s, boolean error, String taskName);
 
 	/**
 	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
