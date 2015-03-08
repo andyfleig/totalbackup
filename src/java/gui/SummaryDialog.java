@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 
 import data.BackupTask;
 import listener.ISummaryDialogListener;
+import main.Backupable;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -35,7 +36,7 @@ public class SummaryDialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			SummaryDialog dialog = new SummaryDialog(null, null);
+			SummaryDialog dialog = new SummaryDialog(null, null, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -44,7 +45,7 @@ public class SummaryDialog extends JDialog {
 	}
 
 	// TODO: JavaDoc
-	public SummaryDialog(ISummaryDialogListener listener, final BackupTask task) {
+	public SummaryDialog(ISummaryDialogListener listener, final BackupTask task, final Backupable backup) {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent arg0) {
@@ -82,8 +83,10 @@ public class SummaryDialog extends JDialog {
 			// Button Start:
 			public void actionPerformed(ActionEvent arg0) {
 				backupIsNotFinished = true;
-				clearBackupInfos();
-				SummaryDialog.this.listener.startBackup();
+				synchronized (task) {
+					task.notify();
+				}
+				// SummaryDialog.this.listener.startBackup();
 			}
 		});
 		btn_ok.setActionCommand("OK");
@@ -95,6 +98,10 @@ public class SummaryDialog extends JDialog {
 			// Button Cancel:
 			public void actionPerformed(ActionEvent e) {
 				backupCanceled = true;
+				backup.cancel();
+				synchronized (task) {
+					task.notify();
+				}
 				cancelBackup(task);
 			}
 		});
@@ -148,15 +155,15 @@ public class SummaryDialog extends JDialog {
 
 		// Inhalte hinzufügen:
 		label_taskNameDyn.setText(listener.getTaskName());
-		label_numberToCopyDyn.setText(String.valueOf(listener.getNumberOfFilesToCopy()).toString());
-		label_numberToLinkDyn.setText(String.valueOf(listener.getNumberOfFilesToLink()).toString());
-		label_numberOfDirsDyn.setText(String.valueOf(listener.getNumberOfDirectories()).toString());
+		label_numberToCopyDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToCopy()).toString());
+		label_numberToLinkDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToLink()).toString());
+		label_numberOfDirsDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfDirectories()).toString());
 
 		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 
 		// TODO: schöner: in eigene Methode auslagern
 		// Größe der zu kopierenden Dateien:
-		double size = listener.getSizeToCopy();
+		double size = backup.getBackupInfos().getSizeToCopy();
 		if (size < 1000) {
 			String result = String.valueOf(decimalFormat.format(size)) + "Byte";
 			label_sizeToCopyDyn.setText(result);
@@ -172,7 +179,7 @@ public class SummaryDialog extends JDialog {
 		}
 
 		// Größe der zu kopierenden Dateien:
-		size = listener.getSizeToLink();
+		size = backup.getBackupInfos().getSizeToLink();
 		if (size < 1000) {
 			String result = String.valueOf(decimalFormat.format(size)) + "Byte";
 			label_sizeToLinkDyn.setText(result);
@@ -191,14 +198,9 @@ public class SummaryDialog extends JDialog {
 	// TODO: JavaDoc
 	private void cancelBackup(BackupTask task) {
 		outprintBackupCanceled(task);
-		listener.taskFinished(listener.getTaskName());
+		listener.taskFinished(task);
 		deleteEmptyBackupFolders(task);
-		clearBackupInfos();
 		SummaryDialog.this.dispose();
-	}
-
-	private void clearBackupInfos() {
-		listener.clearBackupInfos();
 	}
 
 	private void deleteEmptyBackupFolders(BackupTask task) {

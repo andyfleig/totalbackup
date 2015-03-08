@@ -19,6 +19,7 @@ import java.io.FilenameFilter;
 
 import listener.IBackupListener;
 import data.BackupElement;
+import data.BackupInfos;
 import data.BackupTask;
 import data.Filter;
 import data.Source;
@@ -72,10 +73,17 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private String sourceRootDir;
 	/**
+	 * Informationen (der Vorbereitung) über dieses Backup.
+	 */
+	private BackupInfos backupInfos = new BackupInfos();
+	/**
 	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden
 	 * Elemente).
 	 */
 	private Source currentSource;
+
+	// TODO: JavaDoc
+	private boolean isCanceled;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -355,7 +363,7 @@ public class HardlinkBackup implements Backupable {
 			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
-			listener.taskFinished(taskName);
+			listener.taskFinished(task);
 		} catch (BackupCanceledException e) {
 			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
@@ -404,7 +412,7 @@ public class HardlinkBackup implements Backupable {
 					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
 							true, false));
-					listener.increaseNumberOfDirectories();
+					backupInfos.increaseNumberOfDirectories();
 					rekursivePreparation(files[i], newBackupDir, task);
 				}
 
@@ -433,8 +441,8 @@ public class HardlinkBackup implements Backupable {
 						// im Backup)
 						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
-						listener.increaseNumberOfFilesToCopy();
-						listener.increaseSizeToCopyBy(files[i].length());
+						backupInfos.increaseNumberOfFilesToCopy();
+						backupInfos.increaseSizeToCopyBy(files[i].length());
 						continue;
 					}
 					if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
@@ -442,8 +450,8 @@ public class HardlinkBackup implements Backupable {
 						// Datei zu kopieren:
 						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 								false, false));
-						listener.increaseNumberOfFilesToCopy();
-						listener.increaseSizeToCopyBy(files[i].length());
+						backupInfos.increaseNumberOfFilesToCopy();
+						backupInfos.increaseSizeToCopyBy(files[i].length());
 					} else {
 						// Datei liegt in der aktuellen Version vor
 
@@ -463,8 +471,8 @@ public class HardlinkBackup implements Backupable {
 								// Datei verlinken:
 								elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
 										.getAbsolutePath(), false, true));
-								listener.increaseNumberOfFilesToLink();
-								listener.increaseSizeToLinkBy(files[i].length());
+								backupInfos.increaseNumberOfFilesToLink();
+								backupInfos.increaseSizeToLinkBy(files[i].length());
 							} else {
 								// Überprüfung der MD5 Summe:
 								// Gleiche MD5 heißt verlinken, unterschiedliche
@@ -476,14 +484,14 @@ public class HardlinkBackup implements Backupable {
 									// Datei verlinken:
 									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
 											.getAbsolutePath(), false, true));
-									listener.increaseNumberOfFilesToLink();
-									listener.increaseSizeToLinkBy(files[i].length());
+									backupInfos.increaseNumberOfFilesToLink();
+									backupInfos.increaseSizeToLinkBy(files[i].length());
 								} else {
 									// Datei zu kopieren:
 									elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile
 											.getAbsolutePath(), false, false));
-									listener.increaseNumberOfFilesToCopy();
-									listener.increaseSizeToCopyBy(files[i].length());
+									backupInfos.increaseNumberOfFilesToCopy();
+									backupInfos.increaseSizeToCopyBy(files[i].length());
 								}
 							}
 
@@ -535,8 +543,8 @@ public class HardlinkBackup implements Backupable {
 							// Datei zu kopieren:
 							elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
 									false, false));
-							listener.increaseNumberOfFilesToCopy();
-							listener.increaseSizeToCopyBy(files[i].length());
+							backupInfos.increaseNumberOfFilesToCopy();
+							backupInfos.increaseSizeToCopyBy(files[i].length());
 						}
 					}
 				}
@@ -767,5 +775,20 @@ public class HardlinkBackup implements Backupable {
 			}
 		}
 		return newestBackupPath;
+	}
+
+	@Override
+	public BackupInfos getBackupInfos() {
+		return backupInfos;
+	}
+
+	@Override
+	public boolean isCanceled() {
+		return isCanceled;
+	}
+
+	@Override
+	public void cancel() {
+		isCanceled = true;
 	}
 }

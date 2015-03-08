@@ -3,6 +3,7 @@ package data;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * Eine Backup-Aufgabe.
@@ -39,6 +40,7 @@ public class BackupTask implements Serializable {
 	private LocalTime backupStartTime;
 	private int intervalTime;
 	private String intervalUnit;
+	private transient ScheduledFuture<?> scheduledFuture;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -502,5 +504,15 @@ public class BackupTask implements Serializable {
 	 */
 	public String getIntervalUnit() {
 		return intervalUnit;
+	}
+
+	// TODO JavaDoc
+	public ScheduledFuture getScheduledFuture() {
+		return scheduledFuture;
+	}
+
+	// TODO JavaDoc
+	public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
+		this.scheduledFuture = scheduledFuture;
 	}
 }

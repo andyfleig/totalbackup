@@ -2,6 +2,7 @@ package listener;
 
 import java.util.ArrayList;
 
+import main.Backupable;
 import data.BackupTask;
 
 public interface IMainframeListener {
@@ -12,7 +13,7 @@ public interface IMainframeListener {
 	 * @param task
 	 *            vorzubereitender Backup-Task
 	 */
-	public void startPreparation(BackupTask task);
+	public Backupable startPreparation(BackupTask task);
 
 	/**
 	 * Startet einen bestimmten Backup-Task.
@@ -20,7 +21,8 @@ public interface IMainframeListener {
 	 * @param task
 	 *            zu startender Backup-Task
 	 */
-	public void startBackupTask(BackupTask task);
+	// TODO: JavaDoc
+	public void startBackupTask(BackupTask task, Backupable backup);
 
 	/**
 	 * Löscht einen Backup-Task.
@@ -61,46 +63,6 @@ public interface IMainframeListener {
 	 *            hinzuzufügender Backup-Task
 	 */
 	public void addBackupTask(BackupTask task);
-
-	/**
-	 * Löscht alle Backup-Infos.
-	 */
-	public void clearBackupInfos();
-
-	/**
-	 * Gibt die Anzahl der zu kopierenden Ordner zurück.
-	 * 
-	 * @return Anzahl der zu kopierenden Ordner
-	 */
-	public long getNumberOfDirectories();
-
-	/**
-	 * Gibt die Anzahl der zu kopierenden Dateien zurück.
-	 * 
-	 * @return Anzahl der zu kopierenden Dateien
-	 */
-	public long getNumberOfFilesToCopy();
-
-	/**
-	 * Gibt die Anzahl der zu verlinkenden Dateien zurück.
-	 * 
-	 * @return Anzahl der zu verlinkenden Dateien
-	 */
-	public long getNumberOfFilesToLink();
-
-	/**
-	 * Gibt die Gesamtgröße der zu kopierenden Dateien zurück.
-	 * 
-	 * @return Gesamtgröße der zu kopierenden Dateien
-	 */
-	public double getSizeToCopy();
-
-	/**
-	 * Gibt die Gesamtgröße der zu verlinkenden Dateien zurück.
-	 * 
-	 * @return Gesamtgröße der zu verlinkenden Dateien
-	 */
-	public double getSizeToLink();
 
 	/**
 	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
@@ -154,11 +116,13 @@ public interface IMainframeListener {
 	/**
 	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
 	 * 
-	 * @param taskName
-	 *            Name des zu entfernenden Backup-Tasks
+	 * @param task
+	 *            der zu entfernenden Backup-Tasks
 	 */
-	public void taskFinished(String taskName);
+	public void taskFinished(BackupTask task);
 
 	// TODO: JavaDoc
 	public void scheduleBackupTasks();
+
+	public void removeBackupTaskScheduling(BackupTask task);
 }

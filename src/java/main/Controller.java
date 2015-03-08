@@ -30,6 +30,9 @@ import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +45,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -70,17 +74,9 @@ public class Controller {
 	 */
 	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 	/**
-	 * Aktuelle Backup(able)-Instanz.
-	 */
-	private Backupable backup;
-	/**
 	 * Aktuelle IBackupListener-Instanz.
 	 */
 	private IBackupListener backupListener;
-	/**
-	 * Informationen (der Vorbereitung) über den aktuellen Backup-Task.
-	 */
-	private BackupInfos backupInfos;
 	/**
 	 * Alle laufenden Backup-Taks
 	 */
@@ -88,26 +84,25 @@ public class Controller {
 	/**
 	 * Timer für die AutoBackup-Funktion.
 	 */
-	private Timer timer = new Timer();
+	private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(3);
 
 	/**
 	 * Startet und initialisiert den Controller.
 	 */
 	public void startController() {
-		backupInfos = new BackupInfos();
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					mainframe = new Mainframe(new IMainframeListener() {
 
 						@Override
-						public void startPreparation(BackupTask task) {
-							Controller.this.startPreparation(task);
+						public Backupable startPreparation(BackupTask task) {
+							return Controller.this.startPreparation(task);
 						}
 
 						@Override
-						public void startBackupTask(BackupTask task) {
-							Controller.this.startBackup(task);
+						public void startBackupTask(BackupTask task, Backupable backup) {
+							Controller.this.startBackup(task, backup);
 
 						}
 
@@ -135,36 +130,6 @@ public class Controller {
 						public void addBackupTask(BackupTask task) {
 							Controller.this.addBackupTask(task);
 
-						}
-
-						@Override
-						public long getNumberOfDirectories() {
-							return backupInfos.getNumberOfDirectories();
-						}
-
-						@Override
-						public long getNumberOfFilesToCopy() {
-							return backupInfos.getNumberOfFilesToCopy();
-						}
-
-						@Override
-						public long getNumberOfFilesToLink() {
-							return backupInfos.getNumberOfFilesToLink();
-						}
-
-						@Override
-						public double getSizeToCopy() {
-							return backupInfos.getSizeToCopy();
-						}
-
-						@Override
-						public double getSizeToLink() {
-							return backupInfos.getSizeToLink();
-						}
-
-						@Override
-						public void clearBackupInfos() {
-							backupInfos.clear();
 						}
 
 						@Override
@@ -219,14 +184,19 @@ public class Controller {
 						}
 
 						@Override
-						public void taskFinished(String taskName) {
-							Controller.this.taskFinished(taskName);
+						public void taskFinished(BackupTask task) {
+							Controller.this.taskFinished(task);
 
 						}
 
 						@Override
 						public void scheduleBackupTasks() {
 							Controller.this.scheduleBackupTasks();
+						}
+
+						@Override
+						public void removeBackupTaskScheduling(BackupTask task) {
+							Controller.this.removeBackupTaskScheduling(task);
 						}
 					});
 				}
@@ -284,14 +254,14 @@ public class Controller {
 	public void startAllBackups() {
 		// TODO: unnötig?
 		for (int i = 0; i < backupTasks.size(); i++) {
-			startBackup(backupTasks.get(i));
+			// startBackup(backupTasks.get(i));
 		}
 	}
 
 	/**
 	 * Startet die Backup-Vorbereitung.
 	 */
-	public void startPreparation(BackupTask task) {
+	public Backupable startPreparation(BackupTask task) {
 		mainframe.setButtonsToBackupRunning(false);
 
 		// Listener anlegen:
@@ -333,47 +303,19 @@ public class Controller {
 			}
 
 			@Override
-			public void increaseNumberOfDirectories() {
-				backupInfos.increaseNumberOfDirectories();
-
-			}
-
-			@Override
-			public void increaseNumberOfFilesToCopy() {
-				backupInfos.increaseNumberOfFilesToCopy();
-			}
-
-			@Override
-			public void increaseNumberOfFilesToLink() {
-				backupInfos.increaseNumberOfFilesToLink();
-			}
-
-			@Override
-			public void increaseSizeToCopyBy(double sizeToIncreaseBy) {
-				backupInfos.increaseSizeToCopyBy(sizeToIncreaseBy);
-
-			}
-
-			@Override
-			public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
-				backupInfos.increaseSizeToLinkBy(sizeToIncreaseBy);
-
-			}
-
-			@Override
 			public void taskStarted(String taskName) {
 				Controller.this.taskStarted(taskName);
 
 			}
 
 			@Override
-			public void taskFinished(String taskName) {
-				Controller.this.taskFinished(taskName);
+			public void taskFinished(BackupTask task) {
+				Controller.this.taskFinished(task);
 
 			}
 
 		};
-
+		Backupable backup;
 		// Backup-Objekt in Abhängigkeit des Backup-Modus erstellen:
 		if (task.getBackupMode() == 1) {
 			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
@@ -425,6 +367,7 @@ public class Controller {
 		mainframe.setButtonsToBackupRunning(true);
 		// TODO: Probleme mit setPrepared bei abbruch?
 		task.setPrepared(true);
+		return backup;
 	}
 
 	/**
@@ -433,7 +376,7 @@ public class Controller {
 	 * @param task
 	 *            Backup-Task welcher ausgeführt werden soll
 	 */
-	public void startBackup(BackupTask task) {
+	public void startBackup(BackupTask task, Backupable backup) {
 		mainframe.setButtonsToBackupRunning(false);
 
 		if (!task.isPrepered()) {
@@ -889,60 +832,70 @@ public class Controller {
 	/**
 	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
 	 * 
-	 * @param taskName
-	 *            Name des zu entfernenden Backup-Tasks
+	 * @param task
+	 *            Der zu entfernenden Backup-Task
 	 */
-	private void taskFinished(String taskName) {
-		if (!runningBackupTasks.remove(taskName)) {
+	private void taskFinished(BackupTask task) {
+		if (!runningBackupTasks.remove(task.getTaskName())) {
 			System.err.println("Error: This task isn't running");
 		}
-		System.out.println("Task finished:" + taskName);
-		scheduleBackupTasks();
+		System.out.println("Task finished:" + task.getTaskName());
+		scheduleBackupTask(task);
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Reschedulet den gegebenen Task.
+	 */
+	public void scheduleBackupTask(final BackupTask task) {
+		// Kontrollieren ob dieser Task bereits läuft:
+		if (runningBackupTasks.contains(task.getTaskName())) {
+			return;
+		}
+		LocalDateTime nextExecutionTime = null;
+		int autoBackupMode = task.getAutoBackupMode();
+		if (autoBackupMode == 0) {
+			return;
+		} else if (autoBackupMode == 1) {
+			nextExecutionTime = calcTimeFromWeekdays(task.getBackupWeekdays(), task.getStartTime());
+		} else if (autoBackupMode == 2) {
+			nextExecutionTime = calcTimeFromDaysInMonth(task.getBackupDaysInMonth(), task.getStartTime());
+		} else if (autoBackupMode == 3) {
+			nextExecutionTime = calcTimeFromInterval(task.getIntervalTime(), task.getIntervalUnit());
+		} else if (autoBackupMode == 4) {
+			// TODO
+		}
+		// TODO: Debugging-Ausgabe raus:
+		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
+
+		// Tautostart für diesen Task aktivieren:
+		task.setAutostart(true);
+		// TODO: autostart deaktivieren?
+		// scheduling:
+		Runnable backup = new Runnable() {
+			public void run() {
+				// TODO: Task als beendet markieren?
+				taskStarted(task.getTaskName());
+				mainframe.prepareBackup(task);
+			}
+		};
+		task.setScheduledFuture(timer.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.MILLIS),
+				TimeUnit.MILLISECONDS));
+	}
+
+	/**
+	 * Reschedulet alle Tasks, dabei dürfen laufende Backups weiterlaufen.
+	 */
 	public void scheduleBackupTasks() {
-		timer.cancel();
-		timer = new Timer();
+		// Alle aus dem Timer werfen, die geplant aber noch nicht gestartet sind
+		for (BackupTask task : backupTasks) {
+			if (task.getScheduledFuture() != null) {
+				task.getScheduledFuture().cancel(false);
+			}
+		}
 		// Einstellungen aus dem Backup-Task holen und im LocalTime Objekte
 		// "umwandeln" (für jeden Task)
 		for (final BackupTask task : backupTasks) {
-			// Kontrollieren ob dieser Task bereits läuft:
-			if (runningBackupTasks.contains(task.getTaskName())) {
-				continue;
-			}
-			LocalDateTime nextExecutionTime = null;
-			int autoBackupMode = task.getAutoBackupMode();
-			if (autoBackupMode == 0) {
-				continue;
-			} else if (autoBackupMode == 1) {
-				nextExecutionTime = calcTimeFromWeekdays(task.getBackupWeekdays(), task.getStartTime());
-			} else if (autoBackupMode == 2) {
-				nextExecutionTime = calcTimeFromDaysInMonth(task.getBackupDaysInMonth(), task.getStartTime());
-			} else if (autoBackupMode == 3) {
-				nextExecutionTime = calcTimeFromInterval(task.getIntervalTime(), task.getIntervalUnit());
-			} else if (autoBackupMode == 4) {
-				// TODO
-			}
-			// TODO: Debugging-Ausgabe raus:
-			System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
-
-			// LocalDateTime in date umwandeln:
-			// TODO: Problem mit Zeitumstellung!
-			Instant instant = nextExecutionTime.toInstant(ZoneOffset.of("+1"));
-			Date nextExecutionTimeAsDate = Date.from(instant);
-			// Tautostart für diesen Task aktivieren:
-			task.setAutostart(true);
-			// TODO: autostart deaktivieren?
-			// scheduling:
-			TimerTask backup = new TimerTask() {
-				public void run() {
-					// TODO: Task als beendet markieren?
-					taskStarted(task.getTaskName());
-					mainframe.prepareBackup(task);
-				}
-			};
-			timer.schedule(backup, nextExecutionTimeAsDate);
+			scheduleBackupTask(task);
 		}
 	}
 
@@ -994,6 +947,18 @@ public class Controller {
 			daysFromTodayCounter++;
 		}
 		return null;
+	}
+
+	/**
+	 * Löscht die geplante ausführung des gegebenen Tasks.
+	 * 
+	 * @param task
+	 *            entsprechender Task
+	 */
+	public void removeBackupTaskScheduling(BackupTask task) {
+		if (task.getScheduledFuture() != null) {
+			task.getScheduledFuture().cancel(false);
+		}
 	}
 
 	/**

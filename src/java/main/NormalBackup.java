@@ -7,6 +7,7 @@ import java.util.*;
 
 import listener.IBackupListener;
 import data.BackupElement;
+import data.BackupInfos;
 import data.BackupTask;
 import data.Filter;
 import data.Source;
@@ -38,12 +39,19 @@ public class NormalBackup implements Backupable {
 	 * runBackup() aufgerufen werden.
 	 */
 	private boolean preparationDone = false;
+	/**
+	 * Informationen (der Vorbereitung) über dieses Backup.
+	 */
+	private BackupInfos backupInfos = new BackupInfos();
 
 	/**
 	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden
 	 * Elemente).
 	 */
 	private Source currentSource;
+
+	// TODO: JavaDoc
+	private boolean isCanceled;
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
@@ -179,7 +187,7 @@ public class NormalBackup implements Backupable {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
-			listener.taskFinished(taskName);
+			listener.taskFinished(task);
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
@@ -222,7 +230,7 @@ public class NormalBackup implements Backupable {
 					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
 							true, false));
-					listener.increaseNumberOfDirectories();
+					backupInfos.increaseNumberOfDirectories();
 					rekursivePreparation(files[i], newBackupDir, task);
 				}
 			} else {
@@ -240,10 +248,25 @@ public class NormalBackup implements Backupable {
 					File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
 					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false,
 							false));
-					listener.increaseNumberOfFilesToCopy();
-					listener.increaseSizeToCopyBy(files[i].length());
+					backupInfos.increaseNumberOfFilesToCopy();
+					backupInfos.increaseSizeToCopyBy(files[i].length());
 				}
 			}
 		}
+	}
+
+	@Override
+	public BackupInfos getBackupInfos() {
+		return backupInfos;
+	}
+
+	@Override
+	public boolean isCanceled() {
+		return isCanceled;
+	}
+
+	@Override
+	public void cancel() {
+		isCanceled = true;
 	}
 }

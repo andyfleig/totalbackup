@@ -4,6 +4,7 @@ import listener.IEditDialogListener;
 import listener.IMainframeListener;
 import listener.IPreparingDialogListener;
 import listener.ISummaryDialogListener;
+import main.Backupable;
 import main.Controller;
 import gui.AboutDialog;
 import gui.EditDialog;
@@ -358,8 +359,9 @@ public class Mainframe extends JDialog {
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					if (!list_tasks.isSelectionEmpty()) {
-						listener.removeBackupTask(listModel.getElementAt(list_tasks.getSelectedIndex()));
-						listener.scheduleBackupTasks();
+						BackupTask currentTask = listModel.getElementAt(list_tasks.getSelectedIndex());
+						listener.removeBackupTask(currentTask);
+						listener.removeBackupTaskScheduling(currentTask);
 					}
 					saveProperties();
 				}
@@ -624,22 +626,33 @@ public class Mainframe extends JDialog {
 			return;
 		}
 
-		listener.startPreparation(task);
+		Backupable backup = listener.startPreparation(task);
 		if (prep != null) {
 			prep.dispose();
 		}
-		boolean isCanceled = true;
+		boolean isCanceled = false;
 		for (BackupThreadContainer container : backupThreads) {
 			if (container.getTaskName().equals(task.getTaskName())) {
-				isCanceled = false;
+				isCanceled = true;
 			}
 		}
 		if (!isCanceled) {
 			if (!task.getAutostart()) {
-				showSummaryDialog(task);
+				showSummaryDialog(task, backup);
+				synchronized (task) {
+					try {
+						task.wait();
+						if (!backup.isCanceled()) {
+							startBackupTask(task, backup);
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					// warten fertig
+				}
 			} else {
-				listener.clearBackupInfos();
-				startBackupTask(task);
+				startBackupTask(task, backup);
 			}
 		}
 	}
@@ -650,48 +663,18 @@ public class Mainframe extends JDialog {
 	 * @param task
 	 *            entsprechender BackupTask
 	 */
-	private void showSummaryDialog(final BackupTask task) {
+	private void showSummaryDialog(final BackupTask task, final Backupable backup) {
 		summary = new SummaryDialog(new ISummaryDialogListener() {
 
 			@Override
 			public void startBackup() {
-				startBackupTask(task);
+				startBackupTask(task, backup);
 			}
 
 			@Override
 			public String getTaskName() {
 				// TODO: schön?
 				return task.getTaskName();
-			}
-
-			@Override
-			public long getNumberOfDirectories() {
-				return listener.getNumberOfDirectories();
-			}
-
-			@Override
-			public long getNumberOfFilesToCopy() {
-				return listener.getNumberOfFilesToCopy();
-			}
-
-			@Override
-			public long getNumberOfFilesToLink() {
-				return listener.getNumberOfFilesToLink();
-			}
-
-			@Override
-			public double getSizeToCopy() {
-				return listener.getSizeToCopy();
-			}
-
-			@Override
-			public double getSizeToLink() {
-				return listener.getSizeToLink();
-			}
-
-			@Override
-			public void clearBackupInfos() {
-				listener.clearBackupInfos();
 			}
 
 			@Override
@@ -705,12 +688,12 @@ public class Mainframe extends JDialog {
 			}
 
 			@Override
-			public void taskFinished(String taskName) {
-				listener.taskFinished(taskName);
+			public void taskFinished(BackupTask task) {
+				listener.taskFinished(task);
 
 			}
 
-		}, task);
+		}, task, backup);
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		summary.setLocation(frmTotalbackup.getLocationOnScreen());
@@ -730,20 +713,21 @@ public class Mainframe extends JDialog {
 		// this.controller = c;
 	}
 
-	private void startBackupTask(final BackupTask task) {
+	private void startBackupTask(final BackupTask task, Backupable backup) {
 		if (!task.getAutostart()) {
 			summary.dispose();
 		}
 
-		Thread backupThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				listener.startBackupTask(task);
-			}
-		});
-		BackupThreadContainer newContainer = new BackupThreadContainer(backupThread, task.getTaskName());
-		backupThreads.add(newContainer);
-		backupThread.start();
+		// Thread backupThread = new Thread(new Runnable() {
+		// @Override
+		// public void run() {
+		listener.startBackupTask(task, backup);
+		// }
+		// });
+		// BackupThreadContainer newContainer = new
+		// BackupThreadContainer(backupThread, task.getTaskName());
+		// backupThreads.add(newContainer);
+		// backupThread.start();
 
 	}
 

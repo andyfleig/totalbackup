@@ -3,6 +3,7 @@ package main;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import data.BackupInfos;
 import data.BackupTask;
 
 public interface Backupable {
@@ -25,4 +26,10 @@ public interface Backupable {
 	 */
 	public void runBackup(BackupTask task) throws FileNotFoundException, IOException;
 
+	// TODO: JavaDoc
+	public BackupInfos getBackupInfos();
+
+	public boolean isCanceled();
+
+	public void cancel();
 }
