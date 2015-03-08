@@ -489,8 +489,7 @@ public class Mainframe extends JDialog {
 			try {
 				Process p = builder.start();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				System.err.println("Error while starting totalbackuptray");
 			}
 
 			// Thread für recv anlegen und starten:
@@ -557,8 +556,7 @@ public class Mainframe extends JDialog {
 			try {
 				server = new ServerSocket(1234);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Error: Could not open TCP-Socket");
 			}
 
 			// 2. Verbinden:
@@ -646,10 +644,8 @@ public class Mainframe extends JDialog {
 							startBackupTask(task, backup);
 						}
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("Backup-Thread was unexpectedly canceled");
 					}
-					// warten fertig
 				}
 			} else {
 				startBackupTask(task, backup);
