@@ -705,17 +705,7 @@ public class Mainframe extends JDialog {
 		if (!task.getAutostart()) {
 			summary.dispose();
 		}
-
-		// Thread backupThread = new Thread(new Runnable() {
-		// @Override
-		// public void run() {
 		listener.startBackupTask(task, backup);
-		// }
-		// });
-		// BackupThreadContainer newContainer = new
-		// BackupThreadContainer(backupThread, task.getTaskName());
-		// backupThreads.add(newContainer);
-		// backupThread.start();
 
 	}
 
