@@ -44,7 +44,16 @@ public class SummaryDialog extends JDialog {
 		}
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Dialog für die Zusammenfassung des Vorbereiteten Backups.
+	 * 
+	 * @param listener
+	 *            SummaryDialogListener
+	 * @param task
+	 *            entsprechender BackupTask
+	 * @param backup
+	 *            entsprechendes Backup (Backupable)
+	 */
 	public SummaryDialog(ISummaryDialogListener listener, final BackupTask task, final Backupable backup) {
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -195,7 +204,12 @@ public class SummaryDialog extends JDialog {
 		}
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Bricht den gegebenen BackupTask ab.
+	 * 
+	 * @param task
+	 *            abzubrechender BackupTask
+	 */
 	private void cancelBackup(BackupTask task) {
 		outprintBackupCanceled(task);
 		listener.taskFinished(task);
@@ -203,6 +217,12 @@ public class SummaryDialog extends JDialog {
 		SummaryDialog.this.dispose();
 	}
 
+	/**
+	 * Löscht alle leeren Backup-Ordner eines Backuptasks (im Zielverzeichnis).
+	 * 
+	 * @param task
+	 *            entsprechender BackupTask
+	 */
 	private void deleteEmptyBackupFolders(BackupTask task) {
 		listener.deleteEmptyBackupFolders(task);
 	}

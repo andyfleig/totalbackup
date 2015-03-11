@@ -43,6 +43,8 @@ public interface IEditDialogListener {
 	 */
 	public void saveProperties();
 
-	// TODO: JavaDoc
+	/**
+	 * Schedulet alle BackupTasks.
+	 */
 	public void scheduleBackupTasks();
 }

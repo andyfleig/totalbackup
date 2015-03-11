@@ -20,8 +20,9 @@ public interface IMainframeListener {
 	 * 
 	 * @param task
 	 *            zu startender Backup-Task
+	 * @param backup
+	 *            entsprechendes Backup (Backupable)
 	 */
-	// TODO: JavaDoc
 	public void startBackupTask(BackupTask task, Backupable backup);
 
 	/**
@@ -121,8 +122,16 @@ public interface IMainframeListener {
 	 */
 	public void taskFinished(BackupTask task);
 
-	// TODO: JavaDoc
+	/**
+	 * Schedulet alle BackupTasks.
+	 */
 	public void scheduleBackupTasks();
 
+	/**
+	 * Löscht das Scheduling für den gegebenen BackupTask.
+	 * 
+	 * @param task
+	 *            BackupTask für den das Scheduling gelöscht werden soll
+	 */
 	public void removeBackupTaskScheduling(BackupTask task);
 }

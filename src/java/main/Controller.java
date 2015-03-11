@@ -651,7 +651,12 @@ public class Controller {
 		return oldestBackupPath;
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Führt für den gegebenen BackupTask das erweiterte CleanUp durch.
+	 * 
+	 * @param task
+	 *            BackupTask für den das CleanUp durchgeführt werden soll
+	 */
 	private void runExtendedClean(BackupTask task) {
 		// aktuelle SystemZeit:
 		LocalDateTime currentSystemTime = LocalDateTime.now();

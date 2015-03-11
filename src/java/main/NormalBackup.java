@@ -50,7 +50,9 @@ public class NormalBackup implements Backupable {
 	 */
 	private Source currentSource;
 
-	// TODO: JavaDoc
+	/**
+	 * Gibt an ob dieses Backup gecanceled ist.
+	 */
 	private boolean isCanceled;
 
 	/**
@@ -195,7 +197,16 @@ public class NormalBackup implements Backupable {
 		}
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Führt die rekursive Backup-Vorbereitung durch.
+	 * 
+	 * @param sourceFile
+	 *            Quellverzeichnis
+	 * @param backupDir
+	 *            Backup-Verzeichnis (im Zielverzeichnis)
+	 * @param task
+	 *            zugehöriger BackupTask
+	 */
 	private void rekursivePreparation(File sourceFile, File backupDir, BackupTask task) {
 
 		if (Thread.interrupted()) {

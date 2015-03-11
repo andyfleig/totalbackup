@@ -506,12 +506,21 @@ public class BackupTask implements Serializable {
 		return intervalUnit;
 	}
 
-	// TODO JavaDoc
+	/**
+	 * Gibt das ScheduledFuture für die nächsten geschedulten Ausführung zurück.
+	 * 
+	 * @return ScheduledFuture der nächsten Ausführung
+	 */
 	public ScheduledFuture getScheduledFuture() {
 		return scheduledFuture;
 	}
 
-	// TODO JavaDoc
+	/**
+	 * Setzt das ScheduledFuture für die nächste Ausführung.
+	 * 
+	 * @param scheduledFuture
+	 *            ScheduledFuture der nächsten Ausführung
+	 */
 	public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
 		this.scheduledFuture = scheduledFuture;
 	}

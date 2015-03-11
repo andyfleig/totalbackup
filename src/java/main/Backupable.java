@@ -26,10 +26,22 @@ public interface Backupable {
 	 */
 	public void runBackup(BackupTask task) throws FileNotFoundException, IOException;
 
-	// TODO: JavaDoc
+	/**
+	 * Gibt die BackupInfos zu diesem Backup zurück.
+	 * 
+	 * @return BackupInfos zu diesem Backup
+	 */
 	public BackupInfos getBackupInfos();
 
+	/**
+	 * Gibt zurück, ob dieses Backup gecanceled ist.
+	 * 
+	 * @return ob dieses Backup gecanceled ist
+	 */
 	public boolean isCanceled();
 
+	/**
+	 * Setzt dieses Backup auf gecanceled.
+	 */
 	public void cancel();
 }

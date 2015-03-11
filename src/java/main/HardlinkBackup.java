@@ -82,7 +82,9 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private Source currentSource;
 
-	// TODO: JavaDoc
+	/**
+	 * Gibt an ob dieses Backup gecanceled ist.
+	 */
 	private boolean isCanceled;
 
 	/**
