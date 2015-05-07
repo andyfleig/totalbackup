@@ -328,7 +328,14 @@ public class Mainframe extends JDialog {
 							editDialog.setIntervalTime(task.getIntervalTime());
 							editDialog.setIntervalUnit(task.getIntervalUnit());
 						}
-
+						editDialog.setCatchUpEnabled(task.isCatchUpEnabled());
+						String catchUpTime;
+						if (task.isCatchUpEnabled()) {
+							catchUpTime = task.getCatchUpTime();
+						} else {
+							catchUpTime = "5min";
+						}
+						editDialog.setCatchUpTime(catchUpTime);
 						editDialog.setVisible(true);
 					} catch (Exception ex) {
 						ex.printStackTrace();

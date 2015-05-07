@@ -168,6 +168,9 @@ public class EditDialog extends JDialog {
 
 	private JComboBox<String> comboBox_intervalUnit;
 
+	private JComboBox comboBox_catchUp;
+	private JCheckBox checkBox_catchUp;
+
 	/**
 	 * @deprecated
 	 */
@@ -207,7 +210,7 @@ public class EditDialog extends JDialog {
 
 		setResizable(false);
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.title"));
-		setBounds(100, 100, 515, 646);
+		setBounds(100, 100, 515, 707);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -410,7 +413,7 @@ public class EditDialog extends JDialog {
 		panel_time.setLayout(new BorderLayout(0, 0));
 
 		JTabbedPane tabbedPane_time = new JTabbedPane(JTabbedPane.TOP);
-		panel_time.add(tabbedPane_time);
+		panel_time.add(tabbedPane_time, BorderLayout.NORTH);
 
 		JPanel panel_day = new JPanel();
 		tabbedPane_time
@@ -639,7 +642,7 @@ public class EditDialog extends JDialog {
 		daysOfMonthCheckboxes[30] = checkBox_day31;
 
 		JPanel panel_timeToStart = new JPanel();
-		panel_time.add(panel_timeToStart, BorderLayout.SOUTH);
+		panel_time.add(panel_timeToStart, BorderLayout.CENTER);
 
 		JLabel label_startAt = new JLabel(ResourceBundle.getBundle("gui.messages").getString("EditDialog.label.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_timeToStart.add(label_startAt);
@@ -649,6 +652,19 @@ public class EditDialog extends JDialog {
 				.getBundle("gui.messages").getString("EditDialog.textField_timeToStart.toolTipText")); //$NON-NLS-1$ //$NON-NLS-2$
 		panel_timeToStart.add(textField_timeToStart);
 		textField_timeToStart.setColumns(10);
+
+		JPanel panel_catchUp = new JPanel();
+		panel_time.add(panel_catchUp, BorderLayout.SOUTH);
+
+		checkBox_catchUp = new JCheckBox(ResourceBundle
+				.getBundle("gui.messages").getString("EditDialog.chckbxVersumteBackupsNachholen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		checkBox_catchUp.setSelected(true);
+		panel_catchUp.add(checkBox_catchUp);
+
+		comboBox_catchUp = new JComboBox();
+		comboBox_catchUp.setModel(new DefaultComboBoxModel(new String[] { "5min", "10min", "15min", "30min", "1h",
+				"2h", "6h", "12h", "24h" }));
+		panel_catchUp.add(comboBox_catchUp);
 
 		JPanel panel_interval = new JPanel();
 		tabbedPane_autostart
@@ -1207,6 +1223,10 @@ public class EditDialog extends JDialog {
 						mode = 4;
 					}
 					task.setAutoBackupMode(mode);
+					task.setCatchUpEnabled(checkBox_catchUp.isSelected());
+					if (checkBox_catchUp.isSelected()) {
+						task.setCatchUpTime(comboBox_catchUp.getSelectedItem().toString());
+					}
 
 				} else {
 					// Ungültiger Name:
@@ -1644,6 +1664,16 @@ public class EditDialog extends JDialog {
 	 */
 	public void setIntervalUnit(String intervalUnit) {
 		comboBox_intervalUnit.setSelectedItem(intervalUnit);
+	}
+	
+	//TODO: JavaDoc
+	public void setCatchUpEnabled(boolean enabled) {
+		checkBox_catchUp.setSelected(enabled);
+	}
+	
+	//TODO: JavaDoc
+	public void setCatchUpTime(String catchUpTime) {
+		comboBox_catchUp.setSelectedItem(catchUpTime);
 	}
 
 	/**

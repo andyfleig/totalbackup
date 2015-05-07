@@ -49,6 +49,8 @@ public class BackupTask implements Serializable {
 	 * Angabe in Minuten.
 	 */
 	private int profitableTimeUntilNextExecution;
+	private boolean catchUpEnabled;
+	private String catchUpTime;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -571,5 +573,28 @@ public class BackupTask implements Serializable {
 	//TODO: JavaDoc
 	public int getprofitableTimeUntilNextExecution() {
 		return profitableTimeUntilNextExecution;
+	}
+	
+	//TODO: JavaDoc
+	public void setCatchUpEnabled(boolean enabled) {
+		this.catchUpEnabled = enabled;
+	}
+	
+	//TODO: JavaDoc
+	public void setCatchUpTime(String catchUpTime) {
+		this.catchUpTime = catchUpTime;
+	}
+	
+	//TODO: JavaDoc
+	public String getCatchUpTime() {
+		return catchUpTime;
+	}
+	
+	//TODO: JavaDoc
+	public boolean isCatchUpEnabled() {
+		if (catchUpEnabled) {
+			return true;
+		}
+		return false;
 	}
 }
