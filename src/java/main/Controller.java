@@ -86,6 +86,9 @@ public class Controller {
 	 */
 	private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(3);
 
+	// TODO: JavaDoc
+	private static final int DELAY_FOR_MISSED_BACKUP = 5;
+
 	/**
 	 * Startet und initialisiert den Controller.
 	 */
@@ -202,8 +205,30 @@ public class Controller {
 				}
 			});
 			loadSerialization();
+			// Liste aller versöumten BackupTasks:
+			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
+			// Prüfen ob Backups versäumt wurden:
+			for (BackupTask task : backupTasks) {
+				if (task.getLocalDateTimeOfNextBackup() != null
+						&& task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
+					// Dieses Backup wurde versäumt
+					missedBackupTaks.add(task);
+				}
+			}
+			// Alle Tasks werden neu geschedulet:
 			scheduleBackupTasks();
+
+			// Versäumte Backups nachholen:
+			for (BackupTask task : missedBackupTaks) {
+				// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
+				// von profitableTimeUntilNextExecution des Tasks):
+				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getprofitableTimeUntilNextExecution()))
+						.isAfter(LocalDateTime.now())) {
+					scheduleBackupTaskNow(task);
+				}
+			}
 		} catch (Exception ex) {
+			//TODO: Was soll das denn?
 			System.err.println(ex);
 		}
 	}
@@ -850,6 +875,9 @@ public class Controller {
 
 	/**
 	 * Reschedulet den gegebenen Task.
+	 * 
+	 * @param task
+	 *            Task der gereschedulet werden soll
 	 */
 	public void scheduleBackupTask(final BackupTask task) {
 		// Kontrollieren ob dieser Task bereits läuft:
@@ -872,7 +900,24 @@ public class Controller {
 		// TODO: Debugging-Ausgabe raus:
 		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
 
-		// Tautostart für diesen Task aktivieren:
+		scheduleBackup(task, nextExecutionTime);
+	}
+
+	// TODO: JavaDoc
+	public void scheduleBackupTaskNow(final BackupTask task) {
+		// Kontrollieren ob dieser Task bereits läuft:
+		if (runningBackupTasks.contains(task.getTaskName())) {
+			return;
+		}
+		// TODO: locales
+		printOut("Versäumtes Backup von wird in 5 Sekunden nachgeholt", false, task.getTaskName());
+
+		scheduleBackup(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
+	}
+
+	// TODO: JavaDoc
+	private void scheduleBackup(BackupTask task, LocalDateTime nextExecutionTime) {
+		// Autostart für diesen Task aktivieren:
 		task.setAutostart(true);
 		// TODO: autostart deaktivieren?
 		// scheduling:
@@ -885,6 +930,9 @@ public class Controller {
 		};
 		task.setScheduledFuture(timer.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.MILLIS),
 				TimeUnit.MILLISECONDS));
+		// Nächsten Ausführungszeitpunkt (als LocalDateTime) im Task sichern (um
+		// Backups nachholen zu können):
+		task.setLocalDateTimeOfNextBackup(nextExecutionTime);
 	}
 
 	/**
@@ -894,6 +942,7 @@ public class Controller {
 		// Alle aus dem Timer werfen, die geplant aber noch nicht gestartet sind
 		for (BackupTask task : backupTasks) {
 			if (task.getScheduledFuture() != null) {
+				task.resetLocalDateTimeOfNextExecution();
 				task.getScheduledFuture().cancel(false);
 			}
 		}
@@ -963,6 +1012,7 @@ public class Controller {
 	public void removeBackupTaskScheduling(BackupTask task) {
 		if (task.getScheduledFuture() != null) {
 			task.getScheduledFuture().cancel(false);
+			task.resetLocalDateTimeOfNextExecution();
 		}
 	}
 

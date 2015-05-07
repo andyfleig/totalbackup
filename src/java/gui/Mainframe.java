@@ -563,6 +563,7 @@ public class Mainframe extends JDialog {
 
 				int msg = in.readInt();
 				if (msg == 0) {
+					saveProperties();
 					System.exit(0);
 					in.close();
 					break;

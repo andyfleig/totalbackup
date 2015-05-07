@@ -1,6 +1,7 @@
 package data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
@@ -41,6 +42,13 @@ public class BackupTask implements Serializable {
 	private int intervalTime;
 	private String intervalUnit;
 	private transient ScheduledFuture<?> scheduledFuture;
+	private LocalDateTime nextExecutionTime;
+	/**
+	 * Gibt an wie weit ein Backup sich in der Zukunft befinden darft sodass
+	 * sich das nachholen eines versäumten Backups noch lohnt.
+	 * Angabe in Minuten.
+	 */
+	private int profitableTimeUntilNextExecution;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -507,7 +515,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt das ScheduledFuture für die nächsten geschedulten Ausführung zurück.
+	 * Gibt das ScheduledFuture für die nächste geschedulte Ausführung zurück.
 	 * 
 	 * @return ScheduledFuture der nächsten Ausführung
 	 */
@@ -523,5 +531,45 @@ public class BackupTask implements Serializable {
 	 */
 	public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
 		this.scheduledFuture = scheduledFuture;
+	}
+
+	/**
+	 * Speichert den nächsten geschedulten Ausführungszeitpunkt, um später
+	 * versäumte Backups nachholen zu können.
+	 * 
+	 * @param nextExecutionTime
+	 *            nächster geschedulter Ausführungszeitpunkt als LocalDateTime
+	 */
+	public void setLocalDateTimeOfNextBackup(LocalDateTime nextExecutionTime) {
+		this.nextExecutionTime = nextExecutionTime;
+	}
+
+	/**
+	 * Gibt den nächsten geschedulten Ausführungszeitpunkt zurück.
+	 * 
+	 * @return nächster geplanter Ausführungszeitpunkt
+	 */
+	public LocalDateTime getLocalDateTimeOfNextBackup() {
+		return nextExecutionTime;
+	}
+
+	/**
+	 * Resettet den nächsten Ausführungszeitpunkt (LocalDateTime). Achtung:
+	 * Hierbei wird nicht das scheduling an sich resettet sondern nur die
+	 * zusätzliche Variable für das Nachholen versäumter Backups. Diese Methode
+	 * ist nur gefolgt von task.getScheduledFuture().cancel(false) zu benutzen!
+	 */
+	public void resetLocalDateTimeOfNextExecution() {
+		this.nextExecutionTime = null;
+	}
+	
+	//TODO: JavaDoc
+	public void setProfitableTimeUntilNextExecution(int profTime) {
+		this.profitableTimeUntilNextExecution = profTime;
+	}
+	
+	//TODO: JavaDoc
+	public int getprofitableTimeUntilNextExecution() {
+		return profitableTimeUntilNextExecution;
 	}
 }
