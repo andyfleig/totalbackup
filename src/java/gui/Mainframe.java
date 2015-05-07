@@ -539,6 +539,7 @@ public class Mainframe extends JDialog {
 
 	}
 
+	// TODO: JavaDoc
 	private void recvLoop() {
 		// TODO: unterbrechbar machen
 		// TODO: beim schließen der anwenung closen
@@ -555,7 +556,7 @@ public class Mainframe extends JDialog {
 			try {
 				socket = server.accept();
 			} catch (IOException e) {
-				// FEHLER
+				// TODO: Fehlermeldung
 			}
 
 			try {
@@ -576,16 +577,17 @@ public class Mainframe extends JDialog {
 				}
 
 			} catch (IOException e) {
+				// TODO: Fehlermeldung
 				System.err.println("Fehler");
 			}
 
-			// Socket closen:
+			// Socket schließen:
 			try {
 				socket.close();
 				server.close();
 				server = null;
 			} catch (IOException e) {
-				// Fehler
+				// TODO: Fehlermeldung
 			}
 		}
 	}
