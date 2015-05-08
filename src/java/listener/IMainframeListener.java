@@ -134,4 +134,12 @@ public interface IMainframeListener {
 	 *            BackupTask für den das Scheduling gelöscht werden soll
 	 */
 	public void removeBackupTaskScheduling(BackupTask task);
+
+	/**
+	 * Gibt eine Liste der Namen aller aktuelle laufenden Tasks zurück.
+	 * 
+	 * @return ArrayList mit den Namen (als Strings) aller aktuell laufenden
+	 *         BackupTasks
+	 */
+	public ArrayList<String> getRunningBackupTasks();
 }

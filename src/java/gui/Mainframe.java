@@ -294,6 +294,10 @@ public class Mainframe extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob ein Listenelement selektiert ist:
 				if (!list_tasks.isSelectionEmpty()) {
+					// Prüfen ob der gewählte Task gerade ausgeführt wird:
+					if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
+						//TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
+					}
 					try {
 						// Neuen Edit-Dialog erzeugen:
 						editDialog = new EditDialog(editListener);
@@ -353,6 +357,10 @@ public class Mainframe extends JDialog {
 
 		button_delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Prüfen ob der gewählte Task gerade ausgeführt wird:
+				if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
+					//TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
+				}
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
 						JOptionPane.YES_NO_OPTION);

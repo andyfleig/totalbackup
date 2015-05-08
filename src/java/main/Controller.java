@@ -201,6 +201,11 @@ public class Controller {
 						public void removeBackupTaskScheduling(BackupTask task) {
 							Controller.this.removeBackupTaskScheduling(task);
 						}
+
+						@Override
+						public ArrayList<String> getRunningBackupTasks() {
+							return runningBackupTasks;
+						}
 					});
 				}
 			});

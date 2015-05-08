@@ -656,8 +656,8 @@ public class EditDialog extends JDialog {
 		JPanel panel_catchUp = new JPanel();
 		panel_time.add(panel_catchUp, BorderLayout.SOUTH);
 
-		checkBox_catchUp = new JCheckBox(ResourceBundle
-				.getBundle("gui.messages").getString("EditDialog.chckbxVersumteBackupsNachholen.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		checkBox_catchUp = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
+				"EditDialog.checkBox_catchUp"));
 		checkBox_catchUp.setSelected(true);
 		panel_catchUp.add(checkBox_catchUp);
 
@@ -1665,13 +1665,13 @@ public class EditDialog extends JDialog {
 	public void setIntervalUnit(String intervalUnit) {
 		comboBox_intervalUnit.setSelectedItem(intervalUnit);
 	}
-	
-	//TODO: JavaDoc
+
+	// TODO: JavaDoc
 	public void setCatchUpEnabled(boolean enabled) {
 		checkBox_catchUp.setSelected(enabled);
 	}
-	
-	//TODO: JavaDoc
+
+	// TODO: JavaDoc
 	public void setCatchUpTime(String catchUpTime) {
 		comboBox_catchUp.setSelectedItem(catchUpTime);
 	}
