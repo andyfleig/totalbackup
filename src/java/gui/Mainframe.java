@@ -688,7 +688,6 @@ public class Mainframe extends JDialog {
 
 			@Override
 			public String getTaskName() {
-				// TODO: schön?
 				return task.getTaskName();
 			}
 
@@ -757,9 +756,7 @@ public class Mainframe extends JDialog {
 
 	private class SA_Quit extends AbstractAction {
 		public SA_Quit() {
-			// TODO: unnötig?
 			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_quit"));
-			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -891,7 +888,6 @@ public class Mainframe extends JDialog {
 			return editDialog.getDestinationPath();
 		}
 		return null;
-		// TODO: schöner!?
 	}
 
 	/**

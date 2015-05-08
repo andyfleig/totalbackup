@@ -1170,7 +1170,6 @@ public class EditDialog extends JDialog {
 							weekdays[6] = true;
 						}
 						task.setBackupWeekdays(weekdays);
-						// TODO: Redundanten Code auslagern!
 						try {
 							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
 							task.setBackupStartTime(startTime);

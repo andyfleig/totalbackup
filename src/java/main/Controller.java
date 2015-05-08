@@ -530,7 +530,6 @@ public class Controller {
 				return backupTasks.get(i);
 			}
 		}
-		// TODO: schöner!?
 		return null;
 	}
 
@@ -921,7 +920,6 @@ public class Controller {
 		// scheduling:
 		Runnable backup = new Runnable() {
 			public void run() {
-				// TODO: Task als beendet markieren?
 				taskStarted(task.getTaskName());
 				mainframe.prepareBackup(task);
 			}
