@@ -1192,7 +1192,8 @@ public class EditDialog extends JDialog {
 							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
 							task.setBackupStartTime(startTime);
 						} catch (DateTimeParseException ex) {
-							// TODO: Fehlermeldung
+							System.err
+									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 1");
 							return;
 						}
 
@@ -1207,7 +1208,8 @@ public class EditDialog extends JDialog {
 							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
 							task.setBackupStartTime(startTime);
 						} catch (DateTimeParseException ex) {
-							// TODO: Fehlermeldung
+							System.err
+									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 2");
 							return;
 						}
 					} else if (checkBox_toggleInterval.isSelected()) {
@@ -1216,7 +1218,8 @@ public class EditDialog extends JDialog {
 							task.setIntervalTime(Integer.parseInt(textField_interval.getText()));
 							task.setIntervalUnit(comboBox_intervalUnit.getSelectedItem().toString());
 						} catch (NumberFormatException ex) {
-							// TODO: Fehlermeldung
+							System.err
+									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 3");
 							return;
 						}
 					} else if (checkBox_toggleDynamic.isSelected()) {
