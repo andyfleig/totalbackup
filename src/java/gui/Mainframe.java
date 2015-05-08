@@ -296,7 +296,10 @@ public class Mainframe extends JDialog {
 				if (!list_tasks.isSelectionEmpty()) {
 					// Prüfen ob der gewählte Task gerade ausgeführt wird:
 					if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
-						// TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
+						JOptionPane.showMessageDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errTaskIsRunning"),
+								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								JOptionPane.ERROR_MESSAGE);
 					}
 					try {
 						// Neuen Edit-Dialog erzeugen:
@@ -359,7 +362,12 @@ public class Mainframe extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob der gewählte Task gerade ausgeführt wird:
 				if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
-					// TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
+					JOptionPane
+							.showMessageDialog(null,
+									ResourceBundle.getBundle("gui.messages")
+											.getString("GUI.Mainframe.errTaskIsRunning"),
+									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+									JOptionPane.ERROR_MESSAGE);
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
