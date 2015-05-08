@@ -11,10 +11,12 @@ import gui.EditDialog;
 
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.lang.NullPointerException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -59,6 +61,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultCaret;
 
+import com.google.gson.Gson;
+
 import data.BackupTask;
 import data.BackupThreadContainer;
 import data.Source;
@@ -101,7 +105,7 @@ public class Mainframe extends JDialog {
 	private PreparingDialog prep;
 
 	private Socket socket = null;
-	
+
 	private Process trayProcess;
 
 	File sourceFile;
@@ -172,7 +176,8 @@ public class Mainframe extends JDialog {
 
 			@Override
 			public void saveProperties() {
-				Mainframe.this.saveProperties();
+				//TODO: GSON-Umbau5
+				Mainframe.this.savePropertiesGson();
 			}
 
 			@Override
@@ -382,7 +387,8 @@ public class Mainframe extends JDialog {
 						listener.removeBackupTask(currentTask);
 						listener.removeBackupTaskScheduling(currentTask);
 					}
-					saveProperties();
+					//TODO: GSON-Umbau3
+					savePropertiesGson();
 				}
 			}
 		});
@@ -592,7 +598,8 @@ public class Mainframe extends JDialog {
 
 				int msg = in.readInt();
 				if (msg == 0) {
-					saveProperties();
+					//TODO: GSON-Umbau4
+					savePropertiesGson();
 					System.exit(0);
 					in.close();
 					break;
@@ -767,7 +774,8 @@ public class Mainframe extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			saveProperties();
+			//TODO: GSON-Umbau2
+			savePropertiesGson();
 			if (trayProcess != null) {
 				trayProcess.destroy();
 			}
@@ -776,7 +784,7 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
+	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
 	 */
 	private void saveProperties() {
 		File properties = new File("./properties.ser");
@@ -812,6 +820,22 @@ public class Mainframe extends JDialog {
 					System.err.println(ex);
 				}
 		}
+	}
+
+	/**
+	 * Serialisiert die Programm-Einstellungen (Backup-Tasks) mit Gson
+	 */
+	private void savePropertiesGson() {
+		Gson gson = new Gson();
+		String settings = gson.toJson(listener.getBackupTasks());
+		try {
+			PrintWriter out = new PrintWriter("./properties");
+			out.println(settings);
+			out.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Error: FileNotException while writing properties");
+		}
+		
 	}
 
 	/**

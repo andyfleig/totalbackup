@@ -2,5 +2,6 @@ src/bin/
 .directory
 *.class
 *.ser
+src/properties
 src/cpp/build/
 src/cpp/.kdev4/TotalBackupTray.kdev4

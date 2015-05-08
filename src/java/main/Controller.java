@@ -12,9 +12,11 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -32,6 +34,10 @@ import java.time.temporal.ChronoUnit;
 
 import javax.swing.SwingUtilities;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import sun.misc.IOUtils;
 import data.BackupTask;
 
 /**
@@ -203,8 +209,9 @@ public class Controller {
 					});
 				}
 			});
-			loadSerialization();
-			// Liste aller versöumten BackupTasks:
+			//TODO: GSON-Umbau1
+			loadSerializationGson();
+			// Liste aller versäumten BackupTasks:
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
 			// Prüfen ob Backups versäumt wurden:
 			for (BackupTask task : backupTasks) {
@@ -266,6 +273,29 @@ public class Controller {
 					} catch (IOException e) {
 						System.err.println(e);
 					}
+			}
+			for (int i = 0; i < backupTasks.size(); i++) {
+				mainframe.addBackupTaskToList(backupTasks.get(i));
+			}
+		}
+	}
+
+	private void loadSerializationGson() {
+		String settings = new String();
+		File properties = new File("./properties");
+		if (properties.exists()) {
+			//StringBuilder fileContents = new StringBuilder((int) properties.length());
+			try {
+				Scanner scanner = new Scanner(properties);
+				settings = scanner.nextLine().toString();
+				scanner.close();
+			} catch (FileNotFoundException e) {
+				// TODO: Error
+			}
+			Gson gson = new Gson();
+			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>(){}.getType();
+			if (settings != null) {
+				backupTasks = gson.fromJson(settings, listOfBackupTasks);
 			}
 			for (int i = 0; i < backupTasks.size(); i++) {
 				mainframe.addBackupTaskToList(backupTasks.get(i));
