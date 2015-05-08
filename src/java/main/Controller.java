@@ -1059,6 +1059,7 @@ public class Controller {
 		while (mNumber <= (LocalDate.now().lengthOfMonth() - 1)) {
 			if (daysInMonth[mNumber]) {
 				LocalDate date = LocalDate.now().withDayOfMonth(daysFromTodayCounter);
+				date = date.plusMonths(1);
 				LocalDateTime result = time.atDate(date);
 				return result;
 			}
