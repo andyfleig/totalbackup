@@ -227,7 +227,7 @@ public class Controller {
 			for (BackupTask task : missedBackupTaks) {
 				// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
 				// von profitableTimeUntilNextExecution des Tasks):
-				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getprofitableTimeUntilNextExecution()))
+				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution()))
 						.isAfter(LocalDateTime.now())) {
 					scheduleBackupTaskNow(task);
 				}

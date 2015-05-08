@@ -45,12 +45,11 @@ public class BackupTask implements Serializable {
 	private LocalDateTime nextExecutionTime;
 	/**
 	 * Gibt an wie weit ein Backup sich in der Zukunft befinden darft sodass
-	 * sich das nachholen eines versäumten Backups noch lohnt.
-	 * Angabe in Minuten.
+	 * sich das nachholen eines versäumten Backups noch lohnt. Angabe in
+	 * Minuten.
 	 */
-	private int profitableTimeUntilNextExecution;
-	private boolean catchUpEnabled;
 	private String catchUpTime;
+	private boolean catchUpEnabled;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -564,15 +563,34 @@ public class BackupTask implements Serializable {
 	public void resetLocalDateTimeOfNextExecution() {
 		this.nextExecutionTime = null;
 	}
-	
-	//TODO: JavaDoc
-	public void setProfitableTimeUntilNextExecution(int profTime) {
-		this.profitableTimeUntilNextExecution = profTime;
-	}
-	
-	//TODO: JavaDoc
-	public int getprofitableTimeUntilNextExecution() {
-		return profitableTimeUntilNextExecution;
+
+	/**
+	 * Gibt die Dauer zum nächsten geplanten Backup, so dass sich das nachholen
+	 * eines versäumten Backups noch lohnt, zurück.
+	 * 
+	 * @return Dauer zum nächsten Backup
+	 */
+	public int getProfitableTimeUntilNextExecution() {
+		switch (catchUpTime) {
+		case "10min":
+			return 10;
+		case "15min":
+			return 15;
+		case "30min":
+			return 30;
+		case "1h":
+			return 60;
+		case "2h":
+			return 120;
+		case "6h":
+			return 360;
+		case "12h":
+			return 720;
+		case "24h":
+			return 1440;
+		default:
+			return 5;
+		}
 	}
 	
 	//TODO: JavaDoc
