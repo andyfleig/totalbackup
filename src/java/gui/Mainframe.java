@@ -176,7 +176,6 @@ public class Mainframe extends JDialog {
 
 			@Override
 			public void saveProperties() {
-				//TODO: GSON-Umbau5
 				Mainframe.this.savePropertiesGson();
 			}
 
@@ -387,7 +386,6 @@ public class Mainframe extends JDialog {
 						listener.removeBackupTask(currentTask);
 						listener.removeBackupTaskScheduling(currentTask);
 					}
-					//TODO: GSON-Umbau3
 					savePropertiesGson();
 				}
 			}
@@ -598,7 +596,6 @@ public class Mainframe extends JDialog {
 
 				int msg = in.readInt();
 				if (msg == 0) {
-					//TODO: GSON-Umbau4
 					savePropertiesGson();
 					System.exit(0);
 					in.close();
@@ -774,7 +771,6 @@ public class Mainframe extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			//TODO: GSON-Umbau2
 			savePropertiesGson();
 			if (trayProcess != null) {
 				trayProcess.destroy();

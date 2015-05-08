@@ -209,7 +209,6 @@ public class Controller {
 					});
 				}
 			});
-			//TODO: GSON-Umbau1
 			loadSerializationGson();
 			// Liste aller versäumten BackupTasks:
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
