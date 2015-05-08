@@ -460,7 +460,7 @@ public class Mainframe extends JDialog {
 		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BackupTask taskToRun = listModel.getElementAt(list_tasks.getSelectedIndex());
-				if (taskToRun != null) {
+				if (taskToRun == null) {
 					return;
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
