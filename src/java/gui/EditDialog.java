@@ -1106,11 +1106,46 @@ public class EditDialog extends JDialog {
 
 					// Erweiterte AutoClean Einstellungen prüfen:
 					if (checkBox_toggleExtendedSettings.isSelected()) {
+						// TODO: in locale auslagern
 						if (!checkExtendedAutoCleanSettings()) {
 							JOptionPane
 									.showMessageDialog(null, "Ungültige AutoClean Einstellungen", ResourceBundle
 											.getBundle("gui.messages").getString("GUI.errMsg"),
 											JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
+					}
+
+					// Prüfen ob die Einstellungen für das automatische Backup
+					// (Wochentag) korrekt sind:
+					if (checkBox_toggleWeekday.isSelected()) {
+						// Prüfen ob mindestens ein Wochentag ausgewählt ist:
+						if (!(checkBox_monday.isSelected() || checkBox_tuesday.isSelected()
+								|| checkBox_wednesday.isSelected() || checkBox_thursday.isSelected()
+								|| checkBox_friday.isSelected() || checkBox_saturday.isSelected() || checkBox_sunday
+								.isSelected())) {
+							// TODO: in locale auslagern
+							JOptionPane.showMessageDialog(null, "Es muss mindestens ein Wochentag ausgewählt sein",
+									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+									JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
+					}
+					// Prüfen ob die Einstellungen für das automatische Backup
+					// (Tag im Monat) korrekt sind:
+					if (checkBox_toggleDayInMonth.isSelected()) {
+						// Prüfen ob mindestens ein Tag ausgewählt ist:
+						boolean validSettings = false;
+						for (int i = 0; i < daysOfMonthCheckboxes.length; i++) {
+							if (daysOfMonthCheckboxes[i].isSelected()) {
+								validSettings = true;
+							}
+						}
+						if (!validSettings) {
+							// TODO: in locale auslagern
+							JOptionPane.showMessageDialog(null, "Es muss mindestens ein Tag ausgewählt sein",
+									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+									JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}
 					}
@@ -1555,7 +1590,7 @@ public class EditDialog extends JDialog {
 			checkBox_toggleDayInMonth.setSelected(true);
 		} else if (mode == 3) {
 			checkBox_toggleInterval.setSelected(true);
-		} 
+		}
 	}
 
 	/**
