@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -235,8 +236,9 @@ public class Controller {
 					scheduleBackupTaskNow(task);
 				}
 			}
-		} catch (Exception ex) {
-			// TODO: Was soll das denn?
+		} catch (InterruptedException e) {
+			System.err.println(e);
+		} catch (InvocationTargetException ex) {
 			System.err.println(ex);
 		}
 	}
