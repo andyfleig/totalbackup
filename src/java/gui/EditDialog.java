@@ -1106,12 +1106,13 @@ public class EditDialog extends JDialog {
 
 					// Erweiterte AutoClean Einstellungen prüfen:
 					if (checkBox_toggleExtendedSettings.isSelected()) {
-						// TODO: in locale auslagern
 						if (!checkExtendedAutoCleanSettings()) {
-							JOptionPane
-									.showMessageDialog(null, "Ungültige AutoClean Einstellungen", ResourceBundle
-											.getBundle("gui.messages").getString("GUI.errMsg"),
-											JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(
+									null,
+									ResourceBundle.getBundle("gui.messages").getString(
+											"Messages.illegalAutoCleanSettings"),
+									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+									JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}
 					}
@@ -1124,8 +1125,8 @@ public class EditDialog extends JDialog {
 								|| checkBox_wednesday.isSelected() || checkBox_thursday.isSelected()
 								|| checkBox_friday.isSelected() || checkBox_saturday.isSelected() || checkBox_sunday
 								.isSelected())) {
-							// TODO: in locale auslagern
-							JOptionPane.showMessageDialog(null, "Es muss mindestens ein Wochentag ausgewählt sein",
+							JOptionPane.showMessageDialog(null,
+									ResourceBundle.getBundle("gui.messages").getString("Messages.atLeastOneWeekday"),
 									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
 									JOptionPane.INFORMATION_MESSAGE);
 							return;
@@ -1142,8 +1143,8 @@ public class EditDialog extends JDialog {
 							}
 						}
 						if (!validSettings) {
-							// TODO: in locale auslagern
-							JOptionPane.showMessageDialog(null, "Es muss mindestens ein Tag ausgewählt sein",
+							JOptionPane.showMessageDialog(null,
+									ResourceBundle.getBundle("gui.messages").getString("Messages.atLeastOneDay"),
 									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
 									JOptionPane.INFORMATION_MESSAGE);
 							return;
