@@ -1150,6 +1150,18 @@ public class EditDialog extends JDialog {
 							return;
 						}
 					}
+					// Prüfen ob die Start-Zeit für das automatische Backup eine gültige Zeit ist:
+					if (checkBox_toggleWeekday.isSelected() || checkBox_toggleDayInMonth.isSelected()) {
+						try {
+							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
+						} catch (DateTimeParseException ex) {
+							JOptionPane.showMessageDialog(null,
+									ResourceBundle.getBundle("gui.messages").getString("Messages.illegalStartTime"),
+									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+									JOptionPane.INFORMATION_MESSAGE);
+							return;
+						}
+					}
 
 					// Einstellungen für das automatische Aufräumen sichern:
 					// Unterscheidung für einfaches und erweitertes Aufräumen:.
