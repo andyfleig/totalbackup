@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.AbstractAction;
@@ -14,15 +12,6 @@ import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
-
-import java.awt.event.ActionListener;
-
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.io.File;
-
-import javax.swing.JTextPane;
 
 import java.util.ResourceBundle;
 
