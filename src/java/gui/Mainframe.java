@@ -302,6 +302,7 @@ public class Mainframe extends JDialog {
 								ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errTaskIsRunning"),
 								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
 								JOptionPane.ERROR_MESSAGE);
+						return;
 					}
 					try {
 						// Neuen Edit-Dialog erzeugen:
@@ -370,6 +371,7 @@ public class Mainframe extends JDialog {
 											.getString("GUI.Mainframe.errTaskIsRunning"),
 									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
 									JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
@@ -634,6 +636,8 @@ public class Mainframe extends JDialog {
 						"GUI.Mainframe.errorSourceDontExists");
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
+				prep.dispose();
+				listener.removeBackupTaskFromRunningTasks(task);
 				return;
 			}
 		}
@@ -641,6 +645,8 @@ public class Mainframe extends JDialog {
 			String output = ResourceBundle.getBundle("gui.messages")
 					.getString("GUI.Mainframe.errDestinationDontExists");
 			listener.printOut(output, false, task.getTaskName());
+			prep.dispose();
+			listener.removeBackupTaskFromRunningTasks(task);
 			return;
 		}
 

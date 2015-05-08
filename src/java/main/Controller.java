@@ -195,6 +195,11 @@ public class Controller {
 						public void scheduleBackupTaskNow(BackupTask task) {
 							Controller.this.scheduleBackupTaskNow(task);
 						}
+
+						@Override
+						public void removeBackupTaskFromRunningTasks(BackupTask task) {
+							taskFinished(task);
+						}
 					});
 				}
 			});

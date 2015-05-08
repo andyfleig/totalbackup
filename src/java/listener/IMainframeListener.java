@@ -150,4 +150,13 @@ public interface IMainframeListener {
 	 *         BackupTasks
 	 */
 	public ArrayList<String> getRunningBackupTasks();
+
+	/**
+	 * Entfernt den gegebenen BackupTask aus der Liste der laufenden
+	 * BackupTasks.
+	 * 
+	 * @param task
+	 *            zu entfernender BackupTask
+	 */
+	public void removeBackupTaskFromRunningTasks(BackupTask task);
 }
