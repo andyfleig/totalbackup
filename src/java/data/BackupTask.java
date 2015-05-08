@@ -592,23 +592,41 @@ public class BackupTask implements Serializable {
 			return 5;
 		}
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Aktiviert/ Deaktiviert die Backup-Nachholen-Funktikon.
+	 * 
+	 * @param enabled
+	 *            zu setzender Wert (akt./deakt.)
+	 */
 	public void setCatchUpEnabled(boolean enabled) {
 		this.catchUpEnabled = enabled;
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Legt die catchUp-Zeit (als String) fest.
+	 * 
+	 * @param catchUpTime
+	 *            festzulegende catchUp-Zeit (als String)
+	 */
 	public void setCatchUpTime(String catchUpTime) {
 		this.catchUpTime = catchUpTime;
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Gibt die catchUp-Zeit (als String) zurück.
+	 * 
+	 * @return catchUp-Zeit (als String)
+	 */
 	public String getCatchUpTime() {
 		return catchUpTime;
 	}
-	
-	//TODO: JavaDoc
+
+	/**
+	 * Gibt zurück ob catchUp aktiviert ist.
+	 * 
+	 * @return ob catchUp aktiviert ist
+	 */
 	public boolean isCatchUpEnabled() {
 		if (catchUpEnabled) {
 			return true;

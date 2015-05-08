@@ -1666,12 +1666,22 @@ public class EditDialog extends JDialog {
 		comboBox_intervalUnit.setSelectedItem(intervalUnit);
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Legt die catchUp-Funktion als aktiviert/ deaktiviert fest.
+	 * 
+	 * @param enabled
+	 *            festzulegender Wert
+	 */
 	public void setCatchUpEnabled(boolean enabled) {
 		checkBox_catchUp.setSelected(enabled);
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Legt die Dauer für die catchUp-Funktion fest.
+	 * 
+	 * @param catchUpTime
+	 *            Dauer für catchUp
+	 */
 	public void setCatchUpTime(String catchUpTime) {
 		comboBox_catchUp.setSelectedItem(catchUpTime);
 	}

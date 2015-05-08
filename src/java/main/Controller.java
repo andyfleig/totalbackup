@@ -86,7 +86,10 @@ public class Controller {
 	 */
 	private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(3);
 
-	// TODO: JavaDoc
+	/**
+	 * Gibt an um wie viele Sekunden das nachzuholenden Backup (von now an)
+	 * verzögert werden soll.
+	 */
 	private static final int DELAY_FOR_MISSED_BACKUP = 5;
 
 	/**
@@ -233,7 +236,7 @@ public class Controller {
 				}
 			}
 		} catch (Exception ex) {
-			//TODO: Was soll das denn?
+			// TODO: Was soll das denn?
 			System.err.println(ex);
 		}
 	}
@@ -908,7 +911,12 @@ public class Controller {
 		scheduleBackup(task, nextExecutionTime);
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Schedulet den gegebenen Task auf jetzt (+ Verzögerung).
+	 * 
+	 * @param task
+	 *            zu schedulender Task
+	 */
 	public void scheduleBackupTaskNow(final BackupTask task) {
 		// Kontrollieren ob dieser Task bereits läuft:
 		if (runningBackupTasks.contains(task.getTaskName())) {
@@ -920,7 +928,14 @@ public class Controller {
 		scheduleBackup(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Schedulet den gegebenen Task auf die gegebene Zeit.
+	 * 
+	 * @param task
+	 *            zu schedulenden Task
+	 * @param nextExecutionTime
+	 *            Zeit auf die der Task geschedulet wird
+	 */
 	private void scheduleBackup(BackupTask task, LocalDateTime nextExecutionTime) {
 		// Autostart für diesen Task aktivieren:
 		task.setAutostart(true);

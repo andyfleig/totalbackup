@@ -296,7 +296,7 @@ public class Mainframe extends JDialog {
 				if (!list_tasks.isSelectionEmpty()) {
 					// Prüfen ob der gewählte Task gerade ausgeführt wird:
 					if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
-						//TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
+						// TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
 					}
 					try {
 						// Neuen Edit-Dialog erzeugen:
@@ -359,7 +359,7 @@ public class Mainframe extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob der gewählte Task gerade ausgeführt wird:
 				if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
-					//TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
+					// TODO: Fehlermeldung: Nicht bearbeitbar - läuft gerade
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
@@ -554,7 +554,9 @@ public class Mainframe extends JDialog {
 
 	}
 
-	// TODO: JavaDoc
+	/**
+	 * Endlosschleife für die Kommunikation mit dem Qt-Tray (mit TCP-Socket).
+	 */
 	private void recvLoop() {
 		// TODO: unterbrechbar machen
 		// TODO: beim schließen der anwenung closen
