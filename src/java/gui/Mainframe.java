@@ -101,6 +101,8 @@ public class Mainframe extends JDialog {
 	private PreparingDialog prep;
 
 	private Socket socket = null;
+	
+	private Process trayProcess;
 
 	File sourceFile;
 	File destinationFile;
@@ -502,7 +504,7 @@ public class Mainframe extends JDialog {
 			// QT-App starten:
 			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
-				Process p = builder.start();
+				trayProcess = builder.start();
 			} catch (IOException e1) {
 				System.err.println("Error while starting totalbackuptray");
 			}
@@ -763,8 +765,10 @@ public class Mainframe extends JDialog {
 
 		public void actionPerformed(ActionEvent e) {
 			saveProperties();
+			if (trayProcess != null) {
+				trayProcess.destroy();
+			}
 			System.exit(0);
-			// TODO: qt tray beenden falls nötig
 		}
 	}
 
