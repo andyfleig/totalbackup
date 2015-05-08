@@ -123,7 +123,6 @@ public class EditDialog extends JDialog {
 	private JCheckBox checkBox_toggleWeekday;
 	private JCheckBox checkBox_toggleDayInMonth;
 	private JCheckBox checkBox_toggleInterval;
-	private JCheckBox checkBox_toggleDynamic;
 
 	private JCheckBox checkBox_day1;
 	private JCheckBox checkBox_day2;
@@ -688,21 +687,6 @@ public class EditDialog extends JDialog {
 		panel_intervalSettings.add(comboBox_intervalUnit);
 		comboBox_intervalUnit.setModel(new DefaultComboBoxModel(new String[] { "min", "h", "d", "m" }));
 
-		JPanel panel_dynamic = new JPanel();
-		tabbedPane_autostart.addTab(ResourceBundle.getBundle("gui.messages")
-				.getString("EditDialog.panel_dynamic.title"), null, panel_dynamic, null);
-		panel_dynamic.setLayout(new BorderLayout(0, 0));
-
-		checkBox_toggleDynamic = new JCheckBox(ResourceBundle
-				.getBundle("gui.messages").getString("EditDialog.chckbxAktivieren.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		panel_dynamic.add(checkBox_toggleDynamic, BorderLayout.NORTH);
-		// TODO: dyn Backup?
-		checkBox_toggleDynamic.setEnabled(false);
-
-		JPanel panel = new JPanel();
-		panel_dynamic.add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
-
 		JPanel panel_simpleSettings = new JPanel();
 		panel_simpleSettings.setLayout(new BorderLayout(0, 0));
 
@@ -1221,8 +1205,6 @@ public class EditDialog extends JDialog {
 									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 3");
 							return;
 						}
-					} else if (checkBox_toggleDynamic.isSelected()) {
-						mode = 4;
 					}
 					task.setAutoBackupMode(mode);
 					task.setCatchUpEnabled(checkBox_catchUp.isSelected());
@@ -1271,28 +1253,18 @@ public class EditDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				checkBox_toggleDayInMonth.setSelected(false);
 				checkBox_toggleInterval.setSelected(false);
-				checkBox_toggleDynamic.setSelected(false);
 			}
 		});
 		checkBox_toggleDayInMonth.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkBox_toggleWeekday.setSelected(false);
 				checkBox_toggleInterval.setSelected(false);
-				checkBox_toggleDynamic.setSelected(false);
 			}
 		});
 		checkBox_toggleInterval.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				checkBox_toggleWeekday.setSelected(false);
 				checkBox_toggleDayInMonth.setSelected(false);
-				checkBox_toggleDynamic.setSelected(false);
-			}
-		});
-		checkBox_toggleDynamic.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				checkBox_toggleWeekday.setSelected(false);
-				checkBox_toggleDayInMonth.setSelected(false);
-				checkBox_toggleInterval.setSelected(false);
 			}
 		});
 	}
@@ -1572,8 +1544,7 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
-	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall, 4 =
-	 * dynamisch.
+	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
 	 * 
 	 * @param mode
 	 *            Backup-Modus
@@ -1585,9 +1556,7 @@ public class EditDialog extends JDialog {
 			checkBox_toggleDayInMonth.setSelected(true);
 		} else if (mode == 3) {
 			checkBox_toggleInterval.setSelected(true);
-		} else if (mode == 4) {
-			checkBox_toggleDynamic.setSelected(true);
-		}
+		} 
 	}
 
 	/**

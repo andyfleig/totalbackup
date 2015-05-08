@@ -568,7 +568,6 @@ public class Mainframe extends JDialog {
 	 * Endlosschleife für die Kommunikation mit dem Qt-Tray (mit TCP-Socket).
 	 */
 	private void recvLoop() {
-		// TODO: beim schließen der Anwendung Socket schließen?
 		while (true) {
 			// 1. Socket aufbauen:
 			ServerSocket server = null;

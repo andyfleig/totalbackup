@@ -391,8 +391,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
-	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall, 4 =
-	 * dynamisch.
+	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
 	 * 
 	 * @param mode
 	 *            Backup-Modus
@@ -403,8 +402,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt den Backup-Modus zurück. 0 = Auto-Backup deaktiviert, 1 =
-	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall, 4 =
-	 * dynamisch.
+	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
 	 * 
 	 * @return Backup-Modus
 	 */

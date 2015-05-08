@@ -883,8 +883,6 @@ public class Controller {
 			nextExecutionTime = calcTimeFromDaysInMonth(task.getBackupDaysInMonth(), task.getStartTime());
 		} else if (autoBackupMode == 3) {
 			nextExecutionTime = calcTimeFromInterval(task.getIntervalTime(), task.getIntervalUnit());
-		} else if (autoBackupMode == 4) {
-			// TODO: Dyn-Backup komplett raus?
 		}
 		// TODO: Debugging-Ausgabe raus:
 		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
