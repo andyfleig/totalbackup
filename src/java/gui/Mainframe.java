@@ -566,22 +566,21 @@ public class Mainframe extends JDialog {
 	 * Endlosschleife für die Kommunikation mit dem Qt-Tray (mit TCP-Socket).
 	 */
 	private void recvLoop() {
-		// TODO: unterbrechbar machen
-		// TODO: beim schließen der anwenung closen
+		// TODO: beim schließen der Anwendung Socket schließen?
 		while (true) {
 			// 1. Socket aufbauen:
 			ServerSocket server = null;
 			try {
 				server = new ServerSocket(1234);
 			} catch (IOException e) {
-				System.out.println("Error: Could not open TCP-Socket");
+				System.err.println("Error: Could not open TCP-socket");
 			}
 
 			// 2. Verbinden:
 			try {
 				socket = server.accept();
 			} catch (IOException e) {
-				// TODO: Fehlermeldung
+				System.err.println("Error: Could not connect to tray");
 			}
 
 			try {
@@ -602,8 +601,7 @@ public class Mainframe extends JDialog {
 				}
 
 			} catch (IOException e) {
-				// TODO: Fehlermeldung
-				System.err.println("Fehler");
+				System.err.println("Error while sending message to Qt-Tray");
 			}
 
 			// Socket schließen:
@@ -612,7 +610,7 @@ public class Mainframe extends JDialog {
 				server.close();
 				server = null;
 			} catch (IOException e) {
-				// TODO: Fehlermeldung
+				System.err.println("Error: Could not close socket");
 			}
 		}
 	}

@@ -511,7 +511,6 @@ public class Controller {
 	private void log(String event, BackupTask task) {
 		// Log-Datei anlegen:
 		if (task == null) {
-			// TODO: Endlos-Schleife möglich?
 			return;
 		}
 		File log = new File(task.getDestinationPath() + File.separator + task.getTaskName() + ".log");
@@ -905,7 +904,7 @@ public class Controller {
 		} else if (autoBackupMode == 3) {
 			nextExecutionTime = calcTimeFromInterval(task.getIntervalTime(), task.getIntervalUnit());
 		} else if (autoBackupMode == 4) {
-			// TODO
+			// TODO: Dyn-Backup komplett raus?
 		}
 		// TODO: Debugging-Ausgabe raus:
 		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
@@ -924,8 +923,8 @@ public class Controller {
 		if (runningBackupTasks.contains(task.getTaskName())) {
 			return;
 		}
-		// TODO: locales
-		printOut("Versäumtes Backup von wird in 5 Sekunden nachgeholt", false, task.getTaskName());
+		printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.catchUpMissedBackup"), false,
+				task.getTaskName());
 
 		scheduleBackup(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
 	}
@@ -941,7 +940,6 @@ public class Controller {
 	private void scheduleBackup(BackupTask task, LocalDateTime nextExecutionTime) {
 		// Autostart für diesen Task aktivieren:
 		task.setAutostart(true);
-		// TODO: autostart deaktivieren?
 		// scheduling:
 		Runnable backup = new Runnable() {
 			public void run() {
