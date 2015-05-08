@@ -128,6 +128,14 @@ public interface IMainframeListener {
 	public void scheduleBackupTasks();
 
 	/**
+	 * Schedult den gegebenen BackupTask auf jetzt.
+	 * 
+	 * @param task
+	 *            zu schedulender BackupTask
+	 */
+	public void scheduleBackupTaskNow(BackupTask task);
+
+	/**
 	 * Löscht das Scheduling für den gegebenen BackupTask.
 	 * 
 	 * @param task

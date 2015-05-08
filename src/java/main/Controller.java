@@ -71,7 +71,7 @@ public class Controller {
 	 * Gibt an um wie viele Sekunden das nachzuholenden Backup (von now an)
 	 * verzögert werden soll.
 	 */
-	private static final int DELAY_FOR_MISSED_BACKUP = 5;
+	private static final int DELAY_FOR_MISSED_BACKUP = 2;
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -189,6 +189,11 @@ public class Controller {
 						@Override
 						public ArrayList<String> getRunningBackupTasks() {
 							return runningBackupTasks;
+						}
+
+						@Override
+						public void scheduleBackupTaskNow(BackupTask task) {
+							Controller.this.scheduleBackupTaskNow(task);
 						}
 					});
 				}
@@ -900,7 +905,7 @@ public class Controller {
 		if (runningBackupTasks.contains(task.getTaskName())) {
 			return;
 		}
-		printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.catchUpMissedBackup"), false,
+		printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.scheduleBackupNow"), false,
 				task.getTaskName());
 
 		scheduleBackup(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));

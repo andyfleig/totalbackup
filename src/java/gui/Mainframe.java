@@ -491,10 +491,11 @@ public class Mainframe extends JDialog {
 
 		button_startAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: Wieder implementieren oder ganz raus?
+				for (int i = 0; i < listModel.getSize(); i++) {
+					listener.scheduleBackupTaskNow(listModel.get(i));
+				}
 			}
 		});
-		button_startAll.setEnabled(false);
 		panel_buttons.add(button_cancel);
 
 		// Entscheidung für den Tray-Typ treffen:
