@@ -1731,25 +1731,46 @@ public class EditDialog extends JDialog {
 			spinner.setEnabled(false);
 		} else {
 			spinner.setEnabled(true);
+			int oldValue = Integer.valueOf(spinner.getValue().toString());
 			if (comboBox.getSelectedItem().toString().equalsIgnoreCase("min")) {
 				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_min));
+				checkValueOfSpinner(spinner, template_number_min, oldValue);
 			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("h")) {
 				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_h));
+				checkValueOfSpinner(spinner, template_number_h, oldValue);
 			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("d")) {
 				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_d));
+				checkValueOfSpinner(spinner, template_number_d, oldValue);
 			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("m")) {
 				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_m));
+				checkValueOfSpinner(spinner, template_number_m, oldValue);
 			} else if (comboBox.getSelectedItem().toString().equalsIgnoreCase("y")) {
 				spinner.setModel(createSpinnerNumberModelFromTemplate(template_number_y));
+				checkValueOfSpinner(spinner, template_number_y, oldValue);
 			}
 		}
-		// TODO: Nur auf default setzen wenn der alte Wert im neuen Model
-		// ungültig ist
-		spinner.setValue(1);
 	}
 
 	/**
-	 * Prüft die eingestellten extended AutoClean Einstellungen auf gültigkeit.
+	 * Prüft ob der alte Spinner-Wert für die neue "Einheit" noch gültig ist.
+	 * Wenn ja wird sie übernommen, sonst wird der spinner auf default (1)
+	 * gesetzt.
+	 * 
+	 * @param spinner
+	 *            entsprechender Spinner
+	 * @param template
+	 *            template für die entsprechende "Einheit"
+	 * @param oldValue
+	 *            alter Wert des spinners
+	 */
+	private void checkValueOfSpinner(JSpinner spinner, int[] template, int oldValue) {
+		if ((template[1] <= oldValue) && (oldValue <= template[2])) {
+			spinner.setValue(oldValue);
+		}
+	}
+
+	/**
+	 * Prüft die eingestellten extended AutoClean Einstellungen auf Gültigkeit.
 	 * 
 	 * @return true wenn die Einstekllungen gültig sind, false sonst
 	 */
