@@ -283,13 +283,12 @@ public class Controller {
 		String settings = new String();
 		File properties = new File("./properties");
 		if (properties.exists()) {
-			//StringBuilder fileContents = new StringBuilder((int) properties.length());
 			try {
 				Scanner scanner = new Scanner(properties);
 				settings = scanner.nextLine().toString();
 				scanner.close();
 			} catch (FileNotFoundException e) {
-				// TODO: Error
+				System.err.println("Error: FileNotFoundException while loading Gson-Properties");
 			}
 			Gson gson = new Gson();
 			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>(){}.getType();
