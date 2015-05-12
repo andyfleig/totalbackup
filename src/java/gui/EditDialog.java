@@ -660,6 +660,7 @@ public class EditDialog extends JDialog {
 		panel_catchUp.add(checkBox_catchUp);
 
 		comboBox_catchUp = new JComboBox();
+		comboBox_catchUp.setLightWeightPopupEnabled(false);
 		comboBox_catchUp.setModel(new DefaultComboBoxModel(new String[] { "5min", "10min", "15min", "30min", "1h",
 				"2h", "6h", "12h", "24h" }));
 		panel_catchUp.add(comboBox_catchUp);
@@ -684,6 +685,8 @@ public class EditDialog extends JDialog {
 		textField_interval.setColumns(10);
 
 		comboBox_intervalUnit = new JComboBox();
+		comboBox_intervalUnit.setLightWeightPopupEnabled(false);
+		comboBox_intervalUnit.setLightWeightPopupEnabled(false);
 		panel_intervalSettings.add(comboBox_intervalUnit);
 		comboBox_intervalUnit.setModel(new DefaultComboBoxModel(new String[] { "min", "h", "d", "m" }));
 
@@ -743,6 +746,7 @@ public class EditDialog extends JDialog {
 		panel_numberOfRules.add(label_numberOfRules);
 
 		comboBox_numberOfRules = new JComboBox<String>();
+		comboBox_numberOfRules.setLightWeightPopupEnabled(false);
 		comboBox_numberOfRules.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch (comboBox_numberOfRules.getSelectedItem().toString()) {
@@ -815,6 +819,7 @@ public class EditDialog extends JDialog {
 		panel_eS1.add(spinner_eS1);
 
 		comboBox_eS1_unit = new JComboBox<String>();
+		comboBox_eS1_unit.setLightWeightPopupEnabled(false);
 		comboBox_eS1_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS1.add(comboBox_eS1_unit);
 
@@ -823,6 +828,7 @@ public class EditDialog extends JDialog {
 		panel_eS1.add(label_eS1_toKeep);
 
 		comboBox_eS1_toKeep = new JComboBox<String>();
+		comboBox_eS1_toKeep.setLightWeightPopupEnabled(false);
 		comboBox_eS1_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS1.add(comboBox_eS1_toKeep);
 
@@ -843,6 +849,7 @@ public class EditDialog extends JDialog {
 		// spinner_eS2.setEditor(new JSpinner.DefaultEditor(spinner_eS2));
 
 		comboBox_eS2_unit = new JComboBox<String>();
+		comboBox_eS2_unit.setLightWeightPopupEnabled(false);
 		comboBox_eS2_unit.setEnabled(false);
 		comboBox_eS2_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS2.add(comboBox_eS2_unit);
@@ -853,6 +860,7 @@ public class EditDialog extends JDialog {
 		panel_eS2.add(label_eS2_toKeep);
 
 		comboBox_eS2_toKeep = new JComboBox<String>();
+		comboBox_eS2_toKeep.setLightWeightPopupEnabled(false);
 		comboBox_eS2_toKeep.setEnabled(false);
 		comboBox_eS2_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS2.add(comboBox_eS2_toKeep);
@@ -872,6 +880,7 @@ public class EditDialog extends JDialog {
 		spinner_eS3.setEnabled(false);
 
 		comboBox_eS3_unit = new JComboBox<String>();
+		comboBox_eS3_unit.setLightWeightPopupEnabled(false);
 		comboBox_eS3_unit.setEnabled(false);
 		comboBox_eS3_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS3.add(comboBox_eS3_unit);
@@ -882,6 +891,7 @@ public class EditDialog extends JDialog {
 		panel_eS3.add(label_eS3_toKeep);
 
 		comboBox_eS3_toKeep = new JComboBox<String>();
+		comboBox_eS3_toKeep.setLightWeightPopupEnabled(false);
 		comboBox_eS3_toKeep.setEnabled(false);
 		comboBox_eS3_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS3.add(comboBox_eS3_toKeep);
@@ -901,6 +911,7 @@ public class EditDialog extends JDialog {
 		spinner_eS4.setEnabled(false);
 
 		comboBox_eS4_unit = new JComboBox<String>();
+		comboBox_eS4_unit.setLightWeightPopupEnabled(false);
 		comboBox_eS4_unit.setEnabled(false);
 		comboBox_eS4_unit.setModel(createComboBoxModelFromTemplate(template_timeInterval_all));
 		panel_eS4.add(comboBox_eS4_unit);
@@ -911,6 +922,7 @@ public class EditDialog extends JDialog {
 		panel_eS4.add(label_eS4_toKeep);
 
 		comboBox_eS4_toKeep = new JComboBox<String>();
+		comboBox_eS4_toKeep.setLightWeightPopupEnabled(false);
 		comboBox_eS4_toKeep.setEnabled(false);
 		comboBox_eS4_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS4.add(comboBox_eS4_toKeep);
@@ -934,6 +946,7 @@ public class EditDialog extends JDialog {
 		panel_eS5.add(label_eS5_toKeep);
 
 		comboBox_eS5_toKeep = new JComboBox<String>();
+		comboBox_eS5_toKeep.setLightWeightPopupEnabled(false);
 		comboBox_eS5_toKeep.setEnabled(false);
 		comboBox_eS5_toKeep.setModel(new DefaultComboBoxModel<String>(template_backupSets));
 		panel_eS5.add(comboBox_eS5_toKeep);
@@ -1150,7 +1163,8 @@ public class EditDialog extends JDialog {
 							return;
 						}
 					}
-					// Prüfen ob die Start-Zeit für das automatische Backup eine gültige Zeit ist:
+					// Prüfen ob die Start-Zeit für das automatische Backup eine
+					// gültige Zeit ist:
 					if (checkBox_toggleWeekday.isSelected() || checkBox_toggleDayInMonth.isSelected()) {
 						try {
 							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
