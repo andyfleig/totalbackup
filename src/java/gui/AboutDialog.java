@@ -42,7 +42,7 @@ public class AboutDialog extends JDialog {
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.title"));
 		setModal(true);
 		setAlwaysOnTop(true);
-		setBounds(100, 100, 479, 589);
+		setBounds(100, 100, 479, 532);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -50,7 +50,7 @@ public class AboutDialog extends JDialog {
 
 		label_about = new JLabel();
 		label_about.setText(ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.text"));
-		panel_main.add(label_about, BorderLayout.CENTER);
+		panel_main.add(label_about, BorderLayout.NORTH);
 
 		button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
 		panel_main.add(button_ok, BorderLayout.SOUTH);
