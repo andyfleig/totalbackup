@@ -165,8 +165,7 @@ public class EditDialog extends JDialog {
 	private JCheckBox checkBox_sunday;
 
 	private JComboBox<String> comboBox_intervalUnit;
-
-	private JComboBox comboBox_catchUp;
+	private JComboBox<String> comboBox_catchUp;
 	private JCheckBox checkBox_catchUp;
 
 	/**
@@ -659,9 +658,9 @@ public class EditDialog extends JDialog {
 		checkBox_catchUp.setSelected(true);
 		panel_catchUp.add(checkBox_catchUp);
 
-		comboBox_catchUp = new JComboBox();
+		comboBox_catchUp = new JComboBox<String>();
 		comboBox_catchUp.setLightWeightPopupEnabled(false);
-		comboBox_catchUp.setModel(new DefaultComboBoxModel(new String[] { "5min", "10min", "15min", "30min", "1h",
+		comboBox_catchUp.setModel(new DefaultComboBoxModel<String>(new String[] { "5min", "10min", "15min", "30min", "1h",
 				"2h", "6h", "12h", "24h" }));
 		panel_catchUp.add(comboBox_catchUp);
 
@@ -684,11 +683,11 @@ public class EditDialog extends JDialog {
 		panel_intervalSettings.add(textField_interval);
 		textField_interval.setColumns(10);
 
-		comboBox_intervalUnit = new JComboBox();
+		comboBox_intervalUnit = new JComboBox<String>();
 		comboBox_intervalUnit.setLightWeightPopupEnabled(false);
 		comboBox_intervalUnit.setLightWeightPopupEnabled(false);
 		panel_intervalSettings.add(comboBox_intervalUnit);
-		comboBox_intervalUnit.setModel(new DefaultComboBoxModel(new String[] { "min", "h", "d", "m" }));
+		comboBox_intervalUnit.setModel(new DefaultComboBoxModel<String>(new String[] { "min", "h", "d", "m" }));
 
 		JPanel panel_simpleSettings = new JPanel();
 		panel_simpleSettings.setLayout(new BorderLayout(0, 0));
