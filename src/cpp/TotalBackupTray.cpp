@@ -41,7 +41,7 @@ TotalBackupTray::TotalBackupTray()
 {
   QSystemTrayIcon* trayIcon = new QSystemTrayIcon(this);
   
-  QIcon icon("./TB_logo.png");
+  QIcon icon("../resources/TB_logo.png");
   trayIcon->setIcon(icon);
   
   QMenu* trayIconMenu = new QMenu(this);
