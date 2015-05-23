@@ -83,6 +83,7 @@ import javax.swing.text.DefaultCaret;
 
 import com.google.gson.Gson;
 
+import data.BackupInfos;
 import data.BackupTask;
 import data.BackupThreadContainer;
 import data.Source;
@@ -139,6 +140,11 @@ public class Mainframe extends JDialog {
 
 	SimpleAttributeSet blackAS;
 	SimpleAttributeSet redAS;
+
+	// Größe eines Hardlinks (in Byte):
+	private static final double SIZE_OF_HARDLINK = 4000;
+	// Größe eines leeren Verzeichnisses (in Byte):
+	private static final double SIZE_OF_DIR = 4000;
 
 	/**
 	 * Launch the application.
@@ -694,6 +700,21 @@ public class Mainframe extends JDialog {
 				isCanceled = true;
 			}
 		}
+		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
+		File destDir = new File(task.getDestinationPath());
+		double freeSize = destDir.getFreeSpace();
+		BackupInfos backupInfos = backup.getBackupInfos();
+		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_HARDLINK * backupInfos.getNumberOfFilesToLink()
+				+ SIZE_OF_DIR * backupInfos.getNumberOfDirectories();
+		if (freeSize <= sizeNeeded) {
+			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
+			JOptionPane.showMessageDialog(null,
+					ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errNotEnoughSpace"),
+					ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
+			// Backup abbrechen:
+			return;
+		}
+
 		if (!isCanceled) {
 			if (!task.getAutostart()) {
 				showSummaryDialog(task, backup);
