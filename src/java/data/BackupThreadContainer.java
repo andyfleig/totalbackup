@@ -24,7 +24,7 @@ package data;
  * Container für Backup-Threads. Besteht aus einem Thread und dem Namen des
  * zugehörigen BackupTask.
  * 
- * @author andy
+ * @author Andreas Fleig
  *
  */
 public class BackupThreadContainer {

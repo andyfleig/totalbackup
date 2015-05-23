@@ -62,7 +62,7 @@ import data.BackupTask;
 /**
  * Controller zur Steuerung der Anwendung.
  * 
- * @author andy
+ * @author Andreas Fleig
  *
  */
 public class Controller {

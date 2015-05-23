@@ -32,6 +32,11 @@ import data.BackupTask;
 import data.Filter;
 import data.Source;
 
+/**
+ * Ein Normal-Backup Objekt. Implementierung von Backupable.
+ * @author Andreas Fleig
+ *
+ */
 public class NormalBackup implements Backupable {
 
 	/**

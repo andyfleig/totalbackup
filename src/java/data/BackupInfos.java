@@ -20,6 +20,14 @@
  */
 package data;
 
+/**
+ * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B.
+ * Größe der zu kopierenden/ verlinkgenden Dateien oder Anzahl der zu
+ * kopierenden/ verlinkenden Dateien oder Verzeichnissen).
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class BackupInfos {
 	/**
 	 * Anzahl der zu sichernden Ordner

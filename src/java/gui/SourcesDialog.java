@@ -52,6 +52,12 @@ import java.util.ResourceBundle;
 import listener.IFilterDialogListener;
 import listener.ISourcesDialogListener;
 
+/**
+ * Dialog zum Festlegen und Bearbeiten der Quellen.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class SourcesDialog extends JDialog {
 
 	/**

@@ -25,6 +25,12 @@ import java.io.IOException;
 
 import javax.swing.filechooser.FileSystemView;
 
+/**
+ * FileSystemView welcher nur Verzeichnisse anzeigt.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 class DirectoryRestrictedFileSystemView extends FileSystemView {
 
 	private final File[] rootDirectories;

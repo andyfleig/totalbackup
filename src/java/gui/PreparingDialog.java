@@ -34,6 +34,13 @@ import java.awt.event.ActionEvent;
 
 import listener.IPreparingDialogListener;
 
+/**
+ * Minimaler Dialog welcher wärend der Preparation angezeigt wird und die
+ * Möglichkeit zum Abbruch des Backups bietet.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class PreparingDialog extends JDialog {
 
 	private IPreparingDialogListener listener;

@@ -44,6 +44,12 @@ import javax.swing.JRadioButton;
 
 import listener.IFilterDialogListener;
 
+/**
+ * Dialog zum Erstellen und Bearbeiten eines Filters.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class FilterDialog extends JDialog {
 
 	private final JPanel panel_source = new JPanel();

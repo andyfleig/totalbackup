@@ -24,6 +24,12 @@ import java.util.ArrayList;
 import java.io.File;
 import java.io.Serializable;
 
+/**
+ * Eine Datei oder ein Verzeichnis für die Struktur innerhalb des Index.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class StructureFile implements Serializable {
 
 	/**
@@ -41,7 +47,8 @@ public class StructureFile implements Serializable {
 	 * 
 	 * @param rootPath
 	 *            Pfad des Wurzelverzeichnisses
-	 * @param path	relativer Pfad der Datei
+	 * @param path
+	 *            relativer Pfad der Datei
 	 */
 	public StructureFile(String rootPath, String path) {
 		this.filePath = path;
@@ -73,15 +80,15 @@ public class StructureFile implements Serializable {
 	public long getLastModifiedDate() {
 		return lastModified;
 	}
-	
+
 	/**
 	 * Gibt den Datei-Pfad zurück.
+	 * 
 	 * @return Datei-Pfad
 	 */
 	public String getFilePath() {
 		return filePath;
 	}
-	
 
 	/**
 	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht

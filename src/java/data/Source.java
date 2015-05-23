@@ -26,7 +26,7 @@ import java.util.ArrayList;
 /**
  * Quellobjekt zur Haltung des Quellpfades und der dazughörigen Filter.
  * 
- * @author andy
+ * @author Andreas Fleig
  *
  */
 public class Source implements Serializable {

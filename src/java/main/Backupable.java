@@ -26,6 +26,12 @@ import java.io.IOException;
 import data.BackupInfos;
 import data.BackupTask;
 
+/**
+ * Interface für einen Backup-Typ (z.B. Normal oder Hardlink).
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public interface Backupable {
 
 	/**

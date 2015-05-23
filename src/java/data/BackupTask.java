@@ -27,9 +27,10 @@ import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * Eine Backup-Aufgabe.
+ * Eine Backup-Aufgabe. Enthält die Einstellungen dieses Backup Tasks wie Quell-
+ * und Zielpfad aber auch Informationen über autoClean usw.
  * 
- * @author andy
+ * @author Andreas Fleig
  *
  */
 public class BackupTask implements Serializable {

@@ -87,6 +87,12 @@ import data.BackupTask;
 import data.BackupThreadContainer;
 import data.Source;
 
+/**
+ * Mainframe von TotalBackup.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class Mainframe extends JDialog {
 
 	// Für main benötigt:
@@ -851,7 +857,7 @@ public class Mainframe extends JDialog {
 		} catch (FileNotFoundException e) {
 			System.err.println("Error: FileNotException while writing properties");
 		}
-		
+
 	}
 
 	/**

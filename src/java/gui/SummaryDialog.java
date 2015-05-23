@@ -42,6 +42,13 @@ import main.Backupable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+/**
+ * Dialog welcher nach der Preparation die Zusammenfassung des bevorstehenden
+ * Backups anzeigt.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class SummaryDialog extends JDialog {
 
 	private ISummaryDialogListener listener;

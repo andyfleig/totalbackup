@@ -22,10 +22,16 @@ package main;
 
 import main.Controller;
 
+/**
+ * Main-Klasse von TotalBackup.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class Main {
 
 	/**
-	 * Main-Methode zum starten des Programms
+	 * Main-Methode von TotalBackup.
 	 * 
 	 * @param args
 	 *            Start-Argumente

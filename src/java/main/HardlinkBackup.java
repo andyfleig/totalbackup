@@ -45,6 +45,12 @@ import data.Filter;
 import data.Source;
 import data.StructureFile;
 
+/**
+ * Ein Hardlink-Backup Objekt. Implementierung von Backupable.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class HardlinkBackup implements Backupable {
 
 	/**

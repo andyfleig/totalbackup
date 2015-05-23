@@ -69,6 +69,12 @@ import javax.swing.JTabbedPane;
 
 import java.awt.GridLayout;
 
+/**
+ * Dialog zum Bearbeiten des BackupTasks.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class EditDialog extends JDialog {
 
 	private IEditDialogListener editListener;

@@ -20,6 +20,13 @@
  */
 package data;
 
+/**
+ * Einthält Informationen zu einer Datei oder einem Verzeichnis. Es wird bei der
+ * Preparation angelegt und später beim eigentlichen Backup-Vorgang benutzt.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class BackupElement {
 	/**
 	 * Legt den Quell-Pfad des Elements fest

@@ -35,6 +35,12 @@ import javax.swing.Action;
 
 import java.util.ResourceBundle;
 
+/**
+ * Über-Dialog mit Informationen zu TotalBackup.
+ * 
+ * @author Andreas Fleig
+ *
+ */
 public class AboutDialog extends JDialog {
 
 	private final JPanel panel_main = new JPanel();
