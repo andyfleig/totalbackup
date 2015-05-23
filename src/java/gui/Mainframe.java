@@ -671,7 +671,11 @@ public class Mainframe extends JDialog {
 				return;
 			}
 		}
+		// Prüfen ob der Zielpfad existiert:
 		if (!(new File(task.getDestinationPath())).exists()) {
+			JOptionPane.showMessageDialog(null,
+					ResourceBundle.getBundle("gui.messages").getString("GUI.errDestinationDontExists"), ResourceBundle
+							.getBundle("gui.messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
 			String output = ResourceBundle.getBundle("gui.messages")
 					.getString("GUI.Mainframe.errDestinationDontExists");
 			listener.printOut(output, false, task.getTaskName());
