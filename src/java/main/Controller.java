@@ -263,12 +263,12 @@ public class Controller {
 	 */
 	private void loadSerialization() {
 		// Prüfen ob bereits Einstellungen gespeichert wurden:
-		File file = new File("../properties.ser");
+		File file = new File("./properties.ser");
 		if (file.exists()) {
 			ObjectInputStream ois = null;
 			FileInputStream fis = null;
 
-			File properties = new File("../properties.ser");
+			File properties = new File("./properties.ser");
 			try {
 				fis = new FileInputStream(properties);
 				ois = new ObjectInputStream(fis);
@@ -300,7 +300,7 @@ public class Controller {
 
 	private void loadSerializationGson() {
 		String settings = new String();
-		File properties = new File("../properties");
+		File properties = new File("./properties");
 		if (properties.exists()) {
 			try {
 				Scanner scanner = new Scanner(properties);

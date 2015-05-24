@@ -225,7 +225,7 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 
-		frmTotalbackup.setIconImage(Toolkit.getDefaultToolkit().getImage("../resources/TB_logo.png"));
+		frmTotalbackup.setIconImage(Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png"));
 
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
@@ -541,7 +541,7 @@ public class Mainframe extends JDialog {
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (!OS.contains("win")) {
 			// QT-App starten:
-			ProcessBuilder builder = new ProcessBuilder("../totalbackuptray");
+			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
 				trayProcess = builder.start();
 			} catch (IOException e1) {
@@ -560,7 +560,7 @@ public class Mainframe extends JDialog {
 			if (SystemTray.isSupported()) {
 				SystemTray systemTray = SystemTray.getSystemTray();
 
-				Image image = Toolkit.getDefaultToolkit().getImage("../resources/TB_logo.png");
+				Image image = Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png");
 
 				PopupMenu trayPopupMenu = new PopupMenu();
 
@@ -834,7 +834,7 @@ public class Mainframe extends JDialog {
 	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
 	 */
 	private void saveProperties() {
-		File properties = new File("../properties.ser");
+		File properties = new File("./properties.ser");
 		if (!properties.exists()) {
 			try {
 				properties.createNewFile();
@@ -876,7 +876,7 @@ public class Mainframe extends JDialog {
 		Gson gson = new Gson();
 		String settings = gson.toJson(listener.getBackupTasks());
 		try {
-			PrintWriter out = new PrintWriter("../properties");
+			PrintWriter out = new PrintWriter("./properties");
 			out.println(settings);
 			out.close();
 		} catch (FileNotFoundException e) {
