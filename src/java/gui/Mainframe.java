@@ -141,10 +141,8 @@ public class Mainframe extends JDialog {
 	SimpleAttributeSet blackAS;
 	SimpleAttributeSet redAS;
 
-	// Größe eines Hardlinks (in Byte):
-	private static final double SIZE_OF_HARDLINK = 4000;
-	// Größe eines leeren Verzeichnisses (in Byte):
-	private static final double SIZE_OF_DIR = 4000;
+	// Größe einer Inode (in Byte):
+	private static final double SIZE_OF_INODE = 4096;
 
 	/**
 	 * Launch the application.
@@ -705,8 +703,9 @@ public class Mainframe extends JDialog {
 		File destDir = new File(task.getDestinationPath());
 		double freeSize = destDir.getFreeSpace();
 		BackupInfos backupInfos = backup.getBackupInfos();
-		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_HARDLINK * backupInfos.getNumberOfFilesToLink()
-				+ SIZE_OF_DIR * backupInfos.getNumberOfDirectories();
+		// TODO: Zusätzliche warnung wenn knapp (z.B. 1%)
+		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy()
+				+ SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
 		if (freeSize <= sizeNeeded) {
 			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
 			JOptionPane.showMessageDialog(null,
