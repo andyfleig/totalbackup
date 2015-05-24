@@ -225,7 +225,9 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 
-		frmTotalbackup.setIconImage(Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png"));
+		Image image = Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png");
+		
+		frmTotalbackup.setIconImage(image);
 
 		JMenuBar menuBar = new JMenuBar();
 		frmTotalbackup.setJMenuBar(menuBar);
@@ -560,8 +562,6 @@ public class Mainframe extends JDialog {
 			if (SystemTray.isSupported()) {
 				SystemTray systemTray = SystemTray.getSystemTray();
 
-				Image image = Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png");
-
 				PopupMenu trayPopupMenu = new PopupMenu();
 
 				MenuItem action = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_show"));
@@ -584,11 +584,12 @@ public class Mainframe extends JDialog {
 					}
 				});
 				trayPopupMenu.add(close);
+				int trayIconWidth = new TrayIcon(image).getSize().width;
 
-				TrayIcon trayIcon = new TrayIcon(image, ResourceBundle.getBundle("gui.messages").getString(
-						"GUI.Mainframe.title"), trayPopupMenu);
+				TrayIcon trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
+						ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"), trayPopupMenu);
 
-				trayIcon.setImageAutoSize(true);
+				// trayIcon.setImageAutoSize(true);
 
 				try {
 					systemTray.add(trayIcon);
