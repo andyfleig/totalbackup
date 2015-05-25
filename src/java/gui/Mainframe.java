@@ -224,7 +224,7 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.pack();
 
 		Image image = Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png");
-		
+
 		frmTotalbackup.setIconImage(image);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -694,11 +694,12 @@ public class Mainframe extends JDialog {
 			prep.dispose();
 		}
 		boolean isCanceled = false;
-		for (BackupThreadContainer container : backupThreads) {
-			if (container.getTaskName().equals(task.getTaskName())) {
-				isCanceled = true;
-			}
-		}
+		// TODO: ???
+		/*
+		 * for (BackupThreadContainer container : backupThreads) { if
+		 * (container.getTaskName().equals(task.getTaskName())) { isCanceled =
+		 * true; } }
+		 */
 		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
 		File destDir = new File(task.getDestinationPath());
 		double freeSize = destDir.getFreeSpace();
@@ -773,7 +774,8 @@ public class Mainframe extends JDialog {
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		summary.setLocation(frmTotalbackup.getLocationOnScreen());
-		summary.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		// TODO: Das geht so nicht!
+		// summary.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		summary.setVisible(true);
 	}
 
