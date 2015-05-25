@@ -308,11 +308,18 @@ public class HardlinkBackup implements Backupable {
 					listener.log(outprint, task);
 				}
 
+				// TODO: Warum erneut alle sources betrachten?
 				// Queueing:
 				try {
 					for (int j = 0; j < sources.size(); j++) {
-						sourceRootDir = sourceFile.getAbsolutePath().substring(0,
-								sources.get(j).getPath().length() - sourceFile.getName().length());
+						// Sonderfall: Wenn der Backup-Root == Root des Systems
+						// ist:
+						if (sourceFile.getName().length() == 0) {
+							sourceRootDir = "";
+						} else {
+							sourceRootDir = sourceFile.getAbsolutePath().substring(0,
+									sources.get(j).getPath().length() - sourceFile.getName().length());
+						}
 						rekursivePreparation(new File(sources.get(j).getPath()), f, task);
 					}
 				} catch (BackupCanceledException e) {
@@ -742,7 +749,18 @@ public class HardlinkBackup implements Backupable {
 
 		File[] files = new File(path).listFiles();
 
-		StructureFile sFile = new StructureFile(rootPath, path.substring(rootPath.length()));
+		StructureFile sFile;
+		// TODO: HIER
+		// Sonderbehandlung für Windows, wenn der SourcePath das
+		// root-dir eines Volume (z.B. C:/) ist:
+		String nameOfBackupDir = path.substring(rootPath.length());
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.contains("win") && nameOfBackupDir.length() == 2) {
+			sFile = new StructureFile(rootPath, nameOfBackupDir.substring(1) + ":");
+		} else {
+			sFile = new StructureFile(rootPath, nameOfBackupDir);
+		}
+
 		for (int i = 0; i < files.length; i++) {
 			StructureFile newFile;
 			if (files[i].isDirectory()) {
