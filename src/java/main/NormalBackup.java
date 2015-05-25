@@ -34,6 +34,7 @@ import data.Source;
 
 /**
  * Ein Normal-Backup Objekt. Implementierung von Backupable.
+ * 
  * @author Andreas Fleig
  *
  */
@@ -162,11 +163,14 @@ public class NormalBackup implements Backupable {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
+			isCanceled = true;
 		}
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
-		listener.printOut(output, false, task.getTaskName());
-		listener.log(output, task);
-		preparationDone = true;
+		if (!isCanceled) {
+			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
+			listener.printOut(output, false, task.getTaskName());
+			listener.log(output, task);
+			preparationDone = true;
+		}
 	}
 
 	/**
