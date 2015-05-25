@@ -756,7 +756,6 @@ public class HardlinkBackup implements Backupable {
 		File[] files = new File(path).listFiles();
 
 		StructureFile sFile;
-		// TODO: HIER
 		// Sonderbehandlung für Windows, wenn der SourcePath das
 		// root-dir eines Volume (z.B. C:/) ist:
 		String nameOfBackupDir = path.substring(rootPath.length());
