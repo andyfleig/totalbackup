@@ -326,6 +326,7 @@ public class HardlinkBackup implements Backupable {
 					outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 					listener.printOut(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
+					isCanceled = true;
 				}
 			}
 		} catch (BackupCanceledException e) {
@@ -339,6 +340,8 @@ public class HardlinkBackup implements Backupable {
 			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
 			preparationDone = true;
+		} else {
+			listener.deleteEmptyBackupFolders(task.getDestinationPath(), task);
 		}
 	}
 

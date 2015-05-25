@@ -723,7 +723,6 @@ public class Mainframe extends JDialog {
 		}
 
 		boolean isCanceled = true;
-		// TODO: ???
 		for (BackupThreadContainer container : backupThreads) {
 			if (container.getTaskName().equals(task.getTaskName())) {
 				isCanceled = false;

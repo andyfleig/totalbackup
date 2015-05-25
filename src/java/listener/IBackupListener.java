@@ -77,4 +77,13 @@ public interface IBackupListener {
 	 *            der zu entfernenden Backup-Tasks
 	 */
 	public void taskFinished(BackupTask task);
+
+	/**
+	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
+	 * Backup-Vorgangs nach der Übersicht)
+	 * 
+	 * @param task
+	 *            entsprechernder BackupTask
+	 */
+	public void deleteEmptyBackupFolders(String path, BackupTask task);
 }

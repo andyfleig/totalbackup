@@ -146,29 +146,7 @@ public class Controller {
 
 						@Override
 						public void deleteEmptyBackupFolders(String path, BackupTask task) {
-							File currentDest = new File(path);
-							File[] backupFolders = currentDest.listFiles();
-							for (int i = 0; i < backupFolders.length; i++) {
-								if (!backupFolders[i].isDirectory()) {
-									continue;
-								}
-								boolean deleteThisDir = true;
-								File[] filesInBackupFolder = backupFolders[i].listFiles();
-								for (int j = 0; j < filesInBackupFolder.length; j++) {
-									if (filesInBackupFolder[j].isDirectory()
-											&& filesInBackupFolder[j].listFiles().length != 0) {
-										deleteThisDir = false;
-										break;
-									}
-								}
-								if (deleteThisDir) {
-									BackupHelper.deleteDirectory(backupFolders[i]);
-								}
-							}
-							String outprint = ResourceBundle.getBundle("gui.messages").getString(
-									"Messages.deletedBackupFolder");
-							backupListener.printOut(outprint, false, task.getTaskName());
-							backupListener.log(outprint, task);
+							Controller.this.deleteEmptyBackupFolders(path, task);
 						}
 
 						@Override
@@ -310,7 +288,8 @@ public class Controller {
 				System.err.println("Error: FileNotFoundException while loading Gson-Properties");
 			}
 			Gson gson = new Gson();
-			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>(){}.getType();
+			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>() {
+			}.getType();
 			if (settings != null) {
 				backupTasks = gson.fromJson(settings, listOfBackupTasks);
 			}
@@ -384,6 +363,12 @@ public class Controller {
 			public void taskFinished(BackupTask task) {
 				Controller.this.taskFinished(task);
 
+			}
+
+			@Override
+			public void deleteEmptyBackupFolders(String path, BackupTask task) {
+				Controller.this.deleteEmptyBackupFolders(path, task);
+				
 			}
 
 		};
@@ -1139,5 +1124,37 @@ public class Controller {
 			return currentDateTime.plusMonths(interval);
 		}
 		return null;
+	}
+
+	/**
+	 * Löscht einen leeren Backup-Ordner.
+	 * 
+	 * @param path
+	 *            Pfad an dem sich der Ordner befindet
+	 * @param task
+	 *            BackupTask zu dem der Ordner gehört
+	 */
+	private void deleteEmptyBackupFolders(String path, BackupTask task) {
+		File currentDest = new File(path);
+		File[] backupFolders = currentDest.listFiles();
+		for (int i = 0; i < backupFolders.length; i++) {
+			if (!backupFolders[i].isDirectory()) {
+				continue;
+			}
+			boolean deleteThisDir = true;
+			File[] filesInBackupFolder = backupFolders[i].listFiles();
+			for (int j = 0; j < filesInBackupFolder.length; j++) {
+				if (filesInBackupFolder[j].isDirectory() && filesInBackupFolder[j].listFiles().length != 0) {
+					deleteThisDir = false;
+					break;
+				}
+			}
+			if (deleteThisDir) {
+				BackupHelper.deleteDirectory(backupFolders[i]);
+			}
+		}
+		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.deletedBackupFolder");
+		backupListener.printOut(outprint, false, task.getTaskName());
+		backupListener.log(outprint, task);
 	}
 }

@@ -157,6 +157,7 @@ public class NormalBackup implements Backupable {
 					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
 					listener.printOut(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
+					isCanceled = true;
 				}
 			}
 		} catch (BackupCanceledException e) {
@@ -165,11 +166,14 @@ public class NormalBackup implements Backupable {
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
+		//Warum hier noch nicht gecaceled?
 		if (!isCanceled) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
 			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
 			preparationDone = true;
+		} else {
+			listener.deleteEmptyBackupFolders(task.getDestinationPath(), task);
 		}
 	}
 
