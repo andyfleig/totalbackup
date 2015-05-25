@@ -464,11 +464,17 @@ public class Mainframe extends JDialog {
 									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
 									false, taskToRun.getTaskName());
 							button_cancel.setEnabled(false);
+							BackupThreadContainer tmpContainer = null;
 							for (BackupThreadContainer container : backupThreads) {
 								if (container.getTaskName().equals(taskName)) {
 									container.getBackupThread().interrupt();
-									backupThreads.remove(container);
+									tmpContainer = container;
+									break;
 								}
+							}
+							if (tmpContainer != null) {
+								backupThreads.remove(tmpContainer);
+								listener.removeBackupTaskFromRunningTasks(listener.getBackupTaskWithName(taskName));
 							}
 						}
 
@@ -512,11 +518,17 @@ public class Mainframe extends JDialog {
 									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
 									false, null);
 					button_cancel.setEnabled(false);
+					BackupThreadContainer tmpContainer = null;
 					for (BackupThreadContainer container : backupThreads) {
 						if (container.getTaskName().equals(taskToRun.getTaskName())) {
 							container.getBackupThread().interrupt();
-							backupThreads.remove(container);
+							tmpContainer = container;
+							break;
 						}
+					}
+					if (tmpContainer != null) {
+						backupThreads.remove(tmpContainer);
+						listener.removeBackupTaskFromRunningTasks(taskToRun);
 					}
 				}
 			}
@@ -693,13 +705,7 @@ public class Mainframe extends JDialog {
 		if (prep != null) {
 			prep.dispose();
 		}
-		boolean isCanceled = false;
-		// TODO: ???
-		/*
-		 * for (BackupThreadContainer container : backupThreads) { if
-		 * (container.getTaskName().equals(task.getTaskName())) { isCanceled =
-		 * true; } }
-		 */
+
 		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
 		File destDir = new File(task.getDestinationPath());
 		double freeSize = destDir.getFreeSpace();
@@ -716,6 +722,13 @@ public class Mainframe extends JDialog {
 			return;
 		}
 
+		boolean isCanceled = true;
+		// TODO: ???
+		for (BackupThreadContainer container : backupThreads) {
+			if (container.getTaskName().equals(task.getTaskName())) {
+				isCanceled = false;
+			}
+		}
 		if (!isCanceled) {
 			if (!task.getAutostart()) {
 				showSummaryDialog(task, backup);
