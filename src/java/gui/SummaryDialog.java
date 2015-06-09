@@ -196,39 +196,29 @@ public class SummaryDialog extends JDialog {
 		label_numberToLinkDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToLink()).toString());
 		label_numberOfDirsDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfDirectories()).toString());
 
+		// Größe der zu kopierenden Dateien:
+		label_sizeToCopyDyn.setText(formatSize(backup.getBackupInfos().getSizeToCopy()));
+		// Größe der zu verlinkenden Dateien:
+		label_sizeToLinkDyn.setText(formatSize(backup.getBackupInfos().getSizeToLink()));
+	}
+
+	/**
+	 * Formatiert die gegeben Größe für die Anzeige im Summary-Dialog.
+	 * 
+	 * @param size
+	 *            Größe (als double)
+	 * @return Formatierter String der Größe
+	 */
+	private String formatSize(double size) {
 		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
-
-		// TODO: schöner: in eigene Methode auslagern
-		// Größe der zu kopierenden Dateien:
-		double size = backup.getBackupInfos().getSizeToCopy();
 		if (size < 1000) {
-			String result = String.valueOf(decimalFormat.format(size)) + "Byte";
-			label_sizeToCopyDyn.setText(result);
+			return String.valueOf(decimalFormat.format(size)) + "Byte";
 		} else if (size < 1000000) {
-			String result = String.valueOf(decimalFormat.format(size / 1000)) + "kB";
-			label_sizeToCopyDyn.setText(result);
+			return String.valueOf(decimalFormat.format(size / 1000)) + "kB";
 		} else if (size < 1000000000) {
-			String result = String.valueOf(decimalFormat.format(size / 1000000)) + "MB";
-			label_sizeToCopyDyn.setText(result);
+			return String.valueOf(decimalFormat.format(size / 1000000)) + "MB";
 		} else {
-			String result = String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
-			label_sizeToCopyDyn.setText(result);
-		}
-
-		// Größe der zu kopierenden Dateien:
-		size = backup.getBackupInfos().getSizeToLink();
-		if (size < 1000) {
-			String result = String.valueOf(decimalFormat.format(size)) + "Byte";
-			label_sizeToLinkDyn.setText(result);
-		} else if (size < 1000000) {
-			String result = String.valueOf(decimalFormat.format(size / 1000)) + "kB";
-			label_sizeToLinkDyn.setText(result);
-		} else if (size < 1000000000) {
-			String result = String.valueOf(decimalFormat.format(size / 1000000)) + "MB";
-			label_sizeToLinkDyn.setText(result);
-		} else {
-			String result = String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
-			label_sizeToLinkDyn.setText(result);
+			return String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
 		}
 	}
 
