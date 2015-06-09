@@ -78,10 +78,6 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private String newestBackupPath;
 	/**
-	 * Datum-Pattern
-	 */
-	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
-	/**
 	 * Zu bearbeitende Elemente
 	 */
 	private LinkedList<BackupElement> elementQueue;
@@ -807,7 +803,7 @@ public class HardlinkBackup implements Backupable {
 				String backupDate = tokenizer.nextToken();
 
 				try {
-					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 					foundDate = sdfToDate.parse(backupDate);
 				} catch (ParseException e) {
 					// Offenbar kein gültiges Datum

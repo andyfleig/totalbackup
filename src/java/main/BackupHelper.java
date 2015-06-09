@@ -49,6 +49,11 @@ import listener.IBackupListener;
 public final class BackupHelper {
 
 	/**
+	 * Datum-Vorlage.
+	 */
+	public static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
+
+	/**
 	 * Kopiert eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
 	 * 
 	 * @param source
@@ -131,7 +136,7 @@ public final class BackupHelper {
 
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
-		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+		SimpleDateFormat df = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
 		df.setTimeZone(TimeZone.getDefault());
 
 		File destinationFile = new File(destinationPath);

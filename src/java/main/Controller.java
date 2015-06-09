@@ -76,10 +76,6 @@ public class Controller {
 	 */
 	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
 	/**
-	 * Namen-Muster für die benennung der Backup-Ordner.
-	 */
-	private static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
-	/**
 	 * Aktuelle IBackupListener-Instanz.
 	 */
 	private IBackupListener backupListener;
@@ -358,7 +354,7 @@ public class Controller {
 			@Override
 			public void deleteEmptyBackupFolders(String path, BackupTask task) {
 				Controller.this.deleteEmptyBackupFolders(path, task);
-				
+
 			}
 
 		};
@@ -635,7 +631,7 @@ public class Controller {
 			String backupDate = tokenizer.nextToken();
 
 			try {
-				SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+				SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 				sdfToDate.parse(backupDate);
 				foundBackupsets.add(files[i]);
 			} catch (ParseException e) {
@@ -676,7 +672,7 @@ public class Controller {
 				String backupDate = tokenizer.nextToken();
 
 				try {
-					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 					foundDate = sdfToDate.parse(backupDate);
 				} catch (ParseException e) {
 					// Offenbar kein gültiges Datum
@@ -752,7 +748,7 @@ public class Controller {
 			String currentBackupSet = tokenizer.nextToken();
 			Date dateOfCurrentBackupSet = new Date();
 			try {
-				SimpleDateFormat sdfOfCurrentBackupSet = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+				SimpleDateFormat sdfOfCurrentBackupSet = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 				dateOfCurrentBackupSet = sdfOfCurrentBackupSet.parse(currentBackupSet);
 			} catch (ParseException e) {
 				System.err.println("Error while parsing date");
