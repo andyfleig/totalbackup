@@ -300,16 +300,6 @@ public class Controller {
 	}
 
 	/**
-	 * Startet alle Backup-Tasks.
-	 */
-	public void startAllBackups() {
-		// TODO: unnötig?
-		for (int i = 0; i < backupTasks.size(); i++) {
-			// startBackup(backupTasks.get(i));
-		}
-	}
-
-	/**
 	 * Startet die Backup-Vorbereitung.
 	 */
 	public Backupable startPreparation(BackupTask task) {

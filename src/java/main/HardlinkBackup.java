@@ -308,7 +308,6 @@ public class HardlinkBackup implements Backupable {
 					listener.log(outprint, task);
 				}
 
-				// TODO: Warum erneut alle sources betrachten?
 				// Queueing:
 				try {
 					for (int j = 0; j < sources.size(); j++) {
