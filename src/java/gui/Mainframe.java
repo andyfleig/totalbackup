@@ -233,16 +233,16 @@ public class Mainframe extends JDialog {
 		JMenu mn_File = new JMenu(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_file"));
 		menuBar.add(mn_File);
 
-		JMenuItem mntm_Quit = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.menu_quit"));
+		JMenuItem mntm_Quit = new JMenuItem(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_quit"));
 		mntm_Quit.setAction(action_quit);
 		mn_File.add(mntm_Quit);
 
 		JMenu mn_Help = new JMenu(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_help"));
 		menuBar.add(mn_Help);
 
-		JMenuItem mntm_About = new JMenuItem(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.menu_about"));
+		JMenuItem mntm_About = new JMenuItem(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_about"));
 		mntm_About.setAction(action_about);
 		mn_Help.add(mntm_About);
 
@@ -270,8 +270,8 @@ public class Mainframe extends JDialog {
 		panel_statusAndLog.add(scrollPane_output, BorderLayout.CENTER);
 
 		// Checkbox erweiterte Ausgabe:
-		checkbox_advancedOutput = new JCheckBox(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.checkbox_advancedOutput"));
+		checkbox_advancedOutput = new JCheckBox(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.checkbox_advancedOutput"));
 
 		JPanel panel_options = new JPanel();
 		panel_statusAndLog.add(panel_options, BorderLayout.SOUTH);
@@ -296,7 +296,8 @@ public class Mainframe extends JDialog {
 		label_status.setText(" " + ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.label_status"));
 		panel_status.add(label_status, BorderLayout.NORTH);
 
-		JLabel label_tasks = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.label_tasks"));
+		JLabel label_tasks = new JLabel(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.label_tasks"));
 		panel_tasks.add(label_tasks, BorderLayout.NORTH);
 		label_tasks.setPreferredSize(new Dimension(0, 25));
 
@@ -401,12 +402,10 @@ public class Mainframe extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Prüfen ob der gewählte Task gerade ausgeführt wird:
 				if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
-					JOptionPane
-							.showMessageDialog(null,
-									ResourceBundle.getBundle("gui.messages")
-											.getString("GUI.Mainframe.errTaskIsRunning"),
-									ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
-									JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errTaskIsRunning"),
+							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+							JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
@@ -429,8 +428,8 @@ public class Mainframe extends JDialog {
 		list_tasks.setSelectedIndex(0);
 		list_tasks.setVisibleRowCount(6);
 
-		JButton button_clearOutput = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.button_clearOutput"));
+		JButton button_clearOutput = new JButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.button_clearOutput"));
 		button_clearOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				textpane_output.setText("");
@@ -442,8 +441,8 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
 		// Button Ausgewähltes Backup starten:
-		button_startSelected = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.button_startSelectedBackup"));
+		button_startSelected = new JButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.button_startSelectedBackup"));
 
 		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -456,9 +455,10 @@ public class Mainframe extends JDialog {
 
 					@Override
 					public void cancelBackup(String taskName) {
-						int reply = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("gui.messages")
-								.getString("Messages.CancelBackup"), ResourceBundle.getBundle("gui.messages")
-								.getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
+						int reply = JOptionPane.showConfirmDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"),
+								ResourceBundle.getBundle("gui.messages").getString("Messages.Cancel"),
+								JOptionPane.YES_NO_OPTION);
 						if (reply == JOptionPane.YES_OPTION) {
 							Mainframe.this.addToOutput(
 									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
@@ -499,8 +499,8 @@ public class Mainframe extends JDialog {
 		panel_buttons.add(button_startSelected);
 
 		// Button Backup Abbrechen:
-		button_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.button_cancelBackup"));
+		button_cancel = new JButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.button_cancelBackup"));
 		button_cancel.setEnabled(false);
 
 		button_cancel.addActionListener(new ActionListener() {
@@ -510,13 +510,13 @@ public class Mainframe extends JDialog {
 					return;
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"), ResourceBundle
-								.getBundle("gui.messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
+						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"),
+						ResourceBundle.getBundle("gui.messages").getString("Messages.Cancel"),
+						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
-					Mainframe.this
-							.addToOutput(
-									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
-									false, null);
+					Mainframe.this.addToOutput(
+							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false,
+							null);
 					button_cancel.setEnabled(false);
 					BackupThreadContainer tmpContainer = null;
 					for (BackupThreadContainer container : backupThreads) {
@@ -535,8 +535,8 @@ public class Mainframe extends JDialog {
 		});
 
 		// Button Alle-Backups-Starten:
-		button_startAll = new JButton(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.Mainframe.button_startAllBackups"));
+		button_startAll = new JButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.button_startAllBackups"));
 		panel_buttons.add(button_startAll);
 
 		button_startAll.addActionListener(new ActionListener() {
@@ -679,8 +679,8 @@ public class Mainframe extends JDialog {
 		ArrayList<Source> sources = task.getSources();
 		for (int i = 0; i < sources.size(); i++) {
 			if (!(new File(sources.get(i).getPath())).exists()) {
-				String output = ResourceBundle.getBundle("gui.messages").getString(
-						"GUI.Mainframe.errorSourceDontExists");
+				String output = ResourceBundle.getBundle("gui.messages")
+						.getString("GUI.Mainframe.errorSourceDontExists");
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
 				prep.dispose();
@@ -691,8 +691,8 @@ public class Mainframe extends JDialog {
 		// Prüfen ob der Zielpfad existiert:
 		if (!(new File(task.getDestinationPath())).exists()) {
 			JOptionPane.showMessageDialog(null,
-					ResourceBundle.getBundle("gui.messages").getString("GUI.errDestinationDontExists"), ResourceBundle
-							.getBundle("gui.messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
+					ResourceBundle.getBundle("gui.messages").getString("GUI.errDestinationDontExists"),
+					ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
 			String output = ResourceBundle.getBundle("gui.messages")
 					.getString("GUI.Mainframe.errDestinationDontExists");
 			listener.printOut(output, false, task.getTaskName());
@@ -721,7 +721,6 @@ public class Mainframe extends JDialog {
 			// Backup abbrechen:
 			return;
 		}
-
 		boolean isCanceled = true;
 		for (BackupThreadContainer container : backupThreads) {
 			if (container.getTaskName().equals(task.getTaskName())) {
@@ -1017,5 +1016,16 @@ public class Mainframe extends JDialog {
 	 */
 	public boolean advancedOutputIsEnabled() {
 		return checkbox_advancedOutput.isSelected();
+	}
+
+	/**
+	 * Fügt den BackupThreads (laufende Backups) den gegebenen
+	 * BackupThread(Container) hinzu.
+	 * 
+	 * @param c
+	 *            hinzuzufügender BackupThread(Container)
+	 */
+	public void addBackupThreadContainerToBackupThreads(BackupThreadContainer c) {
+		backupThreads.add(c);
 	}
 }

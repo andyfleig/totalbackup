@@ -58,6 +58,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import data.BackupTask;
+import data.BackupThreadContainer;
 
 /**
  * Controller zur Steuerung der Anwendung.
@@ -949,7 +950,16 @@ public class Controller {
 		Runnable backup = new Runnable() {
 			public void run() {
 				taskStarted(task.getTaskName());
-				mainframe.prepareBackup(task);
+				
+				Thread backupThread = new Thread(new Runnable() {
+					@Override
+					public void run() {
+						mainframe.prepareBackup(task);
+					}
+				});
+				BackupThreadContainer newContainer = new BackupThreadContainer(backupThread, task.getTaskName());
+				mainframe.addBackupThreadContainerToBackupThreads(newContainer);
+				backupThread.start();
 			}
 		};
 		task.setScheduledFuture(timer.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.MILLIS),
