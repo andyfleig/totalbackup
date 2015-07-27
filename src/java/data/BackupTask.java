@@ -49,7 +49,7 @@ public class BackupTask implements Serializable {
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
 	private boolean autostart = false;
-	private boolean destVerification = true;
+	private boolean destVerification = false;
 
 	// Für das erweiterte AutoClean:
 	private int[] threshold = new int[5];

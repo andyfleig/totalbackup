@@ -425,8 +425,7 @@ public class EditDialog extends JDialog {
 
 		checkBox_destinationVerification = new JCheckBox(
 				ResourceBundle.getBundle("gui.messages").getString("EditDialog.chckbxDestinationverification.text"));
-		
-		if (System.getProperty("os.name").contains("win")) {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			checkBox_destinationVerification.setSelected(true);
 			checkBox_destinationVerification.setEnabled(true);
 		} else {
