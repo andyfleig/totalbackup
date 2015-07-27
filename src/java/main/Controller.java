@@ -148,8 +148,8 @@ public class Controller {
 
 						@Override
 						public void outprintBackupCanceled(BackupTask task) {
-							String outprint = ResourceBundle.getBundle("gui.messages").getString(
-									"Messages.BackupCanceled");
+							String outprint = ResourceBundle.getBundle("gui.messages")
+									.getString("Messages.BackupCanceled");
 							backupListener.printOut(outprint, false, task.getTaskName());
 							backupListener.log(outprint, task);
 						}
@@ -441,11 +441,12 @@ public class Controller {
 		if (task.simpleAutoCleanIsEnabled()) {
 			try {
 				while (this.calcNumberOfBackups(task) > task.getNumberOfBackupsToKeep()) {
-					File toDelete = new File(task.getDestinationPath()
-							+ File.separator
-							+ findOldestBackup(
-									new ArrayList<File>(
-											Arrays.asList((new File(task.getDestinationPath()).listFiles()))), task));
+					File toDelete = new File(
+							task.getDestinationPath() + File.separator
+									+ findOldestBackup(
+											new ArrayList<File>(
+													Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
+											task));
 
 					String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
 							+ toDelete.getAbsolutePath();
@@ -456,8 +457,8 @@ public class Controller {
 					}
 					printOut(
 							toDelete.getAbsolutePath() + " "
-									+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"), false,
-							task.getTaskName());
+									+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"),
+							false, task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
@@ -810,8 +811,8 @@ public class Controller {
 		// Kontrolle auf Wert "all":
 		if (task.getBackupsToKeep().length > 0 && !task.getBackupsToKeep()[0].equals("all")) {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
-				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
-						+ findOldestBackup(bucket1, task)))) {
+				if (!BackupHelper
+						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket1, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -831,8 +832,8 @@ public class Controller {
 
 		if (task.getBackupsToKeep().length > 2 && !task.getBackupsToKeep()[2].equals("all")) {
 			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(task.getBackupsToKeep()[2])) {
-				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
-						+ findOldestBackup(bucket3, task)))) {
+				if (!BackupHelper
+						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket3, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -841,8 +842,8 @@ public class Controller {
 
 		if (task.getBackupsToKeep().length > 3 && !task.getBackupsToKeep()[3].equals("all")) {
 			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(task.getBackupsToKeep()[3])) {
-				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
-						+ findOldestBackup(bucket4, task)))) {
+				if (!BackupHelper
+						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket4, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -851,8 +852,8 @@ public class Controller {
 
 		if (task.getBackupsToKeep().length > 4 && !task.getBackupsToKeep()[4].equals("all")) {
 			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(task.getBackupsToKeep()[4])) {
-				if (!BackupHelper.deleteDirectory(new File(task.getDestinationPath() + "/"
-						+ findOldestBackup(bucket5, task)))) {
+				if (!BackupHelper
+						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket5, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -950,7 +951,7 @@ public class Controller {
 		Runnable backup = new Runnable() {
 			public void run() {
 				taskStarted(task.getTaskName());
-				
+
 				Thread backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {

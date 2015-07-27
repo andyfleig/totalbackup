@@ -166,7 +166,7 @@ public class NormalBackup implements Backupable {
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
-		//Warum hier noch nicht gecaceled?
+		// Warum hier noch nicht gecanceled?
 		if (!isCanceled) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
 			listener.printOut(output, false, task.getTaskName());
@@ -272,8 +272,8 @@ public class NormalBackup implements Backupable {
 				if (!filterMatches) {
 					// Queuen:
 					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
-					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
-							true, false));
+					elementQueue.add(
+							new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(), true, false));
 					backupInfos.increaseNumberOfDirectories();
 					rekursivePreparation(files[i], newBackupDir, task);
 				}
@@ -290,8 +290,8 @@ public class NormalBackup implements Backupable {
 				if (!filterMatches) {
 					// Queuen:
 					File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
-					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false,
-							false));
+					elementQueue.add(
+							new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 					backupInfos.increaseNumberOfFilesToCopy();
 					backupInfos.increaseSizeToCopyBy(files[i].length());
 				}

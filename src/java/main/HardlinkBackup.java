@@ -210,8 +210,8 @@ public class HardlinkBackup implements Backupable {
 		}
 
 		// Index dieses backups einlesen:
-		File index = new File(destinationPath + File.separator + newestBackupPath + File.separator + "index_"
-				+ taskName + ".ser");
+		File index = new File(
+				destinationPath + File.separator + newestBackupPath + File.separator + "index_" + taskName + ".ser");
 
 		// Pfad prüfen:
 		if (!index.exists()) {
@@ -446,8 +446,8 @@ public class HardlinkBackup implements Backupable {
 				}
 				if (!filterMatches) {
 					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
-					elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(),
-							true, false));
+					elementQueue.add(
+							new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(), true, false));
 					backupInfos.increaseNumberOfDirectories();
 					rekursivePreparation(files[i], newBackupDir, task);
 				}
@@ -475,8 +475,8 @@ public class HardlinkBackup implements Backupable {
 						// kopiert (nicht verlinkt)
 						// Es handelt sich also um eine neue Datei (bisher nicht
 						// im Backup)
-						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
-								false, false));
+						elementQueue.add(
+								new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 						backupInfos.increaseNumberOfFilesToCopy();
 						backupInfos.increaseSizeToCopyBy(files[i].length());
 						continue;
@@ -484,16 +484,16 @@ public class HardlinkBackup implements Backupable {
 					if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
 						// Datei liegt in einer älteren Version im Backup vor
 						// Datei zu kopieren:
-						elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
-								false, false));
+						elementQueue.add(
+								new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 						backupInfos.increaseNumberOfFilesToCopy();
 						backupInfos.increaseSizeToCopyBy(files[i].length());
 					} else {
 						// Datei liegt in der aktuellen Version vor
 
 						// Test ob die Datei im Backup-Satz vorhanden ist:
-						File fileToLinkFrom = new File(destinationPath + File.separator + newestBackupPath
-								+ fileInIndex.getFilePath());
+						File fileToLinkFrom = new File(
+								destinationPath + File.separator + newestBackupPath + fileInIndex.getFilePath());
 						if (fileToLinkFrom.exists()) {
 							// Filterung:
 							filterMatches = false;
@@ -505,8 +505,8 @@ public class HardlinkBackup implements Backupable {
 							}
 							if (!filterMatches) {
 								// Datei verlinken:
-								elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
-										.getAbsolutePath(), false, true));
+								elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
+										newFile.getAbsolutePath(), false, true));
 								backupInfos.increaseNumberOfFilesToLink();
 								backupInfos.increaseSizeToLinkBy(files[i].length());
 							} else {
@@ -518,14 +518,14 @@ public class HardlinkBackup implements Backupable {
 								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null
 										&& md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
 									// Datei verlinken:
-									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile
-											.getAbsolutePath(), false, true));
+									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
+											newFile.getAbsolutePath(), false, true));
 									backupInfos.increaseNumberOfFilesToLink();
 									backupInfos.increaseSizeToLinkBy(files[i].length());
 								} else {
 									// Datei zu kopieren:
-									elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile
-											.getAbsolutePath(), false, false));
+									elementQueue.add(new BackupElement(files[i].getAbsolutePath(),
+											newFile.getAbsolutePath(), false, false));
 									backupInfos.increaseNumberOfFilesToCopy();
 									backupInfos.increaseSizeToCopyBy(files[i].length());
 								}
@@ -601,8 +601,8 @@ public class HardlinkBackup implements Backupable {
 	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
 
 		// Namen der Datei "zerlegen":
-		StringTokenizer tokenizerOfFile = new StringTokenizer(
-				file.getAbsolutePath().substring(sourceRootPath.length()), File.separator);
+		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath().substring(sourceRootPath.length()),
+				File.separator);
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 

@@ -119,8 +119,8 @@ public class SourcesDialog extends JDialog {
 		panel_main.add(panel_path, BorderLayout.NORTH);
 		panel_path.setLayout(new BorderLayout(0, 0));
 
-		JLabel label_source = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.SourcesDialog.sourcePath"));
+		JLabel label_source = new JLabel(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.sourcePath"));
 		panel_path.add(label_source, BorderLayout.WEST);
 
 		textfield_source = new JTextField();
@@ -167,7 +167,8 @@ public class SourcesDialog extends JDialog {
 		listScroller_filter.setMaximumSize(new Dimension(200, 200));
 		listScroller_filter.setMinimumSize(new Dimension(200, 200));
 
-		JLabel label_filter = new JLabel(ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.filter"));
+		JLabel label_filter = new JLabel(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.filter"));
 		panel_filter.add(label_filter, BorderLayout.NORTH);
 
 		JPanel panel_ConfigurateFilter = new JPanel();
