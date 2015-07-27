@@ -100,16 +100,16 @@ public class FilterDialog extends JDialog {
 		JPanel panel_filterType = new JPanel();
 		getContentPane().add(panel_filterType, BorderLayout.NORTH);
 
-		radioButton_excludeFilter = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.FilterDialog.radioButton_excludeFilter"));
+		radioButton_excludeFilter = new JRadioButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.radioButton_excludeFilter"));
 		radioButton_excludeFilter.setSelected(true);
-		radioButton_excludeFilter.setToolTipText(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.FilterDialog.excludeToolTip"));
+		radioButton_excludeFilter
+				.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.excludeToolTip"));
 		panel_filterType.add(radioButton_excludeFilter);
-		radioButton_useMD5 = new JRadioButton(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.FilterDialog.radioButton_useMD5"));
-		radioButton_useMD5.setToolTipText(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.FilterDialog.md5ToolTip"));
+		radioButton_useMD5 = new JRadioButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.radioButton_useMD5"));
+		radioButton_useMD5
+				.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.md5ToolTip"));
 		panel_filterType.add(radioButton_useMD5);
 
 		ButtonGroup rBtnGroup = new ButtonGroup();
@@ -124,8 +124,8 @@ public class FilterDialog extends JDialog {
 		panel_source.add(textfield_filter);
 		textfield_filter.setColumns(10);
 
-		JLabel lbl_filter = new JLabel(ResourceBundle.getBundle("gui.messages").getString(
-				"GUI.FilterDialog.label_filter"));
+		JLabel lbl_filter = new JLabel(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.label_filter"));
 		panel_source.add(lbl_filter, BorderLayout.NORTH);
 
 		// Button Durchsuchen:
@@ -143,10 +143,9 @@ public class FilterDialog extends JDialog {
 					if (isUnderSourceRoot(selectedFile.getAbsolutePath())) {
 						textfield_filter.setText(selectedFile.getAbsolutePath());
 					} else {
-						JOptionPane.showMessageDialog(
-								null,
-								ResourceBundle.getBundle("gui.messages").getString(
-										"GUI.FilterDialog.errNotUnderSourceRoot"),
+						JOptionPane.showMessageDialog(null,
+								ResourceBundle.getBundle("gui.messages")
+										.getString("GUI.FilterDialog.errNotUnderSourceRoot"),
 								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
 								JOptionPane.INFORMATION_MESSAGE);
 					}

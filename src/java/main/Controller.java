@@ -422,6 +422,11 @@ public class Controller {
 	 */
 	public void startBackup(BackupTask task, Backupable backup) {
 		mainframe.setButtonsToBackupRunning(false);
+		// "Richtigen" Zielpfad setzten (wenn nötig):
+		if (task.getRealDestinationPath() != null) {
+			task.setDestinationPath(task.getRealDestinationPath());
+			task.setRealDestinationPath(null);
+		}
 
 		if (!task.isPrepered()) {
 			mainframe.setButtonsToBackupRunning(true);
@@ -437,6 +442,12 @@ public class Controller {
 			printOut(output, false, task.getTaskName());
 			log(output, task);
 		}
+		// "Richtigen" Zielpfad setzten (wenn nötig):
+		if (task.getRealDestinationPath() != null) {
+			task.setDestinationPath(task.getRealDestinationPath());
+			task.setRealDestinationPath(null);
+		}
+
 		// alte Backups aufräumen (wenn gewünscht):
 		if (task.simpleAutoCleanIsEnabled()) {
 			try {

@@ -49,6 +49,7 @@ public class BackupTask implements Serializable {
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
 	private boolean autostart = false;
+	private boolean destVerification = true;
 
 	// Für das erweiterte AutoClean:
 	private int[] threshold = new int[5];
@@ -71,6 +72,8 @@ public class BackupTask implements Serializable {
 	 */
 	private String catchUpTime;
 	private boolean catchUpEnabled;
+	// Für die einmalige Ausführung eines Backups mit einem anderen Zielpfad:
+	private String realDestinationPath = null;
 
 	/**
 	 * Erzeugt einen BackupTask
@@ -362,10 +365,20 @@ public class BackupTask implements Serializable {
 	 * Setzt die Autostart-Option.
 	 * 
 	 * @param autostart
-	 *            zu setzenden Autostart-Option
+	 *            zu setzende Autostart-Option
 	 */
 	public void setAutostart(boolean autostart) {
 		this.autostart = autostart;
+	}
+
+	/**
+	 * Setzt die DestinationVerification-Option.
+	 * 
+	 * @param destVerificaion
+	 *            zu setzende DestinationVerification-Option
+	 */
+	public void setDestinationVerification(boolean destVerificaion) {
+		this.destVerification = destVerificaion;
 	}
 
 	/**
@@ -375,6 +388,15 @@ public class BackupTask implements Serializable {
 	 */
 	public boolean getAutostart() {
 		return autostart;
+	}
+
+	/**
+	 * Gibt zurück ob die DestinationVerification-Option aktiviert ist.
+	 * 
+	 * @return ob die DestinationVerification-Option aktiviert ist
+	 */
+	public boolean getDestinationVerification() {
+		return destVerification;
 	}
 
 	/**
@@ -651,5 +673,28 @@ public class BackupTask implements Serializable {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Legt den "richtigen" Zielpfad fest. Dieser wird nach dem Backup zum
+	 * Zielpfad. Dies ist nötig wenn einmalig ein Backup mit einem anderen
+	 * Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
+	 * 
+	 * @param path
+	 *            festzulegender "richtiger" Zielpfad
+	 */
+	public void setRealDestinationPath(String path) {
+		this.realDestinationPath = path;
+	}
+
+	/**
+	 * Gibt den "richtigen" Zielpfad zurück. Dieser wird nach dem Backup zum
+	 * Zielpfad. Dies ist nötig wenn einmalig ein Backup mit einem anderen
+	 * Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
+	 * 
+	 * @return "richtiger" Zielpfad
+	 */
+	public String getRealDestinationPath() {
+		return this.realDestinationPath;
 	}
 }

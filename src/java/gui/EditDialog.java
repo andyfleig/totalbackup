@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.io.File;
+import java.io.IOException;
 import java.awt.BorderLayout;
 import java.awt.Dialog;
 import java.awt.Panel;
@@ -94,6 +95,7 @@ public class EditDialog extends JDialog {
 	private JCheckBox checkBox_toggleSimpleSettings;
 	private JCheckBox checkBox_toggleExtendedSettings;
 	private JCheckBox checkBox_autostart;
+	private JCheckBox checkBox_destinationVerification;
 	private JSpinner spinner_numberOfBackupsToKeep;
 
 	private SourcesDialog sourcesDialog;
@@ -233,7 +235,7 @@ public class EditDialog extends JDialog {
 
 		setResizable(false);
 		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.title"));
-		setBounds(100, 100, 515, 707);
+		setBounds(100, 100, 512, 707);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
@@ -341,14 +343,15 @@ public class EditDialog extends JDialog {
 		button_delete.setAlignmentX(CENTER_ALIGNMENT);
 		button_delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteSource"), null,
-						JOptionPane.YES_NO_OPTION);
-				if (reply == JOptionPane.YES_OPTION) {
-					if (!list_sourcePaths.isSelectionEmpty()) {
+				if (!list_sourcePaths.isSelectionEmpty()) {
+					int reply = JOptionPane.showConfirmDialog(null,
+							ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteSource"), null,
+							JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
 						listModel.remove(list_sourcePaths.getSelectedIndex());
 					}
 				}
+
 			}
 		});
 
@@ -416,12 +419,25 @@ public class EditDialog extends JDialog {
 		panel_setup.add(panel_otherSettings, BorderLayout.SOUTH);
 		panel_otherSettings.setLayout(new BorderLayout(0, 0));
 
-		JPanel panel_autostart = new JPanel();
-		panel_otherSettings.add(panel_autostart, BorderLayout.NORTH);
+		JPanel panel_settings2 = new JPanel();
+		panel_otherSettings.add(panel_settings2, BorderLayout.NORTH);
+		panel_settings2.setLayout(new BoxLayout(panel_settings2, BoxLayout.Y_AXIS));
+
+		checkBox_destinationVerification = new JCheckBox(
+				ResourceBundle.getBundle("gui.messages").getString("EditDialog.chckbxDestinationverification.text"));
+		
+		if (System.getProperty("os.name").contains("win")) {
+			checkBox_destinationVerification.setSelected(true);
+			checkBox_destinationVerification.setEnabled(true);
+		} else {
+			checkBox_destinationVerification.setSelected(false);
+			checkBox_destinationVerification.setEnabled(false);
+		}
+		panel_settings2.add(checkBox_destinationVerification);
 
 		checkBox_autostart = new JCheckBox(
 				ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.autostart"));
-		panel_autostart.add(checkBox_autostart);
+		panel_settings2.add(checkBox_autostart);
 
 		JTabbedPane tabbedPane_auto = new JTabbedPane(JTabbedPane.TOP);
 		panel_otherSettings.add(tabbedPane_auto, BorderLayout.SOUTH);
@@ -1124,6 +1140,28 @@ public class EditDialog extends JDialog {
 						}
 						// Prüfen ob ein Zielpfad eingefügt wurde:
 						if (isValidPath(textfield_destination.getText())) {
+							// Prüfen ob sich die DestinationVerification
+							// Einstellung geändert hat und ensprechend den
+							// Identifier handeln:
+							if (checkBox_destinationVerification.isSelected() && !task.getDestinationVerification()) {
+								// Neuen Identifier anlegen:
+								createIdentifier(task.getTaskName(), textfield_destination.getText());
+							} else if (checkBox_destinationVerification.isSelected()
+									&& task.getDestinationVerification()) {
+								// Wenn sich der Zielpfad geändert hat, muss der
+								// Identifier angepasst werden:
+								if (task.getDestinationPath() != null
+										&& task.getDestinationPath().equals(textfield_destination.getText())) {
+									// Alten Identifier löschen:
+									deleteIdentifier(task.getTaskName(), textfield_destination.getText());
+									// Neuen Identifier anlegen:
+									createIdentifier(task.getTaskName(), textfield_destination.getText());
+								}
+							} else if (!checkBox_destinationVerification.isSelected()
+									&& task.getDestinationVerification()) {
+								// Alten Identifier löschen:
+								deleteIdentifier(task.getTaskName(), textfield_destination.getText());
+							}
 							task.setDestinationPath(textfield_destination.getText());
 						} else {
 							// Zielpfad ist ungültig oder leer:
@@ -1143,6 +1181,9 @@ public class EditDialog extends JDialog {
 								JOptionPane.INFORMATION_MESSAGE);
 						return;
 					}
+
+					// DestinationVerification-Option sichern:
+					task.setDestinationVerification(checkBox_destinationVerification.isSelected());
 
 					// Erweiterte AutoClean Einstellungen prüfen:
 					if (checkBox_toggleExtendedSettings.isSelected()) {
@@ -1541,6 +1582,16 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
+	 * Aktiviert bzw. deaktiviert den DestinationVerification-Modus.
+	 * 
+	 * @param autostart
+	 *            zu setzender DestinationVerification-Modus
+	 */
+	public void setDestinationVerification(boolean destVerification) {
+		checkBox_destinationVerification.setSelected(destVerification);
+	}
+
+	/**
 	 * Gibt ein neues DefaultComboBoxModel zurück, welches aus der gegebenen
 	 * Vorlage erstellt wird.
 	 * 
@@ -1908,5 +1959,41 @@ public class EditDialog extends JDialog {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Legt den Identifier für DestinationVerification an (falls noch nicht
+	 * vorhanden).
+	 * 
+	 * @param taskName
+	 *            Name des Tasks
+	 * @param destPath
+	 *            Zielpfad des Tasks
+	 */
+	private void createIdentifier(String taskName, String destPath) {
+		File identifier = new File(destPath + "/" + taskName + ".id");
+		if (!identifier.exists()) {
+			try {
+				identifier.createNewFile();
+			} catch (IOException ex) {
+				System.err.println(ex);
+			}
+		}
+
+	}
+
+	/**
+	 * Löscht den bisherigen Identifier.
+	 * 
+	 * @param taskName
+	 *            Name des Tasks dessen Identifier gelöscht werden soll
+	 * @param destPath
+	 *            Zielpfad des Tasks dessen Identifier gelöscht werden soll
+	 */
+	private void deleteIdentifier(String taskName, String destPath) {
+		File identifier = new File(destPath + "/" + taskName + ".id");
+		if (!identifier.exists()) {
+			identifier.delete();
+		}
 	}
 }

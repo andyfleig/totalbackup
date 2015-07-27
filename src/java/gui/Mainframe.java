@@ -77,6 +77,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.BoxLayout;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultCaret;
@@ -354,6 +355,7 @@ public class Mainframe extends JDialog {
 						editDialog.setDestinationPath(task.getDestinationPath());
 						editDialog.setBackupMode(task.getBackupMode());
 						editDialog.setAutostart(task.getAutostart());
+						editDialog.setDestinationVerification(task.getDestinationVerification());
 						editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 						editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 						if (task.simpleAutoCleanIsEnabled()) {
@@ -400,25 +402,28 @@ public class Mainframe extends JDialog {
 
 		button_delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Prüfen ob der gewählte Task gerade ausgeführt wird:
-				if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
-					JOptionPane.showMessageDialog(null,
-							ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errTaskIsRunning"),
-							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
-							JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
-						JOptionPane.YES_NO_OPTION);
-				if (reply == JOptionPane.YES_OPTION) {
-					if (!list_tasks.isSelectionEmpty()) {
+				if (!list_tasks.isSelectionEmpty()) {
+					// Prüfen ob der gewählte Task gerade ausgeführt wird:
+					if (listener.getRunningBackupTasks().contains(list_tasks.getSelectedValue().getTaskName())) {
+						JOptionPane.showMessageDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errTaskIsRunning"),
+								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					}
+					int reply = JOptionPane.showConfirmDialog(null,
+							ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteTask"), null,
+							JOptionPane.YES_NO_OPTION);
+					if (reply == JOptionPane.YES_OPTION) {
+
 						BackupTask currentTask = listModel.getElementAt(list_tasks.getSelectedIndex());
 						listener.removeBackupTask(currentTask);
 						listener.removeBackupTaskScheduling(currentTask);
+
+						savePropertiesGson();
 					}
-					savePropertiesGson();
 				}
+
 			}
 		});
 
@@ -688,6 +693,45 @@ public class Mainframe extends JDialog {
 				return;
 			}
 		}
+
+		// DestinationVerification:
+		File identifier = new File(task.getDestinationPath() + "/" + task.getTaskName() + ".id");
+		if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
+			// Abfrage: Pfad suchen?:
+			int reply = JOptionPane.showConfirmDialog(null,
+					ResourceBundle.getBundle("gui.messages").getString("Messages.SearchForCorrectDestPath"), null,
+					JOptionPane.YES_NO_OPTION);
+			if (reply == JOptionPane.YES_OPTION) {
+				// ja:
+				ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(), task.getDestinationPath());
+				for (String dest : correctDest) {
+					int reply2 = JOptionPane.showConfirmDialog(null,
+							ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect1") + " "
+									+ dest + "/n"
+									+ ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect2"),
+							null, JOptionPane.YES_NO_OPTION);
+					if (reply2 == JOptionPane.YES_OPTION) {
+						int reply3 = JOptionPane.showConfirmDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("Messages.SetNewPathAsDest"), null,
+								JOptionPane.YES_NO_OPTION);
+						if (reply3 == JOptionPane.YES_OPTION) {
+							task.setDestinationPath(dest);
+						} else {
+							task.setRealDestinationPath(task.getDestinationPath());
+							task.setDestinationPath(dest);
+							savePropertiesGson();
+						}
+					} else {
+						continue;
+					}
+				}
+				return;
+			} else {
+				// nein:
+				return;
+			}
+		}
+
 		// Prüfen ob der Zielpfad existiert:
 		if (!(new File(task.getDestinationPath())).exists()) {
 			JOptionPane.showMessageDialog(null,
@@ -1027,5 +1071,35 @@ public class Mainframe extends JDialog {
 	 */
 	public void addBackupThreadContainerToBackupThreads(BackupThreadContainer c) {
 		backupThreads.add(c);
+	}
+
+	private ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
+		ArrayList<String> foundDestPaths = new ArrayList<String>();
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.contains("win")) {
+			String destSuffix = wrongDestPath.substring(3);
+			File[] roots = File.listRoots();
+			for (int i = 0; i < roots.length; i++) {
+				File potentialDest = new File(roots[i].getAbsolutePath() + destSuffix);
+				if (potentialDest.exists()) {
+					if (checkForIdentifier(taskName, potentialDest.getAbsolutePath())) {
+						foundDestPaths.add(potentialDest.getAbsolutePath());
+					}
+				}
+			}
+
+		} else {
+			throw new IllegalStateException("DestinationVerification is only supported under Windows");
+		}
+		return foundDestPaths;
+	}
+
+	private boolean checkForIdentifier(String taskName, String dest) {
+		for (File file : (new File(dest)).listFiles()) {
+			if (file.getName().equals(taskName + ".id")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
