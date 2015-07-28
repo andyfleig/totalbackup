@@ -23,6 +23,7 @@ package gui;
 import listener.IEditDialogListener;
 import listener.IMainframeListener;
 import listener.IPreparingDialogListener;
+import listener.ISchedulingDialogListener;
 import listener.ISummaryDialogListener;
 import main.Backupable;
 import main.Controller;
@@ -40,6 +41,8 @@ import java.io.PrintWriter;
 import java.lang.NullPointerException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.awt.AWTException;
@@ -79,6 +82,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultCaret;
 
@@ -88,6 +92,7 @@ import data.BackupInfos;
 import data.BackupTask;
 import data.BackupThreadContainer;
 import data.Source;
+import javax.swing.SwingConstants;
 
 /**
  * Mainframe von TotalBackup.
@@ -219,8 +224,8 @@ public class Mainframe extends JDialog {
 
 		frmTotalbackup = new JFrame();
 		frmTotalbackup.setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"));
-		frmTotalbackup.setBounds(100, 100, 894, 569);
-		frmTotalbackup.setMinimumSize(new Dimension(500, 400));
+		frmTotalbackup.setBounds(100, 100, 798, 500);
+		frmTotalbackup.setMinimumSize(new Dimension(500, 500));
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 
@@ -280,6 +285,9 @@ public class Mainframe extends JDialog {
 		panel_options.add(checkbox_advancedOutput, BorderLayout.WEST);
 
 		JPanel panel_tasks = new JPanel();
+		Dimension sizeOfPanel_tasks = new Dimension(100, 150);
+		panel_tasks.setPreferredSize(sizeOfPanel_tasks);
+		panel_tasks.setMinimumSize(sizeOfPanel_tasks);
 		frmTotalbackup.getContentPane().add(panel_tasks, BorderLayout.NORTH);
 		panel_tasks.setLayout(new BorderLayout(0, 0));
 
@@ -395,6 +403,45 @@ public class Mainframe extends JDialog {
 		button_edit.setAlignmentX(Component.CENTER_ALIGNMENT);
 		panel_configureTasks.add(button_edit);
 
+		// Button reschedule:
+		JButton button_reschedule = new JButton(
+				ResourceBundle.getBundle("gui.messages").getString("GUI.button_reschedule"));
+		button_reschedule.setAlignmentX(Component.CENTER_ALIGNMENT);
+		button_reschedule.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				if (!list_tasks.isSelectionEmpty()) {
+					BackupTask selectedTask = list_tasks.getSelectedValue();
+					if (listener.getRunningBackupTasks().contains(selectedTask.getTaskName())) {
+						JOptionPane.showMessageDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errTaskIsRunning"),
+								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								JOptionPane.ERROR_MESSAGE);
+						return;
+					} else {
+						if (selectedTask.getAutostart()) {
+							listener.removeBackupTaskScheduling(selectedTask);
+							SchedulingDialog schedDialog = new SchedulingDialog(new ISchedulingDialogListener() {
+								@Override
+								public void scheduleBackup(LocalDateTime time) {
+									Mainframe.this.listener.scheduleBackupTaskAt(selectedTask, time);
+								}
+
+								@Override
+								public void rescheduleTask() {
+									Mainframe.this.listener.rescheduleBackupTask(selectedTask);
+								}
+							});
+							schedDialog.setVisible(true);
+						}
+					}
+				}
+				
+			}
+		});
+		panel_configureTasks.add(button_reschedule);
+		panel_configureTasks.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 		// Button Löschen:
 		button_delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_delete"));
 		panel_configureTasks.add(button_delete);
@@ -427,11 +474,47 @@ public class Mainframe extends JDialog {
 			}
 		});
 
+		// TODO: JavaDoc
+		class MyListCellRenderer extends DefaultListCellRenderer {
+			@Override
+			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				BackupTask label = (BackupTask) value;
+				String name = label.getTaskName();
+				String timePattern = "dd.MM.yyyy HH:mm:ss";
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern(timePattern);
+				String labelText;
+				if (label.getLocalDateTimeOfNextBackup() != null) {
+					LocalDateTime nextExecutionTime = label.getLocalDateTimeOfNextBackup();
+					labelText = "<html>" + ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.list.task")
+							+ " " + name + "<br/>"
+							+ ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.list.nextExecutionTime")
+							+ " " + nextExecutionTime.format(dtf);
+				} else {
+					if (listener.getRunningBackupTasks().contains(name)) {
+						labelText = "<html>"
+								+ ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.list.task") + " "
+								+ name + "<br/>"
+								+ ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.list.running");
+					} else {
+						labelText = "<html>"
+								+ ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.list.task") + " "
+								+ name;
+					}
+				}
+				setText(labelText);
+
+				return this;
+			}
+		}
+
 		list_tasks = new JList<BackupTask>(listModel);
+		list_tasks.setCellRenderer(new MyListCellRenderer());
 		panel_tasks.add(list_tasks, BorderLayout.CENTER);
 		list_tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list_tasks.setSelectedIndex(0);
-		list_tasks.setVisibleRowCount(6);
+		// list_tasks.setSelectedIndex(0);
+		// list_tasks.setVisibleRowCount(6);
 
 		JButton button_clearOutput = new JButton(
 				ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.button_clearOutput"));

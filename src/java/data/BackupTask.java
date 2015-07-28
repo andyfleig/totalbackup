@@ -576,8 +576,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Speichert den nächsten geschedulten Ausführungszeitpunkt, um später
-	 * versäumte Backups nachholen zu können.
+	 * Speichert den nächsten geschedulten Ausführungszeitpunkt.
 	 * 
 	 * @param nextExecutionTime
 	 *            nächster geschedulter Ausführungszeitpunkt als LocalDateTime

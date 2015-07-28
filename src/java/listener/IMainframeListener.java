@@ -20,6 +20,7 @@
  */
 package listener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import main.Backupable;
@@ -154,6 +155,21 @@ public interface IMainframeListener {
 	 *            zu schedulender BackupTask
 	 */
 	public void scheduleBackupTaskNow(BackupTask task);
+
+	/**
+	 * Schedult den gegebenen BackupTask auf die gegebene Zeit.
+	 * 
+	 * @param task
+	 *            zu schedulender BackupTask
+	 * @param time
+	 *            zu schedulende Zeit
+	 */
+	public void scheduleBackupTaskAt(BackupTask task, LocalDateTime time);
+
+	/**
+	 * Reschedult den gegebenen BackupTask.
+	 */
+	public void rescheduleBackupTask(BackupTask task);
 
 	/**
 	 * Löscht das Scheduling für den gegebenen BackupTask.
