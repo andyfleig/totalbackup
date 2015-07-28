@@ -469,18 +469,7 @@ public class Mainframe extends JDialog {
 									ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
 									false, taskToRun.getTaskName());
 							button_cancel.setEnabled(false);
-							BackupThreadContainer tmpContainer = null;
-							for (BackupThreadContainer container : backupThreads) {
-								if (container.getTaskName().equals(taskName)) {
-									container.getBackupThread().interrupt();
-									tmpContainer = container;
-									break;
-								}
-							}
-							if (tmpContainer != null) {
-								backupThreads.remove(tmpContainer);
-								listener.removeBackupTaskFromRunningTasks(listener.getBackupTaskWithName(taskName));
-							}
+							Mainframe.this.cancelBackup(listener.getBackupTaskWithName(taskName));
 						}
 
 					}
@@ -510,8 +499,8 @@ public class Mainframe extends JDialog {
 
 		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BackupTask taskToRun = listModel.getElementAt(list_tasks.getSelectedIndex());
-				if (taskToRun == null) {
+				BackupTask taskToCancel = listModel.getElementAt(list_tasks.getSelectedIndex());
+				if (taskToCancel == null) {
 					return;
 				}
 				int reply = JOptionPane.showConfirmDialog(null,
@@ -523,18 +512,8 @@ public class Mainframe extends JDialog {
 							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false,
 							null);
 					button_cancel.setEnabled(false);
-					BackupThreadContainer tmpContainer = null;
-					for (BackupThreadContainer container : backupThreads) {
-						if (container.getTaskName().equals(taskToRun.getTaskName())) {
-							container.getBackupThread().interrupt();
-							tmpContainer = container;
-							break;
-						}
-					}
-					if (tmpContainer != null) {
-						backupThreads.remove(tmpContainer);
-						listener.removeBackupTaskFromRunningTasks(taskToRun);
-					}
+
+					cancelBackup(taskToCancel);
 				}
 			}
 		});
@@ -704,10 +683,11 @@ public class Mainframe extends JDialog {
 			if (reply == JOptionPane.YES_OPTION) {
 				// ja:
 				ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(), task.getDestinationPath());
+				boolean successful = false;
 				for (String dest : correctDest) {
 					int reply2 = JOptionPane.showConfirmDialog(null,
 							ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect1") + " "
-									+ dest + "/n"
+									+ dest + "  "
 									+ ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect2"),
 							null, JOptionPane.YES_NO_OPTION);
 					if (reply2 == JOptionPane.YES_OPTION) {
@@ -715,8 +695,10 @@ public class Mainframe extends JDialog {
 								ResourceBundle.getBundle("gui.messages").getString("Messages.SetNewPathAsDest"), null,
 								JOptionPane.YES_NO_OPTION);
 						if (reply3 == JOptionPane.YES_OPTION) {
+							successful = true;
 							task.setDestinationPath(dest);
 						} else {
+							successful = true;
 							task.setRealDestinationPath(task.getDestinationPath());
 							task.setDestinationPath(dest);
 							savePropertiesGson();
@@ -725,9 +707,16 @@ public class Mainframe extends JDialog {
 						continue;
 					}
 				}
-				return;
+				if (!successful) {
+					cancelBackup(task);
+					prep.dispose();
+					return;
+				}
+
 			} else {
 				// nein:
+				cancelBackup(task);
+				prep.dispose();
 				return;
 			}
 		}
@@ -1073,7 +1062,16 @@ public class Mainframe extends JDialog {
 		backupThreads.add(c);
 	}
 
-	//TODO: JavaDoc
+	/**
+	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten
+	 * zurück.
+	 * 
+	 * @param taskName
+	 *            Name des BackupTasks
+	 * @param wrongDestPath
+	 *            "falscher" Zielpfad
+	 * @return Liste möglicher "richiger" Zielpfade
+	 */
 	private ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
 		ArrayList<String> foundDestPaths = new ArrayList<String>();
 		String OS = System.getProperty("os.name").toLowerCase();
@@ -1102,5 +1100,26 @@ public class Mainframe extends JDialog {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Bricht den gegebenen BackupTask ab.
+	 * 
+	 * @param task
+	 *            abzubrechender BackupTask
+	 */
+	private void cancelBackup(BackupTask task) {
+		BackupThreadContainer tmpContainer = null;
+		for (BackupThreadContainer container : backupThreads) {
+			if (container.getTaskName().equals(task.getTaskName())) {
+				container.getBackupThread().interrupt();
+				tmpContainer = container;
+				break;
+			}
+		}
+		if (tmpContainer != null) {
+			backupThreads.remove(tmpContainer);
+			listener.removeBackupTaskFromRunningTasks(task);
+		}
 	}
 }
