@@ -95,6 +95,8 @@ public class Controller {
 	 */
 	private static final int DELAY_FOR_MISSED_BACKUP = 2;
 
+	private static final long NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP = 90;
+
 	/**
 	 * Startet und initialisiert den Controller.
 	 */
@@ -987,6 +989,7 @@ public class Controller {
 		// Autostart für diesen Task aktivieren:
 		task.setAutostart(true);
 		// scheduling:
+		// Für das Backup:
 		Runnable backup = new Runnable() {
 			public void run() {
 				taskStarted(task.getTaskName());
@@ -1002,11 +1005,26 @@ public class Controller {
 				backupThread.start();
 			}
 		};
+		// Für das Popup:
+		Runnable popup = new Runnable() {
+			public void run() {
+				showTrayPopupMessage(ResourceBundle.getBundle("gui.messages").getString("Messages.popup.backupTask")
+						+ " " + task.getTaskName() + " "
+						+ ResourceBundle.getBundle("gui.messages").getString("Messages.popup.startsInOneMinute"));
+			}
+		};
 		// Task (mit timer) schedulen:
-		task.setScheduledFuture(timer.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.MILLIS),
-				TimeUnit.MILLISECONDS));
-				// Tray-Icon-Popup (mit timer) schedulen:
-				// TODO: hier
+		task.setScheduledFuture(timer.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.SECONDS),
+				TimeUnit.SECONDS));
+		// Tray-Icon-Popup (mit timer) schedulen:
+		// Prüfen ob das Backup weit genug in der Zukunft liegt um 1min vorher
+		// ein Popup anzuzeigen:
+		if (LocalDateTime.now().until(nextExecutionTime,
+				ChronoUnit.SECONDS) > NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP) {
+			task.setPopupScheduledFuture(timer.schedule(popup,
+					LocalDateTime.now().minusMinutes(1).until(nextExecutionTime, ChronoUnit.SECONDS),
+					TimeUnit.SECONDS));
+		}
 
 		// Nächsten Ausführungszeitpunkt (als LocalDateTime) im Task sichern (um
 		// Backups nachholen zu können):
@@ -1022,6 +1040,9 @@ public class Controller {
 			if (task.getScheduledFuture() != null) {
 				task.resetLocalDateTimeOfNextExecution();
 				task.getScheduledFuture().cancel(false);
+			}
+			if (task.getPopupScheduledFuture() != null) {
+				task.getPopupScheduledFuture().cancel(false);
 			}
 		}
 		// Einstellungen aus dem Backup-Task holen und im LocalTime Objekte
@@ -1093,6 +1114,9 @@ public class Controller {
 		if (task.getScheduledFuture() != null) {
 			task.getScheduledFuture().cancel(false);
 			task.resetLocalDateTimeOfNextExecution();
+		}
+		if (task.getPopupScheduledFuture() != null) {
+			task.getPopupScheduledFuture().cancel(false);
 		}
 	}
 
@@ -1202,5 +1226,19 @@ public class Controller {
 		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.deletedBackupFolder");
 		backupListener.printOut(outprint, false, task.getTaskName());
 		backupListener.log(outprint, task);
+	}
+
+	/**
+	 * Gibt den gegebenen String als Tray-Popup-Message aus.
+	 * 
+	 * @param msg
+	 *            anzuzeigender String
+	 */
+	private void showTrayPopupMessage(String msg) {
+		if (mainframe.isQTTray()) {
+			// TODO: QT Bastlerei :-)
+		} else {
+			mainframe.showTrayPopupMessage(msg);
+		}
 	}
 }

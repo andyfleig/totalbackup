@@ -64,6 +64,7 @@ public class BackupTask implements Serializable {
 	private int intervalTime;
 	private String intervalUnit;
 	private transient ScheduledFuture<?> scheduledFuture;
+	private transient ScheduledFuture<?> popupScheduledFuture;
 	private LocalDateTime nextExecutionTime;
 	/**
 	 * Gibt an wie weit ein Backup sich in der Zukunft befinden darft sodass
@@ -573,6 +574,25 @@ public class BackupTask implements Serializable {
 	 */
 	public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
 		this.scheduledFuture = scheduledFuture;
+	}
+
+	/**
+	 * Gibt das ScheduledFuture für den nächsten geschedulte Popup zurück.
+	 * 
+	 * @return ScheduledFuture des nächsten Popups
+	 */
+	public ScheduledFuture getPopupScheduledFuture() {
+		return popupScheduledFuture;
+	}
+
+	/**
+	 * Setzt das ScheduledFuture für den nächsten Popup.
+	 * 
+	 * @param scheduledFuture
+	 *            ScheduledFuture des nächsten Popups
+	 */
+	public void setPopupScheduledFuture(ScheduledFuture<?> popupScheduledFuture) {
+		this.popupScheduledFuture = popupScheduledFuture;
 	}
 
 	/**

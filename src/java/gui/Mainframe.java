@@ -139,7 +139,9 @@ public class Mainframe extends JDialog {
 
 	private Socket socket = null;
 
+	private TrayIcon trayIcon;
 	private Process trayProcess;
+	private boolean isQTTray;
 
 	File sourceFile;
 	File destinationFile;
@@ -637,6 +639,7 @@ public class Mainframe extends JDialog {
 				}
 			});
 			recvThread.start();
+			isQTTray = true;
 		} else {
 			if (SystemTray.isSupported()) {
 				SystemTray systemTray = SystemTray.getSystemTray();
@@ -665,22 +668,30 @@ public class Mainframe extends JDialog {
 				trayPopupMenu.add(close);
 				int trayIconWidth = new TrayIcon(image).getSize().width;
 
-				TrayIcon trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
+				trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
 						ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"), trayPopupMenu);
-
-				// trayIcon.setImageAutoSize(true);
 
 				try {
 					systemTray.add(trayIcon);
 				} catch (AWTException e) {
 					e.printStackTrace();
 				}
-
+				isQTTray = false;
 			}
 		}
 
 		frmTotalbackup.setVisible(true);
 
+	}
+
+	/**
+	 * Gibt zurück ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet
+	 * wird.
+	 * 
+	 * @return QT-Tray (true) oder ein Java-Tray (false)
+	 */
+	public boolean isQTTray() {
+		return isQTTray;
 	}
 
 	/**
@@ -1217,5 +1228,15 @@ public class Mainframe extends JDialog {
 			backupThreads.remove(tmpContainer);
 			listener.removeBackupTaskFromRunningTasks(task);
 		}
+	}
+
+	/**
+	 * Gibt den gegebenen String als Tray-Popup-Message aus.
+	 * 
+	 * @param msg
+	 *            anzuzeigender Text
+	 */
+	public void showTrayPopupMessage(String msg) {
+		trayIcon.displayMessage(null, msg, TrayIcon.MessageType.INFO);
 	}
 }
