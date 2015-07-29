@@ -203,16 +203,15 @@ public class Controller {
 
 						@Override
 						public void scheduleBackupTaskAt(BackupTask task, LocalDateTime time) {
-							Controller.this.removeBackupTaskScheduling(task);
+							task.resetLocalDateTimeOfNextExecution();
 							Controller.this.scheduleBackupTaskAt(task, time);
 						}
 
 						@Override
 						public void rescheduleBackupTask(BackupTask task) {
-							Controller.this.scheduleBackupTask(task);
-							Controller.this.removeBackupTask(task);
-							Controller.this.scheduleBackupTaskStartingAt(task,
-									task.getLocalDateTimeOfNextBackup().plusSeconds(1));
+							LocalDateTime nextExecution = task.getLocalDateTimeOfNextBackup();
+							task.resetLocalDateTimeOfNextExecution();
+							Controller.this.scheduleBackupTaskStartingAt(task, nextExecution.plusSeconds(1));
 						}
 					});
 				}

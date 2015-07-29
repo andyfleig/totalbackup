@@ -420,7 +420,9 @@ public class Mainframe extends JDialog {
 						return;
 					} else {
 						if (selectedTask.getAutostart()) {
+							LocalDateTime nextExecution = selectedTask.getLocalDateTimeOfNextBackup();
 							listener.removeBackupTaskScheduling(selectedTask);
+							selectedTask.setLocalDateTimeOfNextBackup(nextExecution);
 							SchedulingDialog schedDialog = new SchedulingDialog(new ISchedulingDialogListener() {
 								@Override
 								public void scheduleBackup(LocalDateTime time) {
@@ -436,7 +438,7 @@ public class Mainframe extends JDialog {
 						}
 					}
 				}
-				
+
 			}
 		});
 		panel_configureTasks.add(button_reschedule);
@@ -757,50 +759,59 @@ public class Mainframe extends JDialog {
 		}
 
 		// DestinationVerification:
-		File identifier = new File(task.getDestinationPath() + "/" + task.getTaskName() + ".id");
-		if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
-			// Abfrage: Pfad suchen?:
-			int reply = JOptionPane.showConfirmDialog(null,
-					ResourceBundle.getBundle("gui.messages").getString("Messages.SearchForCorrectDestPath"), null,
-					JOptionPane.YES_NO_OPTION);
-			if (reply == JOptionPane.YES_OPTION) {
-				// ja:
-				ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(), task.getDestinationPath());
-				boolean successful = false;
-				for (String dest : correctDest) {
-					int reply2 = JOptionPane.showConfirmDialog(null,
-							ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect1") + " "
-									+ dest + "  "
-									+ ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect2"),
-							null, JOptionPane.YES_NO_OPTION);
-					if (reply2 == JOptionPane.YES_OPTION) {
-						int reply3 = JOptionPane.showConfirmDialog(null,
-								ResourceBundle.getBundle("gui.messages").getString("Messages.SetNewPathAsDest"), null,
-								JOptionPane.YES_NO_OPTION);
-						if (reply3 == JOptionPane.YES_OPTION) {
-							successful = true;
-							task.setDestinationPath(dest);
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (!OS.contains("win") && task.getDestinationVerification()) {
+			File identifier = new File(task.getDestinationPath() + "/" + task.getTaskName() + ".id");
+			if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
+				// Abfrage: Pfad suchen?:
+				int reply = JOptionPane.showConfirmDialog(null,
+						ResourceBundle.getBundle("gui.messages").getString("Messages.SearchForCorrectDestPath"), null,
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					// ja:
+					ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(),
+							task.getDestinationPath());
+					boolean successful = false;
+					for (String dest : correctDest) {
+						int reply2 = JOptionPane.showConfirmDialog(null,
+								ResourceBundle.getBundle("gui.messages").getString("Messages.FoundDestCorrect1") + " "
+										+ dest + "  "
+										+ ResourceBundle.getBundle("gui.messages")
+												.getString("Messages.FoundDestCorrect2"),
+								null, JOptionPane.YES_NO_OPTION);
+						if (reply2 == JOptionPane.YES_OPTION) {
+							int reply3 = JOptionPane.showConfirmDialog(null,
+									ResourceBundle.getBundle("gui.messages").getString("Messages.SetNewPathAsDest"),
+									null, JOptionPane.YES_NO_OPTION);
+							if (reply3 == JOptionPane.YES_OPTION) {
+								successful = true;
+								task.setDestinationPath(dest);
+							} else {
+								successful = true;
+								task.setRealDestinationPath(task.getDestinationPath());
+								task.setDestinationPath(dest);
+								savePropertiesGson();
+							}
 						} else {
-							successful = true;
-							task.setRealDestinationPath(task.getDestinationPath());
-							task.setDestinationPath(dest);
-							savePropertiesGson();
+							continue;
 						}
-					} else {
-						continue;
 					}
-				}
-				if (!successful) {
+					if (!successful) {
+						cancelBackup(task);
+						if (prep != null) {
+							prep.dispose();
+						}
+						return;
+					}
+
+				} else {
+					// nein:
 					cancelBackup(task);
-					prep.dispose();
+					if (prep != null) {
+						prep.dispose();
+					}
 					return;
 				}
-
-			} else {
-				// nein:
-				cancelBackup(task);
-				prep.dispose();
-				return;
 			}
 		}
 
@@ -812,7 +823,9 @@ public class Mainframe extends JDialog {
 			String output = ResourceBundle.getBundle("gui.messages")
 					.getString("GUI.Mainframe.errDestinationDontExists");
 			listener.printOut(output, false, task.getTaskName());
-			prep.dispose();
+			if (prep != null) {
+				prep.dispose();
+			}
 			listener.removeBackupTaskFromRunningTasks(task);
 			return;
 		}
