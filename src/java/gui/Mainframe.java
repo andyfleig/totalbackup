@@ -421,7 +421,7 @@ public class Mainframe extends JDialog {
 								JOptionPane.ERROR_MESSAGE);
 						return;
 					} else {
-						if (selectedTask.getAutostart()) {
+						if (selectedTask.getAutoBackupMode() != 0) {
 							LocalDateTime nextExecution = selectedTask.getLocalDateTimeOfNextBackup();
 							listener.removeBackupTaskScheduling(selectedTask);
 							selectedTask.setLocalDateTimeOfNextBackup(nextExecution);
