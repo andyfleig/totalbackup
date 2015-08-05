@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -101,6 +102,15 @@ public class Controller {
 	 * Startet und initialisiert den Controller.
 	 */
 	public void startController() {
+		//Dafür sorgen dass nur eine Instanz des Programms laufen kann:
+		try {
+			new ServerSocket(2210);
+		} catch (IOException e) {
+			// Programm läuft schon:
+			System.out.println("TotalBackup is already running");
+			System.exit(1);
+		}
+		
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
@@ -218,6 +228,7 @@ public class Controller {
 					});
 				}
 			});
+			
 			loadSerializationGson();
 			// Liste aller versäumten BackupTasks:
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
