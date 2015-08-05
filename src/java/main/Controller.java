@@ -437,7 +437,6 @@ public class Controller {
 			log(output, task);
 		}
 
-		// TODO: In Mainframe (außerhalb des Threads)?
 		mainframe.setButtonsToBackupRunning(true);
 		// TODO: Probleme mit setPrepared bei abbruch?
 		task.setPrepared(true);
@@ -1106,7 +1105,7 @@ public class Controller {
 		while (wNumber < 7) {
 			if (weekdays[wNumber]) {
 				if (daysFromTodayCounter > 7) {
-					// TODO: raus
+					// TODO: Debugging-Ausgabe raus
 					System.err.println("Error: Weekday more than 7 days in future is not possible");
 				}
 				LocalDate date = startAt.toLocalDate().plusDays(daysFromTodayCounter);
@@ -1251,7 +1250,7 @@ public class Controller {
 	 */
 	private void showTrayPopupMessage(String msg) {
 		if (mainframe.isQTTray()) {
-			// TODO: QT Bastlerei :-)
+			// TODO: QT Bastlerei
 		} else {
 			mainframe.showTrayPopupMessage(msg);
 		}

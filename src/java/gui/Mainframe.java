@@ -478,7 +478,12 @@ public class Mainframe extends JDialog {
 			}
 		});
 
-		// TODO: JavaDoc
+		/**
+		 * Renderer für Listenelemente der Task-List.
+		 * 
+		 * @author andy
+		 *
+		 */
 		class MyListCellRenderer extends DefaultListCellRenderer {
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
@@ -620,7 +625,7 @@ public class Mainframe extends JDialog {
 		panel_buttons.add(button_cancel);
 
 		// Entscheidung für den Tray-Typ treffen:
-		// TODO: verbessern
+		// TODO: überarbeiten
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (!OS.contains("win")) {
 			// QT-App starten:
@@ -925,7 +930,7 @@ public class Mainframe extends JDialog {
 		summary.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
 		summary.setLocation(frmTotalbackup.getLocationOnScreen());
-		// TODO: Das geht so nicht!
+		// TODO: Modalität? Geht so nicht:
 		// summary.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		summary.setVisible(true);
 	}
