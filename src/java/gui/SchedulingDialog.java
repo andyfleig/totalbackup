@@ -16,7 +16,6 @@ import listener.ISchedulingDialogListener;
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;

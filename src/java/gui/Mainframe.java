@@ -80,7 +80,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.filechooser.FileSystemView;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JOptionPane;
@@ -92,7 +91,6 @@ import data.BackupInfos;
 import data.BackupTask;
 import data.BackupThreadContainer;
 import data.Source;
-import javax.swing.SwingConstants;
 
 /**
  * Mainframe von TotalBackup.
@@ -990,6 +988,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
+	 * 
+	 * @deprecated
 	 */
 	private void saveProperties() {
 		File properties = new File("./properties.ser");

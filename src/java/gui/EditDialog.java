@@ -1233,7 +1233,7 @@ public class EditDialog extends JDialog {
 					// gültige Zeit ist:
 					if (checkBox_toggleWeekday.isSelected() || checkBox_toggleDayInMonth.isSelected()) {
 						try {
-							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
+							LocalTime.parse(textField_timeToStart.getText());
 						} catch (DateTimeParseException ex) {
 							JOptionPane.showMessageDialog(null,
 									ResourceBundle.getBundle("gui.messages").getString("Messages.illegalStartTime"),

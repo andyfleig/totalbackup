@@ -286,7 +286,6 @@ public class HardlinkBackup implements Backupable {
 						&& sourceFile.getName().equals("")) {
 					// In diesem Sonderfall ergibt sich der Name nur aus dem
 					// Laufwerksbuchstaben:
-					String test = sourceFile.getAbsolutePath();
 					folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
 				} else {
 					folder = backupDir + File.separator + sourceFile.getName();

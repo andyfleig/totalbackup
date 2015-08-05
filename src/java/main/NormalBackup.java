@@ -125,7 +125,6 @@ public class NormalBackup implements Backupable {
 						&& sourceFile.getName().equals("")) {
 					// In diesem Sonderfall ergibt sich der Name nur aus dem
 					// Laufwerksbuchstaben:
-					String test = sourceFile.getAbsolutePath();
 					folder = dir + File.separator + sourceFile.getAbsolutePath().charAt(0);
 				} else {
 					folder = dir + File.separator + sourceFile.getName();

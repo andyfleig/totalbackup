@@ -102,7 +102,8 @@ public class Controller {
 	 * Startet und initialisiert den Controller.
 	 */
 	public void startController() {
-		//Dafür sorgen dass nur eine Instanz des Programms laufen kann:
+		// Dafür sorgen dass nur eine Instanz des Programms laufen kann:
+		// TODO: Bessere Alternative?
 		try {
 			new ServerSocket(2210);
 		} catch (IOException e) {
@@ -110,7 +111,7 @@ public class Controller {
 			System.out.println("TotalBackup is already running");
 			System.exit(1);
 		}
-		
+
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
@@ -228,7 +229,7 @@ public class Controller {
 					});
 				}
 			});
-			
+
 			loadSerializationGson();
 			// Liste aller versäumten BackupTasks:
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
@@ -265,6 +266,8 @@ public class Controller {
 
 	/**
 	 * Lädt die serialisierten Einstellungen.
+	 * 
+	 * @deprecated
 	 */
 	private void loadSerialization() {
 		// Prüfen ob bereits Einstellungen gespeichert wurden:
@@ -761,7 +764,6 @@ public class Controller {
 		LocalDateTime[] boundaries = new LocalDateTime[task.getNumberOfExtendedCleanRules() - 1];
 		String[] boundaryStrings = task.getBoundaries();
 		for (int i = 0; i < boundaries.length; i++) {
-			DateFormat formatter;
 			StringTokenizer tokanizer = new StringTokenizer(boundaryStrings[i], "_");
 			String threshold = tokanizer.nextToken();
 			switch (tokanizer.nextToken()) {

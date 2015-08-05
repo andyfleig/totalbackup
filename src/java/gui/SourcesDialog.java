@@ -114,7 +114,6 @@ public class SourcesDialog extends JDialog {
 		getContentPane().add(panel_main, BorderLayout.CENTER);
 		panel_main.setLayout(new BorderLayout(0, 0));
 
-		JPanel panel;
 		panel_path = new JPanel();
 		panel_main.add(panel_path, BorderLayout.NORTH);
 		panel_path.setLayout(new BorderLayout(0, 0));
@@ -128,7 +127,6 @@ public class SourcesDialog extends JDialog {
 		textfield_source.setColumns(10);
 
 		// Button Druchsuchen:
-		JButton button;
 		button_find = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_find"));
 		button_find.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -152,7 +150,6 @@ public class SourcesDialog extends JDialog {
 		button_find.setAlignmentX(0.5f);
 		panel_path.add(button_find, BorderLayout.EAST);
 
-		JPanel panel_filter;
 		panel_filter = new JPanel();
 		panel_main.add(panel_filter, BorderLayout.CENTER);
 		panel_filter.setLayout(new BorderLayout(0, 0));
@@ -212,7 +209,6 @@ public class SourcesDialog extends JDialog {
 		}
 
 		// Button Bearbeiten:
-		JButton button_edit;
 		button_edit = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_edit"));
 		button_edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -256,7 +252,6 @@ public class SourcesDialog extends JDialog {
 		button_edit.setAlignmentX(0.5f);
 		panel_ConfigurateFilter.add(button_edit);
 
-		JButton button_delete;
 		button_delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_delete"));
 		button_delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
