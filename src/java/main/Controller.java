@@ -108,7 +108,6 @@ public class Controller {
 	public void startController(String[] args) {
 		this.arguments = args;
 		// Dafür sorgen dass nur eine Instanz des Programms laufen kann:
-		// TODO: Bessere Alternative?
 		try {
 			new ServerSocket(2210);
 		} catch (IOException e) {

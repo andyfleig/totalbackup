@@ -33,7 +33,7 @@ import data.BackupTask;
  *
  */
 public interface Backupable {
-
+	
 	/**
 	 * Bereitet den Backup-Vorgang vor (sammelt zu bearbeitenden Dateien).
 	 * 

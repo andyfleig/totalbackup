@@ -590,21 +590,7 @@ public class Mainframe extends JDialog {
 		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BackupTask taskToCancel = listModel.getElementAt(list_tasks.getSelectedIndex());
-				if (taskToCancel == null) {
-					return;
-				}
-				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"),
-						ResourceBundle.getBundle("gui.messages").getString("Messages.Cancel"),
-						JOptionPane.YES_NO_OPTION);
-				if (reply == JOptionPane.YES_OPTION) {
-					Mainframe.this.addToOutput(
-							ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"), false,
-							null);
-					button_cancel.setEnabled(false);
-
-					cancelBackup(taskToCancel);
-				}
+				cancelBackupAfterConfirmation(taskToCancel);
 			}
 		});
 
@@ -645,7 +631,7 @@ public class Mainframe extends JDialog {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.exit(0);
+					quit();
 				}
 			});
 			trayPopupMenu.add(close);
@@ -720,7 +706,7 @@ public class Mainframe extends JDialog {
 				int msg = in.readInt();
 				if (msg == 0) {
 					savePropertiesGson();
-					System.exit(0);
+					quit();
 					in.close();
 					break;
 				} else if (msg == 1) {
@@ -974,12 +960,54 @@ public class Mainframe extends JDialog {
 			putValue(NAME, ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.menu_quit"));
 		}
 
+		// Button Beenden:
 		public void actionPerformed(ActionEvent e) {
+			quit();
+		}
+	}
+
+	/**
+	 * Beendet das Programm nachdem der Benutzer dies bestätigt hat.
+	 */
+	private void quit() {
+		int reply = JOptionPane.showConfirmDialog(null,
+				ResourceBundle.getBundle("gui.messages").getString("Messages.ReallyQuit"),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
 			if (trayProcess != null) {
 				trayProcess.destroy();
 			}
+			cancelAllRunningTasks();
 			System.exit(0);
+		}
+	}
+
+	/**
+	 * Bricht den gegebenen Backup-Task ab, nachdem der Benutzer dies bestätigt
+	 * hat.
+	 * 
+	 * @param taskToCancel
+	 *            abzubrechender Task
+	 */
+	private void cancelBackupAfterConfirmation(BackupTask taskToCancel) {
+		if (taskToCancel == null) {
+			return;
+		}
+		int reply = JOptionPane.showConfirmDialog(null,
+				ResourceBundle.getBundle("gui.messages").getString("Messages.CancelBackup"),
+				ResourceBundle.getBundle("gui.messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
+			cancelBackup(taskToCancel);
+		}
+	}
+
+	/**
+	 * Bricht (ohne Nachfrage!) alle laufenden Backups ab.
+	 */
+	private void cancelAllRunningTasks() {
+		for (String taskName : listener.getRunningBackupTasks()) {
+			cancelBackup(listener.getBackupTaskWithName(taskName));
 		}
 	}
 
@@ -1218,6 +1246,10 @@ public class Mainframe extends JDialog {
 	 *            abzubrechender BackupTask
 	 */
 	private void cancelBackup(BackupTask task) {
+		Mainframe.this.addToOutput(ResourceBundle.getBundle("gui.messages").getString("Messages.CancelingBackup"),
+				false, null);
+		button_cancel.setEnabled(false);
+
 		BackupThreadContainer tmpContainer = null;
 		for (BackupThreadContainer container : backupThreads) {
 			if (container.getTaskName().equals(task.getTaskName())) {
