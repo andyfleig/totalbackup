@@ -121,26 +121,31 @@ public class NormalBackup implements Backupable {
 				// Sonderbehandlung für Windows, wenn der SourcePath das
 				// root-dir eines Volume (z.B. C:/) ist:
 				String folder;
-				if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
-						&& sourceFile.getName().equals("")) {
-					// In diesem Sonderfall ergibt sich der Name nur aus dem
-					// Laufwerksbuchstaben:
-					folder = dir + File.separator + sourceFile.getAbsolutePath().charAt(0);
+				File f;
+				if (!sourceFile.isDirectory()) {
+					f = dir;
 				} else {
-					folder = dir + File.separator + sourceFile.getName();
-				}
+					if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
+							&& sourceFile.getName().equals("")) {
+						// In diesem Sonderfall ergibt sich der Name nur aus dem
+						// Laufwerksbuchstaben:
+						folder = dir.getAbsolutePath() + File.separator + sourceFile.getAbsolutePath().charAt(0);
+					} else {
+						folder = dir.getAbsolutePath() + File.separator + sourceFile.getName();
+					}
 
-				File f = new File(folder);
+					f = new File(folder);
 
-				if (f.mkdir()) {
-					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
-					listener.printOut(outprint, false, task.getTaskName());
-					listener.log(outprint, task);
-				} else {
-					String outprint = ResourceBundle.getBundle("gui.messages")
-							.getString("Messages.FolderCreationError");
-					listener.printOut(outprint, true, task.getTaskName());
-					listener.log(outprint, task);
+					if (f.mkdir()) {
+						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
+						listener.printOut(outprint, false, task.getTaskName());
+						listener.log(outprint, task);
+					} else {
+						String outprint = ResourceBundle.getBundle("gui.messages")
+								.getString("Messages.FolderCreationError");
+						listener.printOut(outprint, true, task.getTaskName());
+						listener.log(outprint, task);
+					}
 				}
 
 				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
@@ -165,7 +170,7 @@ public class NormalBackup implements Backupable {
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
-		// Warum hier noch nicht gecanceled?
+		// TODO: Warum hier noch nicht gecanceled?
 		if (!isCanceled) {
 			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
 			listener.printOut(output, false, task.getTaskName());
@@ -244,8 +249,13 @@ public class NormalBackup implements Backupable {
 		if (Thread.interrupted()) {
 			throw new BackupCanceledException();
 		}
-		File[] files = sourceFile.listFiles();
-
+		File[] files;
+		if (sourceFile.isDirectory()) {
+			files = sourceFile.listFiles();
+		} else {
+			files = new File[1];
+			files[0] = sourceFile;
+		}
 		if (files == null) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "
 					+ sourceFile.getPath();

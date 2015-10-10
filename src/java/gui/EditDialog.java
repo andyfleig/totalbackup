@@ -1407,7 +1407,7 @@ public class EditDialog extends JDialog {
 	 */
 	private boolean isValidPath(String pfad) {
 		File f = new File(pfad);
-		if (f.exists() && f.isDirectory()) {
+		if (f.exists()) {
 			return true;
 		}
 		return false;

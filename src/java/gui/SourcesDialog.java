@@ -131,7 +131,7 @@ public class SourcesDialog extends JDialog {
 		button_find.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc.setMultiSelectionEnabled(false);
 				int state = fc.showOpenDialog(null);
 
 				if (state == JFileChooser.APPROVE_OPTION) {
@@ -276,7 +276,7 @@ public class SourcesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Quellpfad prüfen:
 				File source = new File(textfield_source.getText());
-				if (!source.exists() || !source.isDirectory()) {
+				if (!source.exists()) {
 					JOptionPane.showMessageDialog(null,
 							ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.errIllegalSource"),
 							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),

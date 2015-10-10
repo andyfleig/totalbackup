@@ -282,25 +282,30 @@ public class HardlinkBackup implements Backupable {
 				// Sonderbehandlung für Windows, wenn der SourcePath das
 				// root-dir eines Volume (z.B. C:/) ist:
 				String folder;
-				if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
-						&& sourceFile.getName().equals("")) {
-					// In diesem Sonderfall ergibt sich der Name nur aus dem
-					// Laufwerksbuchstaben:
-					folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
+				File f;
+				if (!sourceFile.isDirectory()) {
+					f = backupDir;
 				} else {
-					folder = backupDir + File.separator + sourceFile.getName();
-				}
+					if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
+							&& sourceFile.getName().equals("")) {
+						// In diesem Sonderfall ergibt sich der Name nur aus dem
+						// Laufwerksbuchstaben:
+						folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
+					} else {
+						folder = backupDir + File.separator + sourceFile.getName();
+					}
 
-				File f = new File(folder);
+					f = new File(folder);
 
-				if (f.mkdir()) {
-					outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
-					listener.printOut(outprint, false, task.getTaskName());
-					listener.log(outprint, task);
-				} else {
-					outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError");
-					listener.printOut(outprint, true, task.getTaskName());
-					listener.log(outprint, task);
+					if (f.mkdir()) {
+						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
+						listener.printOut(outprint, false, task.getTaskName());
+						listener.log(outprint, task);
+					} else {
+						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError");
+						listener.printOut(outprint, true, task.getTaskName());
+						listener.log(outprint, task);
+					}
 				}
 
 				// Queueing:
@@ -421,7 +426,13 @@ public class HardlinkBackup implements Backupable {
 		if (Thread.interrupted()) {
 			throw new BackupCanceledException();
 		}
-		File[] files = sourceFile.listFiles();
+		File[] files;
+		if (sourceFile.isDirectory()) {
+			files = sourceFile.listFiles();
+		} else {
+			files = new File[1];
+			files[0] = sourceFile;
+		}
 		if (files == null) {
 			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "
 					+ sourceFile.getPath();
