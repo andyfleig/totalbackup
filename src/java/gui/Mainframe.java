@@ -623,14 +623,50 @@ public class Mainframe extends JDialog {
 		panel_buttons.add(button_cancel);
 
 		// Entscheidung für den Tray-Typ treffen:
-		// TODO: überarbeiten
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (!OS.contains("win")) {
+		// Wird der Java-SystemTray unterstützt wird dieser auch verwendet:
+		if (SystemTray.isSupported() && !listener.argsContains("force_qt")) {
+			SystemTray systemTray = SystemTray.getSystemTray();
+
+			PopupMenu trayPopupMenu = new PopupMenu();
+
+			MenuItem action = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_show"));
+			action.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					frmTotalbackup.setVisible(true);
+
+				}
+			});
+			trayPopupMenu.add(action);
+
+			MenuItem close = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_close"));
+			close.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+				}
+			});
+			trayPopupMenu.add(close);
+			int trayIconWidth = new TrayIcon(image).getSize().width;
+
+			trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
+					ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"), trayPopupMenu);
+
+			try {
+				systemTray.add(trayIcon);
+			} catch (AWTException e) {
+				e.printStackTrace();
+			}
+			isQTTray = false;
+		} else {
 			// QT-App starten:
 			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
 				trayProcess = builder.start();
 			} catch (IOException e1) {
+				// TODO: Fehlermeldung auslagern (locale)
 				System.err.println("Error while starting totalbackuptray");
 			}
 
@@ -643,46 +679,7 @@ public class Mainframe extends JDialog {
 			});
 			recvThread.start();
 			isQTTray = true;
-		} else {
-			if (SystemTray.isSupported()) {
-				SystemTray systemTray = SystemTray.getSystemTray();
-
-				PopupMenu trayPopupMenu = new PopupMenu();
-
-				MenuItem action = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_show"));
-				action.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						frmTotalbackup.setVisible(true);
-
-					}
-				});
-				trayPopupMenu.add(action);
-
-				MenuItem close = new MenuItem(ResourceBundle.getBundle("gui.messages").getString("GUI.button_close"));
-				close.addActionListener(new ActionListener() {
-
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						System.exit(0);
-					}
-				});
-				trayPopupMenu.add(close);
-				int trayIconWidth = new TrayIcon(image).getSize().width;
-
-				trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
-						ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.title"), trayPopupMenu);
-
-				try {
-					systemTray.add(trayIcon);
-				} catch (AWTException e) {
-					e.printStackTrace();
-				}
-				isQTTray = false;
-			}
 		}
-
 		frmTotalbackup.setVisible(true);
 
 	}

@@ -70,6 +70,10 @@ import data.BackupThreadContainer;
 public class Controller {
 
 	/**
+	 * Kommandozeilenargumente welche aus der Main übergeben werden.
+	 */
+	private String[] arguments;
+	/**
 	 * Aktuelle Mainframe-Instanz.
 	 */
 	private Mainframe mainframe;
@@ -101,7 +105,8 @@ public class Controller {
 	/**
 	 * Startet und initialisiert den Controller.
 	 */
-	public void startController() {
+	public void startController(String[] args) {
+		this.arguments = args;
 		// Dafür sorgen dass nur eine Instanz des Programms laufen kann:
 		// TODO: Bessere Alternative?
 		try {
@@ -225,6 +230,11 @@ public class Controller {
 							LocalDateTime nextExecution = task.getLocalDateTimeOfNextBackup();
 							task.resetLocalDateTimeOfNextExecution();
 							Controller.this.scheduleBackupTaskStartingAt(task, nextExecution.plusSeconds(1));
+						}
+
+						@Override
+						public boolean argsContains(String s) {
+							return Controller.this.argsContains(s);
 						}
 					});
 				}
@@ -1256,5 +1266,21 @@ public class Controller {
 		} else {
 			mainframe.showTrayPopupMessage(msg);
 		}
+	}
+
+	/**
+	 * Prüft ob der gegebene String teil der übergebenen Argumente ist.
+	 * 
+	 * @param s
+	 *            zu prüfender String (gesuchtes Argument)
+	 * @return ob der gegebene String teil der übergebenen Argumente ist
+	 */
+	public boolean argsContains(String s) {
+		for (String string : arguments) {
+			if (string.equals(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
