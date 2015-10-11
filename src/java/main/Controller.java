@@ -165,8 +165,7 @@ public class Controller {
 
 						@Override
 						public void outprintBackupCanceled(BackupTask task) {
-							String outprint = ResourceBundle.getBundle("messages")
-									.getString("Messages.BackupCanceled");
+							String outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupCanceled");
 							backupListener.printOut(outprint, false, task.getTaskName());
 							backupListener.log(outprint, task);
 						}
@@ -1033,8 +1032,8 @@ public class Controller {
 		// Für das Popup:
 		Runnable popup = new Runnable() {
 			public void run() {
-				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask")
-						+ " " + task.getTaskName() + " "
+				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask") + " "
+						+ task.getTaskName() + " "
 						+ ResourceBundle.getBundle("messages").getString("Messages.popup.startsInOneMinute"));
 			}
 		};

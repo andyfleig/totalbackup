@@ -239,8 +239,7 @@ public class Mainframe extends JDialog {
 		JMenu mn_File = new JMenu(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_file"));
 		menuBar.add(mn_File);
 
-		JMenuItem mntm_Quit = new JMenuItem(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_quit"));
+		JMenuItem mntm_Quit = new JMenuItem(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_quit"));
 		mntm_Quit.setAction(action_quit);
 		mn_File.add(mntm_Quit);
 
@@ -305,8 +304,7 @@ public class Mainframe extends JDialog {
 		label_status.setText(" " + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.label_status"));
 		panel_status.add(label_status, BorderLayout.NORTH);
 
-		JLabel label_tasks = new JLabel(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.label_tasks"));
+		JLabel label_tasks = new JLabel(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.label_tasks"));
 		panel_tasks.add(label_tasks, BorderLayout.NORTH);
 		label_tasks.setPreferredSize(new Dimension(0, 25));
 
@@ -500,14 +498,12 @@ public class Mainframe extends JDialog {
 							+ " " + nextExecutionTime.format(dtf);
 				} else {
 					if (listener.getRunningBackupTasks().contains(name)) {
-						labelText = "<html>"
-								+ ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task") + " "
-								+ name + "<br/>"
+						labelText = "<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task")
+								+ " " + name + "<br/>"
 								+ ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.running");
 					} else {
-						labelText = "<html>"
-								+ ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task") + " "
-								+ name;
+						labelText = "<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task")
+								+ " " + name;
 					}
 				}
 				setText(labelText);
@@ -556,8 +552,8 @@ public class Mainframe extends JDialog {
 								JOptionPane.YES_NO_OPTION);
 						if (reply == JOptionPane.YES_OPTION) {
 							Mainframe.this.addToOutput(
-									ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"),
-									false, taskToRun.getTaskName());
+									ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
+									taskToRun.getTaskName());
 							button_cancel.setEnabled(false);
 							Mainframe.this.cancelBackup(listener.getBackupTaskWithName(taskName));
 						}
@@ -654,8 +650,7 @@ public class Mainframe extends JDialog {
 			} catch (IOException e1) {
 				JOptionPane.showMessageDialog(null,
 						ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errStartingQtTray"),
-						ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
-						JOptionPane.INFORMATION_MESSAGE);
+						ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
 			}
 
 			// Thread für recv anlegen und starten:
@@ -747,8 +742,7 @@ public class Mainframe extends JDialog {
 		ArrayList<Source> sources = task.getSources();
 		for (int i = 0; i < sources.size(); i++) {
 			if (!(new File(sources.get(i).getPath())).exists()) {
-				String output = ResourceBundle.getBundle("messages")
-						.getString("GUI.Mainframe.errorSourceDontExists");
+				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
 				prep.dispose();
@@ -775,13 +769,12 @@ public class Mainframe extends JDialog {
 						int reply2 = JOptionPane.showConfirmDialog(null,
 								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " "
 										+ dest + "  "
-										+ ResourceBundle.getBundle("messages")
-												.getString("Messages.FoundDestCorrect2"),
+										+ ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
 								null, JOptionPane.YES_NO_OPTION);
 						if (reply2 == JOptionPane.YES_OPTION) {
 							int reply3 = JOptionPane.showConfirmDialog(null,
-									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"),
-									null, JOptionPane.YES_NO_OPTION);
+									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
+									JOptionPane.YES_NO_OPTION);
 							if (reply3 == JOptionPane.YES_OPTION) {
 								successful = true;
 								task.setDestinationPath(dest);
@@ -819,8 +812,7 @@ public class Mainframe extends JDialog {
 			JOptionPane.showMessageDialog(null,
 					ResourceBundle.getBundle("messages").getString("GUI.errDestinationDontExists"),
 					ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
-			String output = ResourceBundle.getBundle("messages")
-					.getString("GUI.Mainframe.errDestinationDontExists");
+			String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errDestinationDontExists");
 			listener.printOut(output, false, task.getTaskName());
 			if (prep != null) {
 				prep.dispose();
@@ -833,7 +825,7 @@ public class Mainframe extends JDialog {
 		if (prep != null) {
 			prep.dispose();
 		}
-
+		// TODO: nichts zu tun -> Meldung
 		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
 		File destDir = new File(task.getDestinationPath());
 		double freeSize = destDir.getFreeSpace();
@@ -1248,8 +1240,8 @@ public class Mainframe extends JDialog {
 	 *            abzubrechender BackupTask
 	 */
 	private void cancelBackup(BackupTask task) {
-		Mainframe.this.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"),
-				false, null);
+		Mainframe.this.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
+				null);
 		button_cancel.setEnabled(false);
 
 		BackupThreadContainer tmpContainer = null;

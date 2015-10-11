@@ -164,8 +164,7 @@ public class SourcesDialog extends JDialog {
 		listScroller_filter.setMaximumSize(new Dimension(200, 200));
 		listScroller_filter.setMinimumSize(new Dimension(200, 200));
 
-		JLabel label_filter = new JLabel(
-				ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.filter"));
+		JLabel label_filter = new JLabel(ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.filter"));
 		panel_filter.add(label_filter, BorderLayout.NORTH);
 
 		JPanel panel_ConfigurateFilter = new JPanel();

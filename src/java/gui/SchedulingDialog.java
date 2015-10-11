@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 public class SchedulingDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	
+
 	private ISchedulingDialogListener listener;
 
 	/**
@@ -44,28 +44,28 @@ public class SchedulingDialog extends JDialog {
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
 		ButtonGroup group = new ButtonGroup();
-		
+
 		JPanel panel = new JPanel();
 		contentPanel.add(panel);
-		
-				JRadioButton radioButton_skipNext = new JRadioButton(
-						ResourceBundle.getBundle("messages").getString("GUI.SchedulingDialog.skipNext"));
-				radioButton_skipNext.setHorizontalAlignment(SwingConstants.CENTER);
-				panel.add(radioButton_skipNext);
-				group.add(radioButton_skipNext);
-				
-						JRadioButton radioButton_postpone = new JRadioButton(
-								ResourceBundle.getBundle("messages").getString("GUI.SchedulingDialog.postpone"));
-						radioButton_postpone.setSelected(true);
-						radioButton_postpone.setHorizontalAlignment(SwingConstants.CENTER);
-						panel.add(radioButton_postpone);
-						group.add(radioButton_postpone);
-		
+
+		JRadioButton radioButton_skipNext = new JRadioButton(
+				ResourceBundle.getBundle("messages").getString("GUI.SchedulingDialog.skipNext"));
+		radioButton_skipNext.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(radioButton_skipNext);
+		group.add(radioButton_skipNext);
+
+		JRadioButton radioButton_postpone = new JRadioButton(
+				ResourceBundle.getBundle("messages").getString("GUI.SchedulingDialog.postpone"));
+		radioButton_postpone.setSelected(true);
+		radioButton_postpone.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.add(radioButton_postpone);
+		group.add(radioButton_postpone);
+
 		JComboBox comboBox = new JComboBox();
 		comboBox.setPreferredSize(new Dimension(80, 25));
 		comboBox.setMinimumSize(comboBox.getPreferredSize());
 		comboBox.setMaximumSize(comboBox.getPreferredSize());
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"5min", "15min", "1h", "2h", "6h", "12h", "24h"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] { "5min", "15min", "1h", "2h", "6h", "12h", "24h" }));
 		contentPanel.add(comboBox);
 
 		JPanel buttonPane = new JPanel();

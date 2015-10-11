@@ -113,8 +113,7 @@ public class SummaryDialog extends JDialog {
 		panel_buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
-		JButton btn_ok = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.button_start"));
+		JButton btn_ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.button_start"));
 		btn_ok.addActionListener(new ActionListener() {
 			// Button Start:
 			public void actionPerformed(ActionEvent arg0) {

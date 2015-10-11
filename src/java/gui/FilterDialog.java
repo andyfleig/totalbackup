@@ -124,8 +124,7 @@ public class FilterDialog extends JDialog {
 		panel_source.add(textfield_filter);
 		textfield_filter.setColumns(10);
 
-		JLabel lbl_filter = new JLabel(
-				ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.label_filter"));
+		JLabel lbl_filter = new JLabel(ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.label_filter"));
 		panel_source.add(lbl_filter, BorderLayout.NORTH);
 
 		// Button Durchsuchen:
