@@ -173,7 +173,7 @@ public class HardlinkBackup implements Backupable {
 			}
 			// Falls kein index gefunden wurde, wird ein index angelegt:
 			if (indexExists == false) {
-				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexIndexing");
+				String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexIndexing");
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
 
@@ -184,16 +184,16 @@ public class HardlinkBackup implements Backupable {
 					throw new BackupCanceledException();
 				}
 
-				outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
+				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
 
-				outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
+				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
 
 				serializeIndex(taskName, destFolders[i].getAbsolutePath());
-				outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved");
+				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
 			}
@@ -203,7 +203,7 @@ public class HardlinkBackup implements Backupable {
 		// Neusten Backup-Ordner finden:
 		newestBackupPath = findNewestBackup(destinationPath);
 		if (newestBackupPath == null) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.noValidIndexCanceled");
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexCanceled");
 			listener.printOut(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 			return;
@@ -215,14 +215,14 @@ public class HardlinkBackup implements Backupable {
 
 		// Pfad prüfen:
 		if (!index.exists()) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexNotFound");
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexNotFound");
 			listener.printOut(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 			return;
 		}
 
 		if (!loadSerialization(index)) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCorrupted");
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCorrupted");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
@@ -233,23 +233,23 @@ public class HardlinkBackup implements Backupable {
 				throw new BackupCanceledException();
 			}
 
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			serializeIndex(taskName, index.getAbsolutePath());
 
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			// Index erneut laden:
 			if (!loadSerialization(index)) {
-				outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FatalErrorIndexing");
+				outprint = ResourceBundle.getBundle("messages").getString("Messages.FatalErrorIndexing");
 				listener.printOut(outprint, true, task.getTaskName());
 				listener.log(outprint, task);
 				return;
@@ -259,12 +259,12 @@ public class HardlinkBackup implements Backupable {
 		// Backup-Ordner anlegen:
 		backupDir = BackupHelper.createBackupFolder(destinationPath, taskName, listener, task);
 
-		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
+		String outprint = ResourceBundle.getBundle("messages").getString("Messages.PreparationStarted");
 		listener.printOut(outprint, false, task.getTaskName());
 		listener.log(outprint, task);
 
 		if (backupDir == null) {
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(outprint, true, task.getTaskName());
 			return;
 		}
@@ -298,11 +298,11 @@ public class HardlinkBackup implements Backupable {
 					f = new File(folder);
 
 					if (f.mkdir()) {
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
+						outprint = ResourceBundle.getBundle("messages").getString("Messages.FolderCreated");
 						listener.printOut(outprint, false, task.getTaskName());
 						listener.log(outprint, task);
 					} else {
-						outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreationError");
+						outprint = ResourceBundle.getBundle("messages").getString("Messages.FolderCreationError");
 						listener.printOut(outprint, true, task.getTaskName());
 						listener.log(outprint, task);
 					}
@@ -322,20 +322,20 @@ public class HardlinkBackup implements Backupable {
 						rekursivePreparation(new File(sources.get(j).getPath()), f, task);
 					}
 				} catch (BackupCanceledException e) {
-					outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+					outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 					listener.printOut(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 					isCanceled = true;
 				}
 			}
 		} catch (BackupCanceledException e) {
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
 		if (!isCanceled) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.PreparationDone");
 			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
 			preparationDone = true;
@@ -352,7 +352,7 @@ public class HardlinkBackup implements Backupable {
 			return;
 		}
 
-		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup");
+		String outprint = ResourceBundle.getBundle("messages").getString("Messages.startBackup");
 		listener.printOut(outprint, false, task.getTaskName());
 		listener.log(outprint, task);
 		try {
@@ -373,9 +373,9 @@ public class HardlinkBackup implements Backupable {
 							BackupHelper.copyFile(new File(currentElement.getSourcePath()),
 									new File(currentElement.getDestPath()), listener, task);
 						} catch (IOException e) {
-							String msg = ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg1")
+							String msg = ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg1")
 									+ currentElement.getSourcePath()
-									+ ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg2");
+									+ ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg2");
 							listener.printOut(msg, true, task.getTaskName());
 							listener.log(msg, task);
 						}
@@ -391,21 +391,21 @@ public class HardlinkBackup implements Backupable {
 				throw new BackupCanceledException();
 			}
 
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			serializeIndex(taskName, backupDir.getAbsolutePath());
 
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			listener.taskFinished(task);
 		} catch (BackupCanceledException e) {
-			outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 		}
@@ -434,7 +434,7 @@ public class HardlinkBackup implements Backupable {
 			files[0] = sourceFile;
 		}
 		if (files == null) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.UnknownErrorAt") + " "
 					+ sourceFile.getPath();
 			listener.printOut(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
@@ -544,11 +544,11 @@ public class HardlinkBackup implements Backupable {
 						} else {
 							// File exisitiert im Backup-Satz nicht (aber im
 							// Index)
-							String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BadIndex");
+							String outprint = ResourceBundle.getBundle("messages").getString("Messages.BadIndex");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
-							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.DeletingIndex");
+							outprint = ResourceBundle.getBundle("messages").getString("Messages.DeletingIndex");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
@@ -559,12 +559,12 @@ public class HardlinkBackup implements Backupable {
 							File badIndex = new File(files[i].getAbsolutePath() + directoryStructure.getFilePath());
 							badIndex.delete();
 
-							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexDeleted");
+							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexDeleted");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
 							// Neu indizieren:
-							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.Indexing");
+							outprint = ResourceBundle.getBundle("messages").getString("Messages.Indexing");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 							createIndex(new File(rootPathForIndex), task);
@@ -574,16 +574,16 @@ public class HardlinkBackup implements Backupable {
 								throw new BackupCanceledException();
 							}
 
-							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexCreated");
+							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
-							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaving");
+							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
 							serializeIndex(taskName, rootPathForIndex);
 
-							outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexSaved");
+							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 							// Datei zu kopieren:
@@ -645,7 +645,7 @@ public class HardlinkBackup implements Backupable {
 				directoryStructure = rootFile;
 			} catch (BackupCanceledException e) {
 				directoryStructure = null;
-				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.IndexingCanceled");
+				String output = ResourceBundle.getBundle("messages").getString("Messages.IndexingCanceled");
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
 			}

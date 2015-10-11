@@ -165,7 +165,7 @@ public class Controller {
 
 						@Override
 						public void outprintBackupCanceled(BackupTask task) {
-							String outprint = ResourceBundle.getBundle("gui.messages")
+							String outprint = ResourceBundle.getBundle("messages")
 									.getString("Messages.BackupCanceled");
 							backupListener.printOut(outprint, false, task.getTaskName());
 							backupListener.log(outprint, task);
@@ -259,9 +259,9 @@ public class Controller {
 				// von profitableTimeUntilNextExecution des Tasks):
 				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution()))
 						.isAfter(LocalDateTime.now())) {
-					String msg = ResourceBundle.getBundle("gui.messages").getString("Messages-popup.catchUp1") + " "
+					String msg = ResourceBundle.getBundle("messages").getString("Messages-popup.catchUp1") + " "
 							+ task.getTaskName() + " "
-							+ ResourceBundle.getBundle("gui.messages").getString("Messages-popup.catchUp2");
+							+ ResourceBundle.getBundle("messages").getString("Messages-popup.catchUp2");
 					showTrayPopupMessage(msg);
 					scheduleBackupTaskNow(task);
 				}
@@ -425,13 +425,13 @@ public class Controller {
 				}
 			}
 			if (backupSetFound) {
-				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startHardlinkBackup");
+				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
 				printOut(output, false, task.getTaskName());
 				log(output, task);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
-				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startNormalBackup");
+				String output = ResourceBundle.getBundle("messages").getString("Messages.startNormalBackup");
 				printOut(output, false, task.getTaskName());
 				log(output, task);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
@@ -444,7 +444,7 @@ public class Controller {
 		try {
 			backup.runPreparation(task);
 		} catch (BackupCanceledException ex) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			printOut(output, false, task.getTaskName());
 			log(output, task);
 		}
@@ -479,7 +479,7 @@ public class Controller {
 		} catch (IOException e) {
 			System.err.println("Fehler beim einlesen der Datei(en)");
 		} catch (BackupCanceledException ex) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			printOut(output, false, task.getTaskName());
 			log(output, task);
 		}
@@ -500,7 +500,7 @@ public class Controller {
 													Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
 											task));
 
-					String output = ResourceBundle.getBundle("gui.messages").getString("Messages.deleting") + " "
+					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " "
 							+ toDelete.getAbsolutePath();
 					setStatus(output);
 					log(output, task);
@@ -509,11 +509,11 @@ public class Controller {
 					}
 					printOut(
 							toDelete.getAbsolutePath() + " "
-									+ ResourceBundle.getBundle("gui.messages").getString("Messages.deleted"),
+									+ ResourceBundle.getBundle("messages").getString("Messages.deleted"),
 							false, task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
-				String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+				String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 				printOut(outprint, false, task.getTaskName());
 				log(outprint, task);
 			}
@@ -994,7 +994,7 @@ public class Controller {
 		if (runningBackupTasks.contains(task.getTaskName())) {
 			return;
 		}
-		printOut(ResourceBundle.getBundle("gui.messages").getString("Messages.scheduleBackupNow"), false,
+		printOut(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
 				task.getTaskName());
 
 		scheduleBackupTaskAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
@@ -1033,9 +1033,9 @@ public class Controller {
 		// Für das Popup:
 		Runnable popup = new Runnable() {
 			public void run() {
-				showTrayPopupMessage(ResourceBundle.getBundle("gui.messages").getString("Messages.popup.backupTask")
+				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask")
 						+ " " + task.getTaskName() + " "
-						+ ResourceBundle.getBundle("gui.messages").getString("Messages.popup.startsInOneMinute"));
+						+ ResourceBundle.getBundle("messages").getString("Messages.popup.startsInOneMinute"));
 			}
 		};
 		// Task (mit timer) schedulen:
@@ -1248,7 +1248,7 @@ public class Controller {
 				BackupHelper.deleteDirectory(backupFolders[i]);
 			}
 		}
-		String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.deletedBackupFolder");
+		String outprint = ResourceBundle.getBundle("messages").getString("Messages.deletedBackupFolder");
 		backupListener.printOut(outprint, false, task.getTaskName());
 		backupListener.log(outprint, task);
 	}

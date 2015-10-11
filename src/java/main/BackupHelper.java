@@ -70,7 +70,7 @@ public final class BackupHelper {
 			return;
 		}
 
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.copying") + " " + source.getPath();
+		String output = ResourceBundle.getBundle("messages").getString("Messages.copying") + " " + source.getPath();
 		listener.setStatus(output);
 		if (listener.advancedOutputIsEnabled()) {
 			listener.printOut(output, false, currentTask.getTaskName());
@@ -103,7 +103,7 @@ public final class BackupHelper {
 			return;
 		}
 
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.linking") + " " + source.getPath();
+		String output = ResourceBundle.getBundle("messages").getString("Messages.linking") + " " + source.getPath();
 		if (listener.advancedOutputIsEnabled()) {
 			listener.printOut(output, false, task.getTaskName());
 		}
@@ -141,7 +141,7 @@ public final class BackupHelper {
 
 		File destinationFile = new File(destinationPath);
 		if (!destinationFile.exists()) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
 			;
@@ -152,12 +152,12 @@ public final class BackupHelper {
 		File dir = new File(backupDir);
 		// Backup-Ordner anlegen:
 		if (dir.mkdir()) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreated");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreated");
 			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
 			;
 		} else {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
 			;

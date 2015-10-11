@@ -20,6 +20,8 @@
  */
 package main;
 
+import java.util.ResourceBundle;
+
 import main.Controller;
 
 /**
@@ -37,7 +39,6 @@ public class Main {
 	 *            Start-Argumente
 	 */
 	public static void main(String[] args) {
-
 		Controller c = new Controller();
 		c.startController(args);
 	}

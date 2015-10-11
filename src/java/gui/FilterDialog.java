@@ -91,7 +91,7 @@ public class FilterDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public FilterDialog(IFilterDialogListener listener) {
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.title"));
+		setTitle(ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.title"));
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
 		setBounds(100, 100, 462, 148);
@@ -101,15 +101,15 @@ public class FilterDialog extends JDialog {
 		getContentPane().add(panel_filterType, BorderLayout.NORTH);
 
 		radioButton_excludeFilter = new JRadioButton(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.radioButton_excludeFilter"));
+				ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.radioButton_excludeFilter"));
 		radioButton_excludeFilter.setSelected(true);
 		radioButton_excludeFilter
-				.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.excludeToolTip"));
+				.setToolTipText(ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.excludeToolTip"));
 		panel_filterType.add(radioButton_excludeFilter);
 		radioButton_useMD5 = new JRadioButton(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.radioButton_useMD5"));
+				ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.radioButton_useMD5"));
 		radioButton_useMD5
-				.setToolTipText(ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.md5ToolTip"));
+				.setToolTipText(ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.md5ToolTip"));
 		panel_filterType.add(radioButton_useMD5);
 
 		ButtonGroup rBtnGroup = new ButtonGroup();
@@ -125,11 +125,11 @@ public class FilterDialog extends JDialog {
 		textfield_filter.setColumns(10);
 
 		JLabel lbl_filter = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.FilterDialog.label_filter"));
+				ResourceBundle.getBundle("messages").getString("GUI.FilterDialog.label_filter"));
 		panel_source.add(lbl_filter, BorderLayout.NORTH);
 
 		// Button Durchsuchen:
-		JButton button_Find = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_find"));
+		JButton button_Find = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_find"));
 		button_Find.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Beschränkung des FC auf den Sourceroot:
@@ -144,9 +144,9 @@ public class FilterDialog extends JDialog {
 						textfield_filter.setText(selectedFile.getAbsolutePath());
 					} else {
 						JOptionPane.showMessageDialog(null,
-								ResourceBundle.getBundle("gui.messages")
+								ResourceBundle.getBundle("messages")
 										.getString("GUI.FilterDialog.errNotUnderSourceRoot"),
-								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -159,7 +159,7 @@ public class FilterDialog extends JDialog {
 		getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
 		// Button OK:
-		JButton button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		JButton button_ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		button_ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Pfad auf gültigkeit Prüfen:
@@ -183,7 +183,7 @@ public class FilterDialog extends JDialog {
 		getRootPane().setDefaultButton(button_ok);
 
 		// Button Abbrechen:
-		JButton button_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_cancel"));
+		JButton button_cancel = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_cancel"));
 		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FilterDialog.this.dispose();

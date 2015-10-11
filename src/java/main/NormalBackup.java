@@ -105,7 +105,7 @@ public class NormalBackup implements Backupable {
 	public void runPreparation(BackupTask task) {
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener, task);
 		if (dir == null) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupFolderCreationError");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
 			return;
@@ -137,18 +137,18 @@ public class NormalBackup implements Backupable {
 					f = new File(folder);
 
 					if (f.mkdir()) {
-						String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.FolderCreated");
+						String outprint = ResourceBundle.getBundle("messages").getString("Messages.FolderCreated");
 						listener.printOut(outprint, false, task.getTaskName());
 						listener.log(outprint, task);
 					} else {
-						String outprint = ResourceBundle.getBundle("gui.messages")
+						String outprint = ResourceBundle.getBundle("messages")
 								.getString("Messages.FolderCreationError");
 						listener.printOut(outprint, true, task.getTaskName());
 						listener.log(outprint, task);
 					}
 				}
 
-				String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationStarted");
+				String output = ResourceBundle.getBundle("messages").getString("Messages.PreparationStarted");
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
 
@@ -158,21 +158,21 @@ public class NormalBackup implements Backupable {
 						rekursivePreparation(new File(sources.get(j).getPath()), f, task);
 					}
 				} catch (BackupCanceledException e) {
-					String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+					String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 					listener.printOut(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 					isCanceled = true;
 				}
 			}
 		} catch (BackupCanceledException e) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
 		// TODO: Warum hier noch nicht gecanceled?
 		if (!isCanceled) {
-			String output = ResourceBundle.getBundle("gui.messages").getString("Messages.PreparationDone");
+			String output = ResourceBundle.getBundle("messages").getString("Messages.PreparationDone");
 			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
 			preparationDone = true;
@@ -195,7 +195,7 @@ public class NormalBackup implements Backupable {
 			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
 			return;
 		}
-		String output = ResourceBundle.getBundle("gui.messages").getString("Messages.startBackup");
+		String output = ResourceBundle.getBundle("messages").getString("Messages.startBackup");
 		listener.printOut(output, false, task.getTaskName());
 		listener.log(output, task);
 
@@ -213,9 +213,9 @@ public class NormalBackup implements Backupable {
 						BackupHelper.copyFile(new File(currentElement.getSourcePath()),
 								new File(currentElement.getDestPath()), listener, task);
 					} catch (IOException e) {
-						String msg = ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg1")
+						String msg = ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg1")
 								+ currentElement.getSourcePath()
-								+ ResourceBundle.getBundle("gui.messages").getString("GUI.errCopyIOExMsg2");
+								+ ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg2");
 						listener.printOut(msg, true, task.getTaskName());
 						listener.log(msg, task);
 					}
@@ -223,12 +223,12 @@ public class NormalBackup implements Backupable {
 				}
 			}
 
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.BackupComplete");
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupComplete");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			listener.taskFinished(task);
 		} catch (BackupCanceledException e) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.CanceledByUser");
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			listener.printOut(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 		}
@@ -257,7 +257,7 @@ public class NormalBackup implements Backupable {
 			files[0] = sourceFile;
 		}
 		if (files == null) {
-			String outprint = ResourceBundle.getBundle("gui.messages").getString("Messages.UnknownErrorAt") + " "
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.UnknownErrorAt") + " "
 					+ sourceFile.getPath();
 			listener.printOut(outprint, true, task.getTaskName());
 			listener.log(outprint, task);

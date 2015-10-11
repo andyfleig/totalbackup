@@ -90,7 +90,7 @@ public class SummaryDialog extends JDialog {
 				}
 			}
 		});
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.title"));
+		setTitle(ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.title"));
 		this.listener = listener;
 		setResizable(false);
 		setAlwaysOnTop(true);
@@ -101,7 +101,7 @@ public class SummaryDialog extends JDialog {
 		panel_main.setLayout(null);
 
 		JLabel label_taskName = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.label_taskName"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.label_taskName"));
 		label_taskName.setBounds(12, 10, 267, 15);
 		panel_main.add(label_taskName);
 
@@ -114,7 +114,7 @@ public class SummaryDialog extends JDialog {
 		getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
 		JButton btn_ok = new JButton(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.button_start"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.button_start"));
 		btn_ok.addActionListener(new ActionListener() {
 			// Button Start:
 			public void actionPerformed(ActionEvent arg0) {
@@ -128,7 +128,7 @@ public class SummaryDialog extends JDialog {
 		panel_buttons.add(btn_ok);
 		getRootPane().setDefaultButton(btn_ok);
 
-		JButton btn_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_cancel"));
+		JButton btn_cancel = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_cancel"));
 		btn_cancel.addActionListener(new ActionListener() {
 			// Button Cancel:
 			public void actionPerformed(ActionEvent e) {
@@ -144,7 +144,7 @@ public class SummaryDialog extends JDialog {
 		panel_buttons.add(btn_cancel);
 
 		JLabel label_numberOfDirs = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.label_numberOfDirs"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.label_numberOfDirs"));
 		label_numberOfDirs.setBounds(12, 37, 267, 15);
 		panel_main.add(label_numberOfDirs);
 
@@ -153,7 +153,7 @@ public class SummaryDialog extends JDialog {
 		panel_main.add(label_numberOfDirsDyn);
 
 		JLabel label_numberToCopy = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.label_numberOfFilesToCopy"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.label_numberOfFilesToCopy"));
 		label_numberToCopy.setBounds(12, 64, 267, 15);
 		panel_main.add(label_numberToCopy);
 
@@ -162,7 +162,7 @@ public class SummaryDialog extends JDialog {
 		panel_main.add(label_numberToCopyDyn);
 
 		JLabel label_numberToLink = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.label_numberOfFilesToLink"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.label_numberOfFilesToLink"));
 		label_numberToLink.setBounds(12, 91, 267, 15);
 		panel_main.add(label_numberToLink);
 
@@ -171,12 +171,12 @@ public class SummaryDialog extends JDialog {
 		panel_main.add(label_numberToLinkDyn);
 
 		JLabel label_sizeToCopy = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.label_sizeToCopy"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.label_sizeToCopy"));
 		label_sizeToCopy.setBounds(12, 118, 267, 15);
 		panel_main.add(label_sizeToCopy);
 
 		JLabel label_sizeToLink = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SummaryDialog.label_sizeToLink"));
+				ResourceBundle.getBundle("messages").getString("GUI.SummaryDialog.label_sizeToLink"));
 		label_sizeToLink.setBounds(12, 145, 267, 15);
 		panel_main.add(label_sizeToLink);
 

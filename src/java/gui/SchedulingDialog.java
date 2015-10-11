@@ -49,13 +49,13 @@ public class SchedulingDialog extends JDialog {
 		contentPanel.add(panel);
 		
 				JRadioButton radioButton_skipNext = new JRadioButton(
-						ResourceBundle.getBundle("gui.messages").getString("GUI.SchedulingDialog.skipNext"));
+						ResourceBundle.getBundle("messages").getString("GUI.SchedulingDialog.skipNext"));
 				radioButton_skipNext.setHorizontalAlignment(SwingConstants.CENTER);
 				panel.add(radioButton_skipNext);
 				group.add(radioButton_skipNext);
 				
 						JRadioButton radioButton_postpone = new JRadioButton(
-								ResourceBundle.getBundle("gui.messages").getString("GUI.SchedulingDialog.postpone"));
+								ResourceBundle.getBundle("messages").getString("GUI.SchedulingDialog.postpone"));
 						radioButton_postpone.setSelected(true);
 						radioButton_postpone.setHorizontalAlignment(SwingConstants.CENTER);
 						panel.add(radioButton_postpone);

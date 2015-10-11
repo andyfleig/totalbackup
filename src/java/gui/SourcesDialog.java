@@ -107,7 +107,7 @@ public class SourcesDialog extends JDialog {
 		setResizable(false);
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.sourcesListener = sourcesListener;
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.title"));
+		setTitle(ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.title"));
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -119,7 +119,7 @@ public class SourcesDialog extends JDialog {
 		panel_path.setLayout(new BorderLayout(0, 0));
 
 		JLabel label_source = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.sourcePath"));
+				ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.sourcePath"));
 		panel_path.add(label_source, BorderLayout.WEST);
 
 		textfield_source = new JTextField();
@@ -127,7 +127,7 @@ public class SourcesDialog extends JDialog {
 		textfield_source.setColumns(10);
 
 		// Button Druchsuchen:
-		button_find = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_find"));
+		button_find = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_find"));
 		button_find.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
@@ -140,8 +140,8 @@ public class SourcesDialog extends JDialog {
 						textfield_source.setText(sourceFile.getAbsolutePath());
 					} else {
 						JOptionPane.showMessageDialog(null,
-								ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.errSamePath"),
-								ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+								ResourceBundle.getBundle("messages").getString("GUI.EditDialog.errSamePath"),
+								ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 								JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -165,7 +165,7 @@ public class SourcesDialog extends JDialog {
 		listScroller_filter.setMinimumSize(new Dimension(200, 200));
 
 		JLabel label_filter = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.filter"));
+				ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.filter"));
 		panel_filter.add(label_filter, BorderLayout.NORTH);
 
 		JPanel panel_ConfigurateFilter = new JPanel();
@@ -173,7 +173,7 @@ public class SourcesDialog extends JDialog {
 		panel_ConfigurateFilter.setLayout(new BoxLayout(panel_ConfigurateFilter, BoxLayout.Y_AXIS));
 		{
 			// Button Add:
-			JButton button_add = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_add"));
+			JButton button_add = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_add"));
 			button_add.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					filterDialog = new FilterDialog(new IFilterDialogListener() {
@@ -209,7 +209,7 @@ public class SourcesDialog extends JDialog {
 		}
 
 		// Button Bearbeiten:
-		button_edit = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_edit"));
+		button_edit = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_edit"));
 		button_edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (list_filter.isSelectionEmpty()) {
@@ -252,11 +252,11 @@ public class SourcesDialog extends JDialog {
 		button_edit.setAlignmentX(0.5f);
 		panel_ConfigurateFilter.add(button_edit);
 
-		button_delete = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_delete"));
+		button_delete = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_delete"));
 		button_delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("gui.messages").getString("Messages.DeleteFilter"), null,
+						ResourceBundle.getBundle("messages").getString("Messages.DeleteFilter"), null,
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					listModel.remove(list_filter.getSelectedIndex());
@@ -271,15 +271,15 @@ public class SourcesDialog extends JDialog {
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
 		// Button OK:
-		JButton button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		JButton button_ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		button_ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Quellpfad prüfen:
 				File source = new File(textfield_source.getText());
 				if (!source.exists()) {
 					JOptionPane.showMessageDialog(null,
-							ResourceBundle.getBundle("gui.messages").getString("GUI.SourcesDialog.errIllegalSource"),
-							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+							ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.errIllegalSource"),
+							ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
@@ -288,8 +288,8 @@ public class SourcesDialog extends JDialog {
 				// ist:
 				if (isAlreadySourcePath(textfield_source.getText()) && !inEditMode) {
 					JOptionPane.showMessageDialog(null,
-							ResourceBundle.getBundle("gui.messages").getString("GUI.EditDialog.errSamePath"),
-							ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+							ResourceBundle.getBundle("messages").getString("GUI.EditDialog.errSamePath"),
+							ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
@@ -315,7 +315,7 @@ public class SourcesDialog extends JDialog {
 		buttonPane.add(button_ok);
 		getRootPane().setDefaultButton(button_ok);
 
-		JButton button_cancel = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_cancel"));
+		JButton button_cancel = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_cancel"));
 		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				SourcesDialog.this.dispose();

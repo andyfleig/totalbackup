@@ -65,7 +65,7 @@ public class AboutDialog extends JDialog {
 	 */
 	public AboutDialog() {
 		setResizable(false);
-		setTitle(ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.title"));
+		setTitle(ResourceBundle.getBundle("messages").getString("GUI.AboutDialog.title"));
 		setModal(true);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 479, 532);
@@ -75,13 +75,13 @@ public class AboutDialog extends JDialog {
 		panel_main.setLayout(new BorderLayout(0, 0));
 
 		label_about = new JLabel();
-		label_about.setText(ResourceBundle.getBundle("gui.messages").getString("GUI.AboutDialog.text"));
+		label_about.setText(ResourceBundle.getBundle("messages").getString("GUI.AboutDialog.text"));
 		panel_main.add(label_about, BorderLayout.NORTH);
 
-		button_ok = new JButton(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		button_ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		panel_main.add(button_ok, BorderLayout.SOUTH);
 		button_ok.setAction(action);
-		button_ok.setActionCommand(ResourceBundle.getBundle("gui.messages").getString("GUI.button_ok"));
+		button_ok.setActionCommand(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		getRootPane().setDefaultButton(button_ok);
 
 	}

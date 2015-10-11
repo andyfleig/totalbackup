@@ -58,14 +58,14 @@ public class PreparingDialog extends JDialog {
 		JPanel panel_message = new JPanel();
 		getContentPane().add(panel_message, BorderLayout.NORTH);
 		JLabel label_preparing = new JLabel(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.PreparingDialog.label_preparing"));
+				ResourceBundle.getBundle("messages").getString("GUI.PreparingDialog.label_preparing"));
 		panel_message.add(label_preparing);
 
 		JPanel panel_button = new JPanel();
 		getContentPane().add(panel_button, BorderLayout.SOUTH);
 
 		JButton button_cancelBackup = new JButton(
-				ResourceBundle.getBundle("gui.messages").getString("GUI.PreparingDialog.button_cancelBackup"));
+				ResourceBundle.getBundle("messages").getString("GUI.PreparingDialog.button_cancelBackup"));
 		button_cancelBackup.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cancelBackup(task.getTaskName());
