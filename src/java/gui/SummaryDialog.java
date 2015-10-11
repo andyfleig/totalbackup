@@ -122,8 +122,6 @@ public class SummaryDialog extends JDialog {
 				synchronized (task) {
 					task.notify();
 				}
-				// TODO: weg?
-				// SummaryDialog.this.listener.startBackup();
 			}
 		});
 		btn_ok.setActionCommand("OK");
