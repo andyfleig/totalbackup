@@ -652,8 +652,10 @@ public class Mainframe extends JDialog {
 			try {
 				trayProcess = builder.start();
 			} catch (IOException e1) {
-				// TODO: Fehlermeldung auslagern (locale)
-				System.err.println("Error while starting totalbackuptray");
+				JOptionPane.showMessageDialog(null,
+						ResourceBundle.getBundle("gui.messages").getString("GUI.Mainframe.errStartingQtTray"),
+						ResourceBundle.getBundle("gui.messages").getString("GUI.errMsg"),
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 
 			// Thread für recv anlegen und starten:
