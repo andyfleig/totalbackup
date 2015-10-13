@@ -136,6 +136,7 @@ public class Mainframe extends JDialog {
 	private PreparingDialog prep;
 
 	private Socket socket = null;
+	private Socket clientSocket = null;
 
 	private TrayIcon trayIcon;
 	private Process trayProcess;
@@ -643,6 +644,7 @@ public class Mainframe extends JDialog {
 			}
 			isQTTray = false;
 		} else {
+
 			// QT-App starten:
 			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
@@ -684,37 +686,53 @@ public class Mainframe extends JDialog {
 	 * 
 	 * @param msg
 	 *            zu sendende Nachricht
+	 * @param signal
+	 *            wenn es sich bei der Nachricht um ein terminationSignal (true)
+	 *            und keine anzuzuegende Nachricht (false) handelt
 	 */
-	public void sendToQtTrayOverSocket(String msg) {
-		// Umlaute bearbeiten:
-		msg = msg.replace("ä", "ae");
-		msg = msg.replace("ö", "oe");
-		msg = msg.replace("ü", "ue");
+	public void sendToQtTrayOverSocket(String msg, boolean terminationSignal) {
+		char[] toSend;
+		if (!terminationSignal) {
+			if (msg == null) {
+				msg = "";
+			}
+			int msgLenght = msg.length();
+			toSend = new char[msgLenght + 3];
+			// Anzuzeigende Nachricht:
+			// Umlaute bearbeiten:
+			msg = msg.replace("ä", "ae");
+			msg = msg.replace("ö", "oe");
+			msg = msg.replace("ü", "ue");
 
-		int msgLenght = msg.length();
-		char[] toSend = new char[msgLenght + 3];
-		if (msgLenght < 10) {
+			if (msgLenght < 10) {
+				toSend[0] = "0".charAt(0);
+				toSend[1] = "0".charAt(0);
+				toSend[2] = String.valueOf(msgLenght).charAt(0);
+			} else if (msgLenght < 100) {
+				toSend[0] = "0".charAt(0);
+				toSend[1] = String.valueOf(msgLenght).charAt(0);
+				toSend[2] = String.valueOf(msgLenght).charAt(1);
+			} else if (msgLenght < 1000) {
+				toSend[0] = String.valueOf(msgLenght).charAt(0);
+				toSend[1] = String.valueOf(msgLenght).charAt(1);
+				toSend[2] = String.valueOf(msgLenght).charAt(2);
+			} else {
+				return;
+			}
+			for (int i = 3; i < msgLenght + 3; i++) {
+				toSend[i] = msg.charAt(i - 3);
+			}
+		} else {
+			toSend = new char[3];
+			// Signal:
 			toSend[0] = "0".charAt(0);
 			toSend[1] = "0".charAt(0);
-			toSend[2] = String.valueOf(msgLenght).charAt(0);
-		} else if (msgLenght < 100) {
-			toSend[0] = "0".charAt(0);
-			toSend[1] = String.valueOf(msgLenght).charAt(0);
-			toSend[2] = String.valueOf(msgLenght).charAt(1);
-		} else if (msgLenght < 1000) {
-			toSend[0] = String.valueOf(msgLenght).charAt(0);
-			toSend[1] = String.valueOf(msgLenght).charAt(1);
-			toSend[2] = String.valueOf(msgLenght).charAt(2);
-		} else {
-			return;
-		}
-		for (int i = 3; i < msgLenght + 3; i++) {
-			toSend[i] = msg.charAt(i - 3);
+			toSend[2] = "0".charAt(0);
 		}
 		// 1. Socket aufbauen & verbinden:
-		Socket socket = null;
 		try {
-			socket = new Socket("127.0.0.1", 1235);
+			clientSocket = new Socket("127.0.0.1", 1235);
+			clientSocket.setReuseAddress(true);
 		} catch (IOException e) {
 			System.err.println("Error: Could not open TCP-socket2");
 			System.err.println(e);
@@ -723,11 +741,11 @@ public class Mainframe extends JDialog {
 
 		PrintWriter out;
 		try {
-			out = new PrintWriter(socket.getOutputStream(), true);
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
 		} catch (IOException e) {
 			System.err.println("Error: Could not open PrintWriter2");
 			try {
-				socket.close();
+				clientSocket.close();
 			} catch (IOException ex) {
 				System.out.println(ex);
 			}
@@ -735,11 +753,12 @@ public class Mainframe extends JDialog {
 		}
 		System.out.println("Trying to send...");
 		out.write(toSend);
+		out.flush();
 		System.out.println("Finished sending");
 		try {
 			out.close();
 			System.out.println("Closed PrintWriter");
-			socket.close();
+			clientSocket.close();
 			System.out.println("Closed socket");
 		} catch (IOException e) {
 			System.err.println(e);
@@ -772,16 +791,18 @@ public class Mainframe extends JDialog {
 
 				int msg = in.readInt();
 				if (msg == 0) {
+					// Programm beenden:
 					savePropertiesGson();
 					quit();
 					in.close();
-					break;
 				} else if (msg == 1) {
+					// Programm zeigen/ verstecken:
 					if (frmTotalbackup.isVisible()) {
 						frmTotalbackup.setVisible(false);
 					} else {
 						frmTotalbackup.setVisible(true);
 					}
+					in.close();
 				}
 
 			} catch (IOException e) {
@@ -1031,7 +1052,7 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Beendet das Programm nachdem der Benutzer dies bestätigt hat.
+	 * Beendet das Programm.
 	 */
 	private void quit() {
 		int reply = JOptionPane.showConfirmDialog(null,
@@ -1039,10 +1060,12 @@ public class Mainframe extends JDialog {
 				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
-			if (trayProcess != null) {
+			//TODO: Notfallcode:
+			/*if (trayProcess != null) {
 				trayProcess.destroy();
-			}
+			}*/
 			cancelAllRunningTasks();
+			sendToQtTrayOverSocket(null, true);
 			System.exit(0);
 		}
 	}
