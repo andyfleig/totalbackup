@@ -655,6 +655,7 @@ public class Mainframe extends JDialog {
 
 			// Thread für recv anlegen und starten:
 			Thread recvThread = new Thread(new Runnable() {
+
 				@Override
 				public void run() {
 					recvLoop();
@@ -675,6 +676,75 @@ public class Mainframe extends JDialog {
 	 */
 	public boolean isQTTray() {
 		return isQTTray;
+	}
+
+	/**
+	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die
+	 * Nachricht maximal 999 Zeichen lang sein!
+	 * 
+	 * @param msg
+	 *            zu sendende Nachricht
+	 */
+	public void sendToQtTrayOverSocket(String msg) {
+		// Umlaute bearbeiten:
+		msg = msg.replace("ä", "ae");
+		msg = msg.replace("ö", "oe");
+		msg = msg.replace("ü", "ue");
+
+		int msgLenght = msg.length();
+		char[] toSend = new char[msgLenght + 3];
+		if (msgLenght < 10) {
+			toSend[0] = "0".charAt(0);
+			toSend[1] = "0".charAt(0);
+			toSend[2] = String.valueOf(msgLenght).charAt(0);
+		} else if (msgLenght < 100) {
+			toSend[0] = "0".charAt(0);
+			toSend[1] = String.valueOf(msgLenght).charAt(0);
+			toSend[2] = String.valueOf(msgLenght).charAt(1);
+		} else if (msgLenght < 1000) {
+			toSend[0] = String.valueOf(msgLenght).charAt(0);
+			toSend[1] = String.valueOf(msgLenght).charAt(1);
+			toSend[2] = String.valueOf(msgLenght).charAt(2);
+		} else {
+			return;
+		}
+		for (int i = 3; i < msgLenght + 3; i++) {
+			toSend[i] = msg.charAt(i - 3);
+		}
+		// 1. Socket aufbauen & verbinden:
+		Socket socket = null;
+		try {
+			socket = new Socket("127.0.0.1", 1235);
+		} catch (IOException e) {
+			System.err.println("Error: Could not open TCP-socket2");
+			System.err.println(e);
+			return;
+		}
+
+		PrintWriter out;
+		try {
+			out = new PrintWriter(socket.getOutputStream(), true);
+		} catch (IOException e) {
+			System.err.println("Error: Could not open PrintWriter2");
+			try {
+				socket.close();
+			} catch (IOException ex) {
+				System.out.println(ex);
+			}
+			return;
+		}
+		System.out.println("Trying to send...");
+		out.write(toSend);
+		System.out.println("Finished sending");
+		try {
+			out.close();
+			System.out.println("Closed PrintWriter");
+			socket.close();
+			System.out.println("Closed socket");
+		} catch (IOException e) {
+			System.err.println(e);
+			// FEHLER
+		}
 	}
 
 	/**

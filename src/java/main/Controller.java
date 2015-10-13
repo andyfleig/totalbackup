@@ -1260,7 +1260,7 @@ public class Controller {
 	 */
 	private void showTrayPopupMessage(String msg) {
 		if (mainframe.isQTTray()) {
-			// TODO: QT Bastlerei
+			mainframe.sendToQtTrayOverSocket(msg);
 		} else {
 			mainframe.showTrayPopupMessage(msg);
 		}

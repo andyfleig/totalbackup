@@ -8,6 +8,6 @@ set(TotalBackupTray_SRCS TotalBackupTray.cpp main.cpp)
 
 qt4_automoc(${TotalBackupTray_SRCS})
 add_executable(totalbackuptray ${TotalBackupTray_SRCS})
-target_link_libraries(totalbackuptray ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+target_link_libraries(totalbackuptray -lm ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 
 install(TARGETS totalbackuptray RUNTIME DESTINATION bin)

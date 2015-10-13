@@ -36,10 +36,13 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <thread>
+#include <string>
  
 TotalBackupTray::TotalBackupTray()
 {
-  QSystemTrayIcon* trayIcon = new QSystemTrayIcon(this);
+  static QSystemTrayIcon* trayIcon;
+  trayIcon = new QSystemTrayIcon(this);
   
   QIcon icon("./resources/TB_logo.png");
   trayIcon->setIcon(icon);
@@ -59,13 +62,71 @@ TotalBackupTray::TotalBackupTray()
   
   trayIcon->setContextMenu(trayIconMenu);
   trayIcon->show();
+  
+  std::thread thread1(serverLoop, trayIcon);
+  thread1.detach();
 }
+
+void TotalBackupTray::serverLoop(QSystemTrayIcon* trayIcon) {
+  
+  while (true) {
+    int serverSock;
+    serverSock = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSock < 0) {
+      printf ("%s \n", "error: could not create server-socket");
+    }
+    struct sockaddr_in client;
+    
+    client.sin_family = AF_INET;
+    client.sin_addr.s_addr = inet_addr("127.0.0.1");
+    client.sin_port = htons(1235);
+    
+    printf ("%s \n", "start binding...");
+    if (::bind(serverSock, (struct sockaddr*)&client, sizeof(client)) < 0) {
+      printf ("%s \n", "error: could not bind");
+    }
+    printf ("%s \n", "binded");
+    ::listen(serverSock, 1);
+    socklen_t clientlen;
+    clientlen = sizeof(client);
+    printf ("%s \n", "ready to accept");
+    int partnerSock = ::accept(serverSock, (struct sockaddr*)&client, &clientlen);
+    if (partnerSock < 0 ) {
+      printf ("%s \n", "error: could not accept");
+    }
+    printf ("%s \n", "accepted");
+    
+    int recvBufferLength = 1023;
+    char recvBuffer[1023];
+    // Empfangen:
+    int readBytes;
+    std::string strIn;
+    bool loop = true;
+    readBytes = ::recvfrom(partnerSock, recvBuffer, recvBufferLength, 0, NULL, NULL);
+    
+    // erste drei Zeichen geben die Anzahl der Zeichen an:
+    int numberOfSigns1 = recvBuffer[0] - '0';
+    int numberOfSigns2 = recvBuffer[1] - '0';
+    int numberOfSigns3 = recvBuffer[2] - '0';
+    int numberOfSigns = numberOfSigns1 * 100 + numberOfSigns2 * 10 + numberOfSigns3;
+    // Erhaltenen Nachricht in char[] stecken:
+    char result[numberOfSigns];
+    for (int i = 3; i < numberOfSigns + 3; i++) {
+      result[i - 3] = recvBuffer[i];
+    }
+    trayIcon->showMessage("TotalBackup" , result, QSystemTrayIcon::Information, 5000);
+    
+    ::close(partnerSock);
+    ::close(serverSock);
+  }
+}
+
 void TotalBackupTray::startSocket() {
   // Netzwerksocket:
   // Socket aufbauen:
   sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
-    // FEHLER
+    printf ("%s \n", "error: could not create client-socket");
   }
   // Zum Server verbinden:
   struct sockaddr_in server;
@@ -77,7 +138,7 @@ void TotalBackupTray::startSocket() {
   server.sin_port = htons(1234);
   
   if (::connect(sock, (struct sockaddr*)&server, sizeof(server)) < 0) {
-    // FEHLER
+    printf ("%s \n", "error: could not connect");
   }
 }
 

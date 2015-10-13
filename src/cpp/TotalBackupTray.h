@@ -22,6 +22,7 @@
 #define TotalBackupTray_H
 
 #include <QtGui/QMainWindow>
+#include <QSystemTrayIcon>
 
 class TotalBackupTray : public QMainWindow
 {
@@ -30,6 +31,7 @@ public:
     TotalBackupTray();
     virtual ~TotalBackupTray();
     int sock;
+    static void serverLoop(QSystemTrayIcon* trayIcon);
     void startSocket();
 private slots:
   void quitTB();
