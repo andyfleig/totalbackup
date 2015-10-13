@@ -734,7 +734,7 @@ public class Mainframe extends JDialog {
 			clientSocket = new Socket("127.0.0.1", 1235);
 			clientSocket.setReuseAddress(true);
 		} catch (IOException e) {
-			System.err.println("Error: Could not open TCP-socket2");
+			System.err.println("Error: Could not open TCP-socket of client");
 			System.err.println(e);
 			return;
 		}
@@ -743,7 +743,7 @@ public class Mainframe extends JDialog {
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 		} catch (IOException e) {
-			System.err.println("Error: Could not open PrintWriter2");
+			System.err.println("Error: Could not open PrintWriter of client");
 			try {
 				clientSocket.close();
 			} catch (IOException ex) {
@@ -751,18 +751,14 @@ public class Mainframe extends JDialog {
 			}
 			return;
 		}
-		System.out.println("Trying to send...");
 		out.write(toSend);
 		out.flush();
-		System.out.println("Finished sending");
 		try {
 			out.close();
-			System.out.println("Closed PrintWriter");
 			clientSocket.close();
-			System.out.println("Closed socket");
 		} catch (IOException e) {
+			System.err.println("Error: Could not close PrintWriter and/or client-socket");
 			System.err.println(e);
-			// FEHLER
 		}
 	}
 
@@ -776,7 +772,8 @@ public class Mainframe extends JDialog {
 			try {
 				server = new ServerSocket(1234);
 			} catch (IOException e) {
-				System.err.println("Error: Could not open TCP-socket");
+				System.err.println("Error: Could not open TCP-socket of server");
+				System.err.println(e);
 			}
 
 			// 2. Verbinden:
@@ -784,6 +781,7 @@ public class Mainframe extends JDialog {
 				socket = server.accept();
 			} catch (IOException e) {
 				System.err.println("Error: Could not connect to tray");
+				System.err.println(e);
 			}
 
 			try {
@@ -806,7 +804,8 @@ public class Mainframe extends JDialog {
 				}
 
 			} catch (IOException e) {
-				System.err.println("Error while sending message to Qt-Tray");
+				System.err.println("Error: Could not send message to Qt-Tray");
+				System.err.println(e);
 			}
 
 			// Socket schließen:
@@ -815,7 +814,8 @@ public class Mainframe extends JDialog {
 				server.close();
 				server = null;
 			} catch (IOException e) {
-				System.err.println("Error: Could not close socket");
+				System.err.println("Error: Could not close socket of server");
+				System.err.println(e);
 			}
 		}
 	}
