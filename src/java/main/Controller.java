@@ -258,9 +258,9 @@ public class Controller {
 				// von profitableTimeUntilNextExecution des Tasks):
 				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution()))
 						.isAfter(LocalDateTime.now())) {
-					String msg = ResourceBundle.getBundle("messages").getString("Messages-popup.catchUp1") + " "
+					String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " "
 							+ task.getTaskName() + " "
-							+ ResourceBundle.getBundle("messages").getString("Messages-popup.catchUp2");
+							+ ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
 					showTrayPopupMessage(msg);
 					scheduleBackupTaskNow(task);
 				}
