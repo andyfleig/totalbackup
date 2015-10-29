@@ -132,6 +132,7 @@ public class SourcesDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				fc.setMultiSelectionEnabled(false);
+				fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				int state = fc.showOpenDialog(null);
 
 				if (state == JFileChooser.APPROVE_OPTION) {
