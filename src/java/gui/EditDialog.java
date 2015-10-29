@@ -1849,6 +1849,7 @@ public class EditDialog extends JDialog {
 		// Jede Regel muss später Enden, als die Regel davor endet (der gewählte
 		// Bereich muss > 0 sein und sie dürfen sich nicht überlappen):
 		// Für die 1. Regel existieren keine Abhängigkeiten
+		// TODO: Überarbeiten:
 		switch (numberOfRules) {
 		case 1:
 			return true;
@@ -1910,14 +1911,14 @@ public class EditDialog extends JDialog {
 			return false;
 		case "m":
 			if (currentUnit.equals("m") || currentUnit.equals("y")) {
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		case "y":
 			if (currentUnit.equals("y")) {
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 		return false;
 	}
