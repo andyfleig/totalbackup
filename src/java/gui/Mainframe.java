@@ -94,9 +94,8 @@ import data.Source;
 
 /**
  * Mainframe von TotalBackup.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class Mainframe extends JDialog {
 
@@ -153,7 +152,7 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Launch the application.
-	 * 
+	 *
 	 * @deprecated
 	 */
 	// public void main(String[] args) {
@@ -477,14 +476,14 @@ public class Mainframe extends JDialog {
 
 		/**
 		 * Renderer für Listenelemente der Task-List.
-		 * 
+		 *
 		 * @author andy
 		 *
 		 */
 		class MyListCellRenderer extends DefaultListCellRenderer {
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-					boolean cellHasFocus) {
+														  boolean cellHasFocus) {
 				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				BackupTask label = (BackupTask) value;
 				String name = label.getTaskName();
@@ -673,7 +672,7 @@ public class Mainframe extends JDialog {
 	/**
 	 * Gibt zurück ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet
 	 * wird.
-	 * 
+	 *
 	 * @return QT-Tray (true) oder ein Java-Tray (false)
 	 */
 	public boolean isQTTray() {
@@ -683,12 +682,10 @@ public class Mainframe extends JDialog {
 	/**
 	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die
 	 * Nachricht maximal 999 Zeichen lang sein!
-	 * 
-	 * @param msg
-	 *            zu sendende Nachricht
-	 * @param signal
-	 *            wenn es sich bei der Nachricht um ein terminationSignal (true)
-	 *            und keine anzuzuegende Nachricht (false) handelt
+	 *
+	 * @param msg    zu sendende Nachricht
+	 * @param signal wenn es sich bei der Nachricht um ein terminationSignal (true)
+	 *               und keine anzuzuegende Nachricht (false) handelt
 	 */
 	public void sendToQtTrayOverSocket(String msg, boolean terminationSignal) {
 		char[] toSend;
@@ -823,9 +820,8 @@ public class Mainframe extends JDialog {
 	/**
 	 * Bereitet den gegebenen Task auf ein Hardlink-Backup vor (analysiert die
 	 * Quelle(n)).
-	 * 
-	 * @param task
-	 *            vorzubereitender Task
+	 *
+	 * @param task vorzubereitender Task
 	 */
 	public void prepareBackup(BackupTask task) {
 
@@ -959,9 +955,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Öffnet einen neuen SummeryDialog.
-	 * 
-	 * @param task
-	 *            entsprechender BackupTask
+	 *
+	 * @param task entsprechender BackupTask
 	 */
 	private void showSummaryDialog(final BackupTask task, final Backupable backup) {
 		summary = new SummaryDialog(new ISummaryDialogListener() {
@@ -1003,11 +998,9 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Initialisiert das Mainframe.
-	 * 
+	 *
+	 * @param c Controller
 	 * @deprecated
-	 * 
-	 * @param c
-	 *            Controller
 	 */
 	public void init(Controller c) {
 		// this.controller = c;
@@ -1073,9 +1066,8 @@ public class Mainframe extends JDialog {
 	/**
 	 * Bricht den gegebenen Backup-Task ab, nachdem der Benutzer dies bestätigt
 	 * hat.
-	 * 
-	 * @param taskToCancel
-	 *            abzubrechender Task
+	 *
+	 * @param taskToCancel abzubrechender Task
 	 */
 	private void cancelBackupAfterConfirmation(BackupTask taskToCancel) {
 		if (taskToCancel == null) {
@@ -1100,7 +1092,7 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
-	 * 
+	 *
 	 * @deprecated
 	 */
 	private void saveProperties() {
@@ -1157,14 +1149,11 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Gibt einen String auf der GUI (im Textfeld) aus.
-	 * 
-	 * @param output
-	 *            String welcher auf der GUI angezeigt werden soll.
-	 * @param error
-	 *            true = Fehlermeldung (schrift rot); false = Normale Ausgabe
-	 *            (schrift schwarz)
-	 * @param taskName
-	 *            Name des aktuellen Tasks
+	 *
+	 * @param output   String welcher auf der GUI angezeigt werden soll.
+	 * @param error    true = Fehlermeldung (schrift rot); false = Normale Ausgabe
+	 *                 (schrift schwarz)
+	 * @param taskName Name des aktuellen Tasks
 	 */
 	public synchronized void addToOutput(String output, boolean error, String taskName) {
 		if (output == null) {
@@ -1198,9 +1187,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
-	 * 
-	 * @param status
-	 *            auszugebender String
+	 *
+	 * @param status auszugebender String
 	 */
 	public void setStatus(String status) {
 		textfield_status.setText(status);
@@ -1208,9 +1196,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Fügt der Liste der Backup-Tasks einen Backup-Task hinzu.
-	 * 
-	 * @param task
-	 *            hinzuzufügender Backup-Task
+	 *
+	 * @param task hinzuzufügender Backup-Task
 	 */
 	public void addBackupTaskToList(BackupTask task) {
 		listModel.addElement(task);
@@ -1218,9 +1205,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Löscht einen Backup-Task aus der Liste der Backup-Tasks.
-	 * 
-	 * @param task
-	 *            zu löschender Backup-Task
+	 *
+	 * @param task zu löschender Backup-Task
 	 */
 	public void removeBackupTaskFromList(BackupTask task) {
 		listModel.removeElement(task);
@@ -1228,7 +1214,7 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Gibt den Zielpfad zurück.
-	 * 
+	 *
 	 * @return Zielpfad
 	 */
 	public String getDestPath() {
@@ -1240,9 +1226,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Legt den Zielpfad fest.
-	 * 
-	 * @param path
-	 *            festzulegender Zielpfad
+	 *
+	 * @param path festzulegender Zielpfad
 	 */
 	public void setDestPath(String path) {
 		if (editDialog != null) {
@@ -1252,10 +1237,9 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Sperrt bzw. entsperrt die Buttons der GUI.
-	 * 
-	 * @param noBackupRunning
-	 *            false = "sperrt" die Buttons der GUI (während laufendem
-	 *            Backup), true = entsperrt
+	 *
+	 * @param noBackupRunning false = "sperrt" die Buttons der GUI (während laufendem
+	 *                        Backup), true = entsperrt
 	 */
 	public void setButtonsToBackupRunning(boolean noBackupRunning) {
 		button_cancel.setEnabled(!noBackupRunning);
@@ -1268,7 +1252,7 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
-	 * 
+	 *
 	 * @return Status der erweiterten Ausgabe
 	 */
 	public boolean advancedOutputIsEnabled() {
@@ -1278,9 +1262,8 @@ public class Mainframe extends JDialog {
 	/**
 	 * Fügt den BackupThreads (laufende Backups) den gegebenen
 	 * BackupThread(Container) hinzu.
-	 * 
-	 * @param c
-	 *            hinzuzufügender BackupThread(Container)
+	 *
+	 * @param c hinzuzufügender BackupThread(Container)
 	 */
 	public void addBackupThreadContainerToBackupThreads(BackupThreadContainer c) {
 		backupThreads.add(c);
@@ -1289,11 +1272,9 @@ public class Mainframe extends JDialog {
 	/**
 	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten
 	 * zurück.
-	 * 
-	 * @param taskName
-	 *            Name des BackupTasks
-	 * @param wrongDestPath
-	 *            "falscher" Zielpfad
+	 *
+	 * @param taskName      Name des BackupTasks
+	 * @param wrongDestPath "falscher" Zielpfad
 	 * @return Liste möglicher "richiger" Zielpfade
 	 */
 	private ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
@@ -1328,9 +1309,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Bricht den gegebenen BackupTask ab.
-	 * 
-	 * @param task
-	 *            abzubrechender BackupTask
+	 *
+	 * @param task abzubrechender BackupTask
 	 */
 	private void cancelBackup(BackupTask task) {
 		Mainframe.this.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
@@ -1353,9 +1333,8 @@ public class Mainframe extends JDialog {
 
 	/**
 	 * Gibt den gegebenen String als Tray-Popup-Message aus.
-	 * 
-	 * @param msg
-	 *            anzuzeigender Text
+	 *
+	 * @param msg anzuzeigender Text
 	 */
 	public void showTrayPopupMessage(String msg) {
 		trayIcon.displayMessage(null, msg, TrayIcon.MessageType.INFO);

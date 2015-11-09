@@ -37,9 +37,8 @@ import java.util.ResourceBundle;
 
 /**
  * Über-Dialog mit Informationen zu TotalBackup.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class AboutDialog extends JDialog {
 

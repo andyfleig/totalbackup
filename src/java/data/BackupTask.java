@@ -29,9 +29,8 @@ import java.util.concurrent.ScheduledFuture;
 /**
  * Eine Backup-Aufgabe. Enthält die Einstellungen dieses Backup Tasks wie Quell-
  * und Zielpfad aber auch Informationen über autoClean usw.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class BackupTask implements Serializable {
 
@@ -78,9 +77,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Erzeugt einen BackupTask
-	 * 
-	 * @param name
-	 *            Name des Backup-Tasks
+	 *
+	 * @param name Name des Backup-Tasks
 	 */
 	public BackupTask(String name) {
 		this.taskName = name;
@@ -89,7 +87,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt den Namen des Tasks zurück.
-	 * 
+	 *
 	 * @return Task-Name
 	 */
 	public String getTaskName() {
@@ -98,7 +96,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt alle Quellen zurück.
-	 * 
+	 *
 	 * @return alle Quellen
 	 */
 	public ArrayList<Source> getSources() {
@@ -107,9 +105,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Fügt der Listen der zu sichernden Quellpfade einen Pfad hinzu.
-	 * 
-	 * @param source
-	 *            hinzuzufügende Quelle
+	 *
+	 * @param source hinzuzufügende Quelle
 	 */
 	public void addSourcePath(Source source) {
 		sources.add(source);
@@ -117,9 +114,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt den Zielpfad auf den übergebenen Pfad fest.
-	 * 
-	 * @param path
-	 *            festzulegender Pfad
+	 *
+	 * @param path festzulegender Pfad
 	 */
 	public void setDestinationPath(String path) {
 		this.destinationPath = path;
@@ -128,9 +124,8 @@ public class BackupTask implements Serializable {
 	/**
 	 * Legt alle Quellpfade auf die übergebenen Quellpfade fest. Achtung, alle
 	 * existierenden Quellpfade werden überschrieben!
-	 * 
-	 * @param sources
-	 *            festzulegende Quellen
+	 *
+	 * @param sources festzulegende Quellen
 	 */
 	public void setSources(ArrayList<Source> sources) {
 		this.sources = sources;
@@ -138,7 +133,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt den Zielpfad zurück.
-	 * 
+	 *
 	 * @return Zielpfad
 	 */
 	public String getDestinationPath() {
@@ -147,9 +142,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Löscht den gegebenen Pfad aus der Liste der zu sichernden Quellpfade.
-	 * 
-	 * @param path
-	 *            zu löschender Pfad
+	 *
+	 * @param path zu löschender Pfad
 	 */
 	public void deletePath(String path) {
 		int index = getIndexOfPath(path);
@@ -161,9 +155,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Sucht den Index zum gegebenen Pfad.
-	 * 
-	 * @param path
-	 *            Pfad zu welchem der Index gesucht wird
+	 *
+	 * @param path Pfad zu welchem der Index gesucht wird
 	 * @return Index, -1 falls der gesuchte Pfad nicht gefunden wurde
 	 */
 	private int getIndexOfPath(String path) {
@@ -194,9 +187,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt den Backup-Modus fest.
-	 * 
-	 * @param mode
-	 *            festzulegender Backup-Modus
+	 *
+	 * @param mode festzulegender Backup-Modus
 	 */
 	public void setBackupMode(int mode) {
 		backupMode = mode;
@@ -204,7 +196,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt den gewählten Backup-Modus zurück. 0 = normal, 1 = hardlink.
-	 * 
+	 *
 	 * @return gewälter Backup-Modus
 	 */
 	public int getBackupMode() {
@@ -213,9 +205,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Aktiviert bzw. Deaktiviert die einfache Auto-Clean Funktion.
-	 * 
-	 * @param enabled
-	 *            Auto-Clean aktivieren
+	 *
+	 * @param enabled Auto-Clean aktivieren
 	 */
 	public void setSimpleAutoCleanEnabled(boolean enabled) {
 		simpleAutoCleanIsEnabled = enabled;
@@ -223,9 +214,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Aktiviert bzw. Deaktiviert die erweiterte Auto-Clean Funktion.
-	 * 
-	 * @param enabled
-	 *            Auto-Clean aktivieren
+	 *
+	 * @param enabled Auto-Clean aktivieren
 	 */
 	public void setExtendedAutoCleanEnabled(boolean enabled) {
 		extendedAutoCleanIsEnabled = enabled;
@@ -234,7 +224,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert
 	 * (false) ist.
-	 * 
+	 *
 	 * @return Zustand der Auto-Clean Funktion
 	 */
 	public boolean simpleAutoCleanIsEnabled() {
@@ -244,7 +234,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert
 	 * (false) ist.
-	 * 
+	 *
 	 * @return Zustand der Auto-Clean Funktion
 	 */
 	public boolean extendedAutoCleanIsEnabled() {
@@ -253,9 +243,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt den Threshold des BackupTasks fest.
-	 * 
-	 * @param thresholdToSet
-	 *            festzulegender Threshold
+	 *
+	 * @param thresholdToSet festzulegender Threshold
 	 */
 	public void setThreshold(int[] thresholdToSet) {
 		this.threshold = thresholdToSet;
@@ -263,9 +252,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt die Threshold-Einheiten des BackupTasks fest.
-	 * 
-	 * @param thresholdUnitsToSet
-	 *            festzulegende Threshold-Einheiten
+	 *
+	 * @param thresholdUnitsToSet festzulegende Threshold-Einheiten
 	 */
 	public void setThresholdUnits(String[] thresholdUnitsToSet) {
 		this.thresholdUnits = thresholdUnitsToSet;
@@ -274,9 +262,8 @@ public class BackupTask implements Serializable {
 	/**
 	 * Legt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
 	 * fest.
-	 * 
-	 * @param backupsToKeep
-	 *            festzulegende Werte
+	 *
+	 * @param backupsToKeep festzulegende Werte
 	 */
 	public void setBackupsToKeep(String[] backupsToKeep) {
 		this.backupsToKeep = backupsToKeep;
@@ -284,7 +271,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt den Threshold zurück
-	 * 
+	 *
 	 * @return Threshold
 	 */
 	public int[] getThreshold() {
@@ -293,7 +280,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die Threshold-Einheiten zurück.
-	 * 
+	 *
 	 * @return Threshold-Einheiten
 	 */
 	public String[] getThresholdUnits() {
@@ -303,7 +290,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
 	 * zurück.
-	 * 
+	 *
 	 * @return Anzahl der zu behaltenden Backupsätze
 	 */
 	public String[] getBackupsToKeep() {
@@ -325,9 +312,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze fest
-	 * 
-	 * @param numberOfBackupsToKeep
-	 *            Anzahl der zu behaltenden Backup-Sätze
+	 *
+	 * @param numberOfBackupsToKeep Anzahl der zu behaltenden Backup-Sätze
 	 */
 	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
 		this.numberOfBackupsToKeep = numberOfBackupsToKeep;
@@ -335,7 +321,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze zurück
-	 * 
+	 *
 	 * @return Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze
 	 */
 	public int getNumberOfBackupsToKeep() {
@@ -344,7 +330,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt zurück ob dieser BackupTask vorbereitet (zur Ausführung bereit) ist
-	 * 
+	 *
 	 * @return true wenn die Vorbereitungen getroffen wurden, false sonst
 	 */
 	public boolean isPrepered() {
@@ -354,9 +340,8 @@ public class BackupTask implements Serializable {
 	/**
 	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht
 	 * vorbereitet.
-	 * 
-	 * @param prepared
-	 *            true = vorbereitet, false = nicht vorbereitet
+	 *
+	 * @param prepared true = vorbereitet, false = nicht vorbereitet
 	 */
 	public void setPrepared(boolean prepared) {
 		this.isPrepared = prepared;
@@ -364,9 +349,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Setzt die Autostart-Option.
-	 * 
-	 * @param autostart
-	 *            zu setzende Autostart-Option
+	 *
+	 * @param autostart zu setzende Autostart-Option
 	 */
 	public void setAutostart(boolean autostart) {
 		this.autostart = autostart;
@@ -374,9 +358,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Setzt die DestinationVerification-Option.
-	 * 
-	 * @param destVerificaion
-	 *            zu setzende DestinationVerification-Option
+	 *
+	 * @param destVerificaion zu setzende DestinationVerification-Option
 	 */
 	public void setDestinationVerification(boolean destVerificaion) {
 		this.destVerification = destVerificaion;
@@ -384,7 +367,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt zurück ob die Autostart-Option aktiviert ist.
-	 * 
+	 *
 	 * @return ob die Autostart-Option aktiviert ist
 	 */
 	public boolean getAutostart() {
@@ -393,7 +376,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt zurück ob die DestinationVerification-Option aktiviert ist.
-	 * 
+	 *
 	 * @return ob die DestinationVerification-Option aktiviert ist
 	 */
 	public boolean getDestinationVerification() {
@@ -402,9 +385,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Setzt die Anzahl der Regeln des erweiterten AutoClean.
-	 * 
-	 * @param numberOfRules
-	 *            Anzahl der Regeln
+	 *
+	 * @param numberOfRules Anzahl der Regeln
 	 */
 	public void setNumberOfExtendedAutoCleanRules(int numberOfRules) {
 		this.numberOfExtendedCleanRules = numberOfRules;
@@ -412,7 +394,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die Anzahl der Regeln des erweiterten AutoClean zurück.
-	 * 
+	 *
 	 * @return Anzahl der Regeln
 	 */
 	public int getNumberOfExtendedCleanRules() {
@@ -422,7 +404,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt eine Liste von Strings zurück, wobei die Strings für die
 	 * verschiedenen Regeln eine Kombination von Zahl_Zeiteinheit ist.
-	 * 
+	 *
 	 * @return Liste von Strings welche die Grenzwerte beschreiben
 	 */
 	public String[] getBoundaries() {
@@ -436,9 +418,8 @@ public class BackupTask implements Serializable {
 	/**
 	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
 	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
-	 * 
-	 * @param mode
-	 *            Backup-Modus
+	 *
+	 * @param mode Backup-Modus
 	 */
 	public void setAutoBackupMode(int mode) {
 		this.autoBackupMode = mode;
@@ -447,7 +428,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt den Backup-Modus zurück. 0 = Auto-Backup deaktiviert, 1 =
 	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
-	 * 
+	 *
 	 * @return Backup-Modus
 	 */
 	public int getAutoBackupMode() {
@@ -458,9 +439,8 @@ public class BackupTask implements Serializable {
 	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die
 	 * Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
 	 * Sonntag.
-	 * 
-	 * @param weekdays
-	 *            Wochentage an denen gesichert werden soll
+	 *
+	 * @param weekdays Wochentage an denen gesichert werden soll
 	 */
 	public void setBackupWeekdays(boolean[] weekdays) {
 		this.weekdays = weekdays;
@@ -470,7 +450,7 @@ public class BackupTask implements Serializable {
 	 * Gibt die Wochentage zurück an denen das Backup ausgeführt werden soll.
 	 * Die Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
 	 * Sonntag.
-	 * 
+	 *
 	 * @return Wochentage an denen gesichert werden soll
 	 */
 	public boolean[] getBackupWeekdays() {
@@ -481,9 +461,8 @@ public class BackupTask implements Serializable {
 	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll.
 	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
 	 * 31.
-	 * 
-	 * @param daysInMonth
-	 *            Tage im Monat an denen das Backup ausgeführt werden soll.
+	 *
+	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
 	public void setBackupDaysInMonth(boolean[] daysInMonth) {
 		this.backupDaysInMonth = daysInMonth;
@@ -493,7 +472,7 @@ public class BackupTask implements Serializable {
 	 * Gibt die Tage im Monat zurück an denen das Backup ausgeführt werden soll.
 	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
 	 * 31.
-	 * 
+	 *
 	 * @return Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
 	public boolean[] getBackupDaysInMonth() {
@@ -502,9 +481,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt die Startzeit für das AutoBackup fest.
-	 * 
-	 * @param startTime
-	 *            festzulegende Startzeit
+	 *
+	 * @param startTime festzulegende Startzeit
 	 */
 	public void setBackupStartTime(LocalTime startTime) {
 		this.backupStartTime = startTime;
@@ -512,7 +490,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die Startzeit des AutoBackups zurück.
-	 * 
+	 *
 	 * @return Startzeit des AutoBackups
 	 */
 	public LocalTime getStartTime() {
@@ -521,9 +499,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt die Intervallzeit fest.
-	 * 
-	 * @param time
-	 *            Intervallzeit
+	 *
+	 * @param time Intervallzeit
 	 */
 	public void setIntervalTime(int time) {
 		this.intervalTime = time;
@@ -531,7 +508,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die Intervallzeit zurück.
-	 * 
+	 *
 	 * @return Intervallzeit
 	 */
 	public int getIntervalTime() {
@@ -540,9 +517,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt die Intervalleinheit fest.
-	 * 
-	 * @param intervalUnit
-	 *            Intervalleinheit
+	 *
+	 * @param intervalUnit Intervalleinheit
 	 */
 	public void setIntervalUnit(String intervalUnit) {
 		this.intervalUnit = intervalUnit;
@@ -550,7 +526,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die Intervalleinheit zurück.
-	 * 
+	 *
 	 * @return Intervalleinheit
 	 */
 	public String getIntervalUnit() {
@@ -559,7 +535,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt das ScheduledFuture für die nächste geschedulte Ausführung zurück.
-	 * 
+	 *
 	 * @return ScheduledFuture der nächsten Ausführung
 	 */
 	public ScheduledFuture getScheduledFuture() {
@@ -568,9 +544,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Setzt das ScheduledFuture für die nächste Ausführung.
-	 * 
-	 * @param scheduledFuture
-	 *            ScheduledFuture der nächsten Ausführung
+	 *
+	 * @param scheduledFuture ScheduledFuture der nächsten Ausführung
 	 */
 	public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
 		this.scheduledFuture = scheduledFuture;
@@ -578,7 +553,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt das ScheduledFuture für den nächsten geschedulte Popup zurück.
-	 * 
+	 *
 	 * @return ScheduledFuture des nächsten Popups
 	 */
 	public ScheduledFuture getPopupScheduledFuture() {
@@ -587,9 +562,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Setzt das ScheduledFuture für den nächsten Popup.
-	 * 
-	 * @param scheduledFuture
-	 *            ScheduledFuture des nächsten Popups
+	 *
+	 * @param scheduledFuture ScheduledFuture des nächsten Popups
 	 */
 	public void setPopupScheduledFuture(ScheduledFuture<?> popupScheduledFuture) {
 		this.popupScheduledFuture = popupScheduledFuture;
@@ -597,9 +571,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Speichert den nächsten geschedulten Ausführungszeitpunkt.
-	 * 
-	 * @param nextExecutionTime
-	 *            nächster geschedulter Ausführungszeitpunkt als LocalDateTime
+	 *
+	 * @param nextExecutionTime nächster geschedulter Ausführungszeitpunkt als LocalDateTime
 	 */
 	public void setLocalDateTimeOfNextBackup(LocalDateTime nextExecutionTime) {
 		this.nextExecutionTime = nextExecutionTime;
@@ -607,7 +580,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt den nächsten geschedulten Ausführungszeitpunkt zurück.
-	 * 
+	 *
 	 * @return nächster geplanter Ausführungszeitpunkt
 	 */
 	public LocalDateTime getLocalDateTimeOfNextBackup() {
@@ -627,37 +600,36 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt die Dauer zum nächsten geplanten Backup, so dass sich das nachholen
 	 * eines versäumten Backups noch lohnt, zurück.
-	 * 
+	 *
 	 * @return Dauer zum nächsten Backup
 	 */
 	public int getProfitableTimeUntilNextExecution() {
 		switch (catchUpTime) {
-		case "10min":
-			return 10;
-		case "15min":
-			return 15;
-		case "30min":
-			return 30;
-		case "1h":
-			return 60;
-		case "2h":
-			return 120;
-		case "6h":
-			return 360;
-		case "12h":
-			return 720;
-		case "24h":
-			return 1440;
-		default:
-			return 5;
+			case "10min":
+				return 10;
+			case "15min":
+				return 15;
+			case "30min":
+				return 30;
+			case "1h":
+				return 60;
+			case "2h":
+				return 120;
+			case "6h":
+				return 360;
+			case "12h":
+				return 720;
+			case "24h":
+				return 1440;
+			default:
+				return 5;
 		}
 	}
 
 	/**
 	 * Aktiviert/ Deaktiviert die Backup-Nachholen-Funktikon.
-	 * 
-	 * @param enabled
-	 *            zu setzender Wert (akt./deakt.)
+	 *
+	 * @param enabled zu setzender Wert (akt./deakt.)
 	 */
 	public void setCatchUpEnabled(boolean enabled) {
 		this.catchUpEnabled = enabled;
@@ -665,9 +637,8 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Legt die catchUp-Zeit (als String) fest.
-	 * 
-	 * @param catchUpTime
-	 *            festzulegende catchUp-Zeit (als String)
+	 *
+	 * @param catchUpTime festzulegende catchUp-Zeit (als String)
 	 */
 	public void setCatchUpTime(String catchUpTime) {
 		this.catchUpTime = catchUpTime;
@@ -675,7 +646,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt die catchUp-Zeit (als String) zurück.
-	 * 
+	 *
 	 * @return catchUp-Zeit (als String)
 	 */
 	public String getCatchUpTime() {
@@ -684,7 +655,7 @@ public class BackupTask implements Serializable {
 
 	/**
 	 * Gibt zurück ob catchUp aktiviert ist.
-	 * 
+	 *
 	 * @return ob catchUp aktiviert ist
 	 */
 	public boolean isCatchUpEnabled() {
@@ -698,9 +669,8 @@ public class BackupTask implements Serializable {
 	 * Legt den "richtigen" Zielpfad fest. Dieser wird nach dem Backup zum
 	 * Zielpfad. Dies ist nötig wenn einmalig ein Backup mit einem anderen
 	 * Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
-	 * 
-	 * @param path
-	 *            festzulegender "richtiger" Zielpfad
+	 *
+	 * @param path festzulegender "richtiger" Zielpfad
 	 */
 	public void setRealDestinationPath(String path) {
 		this.realDestinationPath = path;
@@ -710,7 +680,7 @@ public class BackupTask implements Serializable {
 	 * Gibt den "richtigen" Zielpfad zurück. Dieser wird nach dem Backup zum
 	 * Zielpfad. Dies ist nötig wenn einmalig ein Backup mit einem anderen
 	 * Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
-	 * 
+	 *
 	 * @return "richtiger" Zielpfad
 	 */
 	public String getRealDestinationPath() {

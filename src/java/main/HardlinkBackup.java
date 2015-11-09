@@ -47,9 +47,8 @@ import data.StructureFile;
 
 /**
  * Ein Hardlink-Backup Objekt. Implementierung von Backupable.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class HardlinkBackup implements Backupable {
 
@@ -111,15 +110,11 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
-	 * 
-	 * @param listener
-	 *            Listener
-	 * @param nameOfTask
-	 *            Name des Backup-Tasks
-	 * @param sources
-	 *            Quellen
-	 * @param destination
-	 *            Zielpfad
+	 *
+	 * @param listener    Listener
+	 * @param nameOfTask  Name des Backup-Tasks
+	 * @param sources     Quellen
+	 * @param destination Zielpfad
 	 */
 	public HardlinkBackup(IBackupListener listener, String nameOfTask, ArrayList<Source> sources, String destination) {
 		this.listener = listener;
@@ -413,13 +408,10 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Rekursive Mathode zur Vorbereitung ("analyse") eines Hardlink Backups.
-	 * 
-	 * @param sourceFile
-	 *            Quell-Verzeichnis
-	 * @param backupDir
-	 *            Ziel-Verzeichnis
-	 * @param task
-	 *            betreffender BackupTask
+	 *
+	 * @param sourceFile Quell-Verzeichnis
+	 * @param backupDir  Ziel-Verzeichnis
+	 * @param task       betreffender BackupTask
 	 */
 	private void rekursivePreparation(File sourceFile, File backupDir, BackupTask task) {
 
@@ -601,11 +593,9 @@ public class HardlinkBackup implements Backupable {
 	/**
 	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort
 	 * vorhanden ist. Ist die Datei nicht im Index wird null zurückgegeben.
-	 * 
-	 * @param file
-	 *            Datei für welche das StrucutreFile zurückgegeben werden soll
-	 * @param sourceRootPath
-	 *            Root-Pfad der Quelle
+	 *
+	 * @param file           Datei für welche das StrucutreFile zurückgegeben werden soll
+	 * @param sourceRootPath Root-Pfad der Quelle
 	 * @return Gefundenes StructureFile oder null
 	 */
 	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
@@ -631,11 +621,9 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Erzeugt den Index.
-	 * 
-	 * @param root
-	 *            Root-File zur Indizierung
-	 * @param task
-	 *            betreffender BackupTask
+	 *
+	 * @param root Root-File zur Indizierung
+	 * @param task betreffender BackupTask
 	 */
 	private void createIndex(File root, BackupTask task) {
 		if (root.isDirectory()) {
@@ -654,11 +642,9 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Serialisiert den Index.
-	 * 
-	 * @param taskName
-	 *            Name des Tasks des zu serialisierenden Index
-	 * @param backupSetPath
-	 *            Pfad zum Backup-Satz
+	 *
+	 * @param taskName      Name des Tasks des zu serialisierenden Index
+	 * @param backupSetPath Pfad zum Backup-Satz
 	 */
 	private void serializeIndex(String taskName, String backupSetPath) {
 
@@ -703,9 +689,8 @@ public class HardlinkBackup implements Backupable {
 	/**
 	 * Lädt einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE
 	 * zurück;
-	 * 
-	 * @param index
-	 *            zu ladender Index
+	 *
+	 * @param index zu ladender Index
 	 */
 	private boolean loadSerialization(File index) {
 
@@ -746,11 +731,9 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Rekursive Methode zur Berechnung der Verzeichnisstruktur.
-	 * 
-	 * @param rootPath
-	 *            root Pfad des Backups
-	 * @param path
-	 *            Pfad der aktuell zu analysierenden Datei (relativer Pfad)
+	 *
+	 * @param rootPath root Pfad des Backups
+	 * @param path     Pfad der aktuell zu analysierenden Datei (relativer Pfad)
 	 * @return StructureFile für die Verzeichnisstruktur
 	 */
 	private StructureFile recCalcDirStruct(String rootPath, String path) {
@@ -785,9 +768,8 @@ public class HardlinkBackup implements Backupable {
 
 	/**
 	 * Gibt den Pfad (als String) zum aktuellsten Backup-Satz zurück.
-	 * 
-	 * @param rootPath
-	 *            Ordner in dem nach Backup-Sätzen gesucht werden soll
+	 *
+	 * @param rootPath Ordner in dem nach Backup-Sätzen gesucht werden soll
 	 * @return Pfad zum aktuellsten Backup-Satz
 	 */
 	private String findNewestBackup(String rootPath) {

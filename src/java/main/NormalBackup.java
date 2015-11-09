@@ -34,9 +34,8 @@ import data.Source;
 
 /**
  * Ein Normal-Backup Objekt. Implementierung von Backupable.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class NormalBackup implements Backupable {
 
@@ -83,15 +82,11 @@ public class NormalBackup implements Backupable {
 
 	/**
 	 * Backup-Objekt zur Datensicherung.
-	 * 
-	 * @param listener
-	 *            Listener
-	 * @param nameOfTask
-	 *            Name des Backup-Tasks
-	 * @param sources
-	 *            Quellen
-	 * @param destination
-	 *            Zielpfad
+	 *
+	 * @param listener    Listener
+	 * @param nameOfTask  Name des Backup-Tasks
+	 * @param sources     Quellen
+	 * @param destination Zielpfad
 	 */
 	public NormalBackup(IBackupListener listener, String nameOfTask, ArrayList<Source> sources, String destination) {
 		this.listener = listener;
@@ -183,9 +178,8 @@ public class NormalBackup implements Backupable {
 
 	/**
 	 * Startet den Backup-Vorgang.
-	 * 
-	 * @param task
-	 *            Backup-Tasks welcher ausgeführt wird
+	 *
+	 * @param task Backup-Tasks welcher ausgeführt wird
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -236,13 +230,10 @@ public class NormalBackup implements Backupable {
 
 	/**
 	 * Führt die rekursive Backup-Vorbereitung durch.
-	 * 
-	 * @param sourceFile
-	 *            Quellverzeichnis
-	 * @param backupDir
-	 *            Backup-Verzeichnis (im Zielverzeichnis)
-	 * @param task
-	 *            zugehöriger BackupTask
+	 *
+	 * @param sourceFile Quellverzeichnis
+	 * @param backupDir  Backup-Verzeichnis (im Zielverzeichnis)
+	 * @param task       zugehöriger BackupTask
 	 */
 	private void rekursivePreparation(File sourceFile, File backupDir, BackupTask task) {
 

@@ -28,25 +28,22 @@ import data.BackupTask;
 
 /**
  * Interface für einen Backup-Typ (z.B. Normal oder Hardlink).
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public interface Backupable {
-	
+
 	/**
 	 * Bereitet den Backup-Vorgang vor (sammelt zu bearbeitenden Dateien).
-	 * 
-	 * @param task
-	 *            betreffender BackupTask
+	 *
+	 * @param task betreffender BackupTask
 	 */
 	public void runPreparation(BackupTask task);
 
 	/**
 	 * Führt das Backup aus.
-	 * 
-	 * @param task
-	 *            auszuführender Backup-Tasks
+	 *
+	 * @param task auszuführender Backup-Tasks
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -54,14 +51,14 @@ public interface Backupable {
 
 	/**
 	 * Gibt die BackupInfos zu diesem Backup zurück.
-	 * 
+	 *
 	 * @return BackupInfos zu diesem Backup
 	 */
 	public BackupInfos getBackupInfos();
 
 	/**
 	 * Gibt zurück, ob dieses Backup gecanceled ist.
-	 * 
+	 *
 	 * @return ob dieses Backup gecanceled ist
 	 */
 	public boolean isCanceled();

@@ -54,14 +54,13 @@ import listener.ISourcesDialogListener;
 
 /**
  * Dialog zum Festlegen und Bearbeiten der Quellen.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class SourcesDialog extends JDialog {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 8855971977478046562L;
 	private final JPanel panel_main = new JPanel();
@@ -328,9 +327,8 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Prüft für den gegebenen String ob dieser bereits Quellpfad ist.
-	 * 
-	 * @param path
-	 *            zu prüfender Quellpfad
+	 *
+	 * @param path zu prüfender Quellpfad
 	 * @return ob der Pfad bereits Quellpfad ist
 	 */
 	private boolean isAlreadySourcePath(String path) {
@@ -339,9 +337,8 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Fügt eine Quelle hinzu.
-	 * 
-	 * @param source
-	 *            hinzuzufügende Quelle.
+	 *
+	 * @param source hinzuzufügende Quelle.
 	 */
 	private void addSource(Source source) {
 		sourcesListener.addSource(source);
@@ -350,9 +347,8 @@ public class SourcesDialog extends JDialog {
 	/**
 	 * Sucht nach einer Quelle mit dem gegebenen Pfad. Wird diese gefunden wird
 	 * sie gelöscht.
-	 * 
-	 * @param path
-	 *            zu löschende Quelle
+	 *
+	 * @param path zu löschende Quelle
 	 */
 	public void deleteSource(String path) {
 		sourcesListener.deleteSource(path);
@@ -360,9 +356,8 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Setzt den Pfad der im Quellpfad-Textfeld angezeigt wird.
-	 * 
-	 * @param source
-	 *            zu setzende Quelle
+	 *
+	 * @param source zu setzende Quelle
 	 */
 	public void setSource(Source source) {
 		textfield_source.setText(source.getPath());
@@ -370,9 +365,8 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Schaltet den EditMode an bzw. aus.
-	 * 
-	 * @param editMode
-	 *            true = an, false = aus
+	 *
+	 * @param editMode true = an, false = aus
 	 */
 	public void setEditMode(boolean inEditMode) {
 		this.inEditMode = inEditMode;
@@ -380,9 +374,8 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Legt den Originalpfad fest.
-	 * 
-	 * @param originalPath
-	 *            festzulegender Originalpfad
+	 *
+	 * @param originalPath festzulegender Originalpfad
 	 */
 	public void setOriginalPath(String originalPath) {
 		this.originalPath = originalPath;
@@ -390,9 +383,8 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
-	 * 
-	 * @param path
-	 *            zu prüfender Pfad
+	 *
+	 * @param path zu prüfender Pfad
 	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
 	 */
 	private boolean isUnderSourceRoot(String path) {
@@ -404,7 +396,7 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Gibt die Quelldatei zurück.
-	 * 
+	 *
 	 * @return Quelldatei
 	 */
 	private File getSourceFile() {
@@ -414,9 +406,8 @@ public class SourcesDialog extends JDialog {
 	/**
 	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
 	 * mit diesem Pfad gefunden wird dieser gelöscht.
-	 * 
-	 * @param path
-	 *            zu löschender Filterpfad
+	 *
+	 * @param path zu löschender Filterpfad
 	 */
 	private void deleteFilter(String path) {
 		for (int i = 0; i < listModel.getSize(); i++) {
@@ -428,11 +419,9 @@ public class SourcesDialog extends JDialog {
 
 	/**
 	 * Fügt einen Filter zur Liste der Filter hinzu.
-	 * 
-	 * @param path
-	 *            hinzuzufügender Filter
-	 * @param mode
-	 *            Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 *
+	 * @param path hinzuzufügender Filter
+	 * @param mode Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
 	public void addFilter(String path, int mode) {
 		listModel.addElement(new Filter(path, mode));

@@ -26,17 +26,15 @@ import main.Controller;
 
 /**
  * Main-Klasse von TotalBackup.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class Main {
 
 	/**
 	 * Main-Methode von TotalBackup.
-	 * 
-	 * @param args
-	 *            Start-Argumente
+	 *
+	 * @param args Start-Argumente
 	 */
 	public static void main(String[] args) {
 		Controller c = new Controller();

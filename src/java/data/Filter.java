@@ -35,11 +35,9 @@ public class Filter implements Serializable {
 
 	/**
 	 * Erstellt einen neuen Filter.
-	 * 
-	 * @param path
-	 *            Pfad des Filters
-	 * @param mode
-	 *            Filter-Modus 0 = Ausschluss-Filter; 1 = MD5-Filter
+	 *
+	 * @param path Pfad des Filters
+	 * @param mode Filter-Modus 0 = Ausschluss-Filter; 1 = MD5-Filter
 	 */
 	public Filter(String path, int mode) {
 		this.path = path;
@@ -48,7 +46,7 @@ public class Filter implements Serializable {
 
 	/**
 	 * Gibt den Pfad des Filters zurück.
-	 * 
+	 *
 	 * @return Pfad des Filters
 	 */
 	public String getPath() {
@@ -57,7 +55,7 @@ public class Filter implements Serializable {
 
 	/**
 	 * Gibt den Filter-Modus des Filters zurück.
-	 * 
+	 *
 	 * @return Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
 	public int getMode() {
@@ -66,9 +64,8 @@ public class Filter implements Serializable {
 
 	/**
 	 * Setzt den Pfad des Filters.
-	 * 
-	 * @param path
-	 *            zu setzender Pfad
+	 *
+	 * @param path zu setzender Pfad
 	 */
 	public void setPath(String path) {
 		this.path = path;
@@ -76,9 +73,8 @@ public class Filter implements Serializable {
 
 	/**
 	 * Setzt den Filter-Modus des Filters.
-	 * 
-	 * @param mode
-	 *            Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 *
+	 * @param mode Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;

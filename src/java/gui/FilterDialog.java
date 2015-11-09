@@ -46,9 +46,8 @@ import listener.IFilterDialogListener;
 
 /**
  * Dialog zum Erstellen und Bearbeiten eines Filters.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class FilterDialog extends JDialog {
 
@@ -195,11 +194,9 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Fügt einen Filter zur Liste der Filter hinzu.
-	 * 
-	 * @param path
-	 *            hinzuzufügender Filter
-	 * @param mode
-	 *            Filter-Art - 0 = Exclusion-Filter; 1 = MD5Filter
+	 *
+	 * @param path hinzuzufügender Filter
+	 * @param mode Filter-Art - 0 = Exclusion-Filter; 1 = MD5Filter
 	 */
 	private void addFilter(String path, int mode) {
 		if (mode == 0) {
@@ -211,9 +208,8 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
-	 * 
-	 * @param path
-	 *            zu prüfender Pfad
+	 *
+	 * @param path zu prüfender Pfad
 	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
 	 */
 	private boolean isUnderSourceRoot(String path) {
@@ -222,7 +218,7 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Gibt die Quelldatei zurück.
-	 * 
+	 *
 	 * @return Quelldatei
 	 */
 	private File getSourceFile() {
@@ -231,9 +227,8 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Setzt das Textfeld für den Filter-Pfad auf den gegebenen Pfad.
-	 * 
-	 * @param filter
-	 *            Pfad des Filters
+	 *
+	 * @param filter Pfad des Filters
 	 */
 	public void setFilter(String filter) {
 		textfield_filter.setText(filter);
@@ -241,9 +236,8 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Schaltet den EditMode an bzw. aus.
-	 * 
-	 * @param editMode
-	 *            true = an, false = aus
+	 *
+	 * @param editMode true = an, false = aus
 	 */
 	public void setEditMode(boolean editMode) {
 		this.inEditMode = editMode;
@@ -251,9 +245,8 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Legt den Originalpfad fest.
-	 * 
-	 * @param originalPath
-	 *            festzulegender Originalpfad
+	 *
+	 * @param originalPath festzulegender Originalpfad
 	 */
 	public void setOriginalPath(String originalPath) {
 		this.originalPath = originalPath;
@@ -262,9 +255,8 @@ public class FilterDialog extends JDialog {
 	/**
 	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
 	 * mit diesem Pfad gefunden wird dieser gelöscht.
-	 * 
-	 * @param path
-	 *            zu löschender Filterpfad
+	 *
+	 * @param path zu löschender Filterpfad
 	 */
 	private void deleteFilter(String path) {
 		listener.deleteFilter(originalPath);
@@ -272,9 +264,8 @@ public class FilterDialog extends JDialog {
 
 	/**
 	 * Legt den gegebenen Modus in der GUI fest.
-	 * 
-	 * @param mode
-	 *            festzulegender Modus
+	 *
+	 * @param mode festzulegender Modus
 	 */
 	public void setMode(int mode) {
 		if (mode == 0) {

@@ -25,13 +25,12 @@ import java.util.ArrayList;
 
 /**
  * Quellobjekt zur Haltung des Quellpfades und der dazughörigen Filter.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class Source implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 6082953307431457183L;
 	/**
@@ -45,9 +44,8 @@ public class Source implements Serializable {
 
 	/**
 	 * Erstellt ein neues Quellobjekt.
-	 * 
-	 * @param path
-	 *            Quellpfad
+	 *
+	 * @param path Quellpfad
 	 */
 	public Source(String path) {
 		this.path = path;
@@ -56,9 +54,8 @@ public class Source implements Serializable {
 
 	/**
 	 * Fügt für diese Quelle einen Filter hinzu.
-	 * 
-	 * @param filter
-	 *            hinzuzufügender Filter
+	 *
+	 * @param filter hinzuzufügender Filter
 	 */
 	public void addFilter(Filter filter) {
 		filterOfSource.add(filter);
@@ -66,7 +63,7 @@ public class Source implements Serializable {
 
 	/**
 	 * Gibt die Liste aller Filter für diese Quelle zurück.
-	 * 
+	 *
 	 * @return Liste aller Filter für diese Quelle
 	 */
 	public ArrayList<Filter> getFilter() {
@@ -75,7 +72,7 @@ public class Source implements Serializable {
 
 	/**
 	 * Gibt den Quellpfad dieser Quelle zurück.
-	 * 
+	 *
 	 * @return Quellpfad dieser Quelle
 	 */
 	public String getPath() {

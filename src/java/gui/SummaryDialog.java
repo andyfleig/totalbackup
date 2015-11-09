@@ -45,9 +45,8 @@ import java.awt.event.WindowEvent;
 /**
  * Dialog welcher nach der Preparation die Zusammenfassung des bevorstehenden
  * Backups anzeigt.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class SummaryDialog extends JDialog {
 
@@ -58,7 +57,7 @@ public class SummaryDialog extends JDialog {
 
 	/**
 	 * Launch the application.
-	 * 
+	 *
 	 * @deprecated
 	 */
 	public static void main(String[] args) {
@@ -73,13 +72,10 @@ public class SummaryDialog extends JDialog {
 
 	/**
 	 * Dialog für die Zusammenfassung des Vorbereiteten Backups.
-	 * 
-	 * @param listener
-	 *            SummaryDialogListener
-	 * @param task
-	 *            entsprechender BackupTask
-	 * @param backup
-	 *            entsprechendes Backup (Backupable)
+	 *
+	 * @param listener SummaryDialogListener
+	 * @param task     entsprechender BackupTask
+	 * @param backup   entsprechendes Backup (Backupable)
 	 */
 	public SummaryDialog(ISummaryDialogListener listener, final BackupTask task, final Backupable backup) {
 		addWindowListener(new WindowAdapter() {
@@ -201,9 +197,8 @@ public class SummaryDialog extends JDialog {
 
 	/**
 	 * Formatiert die gegeben Größe für die Anzeige im Summary-Dialog.
-	 * 
-	 * @param size
-	 *            Größe (als double)
+	 *
+	 * @param size Größe (als double)
 	 * @return Formatierter String der Größe
 	 */
 	private String formatSize(double size) {
@@ -221,9 +216,8 @@ public class SummaryDialog extends JDialog {
 
 	/**
 	 * Bricht den gegebenen BackupTask ab.
-	 * 
-	 * @param task
-	 *            abzubrechender BackupTask
+	 *
+	 * @param task abzubrechender BackupTask
 	 */
 	private void cancelBackup(BackupTask task) {
 		outprintBackupCanceled(task);
@@ -234,9 +228,8 @@ public class SummaryDialog extends JDialog {
 
 	/**
 	 * Löscht alle leeren Backup-Ordner eines Backuptasks (im Zielverzeichnis).
-	 * 
-	 * @param task
-	 *            entsprechender BackupTask
+	 *
+	 * @param task entsprechender BackupTask
 	 */
 	private void deleteEmptyBackupFolders(BackupTask task) {
 		listener.deleteEmptyBackupFolders(task);

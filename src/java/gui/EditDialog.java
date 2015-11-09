@@ -72,9 +72,8 @@ import java.awt.GridLayout;
 
 /**
  * Dialog zum Bearbeiten des BackupTasks.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class EditDialog extends JDialog {
 
@@ -102,21 +101,21 @@ public class EditDialog extends JDialog {
 	private ISourcesDialogListener sourcesListener;
 
 	// Vorlagen für die Spinner:
-	private int[] template_number_min = { 1, 1, 59, 1 };
-	private int[] template_number_h = { 1, 1, 23, 1 };
-	private int[] template_number_d = { 1, 1, 29, 1 };
-	private int[] template_number_m = { 1, 1, 11, 1 };
-	private int[] template_number_y = { 1, 1, 10, 1 };
+	private int[] template_number_min = {1, 1, 59, 1};
+	private int[] template_number_h = {1, 1, 23, 1};
+	private int[] template_number_d = {1, 1, 29, 1};
+	private int[] template_number_m = {1, 1, 11, 1};
+	private int[] template_number_y = {1, 1, 10, 1};
 
 	// Vorlagen für die Komboboxen mit den Zeitintervallen:
-	String[] template_timeInterval_all = { "inf", "min", "h", "d", "m", "y" };
-	String[] template_timeInterval_h = { "inf", "h", "d", "m", "y" };
-	String[] template_timeInterval_d = { "inf", "d", "m", "y" };
-	String[] template_timeInterval_m = { "inf", "m", "y" };
-	String[] template_timeInterval_y = { "inf", "y" };
+	String[] template_timeInterval_all = {"inf", "min", "h", "d", "m", "y"};
+	String[] template_timeInterval_h = {"inf", "h", "d", "m", "y"};
+	String[] template_timeInterval_d = {"inf", "d", "m", "y"};
+	String[] template_timeInterval_m = {"inf", "m", "y"};
+	String[] template_timeInterval_y = {"inf", "y"};
 
-	String[] template_backupSets = { "all", "50", "45", "40", "35", "30", "25", "20", "15", "10", "9", "8", "7", "6",
-			"5", "4", "3", "2", "1" };
+	String[] template_backupSets = {"all", "50", "45", "40", "35", "30", "25", "20", "15", "10", "9", "8", "7", "6",
+			"5", "4", "3", "2", "1"};
 
 	private JComboBox<String>[] unitComboBoxes;
 	private JComboBox<String>[] toKeepComboBoxes;
@@ -210,7 +209,6 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Erzeugt einen Edit-Dialog.
-	 * 
 	 */
 	public EditDialog(IEditDialogListener listener) {
 		JComboBox<String> comboBox_eS1_unit;
@@ -693,7 +691,7 @@ public class EditDialog extends JDialog {
 		comboBox_catchUp = new JComboBox<String>();
 		comboBox_catchUp.setLightWeightPopupEnabled(false);
 		comboBox_catchUp.setModel(new DefaultComboBoxModel<String>(
-				new String[] { "5min", "10min", "15min", "30min", "1h", "2h", "6h", "12h", "24h" }));
+				new String[]{"5min", "10min", "15min", "30min", "1h", "2h", "6h", "12h", "24h"}));
 		panel_catchUp.add(comboBox_catchUp);
 
 		JPanel panel_interval = new JPanel();
@@ -719,7 +717,7 @@ public class EditDialog extends JDialog {
 		comboBox_intervalUnit.setLightWeightPopupEnabled(false);
 		comboBox_intervalUnit.setLightWeightPopupEnabled(false);
 		panel_intervalSettings.add(comboBox_intervalUnit);
-		comboBox_intervalUnit.setModel(new DefaultComboBoxModel<String>(new String[] { "min", "h", "d", "m" }));
+		comboBox_intervalUnit.setModel(new DefaultComboBoxModel<String>(new String[]{"min", "h", "d", "m"}));
 
 		JPanel panel_simpleSettings = new JPanel();
 		panel_simpleSettings.setLayout(new BorderLayout(0, 0));
@@ -780,40 +778,40 @@ public class EditDialog extends JDialog {
 		comboBox_numberOfRules.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				switch (comboBox_numberOfRules.getSelectedItem().toString()) {
-				case ("1"):
-					setLayerEnabled(2, false);
-					setLayerEnabled(3, false);
-					setLayerEnabled(4, false);
-					setLayerEnabled(5, false);
-					break;
-				case ("2"):
-					setLayerEnabled(2, true);
-					setLayerEnabled(3, false);
-					setLayerEnabled(4, false);
-					setLayerEnabled(5, false);
-					break;
-				case ("3"):
-					setLayerEnabled(2, true);
-					setLayerEnabled(3, true);
-					setLayerEnabled(4, false);
-					setLayerEnabled(5, false);
-					break;
-				case ("4"):
-					setLayerEnabled(2, true);
-					setLayerEnabled(3, true);
-					setLayerEnabled(4, true);
-					setLayerEnabled(5, false);
-					break;
-				case ("5"):
-					setLayerEnabled(2, true);
-					setLayerEnabled(3, true);
-					setLayerEnabled(4, true);
-					setLayerEnabled(5, true);
-					break;
+					case ("1"):
+						setLayerEnabled(2, false);
+						setLayerEnabled(3, false);
+						setLayerEnabled(4, false);
+						setLayerEnabled(5, false);
+						break;
+					case ("2"):
+						setLayerEnabled(2, true);
+						setLayerEnabled(3, false);
+						setLayerEnabled(4, false);
+						setLayerEnabled(5, false);
+						break;
+					case ("3"):
+						setLayerEnabled(2, true);
+						setLayerEnabled(3, true);
+						setLayerEnabled(4, false);
+						setLayerEnabled(5, false);
+						break;
+					case ("4"):
+						setLayerEnabled(2, true);
+						setLayerEnabled(3, true);
+						setLayerEnabled(4, true);
+						setLayerEnabled(5, false);
+						break;
+					case ("5"):
+						setLayerEnabled(2, true);
+						setLayerEnabled(3, true);
+						setLayerEnabled(4, true);
+						setLayerEnabled(5, true);
+						break;
 				}
 			}
 		});
-		comboBox_numberOfRules.setModel(new DefaultComboBoxModel<String>(new String[] { "1", "2", "3", "4", "5" }));
+		comboBox_numberOfRules.setModel(new DefaultComboBoxModel<String>(new String[]{"1", "2", "3", "4", "5"}));
 		panel_numberOfRules.add(comboBox_numberOfRules);
 
 		checkBox_toggleSimpleSettings.addActionListener(new ActionListener() {
@@ -1383,9 +1381,8 @@ public class EditDialog extends JDialog {
 	 * Prüft den gegebenen Pfad auf Gültigkeit. Dabei ist ein Pfad genau dann
 	 * Gültig wenn er existiert und der root keine Datei sondern ein Verzeichnis
 	 * ist.
-	 * 
-	 * @param s
-	 *            zu prüfender Pfad
+	 *
+	 * @param s zu prüfender Pfad
 	 * @return Gültigkeit des Pfades.
 	 */
 	private boolean isValidPath(String pfad) {
@@ -1398,9 +1395,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Prüft ob der gegebene Name noch ungenutzt (noch nicht verwendet) ist.
-	 * 
-	 * @param name
-	 *            zu prüfender Name
+	 *
+	 * @param name zu prüfender Name
 	 * @return ob der Name noch nicht benutzt ist
 	 */
 	private boolean nameIsNotTaken(String name) {
@@ -1412,9 +1408,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Prüft den gegebenen Namen auf Gültigkeit.
-	 * 
-	 * @param name
-	 *            zu prüfender Name
+	 *
+	 * @param name zu prüfender Name
 	 * @return ültigkeit des Namens
 	 */
 	private boolean isValidName(String name) {
@@ -1426,7 +1421,7 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Gibt den Zielpfad zurück.
-	 * 
+	 *
 	 * @return Zielpfad
 	 */
 	public String getDestinationPath() {
@@ -1435,9 +1430,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt den Namen des Backup-Tasks fest.
-	 * 
-	 * @param name
-	 *            festzulegender Name
+	 *
+	 * @param name festzulegender Name
 	 */
 	public void setBackupTaskName(String name) {
 		textfield_name.setText(name);
@@ -1445,9 +1439,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt die Quellpfade fest.
-	 * 
-	 * @param sources
-	 *            festzulegende Quellen
+	 *
+	 * @param sources festzulegende Quellen
 	 */
 	public void setSourcePaths(ArrayList<Source> sources) {
 		for (int i = 0; i < sources.size(); i++) {
@@ -1457,9 +1450,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt den Zielpfad fest.
-	 * 
-	 * @param path
-	 *            festzulegender Zielpfad
+	 *
+	 * @param path festzulegender Zielpfad
 	 */
 	public void setDestinationPath(String path) {
 		textfield_destination.setText(path);
@@ -1467,9 +1459,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Prüft ob ein bestimmter Pfad bereits als Quellpfad festgelegt ist.
-	 * 
-	 * @param path
-	 *            zu prüfender Pfad
+	 *
+	 * @param path zu prüfender Pfad
 	 * @return ob der Pfad bereits festgelegt ist
 	 */
 	private boolean isAlreadySourcePath(String path) {
@@ -1483,9 +1474,9 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Gibt den Backup-Modus zurück.
-	 * 
+	 *
 	 * @return 0 für normal oder 1 für hardlink oder -1 für kein Modus
-	 *         ausgewählt
+	 * ausgewählt
 	 */
 	public int getBackupMode() {
 		if (radioButton_normalBackup.isSelected()) {
@@ -1498,9 +1489,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Setzt die Auswahl des Backup-Modes auf der GUI.
-	 * 
-	 * @param mode
-	 *            Backup-Modus (0 = normal, 1 = hardlink)
+	 *
+	 * @param mode Backup-Modus (0 = normal, 1 = hardlink)
 	 */
 	public void setBackupMode(int mode) {
 		if (mode == 0) {
@@ -1514,9 +1504,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Setzt die Einstellung für die Auto-Clean Funktion auf der GUI.
-	 * 
-	 * @param enabled
-	 *            Auto-Clean Funktion aktiviert (true) oder Deaktiviert (false)
+	 *
+	 * @param enabled Auto-Clean Funktion aktiviert (true) oder Deaktiviert (false)
 	 */
 	public void setAutoCleanEnabled(boolean enabled) {
 		checkBox_toggleSimpleSettings.setSelected(enabled);
@@ -1524,9 +1513,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Setzt die Anzahl der bei Auto-Clean zu behaltenden Backups auf der GUI.
-	 * 
-	 * @param numberOfBackupsToKeep
-	 *            zu setzende Anzahl an zu behaltenden Backups
+	 *
+	 * @param numberOfBackupsToKeep zu setzende Anzahl an zu behaltenden Backups
 	 */
 	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
 		spinner_numberOfBackupsToKeep.setValue(numberOfBackupsToKeep);
@@ -1535,9 +1523,8 @@ public class EditDialog extends JDialog {
 	/**
 	 * Sperrt das Namens-TextFeld für den Benutzer (Name eines Backups kann
 	 * nachträglich nicht geändert werden).
-	 * 
-	 * @param editable
-	 *            Editierbarkeit
+	 *
+	 * @param editable Editierbarkeit
 	 */
 	public void setEditable(boolean editable) {
 		textfield_name.setEditable(editable);
@@ -1545,9 +1532,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Schaltet den EditMode an bzw. aus.
-	 * 
-	 * @param editMode
-	 *            true = an, false = aus
+	 *
+	 * @param editMode true = an, false = aus
 	 */
 	public void setEditMode(boolean editMode) {
 		this.inEditMode = editMode;
@@ -1555,9 +1541,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Aktiviert bzw. deaktiviert den Autostart-Modus.
-	 * 
-	 * @param autostart
-	 *            zu setzender Autostart-Modus
+	 *
+	 * @param autostart zu setzender Autostart-Modus
 	 */
 	public void setAutostart(boolean autostart) {
 		checkBox_autostart.setSelected(autostart);
@@ -1565,9 +1550,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Aktiviert bzw. deaktiviert den DestinationVerification-Modus.
-	 * 
-	 * @param autostart
-	 *            zu setzender DestinationVerification-Modus
+	 *
+	 * @param autostart zu setzender DestinationVerification-Modus
 	 */
 	public void setDestinationVerification(boolean destVerification) {
 		checkBox_destinationVerification.setSelected(destVerification);
@@ -1576,9 +1560,8 @@ public class EditDialog extends JDialog {
 	/**
 	 * Gibt ein neues DefaultComboBoxModel zurück, welches aus der gegebenen
 	 * Vorlage erstellt wird.
-	 * 
-	 * @param template
-	 *            Vorlage
+	 *
+	 * @param template Vorlage
 	 * @return DefaultComboBoxModel
 	 */
 	private DefaultComboBoxModel<String> createComboBoxModelFromTemplate(String[] template) {
@@ -1592,9 +1575,8 @@ public class EditDialog extends JDialog {
 	/**
 	 * Gibt ein neues SpinnerNumberModel zurück, welches aus der gegebenen
 	 * Vorlage erstellt wird.
-	 * 
-	 * @param template
-	 *            Vorlage
+	 *
+	 * @param template Vorlage
 	 * @return SpinnerNumberModel
 	 */
 	private SpinnerNumberModel createSpinnerNumberModelFromTemplate(int[] template) {
@@ -1603,11 +1585,9 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Aktiviert bzw. deaktiviert ein bestimmtes Regel-Layer (eine Regel-Zeile)
-	 * 
-	 * @param layerToDisable
-	 *            Layer welches aktiviert bzw. deaktiviert werden soll
-	 * @param enabled
-	 *            true = aktivieren, false = deaktivieren
+	 *
+	 * @param layerToDisable Layer welches aktiviert bzw. deaktiviert werden soll
+	 * @param enabled        true = aktivieren, false = deaktivieren
 	 */
 	private void setLayerEnabled(int layerToDisable, boolean enabled) {
 		if (layerToDisable == 2) {
@@ -1636,18 +1616,14 @@ public class EditDialog extends JDialog {
 	/**
 	 * Legt die Einstellungen des erweiterten AutoClean in der GUI fest (zum
 	 * erstellen der GUI mit vorhandenen Einstellugen)
-	 * 
-	 * @param numberOfRules
-	 *            Anzahl der aktivierten Regeln
-	 * @param threshold
-	 *            Threshold-Zahlen (siehe BackupTask)
-	 * @param thresholdUnits
-	 *            Threshold-Eiheiten (siehe BackupTask)
-	 * @param backupsToKeep
-	 *            Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
+	 *
+	 * @param numberOfRules  Anzahl der aktivierten Regeln
+	 * @param threshold      Threshold-Zahlen (siehe BackupTask)
+	 * @param thresholdUnits Threshold-Eiheiten (siehe BackupTask)
+	 * @param backupsToKeep  Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
 	 */
 	public void setExtendedAutoCleanSettings(int numberOfRules, int[] threshold, String[] thresholdUnits,
-			String[] backupsToKeep) {
+											 String[] backupsToKeep) {
 		checkBox_toggleExtendedSettings.setSelected(true);
 		comboBox_numberOfRules.setSelectedIndex(numberOfRules - 1);
 		for (int i = 0; i < thresholdUnits.length; i++) {
@@ -1665,9 +1641,8 @@ public class EditDialog extends JDialog {
 	/**
 	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
 	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
-	 * 
-	 * @param mode
-	 *            Backup-Modus
+	 *
+	 * @param mode Backup-Modus
 	 */
 	public void setAutoBackupMode(int mode) {
 		if (mode == 1) {
@@ -1683,9 +1658,8 @@ public class EditDialog extends JDialog {
 	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die
 	 * Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
 	 * Sonntag.
-	 * 
-	 * @param weekdays
-	 *            Wochentage an denen gesichert werden soll
+	 *
+	 * @param weekdays Wochentage an denen gesichert werden soll
 	 */
 	public void setBackupWeekdays(boolean[] weekdays) {
 		if (weekdays[0] == true) {
@@ -1715,9 +1689,8 @@ public class EditDialog extends JDialog {
 	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll.
 	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
 	 * 31.
-	 * 
-	 * @param daysInMonth
-	 *            Tage im Monat an denen das Backup ausgeführt werden soll.
+	 *
+	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
 	public void setBackupDaysInMonth(boolean[] daysInMonth) {
 		for (int i = 0; i < 31; i++) {
@@ -1729,9 +1702,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt die Startzeit für das AutoBackup fest.
-	 * 
-	 * @param startTime
-	 *            festzulegende Startzeit
+	 *
+	 * @param startTime festzulegende Startzeit
 	 */
 	public void setBackupStartTime(LocalTime startTime) {
 		textField_timeToStart.setText(startTime.toString());
@@ -1739,9 +1711,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt die Intervallzeit fest.
-	 * 
-	 * @param time
-	 *            Intervallzeit
+	 *
+	 * @param time Intervallzeit
 	 */
 	public void setIntervalTime(int time) {
 		textField_interval.setText(String.valueOf(time));
@@ -1749,9 +1720,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt die Intervalleinheit fest.
-	 * 
-	 * @param intervalUnit
-	 *            Intervalleinheit
+	 *
+	 * @param intervalUnit Intervalleinheit
 	 */
 	public void setIntervalUnit(String intervalUnit) {
 		comboBox_intervalUnit.setSelectedItem(intervalUnit);
@@ -1759,9 +1729,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt die catchUp-Funktion als aktiviert/ deaktiviert fest.
-	 * 
-	 * @param enabled
-	 *            festzulegender Wert
+	 *
+	 * @param enabled festzulegender Wert
 	 */
 	public void setCatchUpEnabled(boolean enabled) {
 		checkBox_catchUp.setSelected(enabled);
@@ -1769,9 +1738,8 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Legt die Dauer für die catchUp-Funktion fest.
-	 * 
-	 * @param catchUpTime
-	 *            Dauer für catchUp
+	 *
+	 * @param catchUpTime Dauer für catchUp
 	 */
 	public void setCatchUpTime(String catchUpTime) {
 		comboBox_catchUp.setSelectedItem(catchUpTime);
@@ -1779,11 +1747,9 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Passt den Spinner an die Auswahl in der ComboBox an.
-	 * 
-	 * @param comboBox
-	 *            ComboBox an die die Spinner angepasst werden sollen
-	 * @param spinner
-	 *            anzupassende Spinner
+	 *
+	 * @param comboBox ComboBox an die die Spinner angepasst werden sollen
+	 * @param spinner  anzupassende Spinner
 	 */
 	private void changeSpinner(JComboBox<String> comboBox, JSpinner spinner) {
 		if (comboBox.getSelectedItem().toString().equalsIgnoreCase("inf")) {
@@ -1814,13 +1780,10 @@ public class EditDialog extends JDialog {
 	 * Prüft ob der alte Spinner-Wert für die neue "Einheit" noch gültig ist.
 	 * Wenn ja wird sie übernommen, sonst wird der spinner auf default (1)
 	 * gesetzt.
-	 * 
-	 * @param spinner
-	 *            entsprechender Spinner
-	 * @param template
-	 *            template für die entsprechende "Einheit"
-	 * @param oldValue
-	 *            alter Wert des spinners
+	 *
+	 * @param spinner  entsprechender Spinner
+	 * @param template template für die entsprechende "Einheit"
+	 * @param oldValue alter Wert des spinners
 	 */
 	private void checkValueOfSpinner(JSpinner spinner, int[] template, int oldValue) {
 		if ((template[1] <= oldValue) && (oldValue <= template[2])) {
@@ -1830,7 +1793,7 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Prüft die eingestellten extended AutoClean Einstellungen auf Gültigkeit.
-	 * 
+	 *
 	 * @return true wenn die Einstekllungen gültig sind, false sonst
 	 */
 	private boolean checkExtendedAutoCleanSettings() {
@@ -1851,25 +1814,24 @@ public class EditDialog extends JDialog {
 		// Für die 1. Regel existieren keine Abhängigkeiten
 		// TODO: Überarbeiten:
 		switch (numberOfRules) {
-		case 1:
-			return true;
-		case 2:
-			return checkRulesUnit(1);
-		case 3:
-			return checkRulesUnit(2);
-		case 4:
-			return checkRulesUnit(3);
-		case 5:
-			return checkRulesUnit(4);
+			case 1:
+				return true;
+			case 2:
+				return checkRulesUnit(1);
+			case 3:
+				return checkRulesUnit(2);
+			case 4:
+				return checkRulesUnit(3);
+			case 5:
+				return checkRulesUnit(4);
 		}
 		return true;
 	}
 
 	/**
 	 * Prüft die Abhängigkeiten aller Regeln bis zum gegebenen Index.
-	 * 
-	 * @param endIndex
-	 *            index bis zu welchem die Regeln geprüft werden sollen
+	 *
+	 * @param endIndex index bis zu welchem die Regeln geprüft werden sollen
 	 * @return true, wenn alle Regeln gültig sind, false sonst
 	 */
 	private boolean checkRulesUnit(int endIndex) {
@@ -1888,37 +1850,36 @@ public class EditDialog extends JDialog {
 	/**
 	 * Prüft die Abhängigkeiten der Einheiten für die Combobox index zu ihrem
 	 * Vorgänger.
-	 * 
-	 * @param index
-	 *            index Index (also eS - 1) der Regel
+	 *
+	 * @param index index Index (also eS - 1) der Regel
 	 * @return true wenn die Einstellungen gültig sind, false sonst
 	 */
 	private boolean checkUnitDependenciesOfRule(int index) {
 		String currentUnit = unitComboBoxes[index].getSelectedItem().toString();
 		String unitAboveCurrent = unitComboBoxes[index - 1].getSelectedItem().toString();
 		switch (unitAboveCurrent) {
-		case "min":
-			return true;
-		case "h":
-			if (!currentUnit.equals("min")) {
+			case "min":
 				return true;
-			}
-			return false;
-		case "d":
-			if (!currentUnit.equals("min") && !currentUnit.equals("h")) {
+			case "h":
+				if (!currentUnit.equals("min")) {
+					return true;
+				}
+				return false;
+			case "d":
+				if (!currentUnit.equals("min") && !currentUnit.equals("h")) {
+					return true;
+				}
+				return false;
+			case "m":
+				if (currentUnit.equals("m") || currentUnit.equals("y")) {
+					return false;
+				}
 				return true;
-			}
-			return false;
-		case "m":
-			if (currentUnit.equals("m") || currentUnit.equals("y")) {
-				return false;
-			}
-			return true;
-		case "y":
-			if (currentUnit.equals("y")) {
-				return false;
-			}
-			return true;
+			case "y":
+				if (currentUnit.equals("y")) {
+					return false;
+				}
+				return true;
 		}
 		return false;
 	}
@@ -1926,9 +1887,8 @@ public class EditDialog extends JDialog {
 	/**
 	 * Prüft die Abhängigkeiten der Spinner, wenn die Combobox index die gleiche
 	 * Einheit wie die ComboBox index - 1 hat.
-	 * 
-	 * @param index
-	 *            Index (also eS - 1) der Regel
+	 *
+	 * @param index Index (also eS - 1) der Regel
 	 * @return true wenn die Einstellungen gültig sind, false sonst
 	 */
 	private boolean checkSpinnerDependencies(int index) {
@@ -1947,11 +1907,9 @@ public class EditDialog extends JDialog {
 	/**
 	 * Legt den Identifier für DestinationVerification an (falls noch nicht
 	 * vorhanden).
-	 * 
-	 * @param taskName
-	 *            Name des Tasks
-	 * @param destPath
-	 *            Zielpfad des Tasks
+	 *
+	 * @param taskName Name des Tasks
+	 * @param destPath Zielpfad des Tasks
 	 */
 	private void createIdentifier(String taskName, String destPath) {
 		File identifier = new File(destPath + "/" + taskName + ".id");
@@ -1967,11 +1925,9 @@ public class EditDialog extends JDialog {
 
 	/**
 	 * Löscht den bisherigen Identifier.
-	 * 
-	 * @param taskName
-	 *            Name des Tasks dessen Identifier gelöscht werden soll
-	 * @param destPath
-	 *            Zielpfad des Tasks dessen Identifier gelöscht werden soll
+	 *
+	 * @param taskName Name des Tasks dessen Identifier gelöscht werden soll
+	 * @param destPath Zielpfad des Tasks dessen Identifier gelöscht werden soll
 	 */
 	private void deleteIdentifier(String taskName, String destPath) {
 		File identifier = new File(destPath + "/" + taskName + ".id");

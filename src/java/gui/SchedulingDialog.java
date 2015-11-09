@@ -65,7 +65,7 @@ public class SchedulingDialog extends JDialog {
 		comboBox.setPreferredSize(new Dimension(80, 25));
 		comboBox.setMinimumSize(comboBox.getPreferredSize());
 		comboBox.setMaximumSize(comboBox.getPreferredSize());
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "5min", "15min", "1h", "2h", "6h", "12h", "24h" }));
+		comboBox.setModel(new DefaultComboBoxModel(new String[]{"5min", "15min", "1h", "2h", "6h", "12h", "24h"}));
 		contentPanel.add(comboBox);
 
 		JPanel buttonPane = new JPanel();
@@ -78,24 +78,24 @@ public class SchedulingDialog extends JDialog {
 				if (radioButton_postpone.isSelected()) {
 					LocalDateTime nextExecutionTime = LocalDateTime.now();
 					switch (comboBox.getSelectedItem().toString()) {
-					case "5min":
-						nextExecutionTime = nextExecutionTime.plusMinutes(5);
-						break;
-					case "15min":
-						nextExecutionTime = nextExecutionTime.plusMinutes(15);
-						break;
-					case "1h":
-						nextExecutionTime = nextExecutionTime.plusHours(1);
-						break;
-					case "2h":
-						nextExecutionTime = nextExecutionTime.plusHours(2);
-						break;
-					case "12h":
-						nextExecutionTime = nextExecutionTime.plusHours(12);
-						break;
-					case "24h":
-						nextExecutionTime = nextExecutionTime.plusDays(1);
-						break;
+						case "5min":
+							nextExecutionTime = nextExecutionTime.plusMinutes(5);
+							break;
+						case "15min":
+							nextExecutionTime = nextExecutionTime.plusMinutes(15);
+							break;
+						case "1h":
+							nextExecutionTime = nextExecutionTime.plusHours(1);
+							break;
+						case "2h":
+							nextExecutionTime = nextExecutionTime.plusHours(2);
+							break;
+						case "12h":
+							nextExecutionTime = nextExecutionTime.plusHours(12);
+							break;
+						case "24h":
+							nextExecutionTime = nextExecutionTime.plusDays(1);
+							break;
 					}
 					listener.scheduleBackup(nextExecutionTime);
 				} else {

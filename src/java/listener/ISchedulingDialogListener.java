@@ -6,9 +6,8 @@ public interface ISchedulingDialogListener {
 
 	/**
 	 * Schedult den betreffenden BackupTask neu auf die gegebene Zeit.
-	 * 
-	 * @param time
-	 *            Zeit auf die der BackupTask geschedult werden soll
+	 *
+	 * @param time Zeit auf die der BackupTask geschedult werden soll
 	 */
 	public void scheduleBackup(LocalDateTime time);
 

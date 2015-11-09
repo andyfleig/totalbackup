@@ -63,9 +63,8 @@ import data.BackupThreadContainer;
 
 /**
  * Controller zur Steuerung der Anwendung.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class Controller {
 
@@ -274,7 +273,7 @@ public class Controller {
 
 	/**
 	 * Lädt die serialisierten Einstellungen.
-	 * 
+	 *
 	 * @deprecated
 	 */
 	private void loadSerialization() {
@@ -456,9 +455,8 @@ public class Controller {
 
 	/**
 	 * Startet den Backup-Vorgang eines bestimmten Backup-Tasks.
-	 * 
-	 * @param task
-	 *            Backup-Task welcher ausgeführt werden soll
+	 *
+	 * @param task Backup-Task welcher ausgeführt werden soll
 	 */
 	public void startBackup(BackupTask task, Backupable backup) {
 		mainframe.setButtonsToBackupRunning(false);
@@ -495,9 +493,9 @@ public class Controller {
 					File toDelete = new File(
 							task.getDestinationPath() + File.separator
 									+ findOldestBackup(
-											new ArrayList<File>(
-													Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
-											task));
+									new ArrayList<File>(
+											Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
+									task));
 
 					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " "
 							+ toDelete.getAbsolutePath();
@@ -527,7 +525,7 @@ public class Controller {
 
 	/**
 	 * Gibt eine Liste mit allen Namen aller Backup-Tasks zurück.
-	 * 
+	 *
 	 * @return Liste der Namen aller Backup-Tasks
 	 */
 	public ArrayList<String> getBackupTaskNames() {
@@ -541,11 +539,9 @@ public class Controller {
 	/**
 	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
 	 * eine Fehlermeldung (rot) handelt oder nicht.
-	 * 
-	 * @param s
-	 *            auszugebender String
-	 * @param error
-	 *            legt fest ob es sich um eine Fehlermeldung handelt oder nicht
+	 *
+	 * @param s     auszugebender String
+	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	private void printOut(String s, boolean error, String taskName) {
 		mainframe.addToOutput(s, error, taskName);
@@ -553,9 +549,8 @@ public class Controller {
 
 	/**
 	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
-	 * 
-	 * @param status
-	 *            auszugebender String
+	 *
+	 * @param status auszugebender String
 	 */
 	private void setStatus(String status) {
 		mainframe.setStatus(status);
@@ -563,11 +558,9 @@ public class Controller {
 
 	/**
 	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
-	 * 
-	 * @param event
-	 *            zu loggender String
-	 * @param task
-	 *            zugehöriger Task
+	 *
+	 * @param event zu loggender String
+	 * @param task  zugehöriger Task
 	 */
 	private void log(String event, BackupTask task) {
 		// Log-Datei anlegen:
@@ -600,9 +593,8 @@ public class Controller {
 	/**
 	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup
 	 * mit dem angegebenen Namen so wird null zurückgeliefert.
-	 * 
-	 * @param name
-	 *            Name des "gesuchten" Backup-Tasks
+	 *
+	 * @param name Name des "gesuchten" Backup-Tasks
 	 * @return den gesuchten Backup-Task oder null
 	 */
 	public BackupTask getBackupTaskWithName(String name) {
@@ -616,9 +608,8 @@ public class Controller {
 
 	/**
 	 * Fügt einen Backup-Task hinzu.
-	 * 
-	 * @param task
-	 *            hinzuzufügender Backup-Task
+	 *
+	 * @param task hinzuzufügender Backup-Task
 	 */
 	public void addBackupTask(BackupTask task) {
 		backupTasks.add(task);
@@ -627,9 +618,8 @@ public class Controller {
 
 	/**
 	 * Löscht einen Backup-Task.
-	 * 
-	 * @param task
-	 *            zu löschender Backup-Task.
+	 *
+	 * @param task zu löschender Backup-Task.
 	 */
 	public void removeBackupTask(BackupTask task) {
 		backupTasks.remove(task);
@@ -638,7 +628,7 @@ public class Controller {
 
 	/**
 	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
-	 * 
+	 *
 	 * @return Status der erweiterten Ausgabe
 	 */
 	public boolean advancedOutputIsEnabled() {
@@ -647,9 +637,8 @@ public class Controller {
 
 	/**
 	 * Gibt die Anzahl der Backup-Sätze zum gegebenen Backup-Task zurück.
-	 * 
-	 * @param task
-	 *            betreffender BackupTask
+	 *
+	 * @param task betreffender BackupTask
 	 * @return Anzahl der Backup-Sätze zum gegebenen Backup-Task
 	 */
 	private int calcNumberOfBackups(BackupTask task) {
@@ -659,11 +648,9 @@ public class Controller {
 
 	/**
 	 * Gibt eine Liste aller Backupsätze im gegebenen Verzeichnis zurück.
-	 * 
-	 * @param dir
-	 *            zu durchsuchendes Verzeichnis
-	 * @param task
-	 *            betreffender BackupTask
+	 *
+	 * @param dir  zu durchsuchendes Verzeichnis
+	 * @param task betreffender BackupTask
 	 * @return Liste aller gefundenen Backupsätze
 	 */
 	private ArrayList<File> findBackupSets(File dir, BackupTask task) {
@@ -697,11 +684,9 @@ public class Controller {
 
 	/**
 	 * Gibt den Pfad des ältesten Backup-Satzes zurück.
-	 * 
-	 * @param root
-	 *            Ordner in dem der älteste Backupsatz gefunden werden soll
-	 * @param task
-	 *            betreffender BackupTask
+	 *
+	 * @param root Ordner in dem der älteste Backupsatz gefunden werden soll
+	 * @param task betreffender BackupTask
 	 * @return Pfad des ältesten Backup-Satzes
 	 */
 	private String findOldestBackup(ArrayList<File> directories, BackupTask task) {
@@ -747,9 +732,8 @@ public class Controller {
 
 	/**
 	 * Führt für den gegebenen BackupTask das erweiterte CleanUp durch.
-	 * 
-	 * @param task
-	 *            BackupTask für den das CleanUp durchgeführt werden soll
+	 *
+	 * @param task BackupTask für den das CleanUp durchgeführt werden soll
 	 */
 	private void runExtendedClean(BackupTask task) {
 		// aktuelle SystemZeit:
@@ -775,21 +759,21 @@ public class Controller {
 			StringTokenizer tokanizer = new StringTokenizer(boundaryStrings[i], "_");
 			String threshold = tokanizer.nextToken();
 			switch (tokanizer.nextToken()) {
-			case "min":
-				boundaries[i] = currentSystemTime.minusMinutes(Long.parseLong(threshold));
-				break;
-			case "h":
-				boundaries[i] = currentSystemTime.minusHours(Long.parseLong(threshold));
-				break;
-			case "d":
-				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold));
-				break;
-			case "m":
-				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 30);
-				break;
-			case "y":
-				boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 256);
-				break;
+				case "min":
+					boundaries[i] = currentSystemTime.minusMinutes(Long.parseLong(threshold));
+					break;
+				case "h":
+					boundaries[i] = currentSystemTime.minusHours(Long.parseLong(threshold));
+					break;
+				case "d":
+					boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold));
+					break;
+				case "m":
+					boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 30);
+					break;
+				case "y":
+					boundaries[i] = currentSystemTime.minusDays(Long.parseLong(threshold) * 256);
+					break;
 			}
 		}
 
@@ -811,49 +795,49 @@ public class Controller {
 
 			// Richtiges Bucket finden und einfügen:
 			switch (task.getNumberOfExtendedCleanRules()) {
-			case 1:
-				bucket1.add(backupSet);
-				break;
-			case 2:
-				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+				case 1:
 					bucket1.add(backupSet);
-				} else {
-					bucket2.add(backupSet);
-				}
-				break;
-			case 3:
-				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
-					bucket1.add(backupSet);
-				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
-					bucket2.add(backupSet);
-				} else {
-					bucket3.add(backupSet);
-				}
-				break;
-			case 4:
-				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
-					bucket1.add(backupSet);
-				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
-					bucket2.add(backupSet);
-				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[2])) {
-					bucket3.add(backupSet);
-				} else {
-					bucket4.add(backupSet);
-				}
-				break;
-			case 5:
-				if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
-					bucket1.add(backupSet);
-				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
-					bucket2.add(backupSet);
-				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[2])) {
-					bucket3.add(backupSet);
-				} else if (ltmOfCurrentBackupSet.isAfter(boundaries[3])) {
-					bucket4.add(backupSet);
-				} else {
-					bucket5.add(backupSet);
-				}
-				break;
+					break;
+				case 2:
+					if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+						bucket1.add(backupSet);
+					} else {
+						bucket2.add(backupSet);
+					}
+					break;
+				case 3:
+					if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+						bucket1.add(backupSet);
+					} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
+						bucket2.add(backupSet);
+					} else {
+						bucket3.add(backupSet);
+					}
+					break;
+				case 4:
+					if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+						bucket1.add(backupSet);
+					} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
+						bucket2.add(backupSet);
+					} else if (ltmOfCurrentBackupSet.isAfter(boundaries[2])) {
+						bucket3.add(backupSet);
+					} else {
+						bucket4.add(backupSet);
+					}
+					break;
+				case 5:
+					if (ltmOfCurrentBackupSet.isAfter(boundaries[0])) {
+						bucket1.add(backupSet);
+					} else if (ltmOfCurrentBackupSet.isAfter(boundaries[1])) {
+						bucket2.add(backupSet);
+					} else if (ltmOfCurrentBackupSet.isAfter(boundaries[2])) {
+						bucket3.add(backupSet);
+					} else if (ltmOfCurrentBackupSet.isAfter(boundaries[3])) {
+						bucket4.add(backupSet);
+					} else {
+						bucket5.add(backupSet);
+					}
+					break;
 			}
 		}
 
@@ -918,9 +902,8 @@ public class Controller {
 
 	/**
 	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
-	 * 
-	 * @param taskName
-	 *            Name des hinzuzufügenden Backup-Tasks
+	 *
+	 * @param taskName Name des hinzuzufügenden Backup-Tasks
 	 */
 	private void taskStarted(String taskName) {
 		runningBackupTasks.add(taskName);
@@ -929,9 +912,8 @@ public class Controller {
 
 	/**
 	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
-	 * 
-	 * @param task
-	 *            Der zu entfernenden Backup-Task
+	 *
+	 * @param task Der zu entfernenden Backup-Task
 	 */
 	private void taskFinished(BackupTask task) {
 		if (!runningBackupTasks.remove(task.getTaskName())) {
@@ -943,9 +925,8 @@ public class Controller {
 
 	/**
 	 * Reschedulet den gegebenen Task.
-	 * 
-	 * @param task
-	 *            Task der gereschedulet werden soll
+	 *
+	 * @param task Task der gereschedulet werden soll
 	 */
 	public void scheduleBackupTask(final BackupTask task) {
 		scheduleBackupTaskStartingAt(task, LocalDateTime.now());
@@ -953,11 +934,9 @@ public class Controller {
 
 	/**
 	 * Reschedult den gegebenen Task von einem bestimmten Zeitpunkt aus.
-	 * 
-	 * @param task
-	 *            zu schedulender Task
-	 * @param dateTime
-	 *            Zeitpunkt von dem aus geschedult werden soll
+	 *
+	 * @param task     zu schedulender Task
+	 * @param dateTime Zeitpunkt von dem aus geschedult werden soll
 	 */
 	private void scheduleBackupTaskStartingAt(final BackupTask task, LocalDateTime dateTime) {
 		// Kontrollieren ob dieser Task bereits läuft:
@@ -984,9 +963,8 @@ public class Controller {
 
 	/**
 	 * Schedulet den gegebenen Task auf jetzt (+ Verzögerung).
-	 * 
-	 * @param task
-	 *            zu schedulender Task
+	 *
+	 * @param task zu schedulender Task
 	 */
 	public void scheduleBackupTaskNow(final BackupTask task) {
 		// Kontrollieren ob dieser Task bereits läuft:
@@ -1001,11 +979,9 @@ public class Controller {
 
 	/**
 	 * Schedulet den gegebenen Task auf die gegebene Zeit.
-	 * 
-	 * @param task
-	 *            zu schedulenden Task
-	 * @param nextExecutionTime
-	 *            Zeit auf die der Task geschedulet wird
+	 *
+	 * @param task              zu schedulenden Task
+	 * @param nextExecutionTime Zeit auf die der Task geschedulet wird
 	 */
 	private void scheduleBackupTaskAt(final BackupTask task, LocalDateTime nextExecutionTime) {
 		// TODO: Debugging-Ausgabe raus:
@@ -1079,13 +1055,10 @@ public class Controller {
 	/**
 	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den
 	 * gegebenen weekdays ab dem gegebenen Zeitpunkt.
-	 * 
-	 * @param weekdays
-	 *            Wochentage an denen gesichert werden soll
-	 * @param time
-	 *            Zeit zu der gesichert werden soll
-	 * @param startAt
-	 *            Zeitpunkt von dem aus gerchnet werden soll
+	 *
+	 * @param weekdays Wochentage an denen gesichert werden soll
+	 * @param time     Zeit zu der gesichert werden soll
+	 * @param startAt  Zeitpunkt von dem aus gerchnet werden soll
 	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
 	 */
 	private LocalDateTime calcTimeFromWeekdaysStartingFrom(boolean[] weekdays, LocalTime time, LocalDateTime startAt) {
@@ -1130,9 +1103,8 @@ public class Controller {
 
 	/**
 	 * Löscht die geplante Ausführung des gegebenen Tasks.
-	 * 
-	 * @param task
-	 *            entsprechender Task
+	 *
+	 * @param task entsprechender Task
 	 */
 	public void removeBackupTaskScheduling(BackupTask task) {
 		if (task.getScheduledFuture() != null) {
@@ -1147,17 +1119,14 @@ public class Controller {
 	/**
 	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den
 	 * gegebenen daysInMonth.
-	 * 
-	 * @param daysInMonth
-	 *            Tage im Monat an denen gesichert werden soll
-	 * @param time
-	 *            Zeit zu der gesichert werden soll
-	 * @param startAt
-	 *            Zeitpunkt von dem aus gerchnet werden soll
+	 *
+	 * @param daysInMonth Tage im Monat an denen gesichert werden soll
+	 * @param time        Zeit zu der gesichert werden soll
+	 * @param startAt     Zeitpunkt von dem aus gerchnet werden soll
 	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
 	 */
 	private LocalDateTime calcTimeFromDaysInMonthStartingFrom(boolean[] daysInMonth, LocalTime time,
-			LocalDateTime startAt) {
+															  LocalDateTime startAt) {
 		int currentDayInMonth = startAt.getDayOfMonth() - 1;
 		// Heute?:
 		if (daysInMonth[currentDayInMonth]) {
@@ -1197,36 +1166,31 @@ public class Controller {
 	/**
 	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus dem
 	 * gegebenen Intervall.
-	 * 
-	 * @param interval
-	 *            gegebenes Intervall
-	 * @param intervalUnit
-	 *            Einheit des Intervals (min, h, d, m)
-	 * @param startAt
-	 *            Zeitpunkt von dem aus gerchnet werden soll
+	 *
+	 * @param interval     gegebenes Intervall
+	 * @param intervalUnit Einheit des Intervals (min, h, d, m)
+	 * @param startAt      Zeitpunkt von dem aus gerchnet werden soll
 	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
 	 */
 	private LocalDateTime calcTimeFromIntervalStartingFrom(int interval, String intervalUnit, LocalDateTime startAt) {
 		switch (intervalUnit) {
-		case "min":
-			return startAt.plusMinutes(interval);
-		case "h":
-			return startAt.plusHours(interval);
-		case "d":
-			return startAt.plusDays(interval);
-		case "m":
-			return startAt.plusMonths(interval);
+			case "min":
+				return startAt.plusMinutes(interval);
+			case "h":
+				return startAt.plusHours(interval);
+			case "d":
+				return startAt.plusDays(interval);
+			case "m":
+				return startAt.plusMonths(interval);
 		}
 		return null;
 	}
 
 	/**
 	 * Löscht einen leeren Backup-Ordner.
-	 * 
-	 * @param path
-	 *            Pfad an dem sich der Ordner befindet
-	 * @param task
-	 *            BackupTask zu dem der Ordner gehört
+	 *
+	 * @param path Pfad an dem sich der Ordner befindet
+	 * @param task BackupTask zu dem der Ordner gehört
 	 */
 	private void deleteEmptyBackupFolders(String path, BackupTask task) {
 		File currentDest = new File(path);
@@ -1254,9 +1218,8 @@ public class Controller {
 
 	/**
 	 * Gibt den gegebenen String als Tray-Popup-Message aus.
-	 * 
-	 * @param msg
-	 *            anzuzeigender String
+	 *
+	 * @param msg anzuzeigender String
 	 */
 	private void showTrayPopupMessage(String msg) {
 		if (mainframe.isQTTray()) {
@@ -1268,9 +1231,8 @@ public class Controller {
 
 	/**
 	 * Prüft ob der gegebene String teil der übergebenen Argumente ist.
-	 * 
-	 * @param s
-	 *            zu prüfender String (gesuchtes Argument)
+	 *
+	 * @param s zu prüfender String (gesuchtes Argument)
 	 * @return ob der gegebene String teil der übergebenen Argumente ist
 	 */
 	public boolean argsContains(String s) {

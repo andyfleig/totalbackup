@@ -24,9 +24,8 @@ package data;
  * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B.
  * Größe der zu kopierenden/ verlinkgenden Dateien oder Anzahl der zu
  * kopierenden/ verlinkenden Dateien oder Verzeichnissen).
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class BackupInfos {
 	/**
@@ -53,7 +52,7 @@ public class BackupInfos {
 
 	/**
 	 * Gibt die Anzahl der zu bearbeitenden Ordner zurück.
-	 * 
+	 *
 	 * @return Anzahl der zu bearbeitenden Ordner
 	 */
 	public long getNumberOfDirectories() {
@@ -69,7 +68,7 @@ public class BackupInfos {
 
 	/**
 	 * Gibt die Anzahl der zu kopierenden Dateien zurück.
-	 * 
+	 *
 	 * @return Anzahl der zu kopierenden Dateien
 	 */
 	public long getNumberOfFilesToCopy() {
@@ -85,7 +84,7 @@ public class BackupInfos {
 
 	/**
 	 * Gibt die Anzahl der zu verlinkenden Dateien zurück.
-	 * 
+	 *
 	 * @return Anzahl der zu verlinkenden Dateien
 	 */
 	public long getNumberOfFilesToLink() {
@@ -101,7 +100,7 @@ public class BackupInfos {
 
 	/**
 	 * Gibt die Gesamtgröße der zu kopierenden Dateien zurück.
-	 * 
+	 *
 	 * @return Gesamtgröße der zu kopierenden Dateien
 	 */
 	public double getSizeToCopy() {
@@ -110,9 +109,8 @@ public class BackupInfos {
 
 	/**
 	 * Erhöht die Gesamtgröße der zu kopierenden Dateien um den gegebenen Wert.
-	 * 
-	 * @param sizeToIncreaseBy
-	 *            Größe um die der Gesamtwert erhöht wird
+	 *
+	 * @param sizeToIncreaseBy Größe um die der Gesamtwert erhöht wird
 	 */
 	public void increaseSizeToCopyBy(double sizeToIncreaseBy) {
 		sizeToCopy += sizeToIncreaseBy;
@@ -120,7 +118,7 @@ public class BackupInfos {
 
 	/**
 	 * Gibt die Gesamtgröße der zu verlinkenden Dateien zurück.
-	 * 
+	 *
 	 * @return Gesamtgröße der zu verlinkenden Dateien
 	 */
 	public double getSizeToLink() {
@@ -129,9 +127,8 @@ public class BackupInfos {
 
 	/**
 	 * Erhöht die Gesamtgröße der zu verlinkenden Dateien um den gegebenen Wert.
-	 * 
-	 * @param sizeToIncreaseBy
-	 *            Größe um die der Gesamtwert erhöht wird
+	 *
+	 * @param sizeToIncreaseBy Größe um die der Gesamtwert erhöht wird
 	 */
 	public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
 		sizeToLink += sizeToIncreaseBy;

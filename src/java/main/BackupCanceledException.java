@@ -23,9 +23,8 @@ package main;
 /**
  * Signalisiert der Anwendung das der laufende Prozess (Backup) abgebrochen
  * werden soll.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public class BackupCanceledException extends RuntimeException {
 

@@ -27,9 +27,8 @@ import javax.swing.filechooser.FileSystemView;
 
 /**
  * FileSystemView welcher nur Verzeichnisse anzeigt.
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 class DirectoryRestrictedFileSystemView extends FileSystemView {
 
@@ -41,7 +40,7 @@ class DirectoryRestrictedFileSystemView extends FileSystemView {
 	}
 
 	DirectoryRestrictedFileSystemView(File rootDirectory) {
-		this.rootDirectories = new File[] { rootDirectory };
+		this.rootDirectories = new File[]{rootDirectory};
 	}
 
 	DirectoryRestrictedFileSystemView(File[] rootDirectories) {

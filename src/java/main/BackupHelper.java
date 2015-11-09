@@ -42,9 +42,8 @@ import listener.IBackupListener;
 /**
  * Statische Helper Klasse welche statische Methoden für Backups anbieten (z.B.
  * Datei/ Verzeichnis kopieren).
- * 
- * @author Andreas Fleig
  *
+ * @author Andreas Fleig
  */
 public final class BackupHelper {
 
@@ -55,11 +54,9 @@ public final class BackupHelper {
 
 	/**
 	 * Kopiert eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
-	 * 
-	 * @param source
-	 *            Quellpfad
-	 * @param destination
-	 *            Zielpfad
+	 *
+	 * @param source      Quellpfad
+	 * @param destination Zielpfad
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -90,13 +87,10 @@ public final class BackupHelper {
 
 	/**
 	 * Erstellt einen Hardlink (dest) der auf source zeigt
-	 * 
-	 * @param source
-	 *            Quell-Datei des Hardlinks
-	 * @param destination
-	 *            Ziel-Datei des Hardlinks
-	 * @param backupTask
-	 *            entsprechender BackupTask
+	 *
+	 * @param source      Quell-Datei des Hardlinks
+	 * @param destination Ziel-Datei des Hardlinks
+	 * @param backupTask  entsprechender BackupTask
 	 */
 	public static void hardlinkFile(File source, File destination, IBackupListener listener, BackupTask task) {
 		if (!source.isFile()) {
@@ -121,18 +115,15 @@ public final class BackupHelper {
 
 	/**
 	 * Erstellt den Root-Ordner für ein Backup.
-	 * 
-	 * @param destinationPath
-	 *            Zielpfad des Backups (Ort an dem der Root-Ordner angelegt
-	 *            werden soll)
-	 * @param taskName
-	 *            Name des Backup-Tasks
-	 * @param backupTask
-	 *            entsprechender BackupTask
+	 *
+	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt
+	 *                        werden soll)
+	 * @param taskName        Name des Backup-Tasks
+	 * @param backupTask      entsprechender BackupTask
 	 * @return angelegter Root-Ordner
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener,
-			BackupTask task) {
+										  BackupTask task) {
 
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
@@ -168,9 +159,8 @@ public final class BackupHelper {
 
 	/**
 	 * Löscht ein Verzeichnis und dessen Inhalt rekursiv.
-	 * 
-	 * @param path
-	 *            Pfad des zu löschenden Ordners
+	 *
+	 * @param path Pfad des zu löschenden Ordners
 	 * @return true falls erfolgreich, false sonst
 	 */
 	public static boolean deleteDirectory(File path) {
@@ -193,9 +183,8 @@ public final class BackupHelper {
 
 	/**
 	 * Berechnet den MD5 Hashwert der gegebenen Datei.
-	 * 
-	 * @param f
-	 *            Datei von der der Hadhwert berechnet werden soll
+	 *
+	 * @param f Datei von der der Hadhwert berechnet werden soll
 	 * @return MD5-Hashwert der gegebenen Datei
 	 */
 	public static String calcMD5(File f) {
