@@ -6,3 +6,5 @@ properties
 src/cpp/build/
 src/cpp/.kdev4/TotalBackupTray.kdev4
 /bin/
+/.idea
+TotalBackup.iml
