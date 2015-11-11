@@ -20,11 +20,7 @@
  */
 package gui;
 
-import listener.IEditDialogListener;
-import listener.IMainframeListener;
-import listener.IPreparingDialogListener;
-import listener.ISchedulingDialogListener;
-import listener.ISummaryDialogListener;
+import listener.*;
 import main.Backupable;
 import main.Controller;
 import gui.AboutDialog;
@@ -149,23 +145,6 @@ public class Mainframe extends JDialog {
 
 	// Größe einer Inode (in Byte):
 	private static final double SIZE_OF_INODE = 4096;
-
-	/**
-	 * Launch the application.
-	 *
-	 * @deprecated
-	 */
-	// public void main(String[] args) {
-	//
-	// Mainframe window = new Mainframe(listener);
-	// window.frmTotalbackup.setVisible(true);
-	//
-	// EventQueue.invokeLater(new Runnable() { public void run() { try {
-	// window = new Mainframe(listener);
-	// window.frmTotalbackup.setVisible(true); } catch (Exception e) {
-	// e.printStackTrace(); } } });
-	//
-	// }
 
 	/**
 	 * Create the application.
@@ -555,7 +534,7 @@ public class Mainframe extends JDialog {
 									ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
 									taskToRun.getTaskName());
 							button_cancel.setEnabled(false);
-							Mainframe.this.cancelBackup(listener.getBackupTaskWithName(taskName));
+							Mainframe.this.cancelBackup(listener.getBackupTaskWithName(taskName), true);
 						}
 
 					}
@@ -670,8 +649,7 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Gibt zurück ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet
-	 * wird.
+	 * Gibt zurück ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet wird.
 	 *
 	 * @return QT-Tray (true) oder ein Java-Tray (false)
 	 */
@@ -680,12 +658,11 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die
-	 * Nachricht maximal 999 Zeichen lang sein!
+	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die Nachricht maximal 999 Zeichen lang sein!
 	 *
-	 * @param msg    zu sendende Nachricht
-	 * @param signal wenn es sich bei der Nachricht um ein terminationSignal (true)
-	 *               und keine anzuzuegende Nachricht (false) handelt
+	 * @param msg               zu sendende Nachricht
+	 * @param terminationSignal wenn es sich bei der Nachricht um ein terminationSignal (true)
+	 *                          und keine anzuzuegende Nachricht (false) handelt
 	 */
 	public void sendToQtTrayOverSocket(String msg, boolean terminationSignal) {
 		char[] toSend;
@@ -818,13 +795,16 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Bereitet den gegebenen Task auf ein Hardlink-Backup vor (analysiert die
-	 * Quelle(n)).
+	 * Bereitet den gegebenen Task auf ein Hardlink-Backup vor (analysiert die Quelle(n)).
 	 *
 	 * @param task vorzubereitender Task
 	 */
 	public void prepareBackup(BackupTask task) {
-
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		// Testen ob Quell- und Zielpfad(e) existieren:
 		ArrayList<Source> sources = task.getSources();
 		for (int i = 0; i < sources.size(); i++) {
@@ -833,7 +813,7 @@ public class Mainframe extends JDialog {
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
 				prep.dispose();
-				listener.removeBackupTaskFromRunningTasks(task);
+				listener.removeBackupTaskFromRunningTasks(task, true);
 				return;
 			}
 		}
@@ -876,35 +856,34 @@ public class Mainframe extends JDialog {
 						}
 					}
 					if (!successful) {
-						cancelBackup(task);
+						cancelBackup(task, false);
 						if (prep != null) {
 							prep.dispose();
 						}
+						askForNextExecution(task);
 						return;
 					}
 
 				} else {
 					// nein:
-					cancelBackup(task);
+					cancelBackup(task, false);
 					if (prep != null) {
 						prep.dispose();
 					}
+					askForNextExecution(task);
 					return;
 				}
 			}
 		}
 
+
 		// Prüfen ob der Zielpfad existiert:
 		if (!(new File(task.getDestinationPath())).exists()) {
-			JOptionPane.showMessageDialog(null,
-					ResourceBundle.getBundle("messages").getString("GUI.errDestinationDontExists"),
-					ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
-			String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errDestinationDontExists");
-			listener.printOut(output, false, task.getTaskName());
+			cancelBackup(task, false);
 			if (prep != null) {
 				prep.dispose();
 			}
-			listener.removeBackupTaskFromRunningTasks(task);
+			askForNextExecution(task);
 			return;
 		}
 
@@ -1006,6 +985,7 @@ public class Mainframe extends JDialog {
 		// this.controller = c;
 	}
 
+	//TODO: Sollte in den Controller (wie viele andere Methoden hier auch)
 	private void startBackupTask(final BackupTask task, Backupable backup) {
 		if (!task.getAutostart()) {
 			summary.dispose();
@@ -1064,8 +1044,7 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Bricht den gegebenen Backup-Task ab, nachdem der Benutzer dies bestätigt
-	 * hat.
+	 * Bricht den gegebenen Backup-Task ab, nachdem der Benutzer dies bestätigt hat.
 	 *
 	 * @param taskToCancel abzubrechender Task
 	 */
@@ -1077,7 +1056,7 @@ public class Mainframe extends JDialog {
 				ResourceBundle.getBundle("messages").getString("Messages.CancelBackup"),
 				ResourceBundle.getBundle("messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
-			cancelBackup(taskToCancel);
+			cancelBackup(taskToCancel, true);
 		}
 	}
 
@@ -1086,7 +1065,7 @@ public class Mainframe extends JDialog {
 	 */
 	private void cancelAllRunningTasks() {
 		for (String taskName : listener.getRunningBackupTasks()) {
-			cancelBackup(listener.getBackupTaskWithName(taskName));
+			cancelBackup(listener.getBackupTaskWithName(taskName), true);
 		}
 	}
 
@@ -1260,8 +1239,7 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Fügt den BackupThreads (laufende Backups) den gegebenen
-	 * BackupThread(Container) hinzu.
+	 * Fügt den BackupThreads (laufende Backups) den gegebenen BackupThread(Container) hinzu.
 	 *
 	 * @param c hinzuzufügender BackupThread(Container)
 	 */
@@ -1270,8 +1248,7 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten
-	 * zurück.
+	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten zurück.
 	 *
 	 * @param taskName      Name des BackupTasks
 	 * @param wrongDestPath "falscher" Zielpfad
@@ -1308,11 +1285,12 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Bricht den gegebenen BackupTask ab.
+	 * Bricht den gegebenen BackupTask ab und reschedult den BackupTask wenn rescheduling true ist.
 	 *
-	 * @param task abzubrechender BackupTask
+	 * @param task       abzubrechender BackupTask
+	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
 	 */
-	private void cancelBackup(BackupTask task) {
+	private void cancelBackup(BackupTask task, boolean reschedule) {
 		Mainframe.this.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
 				null);
 		button_cancel.setEnabled(false);
@@ -1327,7 +1305,7 @@ public class Mainframe extends JDialog {
 		}
 		if (tmpContainer != null) {
 			backupThreads.remove(tmpContainer);
-			listener.removeBackupTaskFromRunningTasks(task);
+			listener.removeBackupTaskFromRunningTasks(task, reschedule);
 		}
 	}
 
@@ -1338,5 +1316,29 @@ public class Mainframe extends JDialog {
 	 */
 	public void showTrayPopupMessage(String msg) {
 		trayIcon.displayMessage(null, msg, TrayIcon.MessageType.INFO);
+	}
+
+	/**
+	 * Erfragt beim Benutzer wann das abgebrochene Backup das nächste mal ausgeführt werden soll.
+	 */
+	public void askForNextExecution(BackupTask task) {
+		NextExecutionChooser nec = new NextExecutionChooser(new INECListener() {
+			@Override
+			public void skipBackup() {
+				listener.rescheduleBackupTask(task);
+			}
+
+			@Override
+			public void postponeBackup(LocalDateTime nextExecutionTime) {
+				listener.scheduleBackupTaskAt(task, nextExecutionTime);
+			}
+
+			@Override
+			public void retry() {
+				listener.scheduleBackupTaskNow(task);
+			}
+		});
+		nec.setModal(true);
+		nec.setVisible(true);
 	}
 }

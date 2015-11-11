@@ -154,7 +154,6 @@ public class Controller {
 						@Override
 						public void addBackupTask(BackupTask task) {
 							Controller.this.addBackupTask(task);
-
 						}
 
 						@Override
@@ -182,13 +181,11 @@ public class Controller {
 						@Override
 						public void taskStarted(String taskName) {
 							Controller.this.taskStarted(taskName);
-
 						}
 
 						@Override
 						public void taskFinished(BackupTask task) {
-							Controller.this.taskFinished(task);
-
+							Controller.this.taskFinished(task, true);
 						}
 
 						@Override
@@ -212,8 +209,8 @@ public class Controller {
 						}
 
 						@Override
-						public void removeBackupTaskFromRunningTasks(BackupTask task) {
-							taskFinished(task);
+						public void removeBackupTaskFromRunningTasks(BackupTask task, boolean schedule) {
+							Controller.this.taskFinished(task, schedule);
 						}
 
 						@Override
@@ -388,7 +385,7 @@ public class Controller {
 
 			@Override
 			public void taskFinished(BackupTask task) {
-				Controller.this.taskFinished(task);
+				Controller.this.taskFinished(task, true);
 
 			}
 
@@ -537,8 +534,7 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
-	 * eine Fehlermeldung (rot) handelt oder nicht.
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder nicht.
 	 *
 	 * @param s     auszugebender String
 	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
@@ -591,8 +587,7 @@ public class Controller {
 	}
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup
-	 * mit dem angegebenen Namen so wird null zurückgeliefert.
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
 	 * @return den gesuchten Backup-Task oder null
@@ -685,8 +680,8 @@ public class Controller {
 	/**
 	 * Gibt den Pfad des ältesten Backup-Satzes zurück.
 	 *
-	 * @param root Ordner in dem der älteste Backupsatz gefunden werden soll
-	 * @param task betreffender BackupTask
+	 * @param directories Ordner unter denen der älteste Backupsatz gefunden werden soll
+	 * @param task        betreffender BackupTask
 	 * @return Pfad des ältesten Backup-Satzes
 	 */
 	private String findOldestBackup(ArrayList<File> directories, BackupTask task) {
@@ -915,12 +910,14 @@ public class Controller {
 	 *
 	 * @param task Der zu entfernenden Backup-Task
 	 */
-	private void taskFinished(BackupTask task) {
+	private void taskFinished(BackupTask task, boolean schedule) {
 		if (!runningBackupTasks.remove(task.getTaskName())) {
 			System.err.println("Error: This task isn't running");
 		}
 		System.out.println("Task finished:" + task.getTaskName());
-		scheduleBackupTask(task);
+		if (schedule) {
+			scheduleBackupTask(task);
+		}
 	}
 
 	/**
@@ -983,7 +980,6 @@ public class Controller {
 		}
 		printOut(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
 				task.getTaskName());
-
 		scheduleBackupTaskAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
 	}
 
@@ -1003,7 +999,6 @@ public class Controller {
 		Runnable backup = new Runnable() {
 			public void run() {
 				taskStarted(task.getTaskName());
-
 				Thread backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {

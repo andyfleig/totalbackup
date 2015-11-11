@@ -60,8 +60,7 @@ public class NormalBackup implements Backupable {
 	 */
 	private LinkedList<BackupElement> elementQueue;
 	/**
-	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann
-	 * runBackup() aufgerufen werden.
+	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann runBackup() aufgerufen werden.
 	 */
 	private boolean preparationDone = false;
 	/**
@@ -70,8 +69,7 @@ public class NormalBackup implements Backupable {
 	private BackupInfos backupInfos = new BackupInfos();
 
 	/**
-	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden
-	 * Elemente).
+	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden Elemente).
 	 */
 	private Source currentSource;
 

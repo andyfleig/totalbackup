@@ -44,8 +44,7 @@ import data.BackupTask;
 import listener.IBackupListener;
 
 /**
- * Statische Helper Klasse welche statische Methoden für Backups anbieten (z.B.
- * Datei/ Verzeichnis kopieren).
+ * Statische Helper Klasse welche statische Methoden für Backups anbieten (z.B. Datei/ Verzeichnis kopieren).
  *
  * @author Andreas Fleig
  */

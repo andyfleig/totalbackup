@@ -81,8 +81,7 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private LinkedList<BackupElement> elementQueue;
 	/**
-	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann
-	 * runBackup() aufgerufen werden.
+	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann runBackup() aufgerufen werden.
 	 */
 	private boolean preparationDone = false;
 	/**
@@ -98,8 +97,7 @@ public class HardlinkBackup implements Backupable {
 	 */
 	private BackupInfos backupInfos = new BackupInfos();
 	/**
-	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden
-	 * Elemente).
+	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden Elemente).
 	 */
 	private Source currentSource;
 
@@ -591,8 +589,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort
-	 * vorhanden ist. Ist die Datei nicht im Index wird null zurückgegeben.
+	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort vorhanden ist. Ist die Datei nicht im Index wird null zurückgegeben.
 	 *
 	 * @param file           Datei für welche das StrucutreFile zurückgegeben werden soll
 	 * @param sourceRootPath Root-Pfad der Quelle
@@ -687,8 +684,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Lädt einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE
-	 * zurück;
+	 * Lädt einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE zurück;
 	 *
 	 * @param index zu ladender Index
 	 */

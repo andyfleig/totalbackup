@@ -43,8 +43,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Dialog welcher nach der Preparation die Zusammenfassung des bevorstehenden
- * Backups anzeigt.
+ * Dialog welcher nach der Preparation die Zusammenfassung des bevorstehenden Backups anzeigt.
  *
  * @author Andreas Fleig
  */

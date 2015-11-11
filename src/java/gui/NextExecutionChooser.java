@@ -1,0 +1,121 @@
+package gui;
+
+import listener.INECListener;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.ResourceBundle;
+
+public class NextExecutionChooser extends JDialog {
+	private INECListener listener;
+
+	private JPanel contentPane = new JPanel();
+	private JButton btn_ok = new JButton("OK");
+	private JLabel label_message = new JLabel();
+	private JRadioButton rButton_tryAgain = new JRadioButton();
+	private JRadioButton rButton_skip = new JRadioButton();
+	private JRadioButton rButton_postpone = new JRadioButton();
+	private JPanel panel_rbuttons = new JPanel();
+	private JPanel panel_postponeOptions = new JPanel();
+	private JPanel panel_options = new JPanel();
+	private JPanel panel_button = new JPanel();
+	private JComboBox comboBox_postpone = new JComboBox();
+	private ButtonGroup group = new ButtonGroup();
+
+	public NextExecutionChooser(INECListener l) {
+		this.listener = l;
+
+		contentPane.setLayout(new BorderLayout());
+		getContentPane().add(contentPane, BorderLayout.NORTH);
+
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setResizable(false);
+		setContentPane(contentPane);
+		setAlwaysOnTop(true);
+		setBounds(100, 100, 550, 210);
+
+		panel_options.setLayout(new BorderLayout());
+		panel_postponeOptions.setLayout(new BorderLayout());
+		panel_options.add(panel_rbuttons, BorderLayout.NORTH);
+		panel_options.add(panel_postponeOptions, BorderLayout.SOUTH);
+
+		getContentPane().add(label_message, BorderLayout.NORTH);
+		getContentPane().add(panel_options, BorderLayout.CENTER);
+		panel_button.setLayout(new FlowLayout());
+		panel_button.add(btn_ok);
+		getContentPane().add(panel_button, BorderLayout.SOUTH);
+
+		label_message.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.text"));
+
+		panel_rbuttons.setLayout(new BoxLayout(panel_rbuttons, BoxLayout.Y_AXIS));
+		panel_rbuttons.add(rButton_tryAgain);
+		panel_rbuttons.add(rButton_skip);
+		panel_rbuttons.add(rButton_postpone);
+
+		rButton_tryAgain.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.rButton_tryAgain"));
+		rButton_tryAgain.setSelected(true);
+		rButton_skip.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.rButton_skip"));
+		rButton_skip.setSelected(false);
+		rButton_postpone.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.rButton_postpone"));
+		rButton_postpone.setSelected(false);
+
+		group.add(rButton_tryAgain);
+		group.add(rButton_skip);
+		group.add(rButton_postpone);
+
+		comboBox_postpone.setPreferredSize(new Dimension(80, 25));
+		comboBox_postpone.setMinimumSize(comboBox_postpone.getPreferredSize());
+		comboBox_postpone.setMaximumSize(comboBox_postpone.getPreferredSize());
+		comboBox_postpone.setModel(new DefaultComboBoxModel(new String[]{"2min", "5min", "10min", "15min", "20min", "30min", "60min"}));
+		comboBox_postpone.setVisible(false);
+
+		panel_postponeOptions.add(comboBox_postpone, BorderLayout.WEST);
+
+		getRootPane().setDefaultButton(btn_ok);
+
+		rButton_tryAgain.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				comboBox_postpone.setVisible(false);
+			}
+		});
+		rButton_skip.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				comboBox_postpone.setVisible(false);
+			}
+		});
+		rButton_postpone.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				comboBox_postpone.setVisible(true);
+			}
+		});
+
+		btn_ok.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				onOK();
+			}
+		});
+	}
+
+	private void onOK() {
+		if (rButton_tryAgain.isSelected()) {
+			listener.retry();
+		} else if (rButton_skip.isSelected()) {
+			listener.skipBackup();
+		} else {
+			String timeToPostpone = comboBox_postpone.getItemAt(comboBox_postpone.getSelectedIndex()).toString();
+			String sub = timeToPostpone.substring(0, (timeToPostpone.length() - 3));
+
+
+			int minutesToPostpone = Integer.valueOf(sub);
+			listener.postponeBackup(LocalDateTime.now().plus(minutesToPostpone, ChronoUnit.MINUTES));
+		}
+		NextExecutionChooser.this.dispose();
+	}
+}

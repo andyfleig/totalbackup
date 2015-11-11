@@ -58,8 +58,7 @@ public interface IMainframeListener {
 	public ArrayList<BackupTask> getBackupTasks();
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup
-	 * mit dem angegebenen Namen so wird null zurückgeliefert.
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
 	 * @return den gesuchten Backup-Task oder null
@@ -81,24 +80,21 @@ public interface IMainframeListener {
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
-	 * Backup-Vorgangs nach der Übersicht)
+	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
 	 *
 	 * @param task entsprechernder BackupTask
 	 */
 	public void deleteEmptyBackupFolders(String path, BackupTask task);
 
 	/**
-	 * Gibt eine Meldung aus, dass das laufende Backup (in der Zusammenfassung)
-	 * abgebrochen wurde.
+	 * Gibt eine Meldung aus, dass das laufende Backup (in der Zusammenfassung) abgebrochen wurde.
 	 *
 	 * @param task entpsrechender BackupTask
 	 */
 	public void outprintBackupCanceled(BackupTask task);
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
-	 * eine Fehlermeldung (rot) handelt oder nicht.
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder nicht.
 	 *
 	 * @param s        auszugebender String
 	 * @param error    legt fest ob es sich um eine Fehlermeldung handelt oder nicht
@@ -169,12 +165,12 @@ public interface IMainframeListener {
 	public ArrayList<String> getRunningBackupTasks();
 
 	/**
-	 * Entfernt den gegebenen BackupTask aus der Liste der laufenden
-	 * BackupTasks.
+	 * Entfernt den gegebenen BackupTask aus der Liste der laufenden BackupTasks und reschedult den BackupTask wenn rescheduling true ist.
 	 *
-	 * @param task zu entfernender BackupTask
+	 * @param task       zu entfernender BackupTask
+	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
 	 */
-	public void removeBackupTaskFromRunningTasks(BackupTask task);
+	public void removeBackupTaskFromRunningTasks(BackupTask task, boolean reschedule);
 
 	/**
 	 * Prüft ob der gegebene String teil der übergebenen Argumente ist.
