@@ -29,9 +29,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -224,5 +228,55 @@ public final class BackupHelper {
 			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Gibt den Zeitpunkt des aktuellsten Backups zurück.
+	 *
+	 * @param task Task für den das aktuellste Backup gesucht werden soll
+	 * @return Zeitpunkt des aktuellsten Backups (als LocalDateTime)
+	 */
+	public static LocalDateTime getLocalDateTimeOfNewestBackupSet(BackupTask task) {
+		String rootPath = task.getDestinationPath();
+		File root = new File(rootPath);
+		File[] directories = root.listFiles();
+		if (directories == null) {
+			return null;
+		}
+
+		LocalDateTime newestDate = null;
+		LocalDateTime foundDate;
+		for (int i = 0; i < directories.length; i++) {
+			if (directories[i].isDirectory()) {
+				// Namen des Ordners "zerlegen":
+				StringTokenizer tokenizer = new StringTokenizer(directories[i].getName(), "_");
+				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				if (tokenizer.countTokens() != 2) {
+					continue;
+				}
+				// Erster Token muss dem TaskName entsprechen:
+				if (!tokenizer.nextToken().equals(task.getTaskName())) {
+					continue;
+				}
+				// Zweiter Token muss analysiert werden:
+				String backupDate = tokenizer.nextToken();
+
+				try {
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(), ZoneId.systemDefault());
+				} catch (ParseException e) {
+					// Offenbar kein gültiges Datum
+					continue;
+				}
+				if (newestDate == null) {
+					newestDate = foundDate;
+				} else {
+					if (newestDate.compareTo(foundDate) < 0) {
+						newestDate = foundDate;
+					}
+				}
+			}
+		}
+		return newestDate;
 	}
 }

@@ -929,6 +929,17 @@ public class Controller {
 	 * @param task Task der gereschedulet werden soll
 	 */
 	public void scheduleBackupTask(final BackupTask task) {
+		LocalDateTime newestBackupTime = BackupHelper.getLocalDateTimeOfNewestBackupSet(task);
+		LocalDateTime now = LocalDateTime.now().minusNanos(LocalDateTime.now().getNano());
+		if (newestBackupTime != null && newestBackupTime.isEqual(now)) {
+			//TODO: Debugging raus
+			System.out.println("Debug: too Fast");
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		scheduleBackupTaskStartingAt(task, LocalDateTime.now());
 	}
 
@@ -957,7 +968,6 @@ public class Controller {
 			nextExecutionTime = calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(),
 					dateTime);
 		}
-
 		scheduleBackupTaskAt(task, nextExecutionTime);
 	}
 
