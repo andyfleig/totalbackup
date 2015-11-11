@@ -94,7 +94,7 @@ public final class BackupHelper {
 	 *
 	 * @param source      Quell-Datei des Hardlinks
 	 * @param destination Ziel-Datei des Hardlinks
-	 * @param backupTask  entsprechender BackupTask
+	 * @param task  entsprechender BackupTask
 	 */
 	public static void hardlinkFile(File source, File destination, IBackupListener listener, BackupTask task) {
 		if (!source.isFile()) {
@@ -123,7 +123,7 @@ public final class BackupHelper {
 	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt
 	 *                        werden soll)
 	 * @param taskName        Name des Backup-Tasks
-	 * @param backupTask      entsprechender BackupTask
+	 * @param task      entsprechender BackupTask
 	 * @return angelegter Root-Ordner
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener,
