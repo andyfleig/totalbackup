@@ -275,7 +275,7 @@ public class Mainframe extends JDialog {
 
 		textfield_status = new JTextField();
 		textfield_status.setEditable(false);
-		textfield_status.setPreferredSize(new Dimension(0, 25));
+		textfield_status.setPreferredSize(new Dimension(0, 50));
 		panel_status.add(textfield_status, BorderLayout.CENTER);
 
 		JLabel label_status = new JLabel();
@@ -1180,6 +1180,7 @@ public class Mainframe extends JDialog {
 	 */
 	public void addBackupTaskToList(BackupTask task) {
 		listModel.addElement(task);
+
 	}
 
 	/**
