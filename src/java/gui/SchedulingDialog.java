@@ -1,7 +1,6 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.util.ResourceBundle;
 
 import javax.swing.BoxLayout;
@@ -12,11 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import listener.ISchedulingDialogListener;
+import main.BackupHelper;
 
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.Dimension;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
@@ -37,6 +36,8 @@ public class SchedulingDialog extends JDialog {
 		setResizable(false);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 174, 160);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

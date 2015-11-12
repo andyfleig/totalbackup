@@ -20,6 +20,7 @@
  */
 package gui;
 
+import java.awt.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
@@ -27,11 +28,6 @@ import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
-import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.Panel;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -63,12 +59,11 @@ import listener.ISourcesDialogListener;
 import data.BackupTask;
 import data.Filter;
 import data.Source;
+import main.BackupHelper;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
-
-import java.awt.GridLayout;
 
 /**
  * Dialog zum Bearbeiten des BackupTasks.
@@ -211,6 +206,8 @@ public class EditDialog extends JDialog {
 	 * Erzeugt einen Edit-Dialog.
 	 */
 	public EditDialog(IEditDialogListener listener) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+
 		JComboBox<String> comboBox_eS1_unit;
 		JComboBox<String> comboBox_eS2_unit;
 		JComboBox<String> comboBox_eS3_unit;

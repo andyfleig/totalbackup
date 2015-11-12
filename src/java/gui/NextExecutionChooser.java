@@ -1,6 +1,7 @@
 package gui;
 
 import listener.INECListener;
+import main.BackupHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,6 +38,7 @@ public class NextExecutionChooser extends JDialog {
 		setContentPane(contentPane);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 550, 210);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
 
 		panel_options.setLayout(new BorderLayout());
 		panel_postponeOptions.setLayout(new BorderLayout());

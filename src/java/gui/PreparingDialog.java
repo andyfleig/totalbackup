@@ -27,12 +27,13 @@ import javax.swing.JButton;
 
 import data.BackupTask;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.util.ResourceBundle;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import listener.IPreparingDialogListener;
+import main.BackupHelper;
 
 /**
  * Minimaler Dialog welcher wärend der Preparation angezeigt wird und die
@@ -51,6 +52,7 @@ public class PreparingDialog extends JDialog {
 		setSize(220, 80);
 		setResizable(false);
 		this.listener = listener;
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
 
 		getContentPane().setLayout(new BorderLayout(0, 0));
 

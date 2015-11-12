@@ -21,6 +21,7 @@
 package gui;
 
 import listener.*;
+import main.BackupHelper;
 import main.Backupable;
 import main.Controller;
 import gui.AboutDialog;
@@ -208,7 +209,7 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.setPreferredSize(new Dimension(800, 500));
 		frmTotalbackup.pack();
 
-		Image image = Toolkit.getDefaultToolkit().getImage("./resources/TB_logo.png");
+		Image image = Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION);
 
 		frmTotalbackup.setIconImage(image);
 

@@ -20,7 +20,9 @@
  */
 package gui;
 
-import java.awt.BorderLayout;
+import main.BackupHelper;
+
+import java.awt.*;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -68,6 +70,8 @@ public class AboutDialog extends JDialog {
 		setModal(true);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 479, 532);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);

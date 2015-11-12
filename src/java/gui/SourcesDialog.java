@@ -20,9 +20,7 @@
  */
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.FlowLayout;
+import java.awt.*;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -35,8 +33,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
-
-import java.awt.Dimension;
 
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -51,6 +47,7 @@ import java.util.ResourceBundle;
 
 import listener.IFilterDialogListener;
 import listener.ISourcesDialogListener;
+import main.BackupHelper;
 
 /**
  * Dialog zum Festlegen und Bearbeiten der Quellen.
@@ -87,19 +84,6 @@ public class SourcesDialog extends JDialog {
 	private JButton button_delete;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			SourcesDialog dialog = new SourcesDialog(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public SourcesDialog(ISourcesDialogListener sourcesListener) {
@@ -108,6 +92,8 @@ public class SourcesDialog extends JDialog {
 		this.sourcesListener = sourcesListener;
 		setTitle(ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.title"));
 		setBounds(100, 100, 450, 300);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+
 		getContentPane().setLayout(new BorderLayout());
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);

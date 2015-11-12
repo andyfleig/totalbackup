@@ -20,6 +20,7 @@
  */
 package main;
 
+import java.awt.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -49,6 +50,11 @@ import listener.IBackupListener;
  * @author Andreas Fleig
  */
 public final class BackupHelper {
+
+	/**
+	 * Ort des Programm-Icons.
+	 */
+	public static final String ICON_LOCATION = "./resources/TB_logo.png";
 
 	/**
 	 * Datum-Vorlage.
@@ -93,7 +99,7 @@ public final class BackupHelper {
 	 *
 	 * @param source      Quell-Datei des Hardlinks
 	 * @param destination Ziel-Datei des Hardlinks
-	 * @param task  entsprechender BackupTask
+	 * @param task        entsprechender BackupTask
 	 */
 	public static void hardlinkFile(File source, File destination, IBackupListener listener, BackupTask task) {
 		if (!source.isFile()) {
@@ -122,7 +128,7 @@ public final class BackupHelper {
 	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt
 	 *                        werden soll)
 	 * @param taskName        Name des Backup-Tasks
-	 * @param task      entsprechender BackupTask
+	 * @param task            entsprechender BackupTask
 	 * @return angelegter Root-Ordner
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener,

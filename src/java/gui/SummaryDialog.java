@@ -20,8 +20,7 @@
  */
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -37,6 +36,7 @@ import javax.swing.JLabel;
 
 import data.BackupTask;
 import listener.ISummaryDialogListener;
+import main.BackupHelper;
 import main.Backupable;
 
 import java.awt.event.WindowAdapter;
@@ -50,24 +50,8 @@ import java.awt.event.WindowEvent;
 public class SummaryDialog extends JDialog {
 
 	private ISummaryDialogListener listener;
-	private final JPanel panel_main = new JPanel();
 	private boolean backupCanceled;
 	private boolean backupIsNotFinished;
-
-	/**
-	 * Launch the application.
-	 *
-	 * @deprecated
-	 */
-	public static void main(String[] args) {
-		try {
-			SummaryDialog dialog = new SummaryDialog(null, null, null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Dialog für die Zusammenfassung des Vorbereiteten Backups.
@@ -90,7 +74,10 @@ public class SummaryDialog extends JDialog {
 		setResizable(false);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 524, 370);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+
 		getContentPane().setLayout(new BorderLayout());
+		JPanel panel_main = new JPanel();
 		panel_main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(panel_main, BorderLayout.CENTER);
 		panel_main.setLayout(null);

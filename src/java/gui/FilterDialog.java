@@ -20,9 +20,7 @@
  */
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.util.ResourceBundle;
 
 import javax.swing.ButtonGroup;
@@ -43,6 +41,7 @@ import java.io.File;
 import javax.swing.JRadioButton;
 
 import listener.IFilterDialogListener;
+import main.BackupHelper;
 
 /**
  * Dialog zum Erstellen und Bearbeiten eines Filters.
@@ -74,19 +73,6 @@ public class FilterDialog extends JDialog {
 	private JRadioButton radioButton_useMD5;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			FilterDialog dialog = new FilterDialog(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public FilterDialog(IFilterDialogListener listener) {
@@ -94,6 +80,7 @@ public class FilterDialog extends JDialog {
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		this.listener = listener;
 		setBounds(100, 100, 462, 148);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
 		getContentPane().setLayout(new BorderLayout());
 
 		JPanel panel_filterType = new JPanel();
