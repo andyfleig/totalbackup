@@ -189,8 +189,8 @@ public class Controller {
 						}
 
 						@Override
-						public void scheduleBackupTasks() {
-							Controller.this.scheduleBackupTasks();
+						public void scheduleBackupTask(BackupTask task) {
+							Controller.this.scheduleBackupTask(task);
 						}
 
 						@Override

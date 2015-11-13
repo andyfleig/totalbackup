@@ -24,8 +24,6 @@ import listener.*;
 import main.BackupHelper;
 import main.Backupable;
 import main.Controller;
-import gui.AboutDialog;
-import gui.EditDialog;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -125,7 +123,7 @@ public class Mainframe extends JDialog {
 
 	private StyledDocument tpOutput_doc;
 
-	private ArrayList<BackupThreadContainer> backupThreads = new ArrayList<BackupThreadContainer>();
+	private ArrayList<BackupThreadContainer> backupThreads;
 
 	private SummaryDialog summary;
 
@@ -135,6 +133,7 @@ public class Mainframe extends JDialog {
 	private Socket clientSocket = null;
 
 	private TrayIcon trayIcon;
+	//TODO: Warum nie verwendet?:
 	private Process trayProcess;
 	private boolean isQTTray;
 
@@ -153,6 +152,7 @@ public class Mainframe extends JDialog {
 	public Mainframe(IMainframeListener listener) {
 		this.listener = listener;
 		initialize();
+		backupThreads = new ArrayList<BackupThreadContainer>();
 	}
 
 	/**
@@ -196,8 +196,8 @@ public class Mainframe extends JDialog {
 			}
 
 			@Override
-			public void scheduleBackupTasks() {
-				listener.scheduleBackupTasks();
+			public void scheduleBackupTask(BackupTask task) {
+				listener.scheduleBackupTask(task);
 			}
 
 		};
@@ -395,7 +395,6 @@ public class Mainframe extends JDialog {
 								ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
 								ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 								JOptionPane.ERROR_MESSAGE);
-						return;
 					} else {
 						if (selectedTask.getAutoBackupMode() != 0) {
 							LocalDateTime nextExecution = selectedTask.getLocalDateTimeOfNextBackup();

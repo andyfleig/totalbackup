@@ -61,7 +61,7 @@ public interface IEditDialogListener {
 	public void saveProperties();
 
 	/**
-	 * Schedulet alle BackupTasks.
+	 * Rescheduled den gegebenen BackupTask.
 	 */
-	public void scheduleBackupTasks();
+	public void scheduleBackupTask(BackupTask task);
 }

@@ -144,7 +144,7 @@ public final class BackupHelper {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
-			;
+
 			return null;
 		}
 		String backupDir = destinationFile.getAbsolutePath() + File.separator + taskName + "_" + df.format(date);
@@ -155,12 +155,12 @@ public final class BackupHelper {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreated");
 			listener.printOut(output, false, task.getTaskName());
 			listener.log(output, task);
-			;
+
 		} else {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
 			listener.printOut(output, true, task.getTaskName());
 			listener.log(output, task);
-			;
+
 			return null;
 		}
 		return dir;

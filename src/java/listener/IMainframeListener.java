@@ -125,9 +125,9 @@ public interface IMainframeListener {
 	public void taskFinished(BackupTask task);
 
 	/**
-	 * Schedulet alle BackupTasks.
+	 * Rescheduled den gegebenen BackupTask.
 	 */
-	public void scheduleBackupTasks();
+	public void scheduleBackupTask(BackupTask task);
 
 	/**
 	 * Schedult den gegebenen BackupTask auf jetzt.
