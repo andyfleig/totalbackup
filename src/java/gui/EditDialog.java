@@ -1369,7 +1369,7 @@ public class EditDialog extends JDialog {
 	 * Prüft den gegebenen Pfad auf Gültigkeit. Dabei ist ein Pfad genau dann Gültig wenn er existiert und der root
 	 * keine Datei sondern ein Verzeichnis ist.
 	 *
-	 * @param s zu prüfender Pfad
+	 * @param pfad zu prüfender Pfad
 	 * @return Gültigkeit des Pfades.
 	 */
 	private boolean isValidPath(String pfad) {
@@ -1536,7 +1536,7 @@ public class EditDialog extends JDialog {
 	/**
 	 * Aktiviert bzw. deaktiviert den DestinationVerification-Modus.
 	 *
-	 * @param autostart zu setzender DestinationVerification-Modus
+	 * @param destVerification zu setzender DestinationVerification-Modus
 	 */
 	public void setDestinationVerification(boolean destVerification) {
 		checkBox_destinationVerification.setSelected(destVerification);

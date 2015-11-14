@@ -924,8 +924,6 @@ public class Controller {
 		LocalDateTime newestBackupTime = BackupHelper.getLocalDateTimeOfNewestBackupSet(task);
 		LocalDateTime now = LocalDateTime.now().minusNanos(LocalDateTime.now().getNano());
 		if (newestBackupTime != null && newestBackupTime.isEqual(now)) {
-			//TODO: Debugging raus
-			System.out.println("Debug: too Fast");
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

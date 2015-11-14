@@ -181,6 +181,7 @@ public final class BackupHelper {
 				if (files[i].isDirectory()) {
 					deleteDirectory(files[i]);
 				} else {
+					//TODO: if raus?
 					if (!files[i].delete()) {
 					}
 				}

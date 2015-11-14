@@ -133,7 +133,6 @@ public class Mainframe extends JDialog {
 	private Socket clientSocket = null;
 
 	private TrayIcon trayIcon;
-	//TODO: Warum nie verwendet?:
 	private Process trayProcess;
 	private boolean isQTTray;
 
@@ -911,7 +910,7 @@ public class Mainframe extends JDialog {
 		File destDir = new File(task.getDestinationPath());
 		double freeSize = destDir.getFreeSpace();
 		BackupInfos backupInfos = backup.getBackupInfos();
-		// TODO: Zusätzliche warnung wenn knapp (z.B. 1%)
+		// TODO: Zusätzliche Warnung wenn knapp (z.B. 1%)
 		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
 		if (freeSize <= sizeNeeded) {
 			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
@@ -1047,10 +1046,9 @@ public class Mainframe extends JDialog {
 				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
-			//TODO: Notfallcode:
-			/*if (trayProcess != null) {
+			if (trayProcess != null) {
 				trayProcess.destroy();
-			}*/
+			}
 			cancelAllRunningTasks();
 			sendToQtTrayOverSocket(null, true);
 			System.exit(0);
