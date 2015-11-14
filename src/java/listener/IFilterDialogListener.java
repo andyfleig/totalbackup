@@ -47,10 +47,17 @@ public interface IFilterDialogListener {
 	public File getSourceFile();
 
 	/**
-	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
-	 * mit diesem Pfad gefunden wird dieser gelöscht.
+	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter mit diesem Pfad gefunden wird dieser
+	 * gelöscht.
 	 *
 	 * @param path zu löschender Filterpfad
 	 */
 	public void deleteFilter(String path);
+
+	/**
+	 * Prüft der entsprechende BackupTask gerade ausgeführt wird.
+	 *
+	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
+	 */
+	public boolean isBackupTaskRunning();
 }

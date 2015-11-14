@@ -26,8 +26,8 @@ import data.BackupTask;
 
 public interface IEditDialogListener {
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup
-	 * mit dem angegebenen Namen so wird null zurückgeliefert.
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null
+	 * zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
 	 * @return den gesuchten Backup-Task oder null
@@ -64,4 +64,12 @@ public interface IEditDialogListener {
 	 * Rescheduled den gegebenen BackupTask.
 	 */
 	public void scheduleBackupTask(BackupTask task);
+
+	/**
+	 * Prüft ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird.
+	 *
+	 * @param s Name des BackupTasks
+	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
+	 */
+	public boolean isBackupTaskRunning(String s);
 }

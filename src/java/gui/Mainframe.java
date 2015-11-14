@@ -200,6 +200,11 @@ public class Mainframe extends JDialog {
 				listener.scheduleBackupTask(task);
 			}
 
+			@Override
+			public boolean isBackupTaskRunning(String s) {
+				return listener.isBackupTaskRunning(s);
+			}
+
 		};
 
 		frmTotalbackup = new JFrame();
@@ -390,6 +395,7 @@ public class Mainframe extends JDialog {
 
 				if (!list_tasks.isSelectionEmpty()) {
 					BackupTask selectedTask = list_tasks.getSelectedValue();
+					// Prüfen ob der gewählte Task gerade ausgeführt wird:
 					if (listener.getRunningBackupTasks().contains(selectedTask.getTaskName())) {
 						JOptionPane.showMessageDialog(null,
 								ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
@@ -516,10 +522,17 @@ public class Mainframe extends JDialog {
 
 		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (list_tasks.getSelectedIndex() == -1) {
+				if (list_tasks.isSelectionEmpty()) {
 					return;
 				}
 				final BackupTask taskToRun = listModel.getElementAt(list_tasks.getSelectedIndex());
+				// Prüfen ob der gewählte Task gerade ausgeführt wird:
+				if (listener.getRunningBackupTasks().contains(taskToRun.getTaskName())) {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
+							ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				listener.taskStarted(taskToRun.getTaskName());
 				prep = new PreparingDialog(new IPreparingDialogListener() {
 
@@ -577,7 +590,11 @@ public class Mainframe extends JDialog {
 		button_startAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				for (int i = 0; i < listModel.getSize(); i++) {
-					listener.scheduleBackupTaskNow(listModel.get(i));
+					// Nur schedulen wenn der gegebene BackupTask nicht gerade ausgeführt wird:
+					BackupTask task = listModel.get(i);
+					if (!listener.getRunningBackupTasks().contains(task.getTaskName())) {
+						listener.scheduleBackupTaskNow(task);
+					}
 				}
 			}
 		});
@@ -1215,6 +1232,9 @@ public class Mainframe extends JDialog {
 	 * Sperrt bzw. entsperrt die Buttons der GUI.
 	 *
 	 * @param noBackupRunning false = "sperrt" die Buttons der GUI (während laufendem Backup), true = entsperrt
+	 * @deprecated Sollte nicht verwendet werden. Buttons sollten immer freigeben sein, um zu verhindern das ein
+	 * laufender BackupTask alles blockiert (z.B. das Bearbeiten eines anderen BackupTasks oder das erstellen eines
+	 * neuen BackupTasks)
 	 */
 	public void setButtonsToBackupRunning(boolean noBackupRunning) {
 		button_cancel.setEnabled(!noBackupRunning);

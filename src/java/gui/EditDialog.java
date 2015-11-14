@@ -189,18 +189,6 @@ public class EditDialog extends JDialog {
 	private JCheckBox checkBox_catchUp;
 
 	/**
-	 * @deprecated
-	 */
-	public static void main(String[] args) {
-		/*
-		 * try { Edit dialog = new Edit();
-		 * dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		 * dialog.setVisible(true); } catch (Exception e) { e.printStackTrace();
-		 * }
-		 */
-	}
-
-	/**
 	 * Erzeugt einen Edit-Dialog.
 	 */
 	public EditDialog(IEditDialogListener listener) {
@@ -280,6 +268,11 @@ public class EditDialog extends JDialog {
 						return;
 					}
 				}
+			}
+
+			@Override
+			public boolean isBackupTaskRunning() {
+				return listener.isBackupTaskRunning(textfield_name.getText());
 			}
 		};
 
@@ -1066,6 +1059,14 @@ public class EditDialog extends JDialog {
 		JButton btn_Ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		btn_Ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Prüfen ob der gewählte Task gerade ausgeführt wird:
+				if (listener.isBackupTaskRunning(textfield_name.getText())) {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
+							ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
 				boolean deleteOldTask = false;
 				BackupTask task;
 				boolean allInputsAreValid = true;

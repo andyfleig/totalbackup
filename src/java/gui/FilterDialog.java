@@ -147,6 +147,13 @@ public class FilterDialog extends JDialog {
 		JButton button_ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		button_ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Prüfen ob der gewählte Task gerade ausgeführt wird:
+				if (listener.isBackupTaskRunning()) {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
+							ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				// Pfad auf gültigkeit Prüfen:
 				if (!(new File(textfield_filter.getText()).exists())) {
 					return;

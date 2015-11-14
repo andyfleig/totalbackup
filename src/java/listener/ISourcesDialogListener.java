@@ -39,10 +39,16 @@ public interface ISourcesDialogListener {
 	public void addSource(Source source);
 
 	/**
-	 * Sucht nach einer Quelle mit dem gegebenen Pfad. Wird diese gefunden wird
-	 * sie gelöscht.
+	 * Sucht nach einer Quelle mit dem gegebenen Pfad. Wird diese gefunden wird sie gelöscht.
 	 *
 	 * @param path zu löschende Quelle
 	 */
 	public void deleteSource(String path);
+
+	/**
+	 * Prüft der entsprechende BackupTask gerade ausgeführt wird.
+	 *
+	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
+	 */
+	public boolean isBackupTaskRunning();
 }

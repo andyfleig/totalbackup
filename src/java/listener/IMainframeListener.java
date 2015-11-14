@@ -179,4 +179,12 @@ public interface IMainframeListener {
 	 * @return ob der gegebene String teil der übergebenen Argumente ist
 	 */
 	public boolean argsContains(String s);
+
+	/**
+	 * Prüft ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird.
+	 *
+	 * @param s Name des BackupTasks
+	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
+	 */
+	public boolean isBackupTaskRunning(String s);
 }

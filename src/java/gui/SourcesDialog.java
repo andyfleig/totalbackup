@@ -65,12 +65,11 @@ public class SourcesDialog extends JDialog {
 	private JList<Filter> list_filter;
 	private DefaultListModel<Filter> listModel;
 
-	private ISourcesDialogListener sourcesListener;
+	private ISourcesDialogListener listener;
 	private FilterDialog filterDialog;
 
 	/**
-	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
-	 * erzeugt wird.
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
 	 */
 	private boolean inEditMode;
 	/**
@@ -86,10 +85,10 @@ public class SourcesDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SourcesDialog(ISourcesDialogListener sourcesListener) {
+	public SourcesDialog(ISourcesDialogListener listener) {
 		setResizable(false);
 		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-		this.sourcesListener = sourcesListener;
+		this.listener = listener;
 		setTitle(ResourceBundle.getBundle("messages").getString("GUI.SourcesDialog.title"));
 		setBounds(100, 100, 450, 300);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
@@ -110,6 +109,34 @@ public class SourcesDialog extends JDialog {
 		textfield_source = new JTextField();
 		panel_path.add(textfield_source);
 		textfield_source.setColumns(10);
+
+		filterDialog = new FilterDialog(new IFilterDialogListener() {
+
+			@Override
+			public void addFilter(String path, int mode) {
+				listModel.addElement(new Filter(path, mode));
+			}
+
+			@Override
+			public boolean isUnderSourceRoot(String path) {
+				return SourcesDialog.this.isUnderSourceRoot(path);
+			}
+
+			@Override
+			public void deleteFilter(String path) {
+				SourcesDialog.this.deleteFilter(path);
+			}
+
+			@Override
+			public boolean isBackupTaskRunning() {
+				return listener.isBackupTaskRunning();
+			}
+
+			@Override
+			public File getSourceFile() {
+				return SourcesDialog.this.getSourceFile();
+			}
+		});
 
 		// Button Druchsuchen:
 		button_find = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_find"));
@@ -161,28 +188,6 @@ public class SourcesDialog extends JDialog {
 			JButton button_add = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_add"));
 			button_add.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					filterDialog = new FilterDialog(new IFilterDialogListener() {
-
-						@Override
-						public void addFilter(String path, int mode) {
-							listModel.addElement(new Filter(path, mode));
-						}
-
-						@Override
-						public boolean isUnderSourceRoot(String path) {
-							return SourcesDialog.this.isUnderSourceRoot(path);
-						}
-
-						@Override
-						public void deleteFilter(String path) {
-							SourcesDialog.this.deleteFilter(path);
-						}
-
-						@Override
-						public File getSourceFile() {
-							return SourcesDialog.this.getSourceFile();
-						}
-					});
 					filterDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					filterDialog.setLocation(SourcesDialog.this.getLocationOnScreen());
 					filterDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
@@ -200,29 +205,6 @@ public class SourcesDialog extends JDialog {
 				if (list_filter.isSelectionEmpty()) {
 					return;
 				}
-
-				filterDialog = new FilterDialog(new IFilterDialogListener() {
-
-					@Override
-					public void addFilter(String path, int mode) {
-						listModel.addElement(new Filter(path, mode));
-					}
-
-					@Override
-					public boolean isUnderSourceRoot(String path) {
-						return SourcesDialog.this.isUnderSourceRoot(path);
-					}
-
-					@Override
-					public void deleteFilter(String path) {
-						SourcesDialog.this.deleteFilter(path);
-					}
-
-					@Override
-					public File getSourceFile() {
-						return SourcesDialog.this.getSourceFile();
-					}
-				});
 				filterDialog.setFilter(listModel.get(list_filter.getSelectedIndex()).getPath());
 				filterDialog.setEditMode(true);
 				filterDialog.setOriginalPath(list_filter.getSelectedValue().getPath());
@@ -259,6 +241,13 @@ public class SourcesDialog extends JDialog {
 		JButton button_ok = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_ok"));
 		button_ok.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// Prüfen ob der gewählte Task gerade ausgeführt wird:
+				if (listener.isBackupTaskRunning()) {
+					JOptionPane.showMessageDialog(null,
+							ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
+							ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
 				// Quellpfad prüfen:
 				File source = new File(textfield_source.getText());
 				if (!source.exists()) {
@@ -286,12 +275,11 @@ public class SourcesDialog extends JDialog {
 				for (int i = 0; i < listModel.getSize(); i++) {
 					newSource.addFilter(listModel.get(i));
 				}
-
 				if (inEditMode) {
-					deleteSource(originalPath);
+					listener.deleteSource(originalPath);
 				}
 
-				addSource(newSource);
+				listener.addSource(newSource);
 				SourcesDialog.this.dispose();
 
 			}
@@ -318,26 +306,7 @@ public class SourcesDialog extends JDialog {
 	 * @return ob der Pfad bereits Quellpfad ist
 	 */
 	private boolean isAlreadySourcePath(String path) {
-		return sourcesListener.isAlreadySourcePath(path);
-	}
-
-	/**
-	 * Fügt eine Quelle hinzu.
-	 *
-	 * @param source hinzuzufügende Quelle.
-	 */
-	private void addSource(Source source) {
-		sourcesListener.addSource(source);
-	}
-
-	/**
-	 * Sucht nach einer Quelle mit dem gegebenen Pfad. Wird diese gefunden wird
-	 * sie gelöscht.
-	 *
-	 * @param path zu löschende Quelle
-	 */
-	public void deleteSource(String path) {
-		sourcesListener.deleteSource(path);
+		return listener.isAlreadySourcePath(path);
 	}
 
 	/**
@@ -352,7 +321,7 @@ public class SourcesDialog extends JDialog {
 	/**
 	 * Schaltet den EditMode an bzw. aus.
 	 *
-	 * @param editMode true = an, false = aus
+	 * @param inEditMode true = an, false = aus
 	 */
 	public void setEditMode(boolean inEditMode) {
 		this.inEditMode = inEditMode;
@@ -390,8 +359,8 @@ public class SourcesDialog extends JDialog {
 	}
 
 	/**
-	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter
-	 * mit diesem Pfad gefunden wird dieser gelöscht.
+	 * Durchsucht die Liste der Filter nach dem gegebenen Pfad. Wird ein Filter mit diesem Pfad gefunden wird dieser
+	 * gelöscht.
 	 *
 	 * @param path zu löschender Filterpfad
 	 */

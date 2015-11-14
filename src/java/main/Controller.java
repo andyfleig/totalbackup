@@ -229,6 +229,11 @@ public class Controller {
 						public boolean argsContains(String s) {
 							return Controller.this.argsContains(s);
 						}
+
+						@Override
+						public boolean isBackupTaskRunning(String s) {
+							return Controller.this.isBackupTaskRunning(s);
+						}
 					});
 				}
 			});
@@ -321,7 +326,8 @@ public class Controller {
 				System.err.println("Error: FileNotFoundException while loading Gson-Properties");
 			}
 			Gson gson = new Gson();
-			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>() {}.getType();
+			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>() {
+			}.getType();
 			if (settings != null) {
 				backupTasks = gson.fromJson(settings, listOfBackupTasks);
 			}
@@ -335,7 +341,6 @@ public class Controller {
 	 * Startet die Backup-Vorbereitung.
 	 */
 	public Backupable startPreparation(BackupTask task) {
-		mainframe.setButtonsToBackupRunning(false);
 
 		// Listener anlegen:
 		backupListener = new IBackupListener() {
@@ -442,9 +447,7 @@ public class Controller {
 			log(output, task);
 		}
 
-		mainframe.setButtonsToBackupRunning(true);
 		// TODO: Probleme mit setPrepared bei abbruch?
-		task.setPrepared(true);
 		return backup;
 	}
 
@@ -454,7 +457,6 @@ public class Controller {
 	 * @param task Backup-Task welcher ausgeführt werden soll
 	 */
 	public void startBackup(BackupTask task, Backupable backup) {
-		mainframe.setButtonsToBackupRunning(false);
 		// "Richtigen" Zielpfad setzten (wenn nötig):
 		if (task.getRealDestinationPath() != null) {
 			task.setDestinationPath(task.getRealDestinationPath());
@@ -462,7 +464,6 @@ public class Controller {
 		}
 
 		if (!task.isPrepered()) {
-			mainframe.setButtonsToBackupRunning(true);
 			return;
 		}
 
@@ -509,7 +510,6 @@ public class Controller {
 		}
 
 		task = null;
-		mainframe.setButtonsToBackupRunning(true);
 
 	}
 
@@ -1238,6 +1238,19 @@ public class Controller {
 			if (string.equals(s)) {
 				return true;
 			}
+		}
+		return false;
+	}
+
+	/**
+	 * Prüft ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird.
+	 *
+	 * @param s Name des BackupTasks
+	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
+	 */
+	public boolean isBackupTaskRunning(String s) {
+		if (runningBackupTasks.contains(s)) {
+			return true;
 		}
 		return false;
 	}
