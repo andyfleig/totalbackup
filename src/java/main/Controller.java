@@ -94,8 +94,7 @@ public class Controller {
 	private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(3);
 
 	/**
-	 * Gibt an um wie viele Sekunden das nachzuholenden Backup (von now an)
-	 * verzögert werden soll.
+	 * Gibt an um wie viele Sekunden das nachzuholenden Backup (von now an) verzögert werden soll.
 	 */
 	private static final int DELAY_FOR_MISSED_BACKUP = 2;
 
@@ -239,8 +238,8 @@ public class Controller {
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
 			// Prüfen ob Backups versäumt wurden:
 			for (BackupTask task : backupTasks) {
-				if (task.getLocalDateTimeOfNextBackup() != null
-						&& task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
+				if (task.getLocalDateTimeOfNextBackup() != null && task.getLocalDateTimeOfNextBackup().isBefore(
+						LocalDateTime.now())) {
 					// Dieses Backup wurde versäumt
 					missedBackupTaks.add(task);
 				}
@@ -252,11 +251,11 @@ public class Controller {
 			for (BackupTask task : missedBackupTaks) {
 				// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
 				// von profitableTimeUntilNextExecution des Tasks):
-				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution()))
-						.isAfter(LocalDateTime.now())) {
-					String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " "
-							+ task.getTaskName() + " "
-							+ ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
+				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(
+						task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
+					String msg = ResourceBundle.getBundle("messages").getString(
+							"Messages.popup.catchUp1") + " " + task.getTaskName() + " " + ResourceBundle.getBundle(
+							"messages").getString("Messages.popup.catchUp2");
 					showTrayPopupMessage(msg);
 					scheduleBackupTaskNow(task);
 				}
@@ -322,8 +321,7 @@ public class Controller {
 				System.err.println("Error: FileNotFoundException while loading Gson-Properties");
 			}
 			Gson gson = new Gson();
-			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>() {
-			}.getType();
+			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>() {}.getType();
 			if (settings != null) {
 				backupTasks = gson.fromJson(settings, listOfBackupTasks);
 			}
@@ -487,24 +485,19 @@ public class Controller {
 		if (task.simpleAutoCleanIsEnabled()) {
 			try {
 				while (this.calcNumberOfBackups(task) > task.getNumberOfBackupsToKeep()) {
-					File toDelete = new File(
-							task.getDestinationPath() + File.separator
-									+ findOldestBackup(
-									new ArrayList<File>(
-											Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
-									task));
+					File toDelete = new File(task.getDestinationPath() + File.separator + findOldestBackup(
+							new ArrayList<File>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
+							task));
 
-					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " "
-							+ toDelete.getAbsolutePath();
+					String output = ResourceBundle.getBundle("messages").getString(
+							"Messages.deleting") + " " + toDelete.getAbsolutePath();
 					setStatus(output);
 					log(output, task);
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
-					printOut(
-							toDelete.getAbsolutePath() + " "
-									+ ResourceBundle.getBundle("messages").getString("Messages.deleted"),
-							false, task.getTaskName());
+					printOut(toDelete.getAbsolutePath() + " " + ResourceBundle.getBundle("messages").getString(
+							"Messages.deleted"), false, task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
@@ -534,7 +527,8 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder nicht.
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder
+	 * nicht.
 	 *
 	 * @param s     auszugebender String
 	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
@@ -587,7 +581,8 @@ public class Controller {
 	}
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null zurückgeliefert.
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null
+	 * zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
 	 * @return den gesuchten Backup-Task oder null
@@ -840,8 +835,8 @@ public class Controller {
 		// Kontrolle auf Wert "all":
 		if (task.getBackupsToKeep().length > 0 && !task.getBackupsToKeep()[0].equals("all")) {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
-				if (!BackupHelper
-						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket1, task)))) {
+				if (!BackupHelper.deleteDirectory(
+						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket1, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -861,8 +856,8 @@ public class Controller {
 
 		if (task.getBackupsToKeep().length > 2 && !task.getBackupsToKeep()[2].equals("all")) {
 			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(task.getBackupsToKeep()[2])) {
-				if (!BackupHelper
-						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket3, task)))) {
+				if (!BackupHelper.deleteDirectory(
+						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket3, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -871,8 +866,8 @@ public class Controller {
 
 		if (task.getBackupsToKeep().length > 3 && !task.getBackupsToKeep()[3].equals("all")) {
 			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(task.getBackupsToKeep()[3])) {
-				if (!BackupHelper
-						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket4, task)))) {
+				if (!BackupHelper.deleteDirectory(
+						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket4, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -881,8 +876,8 @@ public class Controller {
 
 		if (task.getBackupsToKeep().length > 4 && !task.getBackupsToKeep()[4].equals("all")) {
 			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(task.getBackupsToKeep()[4])) {
-				if (!BackupHelper
-						.deleteDirectory(new File(task.getDestinationPath() + "/" + findOldestBackup(bucket5, task)))) {
+				if (!BackupHelper.deleteDirectory(
+						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket5, task)))) {
 					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					break;
 				}
@@ -1013,9 +1008,9 @@ public class Controller {
 		// Für das Popup:
 		Runnable popup = new Runnable() {
 			public void run() {
-				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask") + " "
-						+ task.getTaskName() + " "
-						+ ResourceBundle.getBundle("messages").getString("Messages.popup.startsInOneMinute"));
+				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString(
+						"Messages.popup.backupTask") + " " + task.getTaskName() + " " + ResourceBundle.getBundle(
+						"messages").getString("Messages.popup.startsInOneMinute"));
 			}
 		};
 		// Task (mit timer) schedulen:
@@ -1058,8 +1053,8 @@ public class Controller {
 	}
 
 	/**
-	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den
-	 * gegebenen weekdays ab dem gegebenen Zeitpunkt.
+	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den gegebenen weekdays ab dem gegebenen
+	 * Zeitpunkt.
 	 *
 	 * @param weekdays Wochentage an denen gesichert werden soll
 	 * @param time     Zeit zu der gesichert werden soll
@@ -1122,8 +1117,7 @@ public class Controller {
 	}
 
 	/**
-	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den
-	 * gegebenen daysInMonth.
+	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den gegebenen daysInMonth.
 	 *
 	 * @param daysInMonth Tage im Monat an denen gesichert werden soll
 	 * @param time        Zeit zu der gesichert werden soll
@@ -1169,8 +1163,7 @@ public class Controller {
 	}
 
 	/**
-	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus dem
-	 * gegebenen Intervall.
+	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus dem gegebenen Intervall.
 	 *
 	 * @param interval     gegebenes Intervall
 	 * @param intervalUnit Einheit des Intervals (min, h, d, m)

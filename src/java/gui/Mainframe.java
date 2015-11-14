@@ -471,18 +471,18 @@ public class Mainframe extends JDialog {
 				String labelText;
 				if (label.getLocalDateTimeOfNextBackup() != null) {
 					LocalDateTime nextExecutionTime = label.getLocalDateTimeOfNextBackup();
-					labelText = "<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task")
-							+ " " + name + "<br/>"
-							+ ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.nextExecutionTime")
-							+ " " + nextExecutionTime.format(dtf);
+					labelText = "<html>" + ResourceBundle.getBundle("messages").getString(
+							"GUI.Mainframe.list.task") + " " + name + "<br/>" + ResourceBundle.getBundle(
+							"messages").getString(
+							"GUI.Mainframe.list.nextExecutionTime") + " " + nextExecutionTime.format(dtf);
 				} else {
 					if (listener.getRunningBackupTasks().contains(name)) {
-						labelText = "<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task")
-								+ " " + name + "<br/>"
-								+ ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.running");
+						labelText = "<html>" + ResourceBundle.getBundle("messages").getString(
+								"GUI.Mainframe.list.task") + " " + name + "<br/>" + ResourceBundle.getBundle(
+								"messages").getString("GUI.Mainframe.list.running");
 					} else {
-						labelText = "<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task")
-								+ " " + name;
+						labelText = "<html>" + ResourceBundle.getBundle("messages").getString(
+								"GUI.Mainframe.list.task") + " " + name;
 					}
 				}
 				setText(labelText);
@@ -661,8 +661,8 @@ public class Mainframe extends JDialog {
 	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die Nachricht maximal 999 Zeichen lang sein!
 	 *
 	 * @param msg               zu sendende Nachricht
-	 * @param terminationSignal wenn es sich bei der Nachricht um ein terminationSignal (true)
-	 *                          und keine anzuzuegende Nachricht (false) handelt
+	 * @param terminationSignal wenn es sich bei der Nachricht um ein terminationSignal (true) und keine anzuzuegende
+	 *                          Nachricht (false) handelt
 	 */
 	public void sendToQtTrayOverSocket(String msg, boolean terminationSignal) {
 		char[] toSend;
@@ -833,11 +833,9 @@ public class Mainframe extends JDialog {
 							task.getDestinationPath());
 					boolean successful = false;
 					for (String dest : correctDest) {
-						int reply2 = JOptionPane.showConfirmDialog(null,
-								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " "
-										+ dest + "  "
-										+ ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
-								null, JOptionPane.YES_NO_OPTION);
+						int reply2 = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("messages").getString(
+								"Messages.FoundDestCorrect1") + " " + dest + "  " + ResourceBundle.getBundle(
+								"messages").getString("Messages.FoundDestCorrect2"), null, JOptionPane.YES_NO_OPTION);
 						if (reply2 == JOptionPane.YES_OPTION) {
 							int reply3 = JOptionPane.showConfirmDialog(null,
 									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
@@ -897,8 +895,7 @@ public class Mainframe extends JDialog {
 		double freeSize = destDir.getFreeSpace();
 		BackupInfos backupInfos = backup.getBackupInfos();
 		// TODO: Zusätzliche warnung wenn knapp (z.B. 1%)
-		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy()
-				+ SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
+		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
 		if (freeSize <= sizeNeeded) {
 			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
 			JOptionPane.showMessageDialog(null,
@@ -1130,8 +1127,7 @@ public class Mainframe extends JDialog {
 	 * Gibt einen String auf der GUI (im Textfeld) aus.
 	 *
 	 * @param output   String welcher auf der GUI angezeigt werden soll.
-	 * @param error    true = Fehlermeldung (schrift rot); false = Normale Ausgabe
-	 *                 (schrift schwarz)
+	 * @param error    true = Fehlermeldung (schrift rot); false = Normale Ausgabe (schrift schwarz)
 	 * @param taskName Name des aktuellen Tasks
 	 */
 	public synchronized void addToOutput(String output, boolean error, String taskName) {
@@ -1218,8 +1214,7 @@ public class Mainframe extends JDialog {
 	/**
 	 * Sperrt bzw. entsperrt die Buttons der GUI.
 	 *
-	 * @param noBackupRunning false = "sperrt" die Buttons der GUI (während laufendem
-	 *                        Backup), true = entsperrt
+	 * @param noBackupRunning false = "sperrt" die Buttons der GUI (während laufendem Backup), true = entsperrt
 	 */
 	public void setButtonsToBackupRunning(boolean noBackupRunning) {
 		button_cancel.setEnabled(!noBackupRunning);

@@ -155,8 +155,8 @@ public class HardlinkBackup implements Backupable {
 				// Es handelt sich wohl um einen Backup-Satz
 				File[] destFolder = destFolders[i].listFiles();
 				for (int j = 0; j < destFolder.length; j++) {
-					if (!destFolder[j].isDirectory() && destFolder[j].getName().contains(taskName)
-							&& destFolder[j].getName().contains(".ser")) {
+					if (!destFolder[j].isDirectory() && destFolder[j].getName().contains(
+							taskName) && destFolder[j].getName().contains(".ser")) {
 						// Ab hier wird davon ausgegangen, dass ein index-file
 						// exisitert.
 						indexExists = true;
@@ -279,8 +279,8 @@ public class HardlinkBackup implements Backupable {
 				if (!sourceFile.isDirectory()) {
 					f = backupDir;
 				} else {
-					if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3
-							&& sourceFile.getName().equals("")) {
+					if (sourceFile.getAbsolutePath().contains(
+							":\\") && sourceFile.getAbsolutePath().length() == 3 && sourceFile.getName().equals("")) {
 						// In diesem Sonderfall ergibt sich der Name nur aus dem
 						// Laufwerksbuchstaben:
 						folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
@@ -366,9 +366,9 @@ public class HardlinkBackup implements Backupable {
 							BackupHelper.copyFile(new File(currentElement.getSourcePath()),
 									new File(currentElement.getDestPath()), listener, task);
 						} catch (IOException e) {
-							String msg = ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg1")
-									+ currentElement.getSourcePath()
-									+ ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg2");
+							String msg = ResourceBundle.getBundle("messages").getString(
+									"GUI.errCopyIOExMsg1") + currentElement.getSourcePath() + ResourceBundle.getBundle(
+									"messages").getString("GUI.errCopyIOExMsg2");
 							listener.printOut(msg, true, task.getTaskName());
 							listener.log(msg, task);
 						}
@@ -424,8 +424,8 @@ public class HardlinkBackup implements Backupable {
 			files[0] = sourceFile;
 		}
 		if (files == null) {
-			String outprint = ResourceBundle.getBundle("messages").getString("Messages.UnknownErrorAt") + " "
-					+ sourceFile.getPath();
+			String outprint = ResourceBundle.getBundle("messages").getString(
+					"Messages.UnknownErrorAt") + " " + sourceFile.getPath();
 			listener.printOut(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 
@@ -457,8 +457,8 @@ public class HardlinkBackup implements Backupable {
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if (filtersOfThisSource.get(j).getMode() == 0
-							&& (files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
+					if (filtersOfThisSource.get(j).getMode() == 0 && (files[i].getAbsolutePath().equals(
+							filtersOfThisSource.get(j).getPath()))) {
 						filterMatches = true;
 					}
 				}
@@ -498,15 +498,16 @@ public class HardlinkBackup implements Backupable {
 							// Filterung:
 							filterMatches = false;
 							for (int j = 0; j < filtersOfThisSource.size(); j++) {
-								if (filtersOfThisSource.get(j).getMode() == 1
-										&& (files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
+								if (filtersOfThisSource.get(j).getMode() == 1 && (files[i].getAbsolutePath().equals(
+										filtersOfThisSource.get(j).getPath()))) {
 									filterMatches = true;
 								}
 							}
 							if (!filterMatches) {
 								// Datei verlinken:
-								elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
-										newFile.getAbsolutePath(), false, true));
+								elementQueue.add(
+										new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile.getAbsolutePath(),
+												false, true));
 								backupInfos.increaseNumberOfFilesToLink();
 								backupInfos.increaseSizeToLinkBy(files[i].length());
 							} else {
@@ -515,8 +516,8 @@ public class HardlinkBackup implements Backupable {
 								// MD5 heißt kopieren:
 								String md5OfSourceFile = BackupHelper.calcMD5(files[i]);
 								String md5OfFileToLinkFrom = BackupHelper.calcMD5(fileToLinkFrom);
-								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null
-										&& md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
+								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null && md5OfSourceFile.equals(
+										md5OfFileToLinkFrom)) {
 									// Datei verlinken:
 									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
 											newFile.getAbsolutePath(), false, true));
@@ -524,8 +525,9 @@ public class HardlinkBackup implements Backupable {
 									backupInfos.increaseSizeToLinkBy(files[i].length());
 								} else {
 									// Datei zu kopieren:
-									elementQueue.add(new BackupElement(files[i].getAbsolutePath(),
-											newFile.getAbsolutePath(), false, false));
+									elementQueue.add(
+											new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
+													false, false));
 									backupInfos.increaseNumberOfFilesToCopy();
 									backupInfos.increaseSizeToCopyBy(files[i].length());
 								}
@@ -577,8 +579,9 @@ public class HardlinkBackup implements Backupable {
 							listener.printOut(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 							// Datei zu kopieren:
-							elementQueue.add(new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
-									false, false));
+							elementQueue.add(
+									new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false,
+											false));
 							backupInfos.increaseNumberOfFilesToCopy();
 							backupInfos.increaseSizeToCopyBy(files[i].length());
 						}
@@ -589,7 +592,8 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort vorhanden ist. Ist die Datei nicht im Index wird null zurückgegeben.
+	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort vorhanden ist. Ist die Datei nicht im
+	 * Index wird null zurückgegeben.
 	 *
 	 * @param file           Datei für welche das StrucutreFile zurückgegeben werden soll
 	 * @param sourceRootPath Root-Pfad der Quelle

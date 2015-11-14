@@ -125,8 +125,7 @@ public final class BackupHelper {
 	/**
 	 * Erstellt den Root-Ordner für ein Backup.
 	 *
-	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt
-	 *                        werden soll)
+	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt werden soll)
 	 * @param taskName        Name des Backup-Tasks
 	 * @param task            entsprechender BackupTask
 	 * @return angelegter Root-Ordner
@@ -268,7 +267,8 @@ public final class BackupHelper {
 
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
-					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(), ZoneId.systemDefault());
+					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(),
+							ZoneId.systemDefault());
 				} catch (ParseException e) {
 					// Offenbar kein gültiges Datum
 					continue;

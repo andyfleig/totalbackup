@@ -109,8 +109,7 @@ public class EditDialog extends JDialog {
 	String[] template_timeInterval_m = {"inf", "m", "y"};
 	String[] template_timeInterval_y = {"inf", "y"};
 
-	String[] template_backupSets = {"all", "50", "45", "40", "35", "30", "25", "20", "15", "10", "9", "8", "7", "6",
-			"5", "4", "3", "2", "1"};
+	String[] template_backupSets = {"all", "50", "45", "40", "35", "30", "25", "20", "15", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"};
 
 	private JComboBox<String>[] unitComboBoxes;
 	private JComboBox<String>[] toKeepComboBoxes;
@@ -135,8 +134,7 @@ public class EditDialog extends JDialog {
 	private static final int MAX_NUMBER_OF_RULES = 5;
 
 	/**
-	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer
-	 * erzeugt wird.
+	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
 	 */
 	private boolean inEditMode;
 	private JTextField textField_timeToStart;
@@ -748,8 +746,8 @@ public class EditDialog extends JDialog {
 
 		spinner_numberOfBackupsToKeep = new JSpinner();
 		panel_settingsSimpleSettings.add(spinner_numberOfBackupsToKeep);
-		spinner_numberOfBackupsToKeep
-				.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		spinner_numberOfBackupsToKeep.setModel(
+				new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
 		tabbedPane_autoclean.addTab(ResourceBundle.getBundle("messages").getString("GUI.EditDialog.extended"),
 				panel_extendedSettings);
 		panel_extendedSettings.setLayout(new BorderLayout(0, 0));
@@ -1108,9 +1106,8 @@ public class EditDialog extends JDialog {
 								task.addSourcePath(listModel.getElementAt(i));
 							} else {
 								// Mindestens ein Quellpfad ist ungültig
-								JOptionPane.showMessageDialog(null,
-										ResourceBundle.getBundle("messages")
-												.getString("GUI.EditDialog.errIllegalSource"),
+								JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("messages").getString(
+										"GUI.EditDialog.errIllegalSource"),
 										ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 										JOptionPane.INFORMATION_MESSAGE);
 								return;
@@ -1124,37 +1121,33 @@ public class EditDialog extends JDialog {
 							if (checkBox_destinationVerification.isSelected() && !task.getDestinationVerification()) {
 								// Neuen Identifier anlegen:
 								createIdentifier(task.getTaskName(), textfield_destination.getText());
-							} else if (checkBox_destinationVerification.isSelected()
-									&& task.getDestinationVerification()) {
+							} else if (checkBox_destinationVerification.isSelected() && task.getDestinationVerification()) {
 								// Wenn sich der Zielpfad geändert hat, muss der
 								// Identifier angepasst werden:
-								if (task.getDestinationPath() != null
-										&& task.getDestinationPath().equals(textfield_destination.getText())) {
+								if (task.getDestinationPath() != null && task.getDestinationPath().equals(
+										textfield_destination.getText())) {
 									// Alten Identifier löschen:
 									deleteIdentifier(task.getTaskName(), textfield_destination.getText());
 									// Neuen Identifier anlegen:
 									createIdentifier(task.getTaskName(), textfield_destination.getText());
 								}
-							} else if (!checkBox_destinationVerification.isSelected()
-									&& task.getDestinationVerification()) {
+							} else if (!checkBox_destinationVerification.isSelected() && task.getDestinationVerification()) {
 								// Alten Identifier löschen:
 								deleteIdentifier(task.getTaskName(), textfield_destination.getText());
 							}
 							task.setDestinationPath(textfield_destination.getText());
 						} else {
 							// Zielpfad ist ungültig oder leer:
-							JOptionPane.showMessageDialog(null,
-									ResourceBundle.getBundle("messages")
-											.getString("GUI.EditDialog.errIllegalDestination"),
+							JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("messages").getString(
+									"GUI.EditDialog.errIllegalDestination"),
 									ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 									JOptionPane.INFORMATION_MESSAGE);
 							return;
 						}
 					} else {
 						// Keine Quelle gewählt:
-						JOptionPane.showMessageDialog(null,
-								ResourceBundle.getBundle("messages")
-										.getString("GUI.EditDialog.errNoSourcePathSelected"),
+						JOptionPane.showMessageDialog(null, ResourceBundle.getBundle("messages").getString(
+								"GUI.EditDialog.errNoSourcePathSelected"),
 								ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
 								JOptionPane.INFORMATION_MESSAGE);
 						return;
@@ -1178,10 +1171,7 @@ public class EditDialog extends JDialog {
 					// (Wochentag) korrekt sind:
 					if (checkBox_toggleWeekday.isSelected()) {
 						// Prüfen ob mindestens ein Wochentag ausgewählt ist:
-						if (!(checkBox_monday.isSelected() || checkBox_tuesday.isSelected()
-								|| checkBox_wednesday.isSelected() || checkBox_thursday.isSelected()
-								|| checkBox_friday.isSelected() || checkBox_saturday.isSelected()
-								|| checkBox_sunday.isSelected())) {
+						if (!(checkBox_monday.isSelected() || checkBox_tuesday.isSelected() || checkBox_wednesday.isSelected() || checkBox_thursday.isSelected() || checkBox_friday.isSelected() || checkBox_saturday.isSelected() || checkBox_sunday.isSelected())) {
 							JOptionPane.showMessageDialog(null,
 									ResourceBundle.getBundle("messages").getString("Messages.atLeastOneWeekday"),
 									ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
@@ -1280,8 +1270,8 @@ public class EditDialog extends JDialog {
 							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
 							task.setBackupStartTime(startTime);
 						} catch (DateTimeParseException ex) {
-							System.err
-									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 1");
+							System.err.println(
+									"Error: DateTimeParseException while saving autoBackup Settings. Code: 1");
 							return;
 						}
 
@@ -1296,8 +1286,8 @@ public class EditDialog extends JDialog {
 							LocalTime startTime = LocalTime.parse(textField_timeToStart.getText());
 							task.setBackupStartTime(startTime);
 						} catch (DateTimeParseException ex) {
-							System.err
-									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 2");
+							System.err.println(
+									"Error: DateTimeParseException while saving autoBackup Settings. Code: 2");
 							return;
 						}
 					} else if (checkBox_toggleInterval.isSelected()) {
@@ -1306,8 +1296,8 @@ public class EditDialog extends JDialog {
 							task.setIntervalTime(Integer.parseInt(textField_interval.getText()));
 							task.setIntervalUnit(comboBox_intervalUnit.getSelectedItem().toString());
 						} catch (NumberFormatException ex) {
-							System.err
-									.println("Error: DateTimeParseException while saving autoBackup Settings. Code: 3");
+							System.err.println(
+									"Error: DateTimeParseException while saving autoBackup Settings. Code: 3");
 							return;
 						}
 					}
@@ -1375,9 +1365,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Prüft den gegebenen Pfad auf Gültigkeit. Dabei ist ein Pfad genau dann
-	 * Gültig wenn er existiert und der root keine Datei sondern ein Verzeichnis
-	 * ist.
+	 * Prüft den gegebenen Pfad auf Gültigkeit. Dabei ist ein Pfad genau dann Gültig wenn er existiert und der root
+	 * keine Datei sondern ein Verzeichnis ist.
 	 *
 	 * @param s zu prüfender Pfad
 	 * @return Gültigkeit des Pfades.
@@ -1472,8 +1461,7 @@ public class EditDialog extends JDialog {
 	/**
 	 * Gibt den Backup-Modus zurück.
 	 *
-	 * @return 0 für normal oder 1 für hardlink oder -1 für kein Modus
-	 * ausgewählt
+	 * @return 0 für normal oder 1 für hardlink oder -1 für kein Modus ausgewählt
 	 */
 	public int getBackupMode() {
 		if (radioButton_normalBackup.isSelected()) {
@@ -1518,8 +1506,7 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Sperrt das Namens-TextFeld für den Benutzer (Name eines Backups kann
-	 * nachträglich nicht geändert werden).
+	 * Sperrt das Namens-TextFeld für den Benutzer (Name eines Backups kann nachträglich nicht geändert werden).
 	 *
 	 * @param editable Editierbarkeit
 	 */
@@ -1555,8 +1542,7 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Gibt ein neues DefaultComboBoxModel zurück, welches aus der gegebenen
-	 * Vorlage erstellt wird.
+	 * Gibt ein neues DefaultComboBoxModel zurück, welches aus der gegebenen Vorlage erstellt wird.
 	 *
 	 * @param template Vorlage
 	 * @return DefaultComboBoxModel
@@ -1570,8 +1556,7 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Gibt ein neues SpinnerNumberModel zurück, welches aus der gegebenen
-	 * Vorlage erstellt wird.
+	 * Gibt ein neues SpinnerNumberModel zurück, welches aus der gegebenen Vorlage erstellt wird.
 	 *
 	 * @param template Vorlage
 	 * @return SpinnerNumberModel
@@ -1611,8 +1596,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Legt die Einstellungen des erweiterten AutoClean in der GUI fest (zum
-	 * erstellen der GUI mit vorhandenen Einstellugen)
+	 * Legt die Einstellungen des erweiterten AutoClean in der GUI fest (zum erstellen der GUI mit vorhandenen
+	 * Einstellugen)
 	 *
 	 * @param numberOfRules  Anzahl der aktivierten Regeln
 	 * @param threshold      Threshold-Zahlen (siehe BackupTask)
@@ -1636,8 +1621,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
-	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
+	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 = Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 =
+	 * Intervall
 	 *
 	 * @param mode Backup-Modus
 	 */
@@ -1652,9 +1637,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die
-	 * Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
-	 * Sonntag.
+	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Wochentagen
+	 * von [0] = Montag bis [6] = Sonntag.
 	 *
 	 * @param weekdays Wochentage an denen gesichert werden soll
 	 */
@@ -1683,9 +1667,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll.
-	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
-	 * 31.
+	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll. Die Array-Felder entsprechen den Tagen im
+	 * Monat von [0] = 1. bis [30] = 31.
 	 *
 	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
@@ -1774,9 +1757,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Prüft ob der alte Spinner-Wert für die neue "Einheit" noch gültig ist.
-	 * Wenn ja wird sie übernommen, sonst wird der spinner auf default (1)
-	 * gesetzt.
+	 * Prüft ob der alte Spinner-Wert für die neue "Einheit" noch gültig ist. Wenn ja wird sie übernommen, sonst wird
+	 * der spinner auf default (1) gesetzt.
 	 *
 	 * @param spinner  entsprechender Spinner
 	 * @param template template für die entsprechende "Einheit"
@@ -1796,8 +1778,8 @@ public class EditDialog extends JDialog {
 	private boolean checkExtendedAutoCleanSettings() {
 		int numberOfRules = Integer.valueOf(comboBox_numberOfRules.getSelectedItem().toString());
 		// Letzte Regel muss bis "inf" gehen:
-		if (numberOfRules < MAX_NUMBER_OF_RULES
-				&& !unitComboBoxes[numberOfRules - 1].getSelectedItem().toString().equals("inf")) {
+		if (numberOfRules < MAX_NUMBER_OF_RULES && !unitComboBoxes[numberOfRules - 1].getSelectedItem().toString().equals(
+				"inf")) {
 			return false;
 		}
 		// Restliche Regeln müssen ungleich "inf" sein:
@@ -1845,8 +1827,7 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Prüft die Abhängigkeiten der Einheiten für die Combobox index zu ihrem
-	 * Vorgänger.
+	 * Prüft die Abhängigkeiten der Einheiten für die Combobox index zu ihrem Vorgänger.
 	 *
 	 * @param index index Index (also eS - 1) der Regel
 	 * @return true wenn die Einstellungen gültig sind, false sonst
@@ -1882,8 +1863,8 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Prüft die Abhängigkeiten der Spinner, wenn die Combobox index die gleiche
-	 * Einheit wie die ComboBox index - 1 hat.
+	 * Prüft die Abhängigkeiten der Spinner, wenn die Combobox index die gleiche Einheit wie die ComboBox index - 1
+	 * hat.
 	 *
 	 * @param index Index (also eS - 1) der Regel
 	 * @return true wenn die Einstellungen gültig sind, false sonst
@@ -1892,8 +1873,8 @@ public class EditDialog extends JDialog {
 		String currentUnit = unitComboBoxes[index].getSelectedItem().toString();
 		String unitAboveCurrent = unitComboBoxes[index - 1].getSelectedItem().toString();
 		if (currentUnit.equals(unitAboveCurrent)) {
-			if (Integer.valueOf(spinners[index - 1].getValue().toString()) < Integer
-					.valueOf(spinners[index].getValue().toString())) {
+			if (Integer.valueOf(spinners[index - 1].getValue().toString()) < Integer.valueOf(
+					spinners[index].getValue().toString())) {
 				return true;
 			}
 			return false;
@@ -1902,8 +1883,7 @@ public class EditDialog extends JDialog {
 	}
 
 	/**
-	 * Legt den Identifier für DestinationVerification an (falls noch nicht
-	 * vorhanden).
+	 * Legt den Identifier für DestinationVerification an (falls noch nicht vorhanden).
 	 *
 	 * @param taskName Name des Tasks
 	 * @param destPath Zielpfad des Tasks
