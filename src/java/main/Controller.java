@@ -448,6 +448,7 @@ public class Controller {
 		}
 
 		// TODO: Probleme mit setPrepared bei abbruch?
+		task.setPrepared(true);
 		return backup;
 	}
 
