@@ -62,9 +62,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.StyleConstants;
+import javax.swing.text.*;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -78,7 +76,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JOptionPane;
-import javax.swing.text.DefaultCaret;
 
 import com.google.gson.Gson;
 
@@ -230,8 +227,8 @@ public class Mainframe extends JDialog {
 		JMenu mn_Help = new JMenu(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_help"));
 		menuBar.add(mn_Help);
 
-		JMenuItem mntm_About = new JMenuItem(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_about"));
+		JMenuItem mntm_About =
+				new JMenuItem(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_about"));
 		mntm_About.setAction(action_about);
 		mn_Help.add(mntm_About);
 
@@ -259,8 +256,8 @@ public class Mainframe extends JDialog {
 		panel_statusAndLog.add(scrollPane_output, BorderLayout.CENTER);
 
 		// Checkbox erweiterte Ausgabe:
-		checkbox_advancedOutput = new JCheckBox(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.checkbox_advancedOutput"));
+		checkbox_advancedOutput =
+				new JCheckBox(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.checkbox_advancedOutput"));
 
 		JPanel panel_options = new JPanel();
 		panel_statusAndLog.add(panel_options, BorderLayout.SOUTH);
@@ -386,8 +383,8 @@ public class Mainframe extends JDialog {
 		panel_configureTasks.add(button_edit);
 
 		// Button reschedule:
-		JButton button_reschedule = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.button_reschedule"));
+		JButton button_reschedule =
+				new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_reschedule"));
 		button_reschedule.setAlignmentX(Component.CENTER_ALIGNMENT);
 		button_reschedule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -476,18 +473,21 @@ public class Mainframe extends JDialog {
 				String labelText;
 				if (label.getLocalDateTimeOfNextBackup() != null) {
 					LocalDateTime nextExecutionTime = label.getLocalDateTimeOfNextBackup();
-					labelText = "<html>" + ResourceBundle.getBundle("messages").getString(
-							"GUI.Mainframe.list.task") + " " + name + "<br/>" + ResourceBundle.getBundle(
-							"messages").getString(
-							"GUI.Mainframe.list.nextExecutionTime") + " " + nextExecutionTime.format(dtf);
+					labelText =
+							"<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task") + " " +
+									name + "<br/>" + ResourceBundle.getBundle("messages").getString(
+									"GUI.Mainframe.list.nextExecutionTime") + " " +
+									nextExecutionTime.format(dtf);
 				} else {
 					if (listener.getRunningBackupTasks().contains(name)) {
-						labelText = "<html>" + ResourceBundle.getBundle("messages").getString(
-								"GUI.Mainframe.list.task") + " " + name + "<br/>" + ResourceBundle.getBundle(
-								"messages").getString("GUI.Mainframe.list.running");
+						labelText =
+								"<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task") +
+										" " + name + "<br/>" +
+										ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.running");
 					} else {
-						labelText = "<html>" + ResourceBundle.getBundle("messages").getString(
-								"GUI.Mainframe.list.task") + " " + name;
+						labelText =
+								"<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task") +
+										" " + name;
 					}
 				}
 				setText(labelText);
@@ -503,8 +503,8 @@ public class Mainframe extends JDialog {
 		// list_tasks.setSelectedIndex(0);
 		// list_tasks.setVisibleRowCount(6);
 
-		JButton button_clearOutput = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_clearOutput"));
+		JButton button_clearOutput =
+				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_clearOutput"));
 		button_clearOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				textpane_output.setText("");
@@ -516,8 +516,8 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
 		// Button Ausgewähltes Backup starten:
-		button_startSelected = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startSelectedBackup"));
+		button_startSelected =
+				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startSelectedBackup"));
 
 		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -570,8 +570,8 @@ public class Mainframe extends JDialog {
 		panel_buttons.add(button_startSelected);
 
 		// Button Backup Abbrechen:
-		button_cancel = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_cancelBackup"));
+		button_cancel =
+				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_cancelBackup"));
 		button_cancel.setEnabled(false);
 
 		button_cancel.addActionListener(new ActionListener() {
@@ -582,8 +582,8 @@ public class Mainframe extends JDialog {
 		});
 
 		// Button Alle-Backups-Starten:
-		button_startAll = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startAllBackups"));
+		button_startAll =
+				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startAllBackups"));
 		panel_buttons.add(button_startAll);
 
 		button_startAll.addActionListener(new ActionListener() {
@@ -724,8 +724,8 @@ public class Mainframe extends JDialog {
 			clientSocket = new Socket("127.0.0.1", 1235);
 			clientSocket.setReuseAddress(true);
 		} catch (IOException e) {
-			System.err.println("Error: Could not open TCP-socket of client");
-			System.err.println(e);
+			System.err.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while creating Socket and " +
+					"setReuseAddress");
 			return;
 		}
 
@@ -733,11 +733,11 @@ public class Mainframe extends JDialog {
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 		} catch (IOException e) {
-			System.err.println("Error: Could not open PrintWriter of client");
+			System.err.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while creating PrintWriter");
 			try {
 				clientSocket.close();
 			} catch (IOException ex) {
-				System.out.println(ex);
+				System.out.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while closing Socket");
 			}
 			return;
 		}
@@ -747,8 +747,8 @@ public class Mainframe extends JDialog {
 			out.close();
 			clientSocket.close();
 		} catch (IOException e) {
-			System.err.println("Error: Could not close PrintWriter and/or client-socket");
-			System.err.println(e);
+			System.err.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while closing " +
+					"PrintWriter and Socket");
 		}
 	}
 
@@ -762,16 +762,14 @@ public class Mainframe extends JDialog {
 			try {
 				server = new ServerSocket(1234);
 			} catch (IOException e) {
-				System.err.println("Error: Could not open TCP-socket of server");
-				System.err.println(e);
+				System.err.println("Error: IOException in Mainframe in recvLoop while creating new ServerSocket");
 			}
 
 			// 2. Verbinden:
 			try {
 				socket = server.accept();
 			} catch (IOException e) {
-				System.err.println("Error: Could not connect to tray");
-				System.err.println(e);
+				System.err.println("Error: IOException in Mainframe in recvLoop while server.accept;");
 			}
 
 			try {
@@ -794,8 +792,8 @@ public class Mainframe extends JDialog {
 				}
 
 			} catch (IOException e) {
-				System.err.println("Error: Could not send message to Qt-Tray");
-				System.err.println(e);
+				System.err.println("Error: IOException in Mainframe in recvLoop while creating DataInputStream and " +
+						"rading int");
 			}
 
 			// Socket schließen:
@@ -804,8 +802,7 @@ public class Mainframe extends JDialog {
 				server.close();
 				server = null;
 			} catch (IOException e) {
-				System.err.println("Error: Could not close socket of server");
-				System.err.println(e);
+				System.err.println("Error: IOException in Mainframe in recvLoop while closing Socket and ServerSocket");
 			}
 		}
 	}
@@ -845,13 +842,15 @@ public class Mainframe extends JDialog {
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					// ja:
-					ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(),
-							task.getDestinationPath());
+					ArrayList<String> correctDest =
+							searchForCorrectDestPath(task.getTaskName(), task.getDestinationPath());
 					boolean successful = false;
 					for (String dest : correctDest) {
-						int reply2 = JOptionPane.showConfirmDialog(null, ResourceBundle.getBundle("messages").getString(
-								"Messages.FoundDestCorrect1") + " " + dest + "  " + ResourceBundle.getBundle(
-								"messages").getString("Messages.FoundDestCorrect2"), null, JOptionPane.YES_NO_OPTION);
+						int reply2 = JOptionPane.showConfirmDialog(null,
+								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " " +
+										dest + "  " +
+										ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
+								null, JOptionPane.YES_NO_OPTION);
 						if (reply2 == JOptionPane.YES_OPTION) {
 							int reply3 = JOptionPane.showConfirmDialog(null,
 									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
@@ -911,7 +910,8 @@ public class Mainframe extends JDialog {
 		double freeSize = destDir.getFreeSpace();
 		BackupInfos backupInfos = backup.getBackupInfos();
 		// TODO: Zusätzliche Warnung wenn knapp (z.B. 1%)
-		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
+		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() +
+				SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
 		if (freeSize <= sizeNeeded) {
 			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
 			JOptionPane.showMessageDialog(null,
@@ -1092,7 +1092,7 @@ public class Mainframe extends JDialog {
 			try {
 				properties.createNewFile();
 			} catch (IOException ex) {
-				System.err.println(ex);
+				System.err.println("Error: IOException in Mainframe in saveProperties while creating properties file");
 			}
 		}
 
@@ -1105,20 +1105,25 @@ public class Mainframe extends JDialog {
 
 			o.writeObject(listener.getBackupTasks());
 		} catch (IOException ex) {
-			System.out.println(ex);
+			System.out.println("Error: IOException in Mainframe in saveProperties while creating FileOutputStream, " +
+					"ObjectOutputStream and writin out Object");
 		} finally {
-			if (o != null)
+			if (o != null) {
 				try {
 					o.close();
 				} catch (IOException ex) {
-					System.err.println(ex);
+					System.err.println(
+							"Error: IOException in Mainframe in saveProperties while closing ObjectOutputStream");
 				}
-			if (fos != null)
+			}
+			if (fos != null) {
 				try {
 					fos.close();
 				} catch (IOException ex) {
-					System.err.println(ex);
+					System.err.println(
+							"Error: IOException in Mainframe in saveProperties while closing FileOutputStream");
 				}
+			}
 		}
 	}
 
@@ -1159,8 +1164,9 @@ public class Mainframe extends JDialog {
 				} else {
 					tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, blackAS);
 				}
-			} catch (Exception e) {
-				System.out.println(e);
+			} catch (BadLocationException e) {
+				System.out.println(
+						"Error: BadLocationException in Mainframe in addToOutput while editing " + "output-String");
 			}
 		} else {
 			try {
@@ -1169,8 +1175,9 @@ public class Mainframe extends JDialog {
 				} else {
 					tpOutput_doc.insertString(tpOutput_doc.getLength(), "\n" + output, redAS);
 				}
-			} catch (Exception e) {
-				System.out.println(e);
+			} catch (BadLocationException e) {
+				System.out.println(
+						"Error: BadLocationException in Mainframe in addToOutput while editing " + "output-String");
 			}
 		}
 	}

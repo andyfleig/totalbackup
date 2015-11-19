@@ -155,8 +155,8 @@ public class HardlinkBackup implements Backupable {
 				// Es handelt sich wohl um einen Backup-Satz
 				File[] destFolder = destFolders[i].listFiles();
 				for (int j = 0; j < destFolder.length; j++) {
-					if (!destFolder[j].isDirectory() && destFolder[j].getName().contains(
-							taskName) && destFolder[j].getName().contains(".ser")) {
+					if (!destFolder[j].isDirectory() && destFolder[j].getName().contains(taskName) &&
+							destFolder[j].getName().contains(".ser")) {
 						// Ab hier wird davon ausgegangen, dass ein index-file
 						// exisitert.
 						indexExists = true;
@@ -279,8 +279,8 @@ public class HardlinkBackup implements Backupable {
 				if (!sourceFile.isDirectory()) {
 					f = backupDir;
 				} else {
-					if (sourceFile.getAbsolutePath().contains(
-							":\\") && sourceFile.getAbsolutePath().length() == 3 && sourceFile.getName().equals("")) {
+					if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3 &&
+							sourceFile.getName().equals("")) {
 						// In diesem Sonderfall ergibt sich der Name nur aus dem
 						// Laufwerksbuchstaben:
 						folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
@@ -366,9 +366,9 @@ public class HardlinkBackup implements Backupable {
 							BackupHelper.copyFile(new File(currentElement.getSourcePath()),
 									new File(currentElement.getDestPath()), listener, task);
 						} catch (IOException e) {
-							String msg = ResourceBundle.getBundle("messages").getString(
-									"GUI.errCopyIOExMsg1") + currentElement.getSourcePath() + ResourceBundle.getBundle(
-									"messages").getString("GUI.errCopyIOExMsg2");
+							String msg = ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg1") +
+									currentElement.getSourcePath() +
+									ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg2");
 							listener.printOut(msg, true, task.getTaskName());
 							listener.log(msg, task);
 						}
@@ -424,8 +424,8 @@ public class HardlinkBackup implements Backupable {
 			files[0] = sourceFile;
 		}
 		if (files == null) {
-			String outprint = ResourceBundle.getBundle("messages").getString(
-					"Messages.UnknownErrorAt") + " " + sourceFile.getPath();
+			String outprint = ResourceBundle.getBundle("messages").getString("Messages.UnknownErrorAt") + " " +
+					sourceFile.getPath();
 			listener.printOut(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 
@@ -457,8 +457,8 @@ public class HardlinkBackup implements Backupable {
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if (filtersOfThisSource.get(j).getMode() == 0 && (files[i].getAbsolutePath().equals(
-							filtersOfThisSource.get(j).getPath()))) {
+					if (filtersOfThisSource.get(j).getMode() == 0 &&
+							(files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
 						filterMatches = true;
 					}
 				}
@@ -498,8 +498,8 @@ public class HardlinkBackup implements Backupable {
 							// Filterung:
 							filterMatches = false;
 							for (int j = 0; j < filtersOfThisSource.size(); j++) {
-								if (filtersOfThisSource.get(j).getMode() == 1 && (files[i].getAbsolutePath().equals(
-										filtersOfThisSource.get(j).getPath()))) {
+								if (filtersOfThisSource.get(j).getMode() == 1 &&
+										(files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
 									filterMatches = true;
 								}
 							}
@@ -516,8 +516,8 @@ public class HardlinkBackup implements Backupable {
 								// MD5 heißt kopieren:
 								String md5OfSourceFile = BackupHelper.calcMD5(files[i]);
 								String md5OfFileToLinkFrom = BackupHelper.calcMD5(fileToLinkFrom);
-								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null && md5OfSourceFile.equals(
-										md5OfFileToLinkFrom)) {
+								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null &&
+										md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
 									// Datei verlinken:
 									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
 											newFile.getAbsolutePath(), false, true));
@@ -602,8 +602,8 @@ public class HardlinkBackup implements Backupable {
 	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
 
 		// Namen der Datei "zerlegen":
-		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath().substring(sourceRootPath.length()),
-				File.separator);
+		StringTokenizer tokenizerOfFile =
+				new StringTokenizer(file.getAbsolutePath().substring(sourceRootPath.length()), File.separator);
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 
@@ -657,7 +657,7 @@ public class HardlinkBackup implements Backupable {
 			try {
 				index.createNewFile();
 			} catch (IOException ex) {
-				System.err.println(ex);
+				System.err.println("Error: IOException in HardlinkBackup while creating new File");
 			}
 		}
 		// OutputStreams anlegen:
@@ -670,20 +670,25 @@ public class HardlinkBackup implements Backupable {
 
 			o.writeObject(this.directoryStructure);
 		} catch (IOException ex) {
-			System.out.println(ex);
+			System.out.println("Error: IOException in HardlinkBackup in serializeIndex while creating " +
+					"FileOutputStream, ObjectOutputStream and writing Object");
 		} finally {
-			if (o != null)
+			if (o != null) {
 				try {
 					o.close();
 				} catch (IOException ex) {
-					System.err.println(ex);
+					System.err.println(
+							"Error: IOException in HardlinkBackup in serializeIndex while closing ObjectOutputStream");
 				}
-			if (fos != null)
+			}
+			if (fos != null) {
 				try {
 					fos.close();
 				} catch (IOException ex) {
-					System.err.println(ex);
+					System.err.println(
+							"Error: IOException in HardlinkBackup in serializeIndex while closing FileOutputStream");
 				}
+			}
 		}
 	}
 
@@ -705,26 +710,32 @@ public class HardlinkBackup implements Backupable {
 
 			directoryStructure = (StructureFile) ois.readObject();
 		} catch (IOException e) {
-			System.err.println(e);
+			System.err.println("Error: IOException in HardlinkBackup in loadSerialization while creating " +
+					"FileInputStream, ObjectInputStream and reading Object");
 			result = false;
 		} catch (ClassNotFoundException e) {
-			System.err.println(e);
+			System.err.println("Error: ClassNotFoundException in HardlinkBackup in loadSerialization while creating " +
+					"FileInputStream, ObjectInputStream and reading Object");
 			result = false;
 		} finally {
-			if (ois != null)
+			if (ois != null) {
 				try {
 					ois.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					System.err.println(
+							"Error: IOException in HardlinkBackup in loadSerialization while closing ObjectInputStream");
 					result = false;
 				}
-			if (fis != null)
+			}
+			if (fis != null) {
 				try {
 					fis.close();
 				} catch (IOException e) {
-					System.err.println(e);
+					System.err.println(
+							"Error: IOException in HardlinkBackup in loadSerialization while closing FileInputStream");
 					result = false;
 				}
+			}
 		}
 		return result;
 	}

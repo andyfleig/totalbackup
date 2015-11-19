@@ -243,8 +243,8 @@ public class Controller {
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
 			// Prüfen ob Backups versäumt wurden:
 			for (BackupTask task : backupTasks) {
-				if (task.getLocalDateTimeOfNextBackup() != null && task.getLocalDateTimeOfNextBackup().isBefore(
-						LocalDateTime.now())) {
+				if (task.getLocalDateTimeOfNextBackup() != null &&
+						task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
 					// Dieses Backup wurde versäumt
 					missedBackupTaks.add(task);
 				}
@@ -258,17 +258,17 @@ public class Controller {
 				// von profitableTimeUntilNextExecution des Tasks):
 				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(
 						task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
-					String msg = ResourceBundle.getBundle("messages").getString(
-							"Messages.popup.catchUp1") + " " + task.getTaskName() + " " + ResourceBundle.getBundle(
-							"messages").getString("Messages.popup.catchUp2");
+					String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " " +
+							task.getTaskName() + " " +
+							ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
 					showTrayPopupMessage(msg);
 					scheduleBackupTaskNow(task);
 				}
 			}
 		} catch (InterruptedException e) {
-			System.err.println(e);
+			System.err.println("Error: InterruptedException while starting Controller");
 		} catch (InvocationTargetException ex) {
-			System.err.println(ex);
+			System.err.println("Error: InvocationTargetException while starting Controller");
 		}
 	}
 
@@ -291,22 +291,29 @@ public class Controller {
 
 				backupTasks = (ArrayList<BackupTask>) ois.readObject();
 			} catch (IOException e) {
-				System.err.println(e);
+				System.err.println(
+						"Error: IOException in Controller in loadSerialization while creating FileInputStream and " +
+								"ObjectInputStream");
 			} catch (ClassNotFoundException e) {
-				System.err.println(e);
+				System.err.println("Error: ClassNotFoundException in Controller in loadSerialization while creating " +
+						"FileInputStream and ObjectInputStream");
 			} finally {
-				if (ois != null)
+				if (ois != null) {
 					try {
 						ois.close();
 					} catch (IOException e) {
-						System.err.println(e);
+						System.err.println("Error: IOException in Controller in loadSerialization while closing " +
+								"ObjectInputStream");
 					}
-				if (fis != null)
+				}
+				if (fis != null) {
 					try {
 						fis.close();
 					} catch (IOException e) {
-						System.err.println(e);
+						System.err.println("Error: IOException in Controller in loadSerialization while closing " +
+								"FileInputStream");
 					}
+				}
 			}
 			for (int i = 0; i < backupTasks.size(); i++) {
 				mainframe.addBackupTaskToList(backupTasks.get(i));
@@ -491,15 +498,16 @@ public class Controller {
 							new ArrayList<File>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
 							task));
 
-					String output = ResourceBundle.getBundle("messages").getString(
-							"Messages.deleting") + " " + toDelete.getAbsolutePath();
+					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " " +
+							toDelete.getAbsolutePath();
 					setStatus(output);
 					log(output, task);
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
-					printOut(toDelete.getAbsolutePath() + " " + ResourceBundle.getBundle("messages").getString(
-							"Messages.deleted"), false, task.getTaskName());
+					printOut(toDelete.getAbsolutePath() + " " +
+									ResourceBundle.getBundle("messages").getString("Messages.deleted"), false,
+							task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
@@ -781,8 +789,8 @@ public class Controller {
 				System.err.println("Error while parsing date");
 			}
 			// dateOfCurrentBackupSet in LocalTimeDate umwandeln:
-			LocalDateTime ltmOfCurrentBackupSet = LocalDateTime.ofInstant(dateOfCurrentBackupSet.toInstant(),
-					ZoneId.systemDefault());
+			LocalDateTime ltmOfCurrentBackupSet =
+					LocalDateTime.ofInstant(dateOfCurrentBackupSet.toInstant(), ZoneId.systemDefault());
 
 			// Richtiges Bucket finden und einfügen:
 			switch (task.getNumberOfExtendedCleanRules()) {
@@ -950,14 +958,14 @@ public class Controller {
 		if (autoBackupMode == 0) {
 			return;
 		} else if (autoBackupMode == 1) {
-			nextExecutionTime = calcTimeFromWeekdaysStartingFrom(task.getBackupWeekdays(), task.getStartTime(),
-					dateTime);
+			nextExecutionTime =
+					calcTimeFromWeekdaysStartingFrom(task.getBackupWeekdays(), task.getStartTime(), dateTime);
 		} else if (autoBackupMode == 2) {
-			nextExecutionTime = calcTimeFromDaysInMonthStartingFrom(task.getBackupDaysInMonth(), task.getStartTime(),
-					dateTime);
+			nextExecutionTime =
+					calcTimeFromDaysInMonthStartingFrom(task.getBackupDaysInMonth(), task.getStartTime(), dateTime);
 		} else if (autoBackupMode == 3) {
-			nextExecutionTime = calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(),
-					dateTime);
+			nextExecutionTime =
+					calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(), dateTime);
 		}
 		scheduleBackupTaskAt(task, nextExecutionTime);
 	}
@@ -1011,9 +1019,9 @@ public class Controller {
 		// Für das Popup:
 		Runnable popup = new Runnable() {
 			public void run() {
-				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString(
-						"Messages.popup.backupTask") + " " + task.getTaskName() + " " + ResourceBundle.getBundle(
-						"messages").getString("Messages.popup.startsInOneMinute"));
+				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask") + " " +
+						task.getTaskName() + " " +
+						ResourceBundle.getBundle("messages").getString("Messages.popup.startsInOneMinute"));
 			}
 		};
 		// Task (mit timer) schedulen:
@@ -1022,8 +1030,8 @@ public class Controller {
 		// Tray-Icon-Popup (mit timer) schedulen:
 		// Prüfen ob das Backup weit genug in der Zukunft liegt um 1min vorher
 		// ein Popup anzuzeigen:
-		if (LocalDateTime.now().until(nextExecutionTime,
-				ChronoUnit.SECONDS) > NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP) {
+		if (LocalDateTime.now().until(nextExecutionTime, ChronoUnit.SECONDS) >
+				NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP) {
 			task.setPopupScheduledFuture(timer.schedule(popup,
 					LocalDateTime.now().minusMinutes(1).until(nextExecutionTime, ChronoUnit.SECONDS),
 					TimeUnit.SECONDS));
