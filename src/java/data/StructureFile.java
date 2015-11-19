@@ -41,8 +41,7 @@ public class StructureFile implements Serializable {
 	private ArrayList<StructureFile> existingFiles;
 
 	/**
-	 * Erzeugt ein StructureFile-Objekt, liest das letzte Modifizierungsdatum
-	 * aus und schreibt dieses.
+	 * Erzeugt ein StructureFile-Objekt, liest das letzte Modifizierungsdatum aus und schreibt dieses.
 	 *
 	 * @param rootPath Pfad des Wurzelverzeichnisses
 	 * @param path     relativer Pfad der Datei
@@ -61,7 +60,7 @@ public class StructureFile implements Serializable {
 	 * @param file hinzuzufügende Datei
 	 */
 	public void addFile(StructureFile file) {
-		if (isDirectory == false) {
+		if (!isDirectory) {
 			existingFiles = new ArrayList<StructureFile>();
 			isDirectory = true;
 		}
@@ -87,8 +86,7 @@ public class StructureFile implements Serializable {
 	}
 
 	/**
-	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht
-	 * exisitert.
+	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht exisitert.
 	 *
 	 * @param name Name der zu suchenden Datei
 	 * @return Datei oder null
@@ -97,10 +95,10 @@ public class StructureFile implements Serializable {
 		if (existingFiles == null) {
 			return null;
 		}
-		for (int i = 0; i < existingFiles.size(); i++) {
-			String test = existingFiles.get(i).getFilePath();
+		for (StructureFile existingFile : existingFiles) {
+			String test = existingFile.getFilePath();
 			if (test.endsWith(name)) {
-				return existingFiles.get(i);
+				return existingFile;
 			}
 		}
 		return null;

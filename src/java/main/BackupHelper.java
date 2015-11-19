@@ -177,12 +177,12 @@ public final class BackupHelper {
 		}
 		if (path.exists()) {
 			File[] files = path.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					deleteDirectory(files[i]);
+			for (File file : files) {
+				if (file.isDirectory()) {
+					deleteDirectory(file);
 				} else {
 					//TODO: if raus?
-					if (!files[i].delete()) {
+					if (!file.delete()) {
 					}
 				}
 			}
@@ -229,8 +229,8 @@ public final class BackupHelper {
 		byte[] mdbytes = md.digest();
 
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < mdbytes.length; i++) {
-			sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+		for (byte mdbyte : mdbytes) {
+			sb.append(Integer.toString((mdbyte & 0xff) + 0x100, 16).substring(1));
 		}
 		return sb.toString();
 	}
@@ -251,10 +251,10 @@ public final class BackupHelper {
 
 		LocalDateTime newestDate = null;
 		LocalDateTime foundDate;
-		for (int i = 0; i < directories.length; i++) {
-			if (directories[i].isDirectory()) {
+		for (File directory : directories) {
+			if (directory.isDirectory()) {
 				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(directories[i].getName(), "_");
+				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
 				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 				if (tokenizer.countTokens() != 2) {
 					continue;
@@ -268,8 +268,8 @@ public final class BackupHelper {
 
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
-					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(),
-							ZoneId.systemDefault());
+					foundDate =
+							LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(), ZoneId.systemDefault());
 				} catch (ParseException e) {
 					// Offenbar kein gültiges Datum
 					continue;

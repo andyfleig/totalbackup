@@ -253,7 +253,7 @@ public class FilterDialog extends JDialog {
 	 * @param path zu löschender Filterpfad
 	 */
 	private void deleteFilter(String path) {
-		listener.deleteFilter(originalPath);
+		listener.deleteFilter(path);
 	}
 
 	/**

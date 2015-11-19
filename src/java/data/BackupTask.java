@@ -563,7 +563,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Setzt das ScheduledFuture für den nächsten Popup.
 	 *
-	 * @param scheduledFuture ScheduledFuture des nächsten Popups
+	 * @param popupScheduledFuture ScheduledFuture des nächsten Popups
 	 */
 	public void setPopupScheduledFuture(ScheduledFuture<?> popupScheduledFuture) {
 		this.popupScheduledFuture = popupScheduledFuture;
@@ -659,10 +659,7 @@ public class BackupTask implements Serializable {
 	 * @return ob catchUp aktiviert ist
 	 */
 	public boolean isCatchUpEnabled() {
-		if (catchUpEnabled) {
-			return true;
-		}
-		return false;
+		return catchUpEnabled;
 	}
 
 	/**

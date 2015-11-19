@@ -315,19 +315,19 @@ public class Controller {
 					}
 				}
 			}
-			for (int i = 0; i < backupTasks.size(); i++) {
-				mainframe.addBackupTaskToList(backupTasks.get(i));
+			for (BackupTask backupTask : backupTasks) {
+				mainframe.addBackupTaskToList(backupTask);
 			}
 		}
 	}
 
 	private void loadSerializationGson() {
-		String settings = new String();
+		String settings = "";
 		File properties = new File("./properties");
 		if (properties.exists()) {
 			try {
 				Scanner scanner = new Scanner(properties);
-				settings = scanner.nextLine().toString();
+				settings = scanner.nextLine();
 				scanner.close();
 			} catch (FileNotFoundException e) {
 				System.err.println("Error: FileNotFoundException while loading Gson-Properties");
@@ -338,8 +338,8 @@ public class Controller {
 			if (settings != null) {
 				backupTasks = gson.fromJson(settings, listOfBackupTasks);
 			}
-			for (int i = 0; i < backupTasks.size(); i++) {
-				mainframe.addBackupTaskToList(backupTasks.get(i));
+			for (BackupTask backupTask : backupTasks) {
+				mainframe.addBackupTaskToList(backupTask);
 			}
 		}
 	}
@@ -413,10 +413,10 @@ public class Controller {
 			// sich um die erste Ausführung handelt:
 			File[] files = new File(task.getDestinationPath()).listFiles();
 			boolean backupSetFound = false;
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
+			for (File file : files) {
+				if (file.isDirectory()) {
 					// Namen des Ordners "zerlegen":
-					StringTokenizer tokenizer = new StringTokenizer(files[i].getName(), "_");
+					StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
 					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 					if (tokenizer.countTokens() != 2) {
 						continue;
@@ -529,8 +529,8 @@ public class Controller {
 	 */
 	public ArrayList<String> getBackupTaskNames() {
 		ArrayList<String> backupTaskNames = new ArrayList<String>();
-		for (int i = 0; i < backupTasks.size(); i++) {
-			backupTaskNames.add(backupTasks.get(i).getTaskName());
+		for (BackupTask backupTask : backupTasks) {
+			backupTaskNames.add(backupTask.getTaskName());
 		}
 		return backupTaskNames;
 	}
@@ -597,9 +597,9 @@ public class Controller {
 	 * @return den gesuchten Backup-Task oder null
 	 */
 	public BackupTask getBackupTaskWithName(String name) {
-		for (int i = 0; i < backupTasks.size(); i++) {
-			if (backupTasks.get(i).getTaskName().equals(name)) {
-				return backupTasks.get(i);
+		for (BackupTask backupTask : backupTasks) {
+			if (backupTask.getTaskName().equals(name)) {
+				return backupTask;
 			}
 		}
 		return null;
@@ -655,9 +655,9 @@ public class Controller {
 	private ArrayList<File> findBackupSets(File dir, BackupTask task) {
 		File[] files = dir.listFiles();
 		ArrayList<File> foundBackupsets = new ArrayList<File>();
-		for (int i = 0; i < files.length; i++) {
+		for (File file : files) {
 			// Namen des Ordners "zerlegen":
-			StringTokenizer tokenizer = new StringTokenizer(files[i].getName(), "_");
+			StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
 			// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 			if (tokenizer.countTokens() != 2) {
 				continue;
@@ -672,10 +672,9 @@ public class Controller {
 			try {
 				SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 				sdfToDate.parse(backupDate);
-				foundBackupsets.add(files[i]);
+				foundBackupsets.add(file);
 			} catch (ParseException e) {
 				// Offenbar kein gültiges Datum
-				continue;
 			}
 		}
 		return foundBackupsets;
@@ -693,10 +692,10 @@ public class Controller {
 		Date oldestDate = null;
 		String oldestBackupPath = null;
 		Date foundDate;
-		for (int i = 0; i < directories.size(); i++) {
-			if (directories.get(i).isDirectory()) {
+		for (File directory : directories) {
+			if (directory.isDirectory()) {
 				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(directories.get(i).getName(), "_");
+				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
 				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 				if (tokenizer.countTokens() != 2) {
 					continue;
@@ -717,11 +716,11 @@ public class Controller {
 				}
 				if (oldestDate == null) {
 					oldestDate = foundDate;
-					oldestBackupPath = directories.get(i).getName();
+					oldestBackupPath = directory.getName();
 				} else {
 					if (oldestDate.compareTo(foundDate) > 0) {
 						oldestDate = foundDate;
-						oldestBackupPath = directories.get(i).getName();
+						oldestBackupPath = directory.getName();
 					}
 				}
 			}
@@ -1079,8 +1078,7 @@ public class Controller {
 		if (weekdays[weekdayNumber]) {
 			// Heute istBackup-Tag, also muss die Zeit betrachet werden:
 			if (startAt.toLocalTime().isBefore(time)) {
-				LocalDateTime result = time.atDate(startAt.toLocalDate());
-				return result;
+				return time.atDate(startAt.toLocalDate());
 			}
 		}
 
@@ -1089,8 +1087,7 @@ public class Controller {
 		while (wNumber < 7) {
 			if (weekdays[wNumber]) {
 				LocalDate date = startAt.toLocalDate().plusDays(daysFromTodayCounter);
-				LocalDateTime result = time.atDate(date);
-				return result;
+				return time.atDate(date);
 			}
 			wNumber++;
 			daysFromTodayCounter++;
@@ -1103,8 +1100,7 @@ public class Controller {
 					System.err.println("Error: Weekday more than 7 days in future is not possible");
 				}
 				LocalDate date = startAt.toLocalDate().plusDays(daysFromTodayCounter);
-				LocalDateTime result = time.atDate(date);
-				return result;
+				return time.atDate(date);
 			}
 			wNumber++;
 			daysFromTodayCounter++;
@@ -1142,8 +1138,7 @@ public class Controller {
 		if (daysInMonth[currentDayInMonth]) {
 			// Heute istBackup-Tag, also muss die Zeit betrachet werden:
 			if (startAt.toLocalTime().isBefore(time)) {
-				LocalDateTime result = time.atDate(startAt.toLocalDate());
-				return result;
+				return time.atDate(startAt.toLocalDate());
 			}
 		}
 
@@ -1152,8 +1147,7 @@ public class Controller {
 		while (mNumber <= (startAt.toLocalDate().lengthOfMonth() - 1)) {
 			if (daysInMonth[mNumber]) {
 				LocalDate date = startAt.toLocalDate().withDayOfMonth(daysFromTodayCounter);
-				LocalDateTime result = time.atDate(date);
-				return result;
+				return time.atDate(date);
 			}
 			mNumber++;
 			daysFromTodayCounter++;
@@ -1164,8 +1158,7 @@ public class Controller {
 			if (daysInMonth[mNumber]) {
 				LocalDate date = startAt.toLocalDate().withDayOfMonth(daysFromTodayCounter);
 				date = date.plusMonths(1);
-				LocalDateTime result = time.atDate(date);
-				return result;
+				return time.atDate(date);
 			}
 			mNumber++;
 			daysFromTodayCounter++;
@@ -1204,20 +1197,20 @@ public class Controller {
 	private void deleteEmptyBackupFolders(String path, BackupTask task) {
 		File currentDest = new File(path);
 		File[] backupFolders = currentDest.listFiles();
-		for (int i = 0; i < backupFolders.length; i++) {
-			if (!backupFolders[i].isDirectory()) {
+		for (File backupFolder : backupFolders) {
+			if (!backupFolder.isDirectory()) {
 				continue;
 			}
 			boolean deleteThisDir = true;
-			File[] filesInBackupFolder = backupFolders[i].listFiles();
-			for (int j = 0; j < filesInBackupFolder.length; j++) {
-				if (filesInBackupFolder[j].isDirectory() && filesInBackupFolder[j].listFiles().length != 0) {
+			File[] filesInBackupFolder = backupFolder.listFiles();
+			for (File aFilesInBackupFolder : filesInBackupFolder) {
+				if (aFilesInBackupFolder.isDirectory() && aFilesInBackupFolder.listFiles().length != 0) {
 					deleteThisDir = false;
 					break;
 				}
 			}
 			if (deleteThisDir) {
-				BackupHelper.deleteDirectory(backupFolders[i]);
+				BackupHelper.deleteDirectory(backupFolder);
 			}
 		}
 		String outprint = ResourceBundle.getBundle("messages").getString("Messages.deletedBackupFolder");
@@ -1260,9 +1253,6 @@ public class Controller {
 	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
 	 */
 	public boolean isBackupTaskRunning(String s) {
-		if (runningBackupTasks.contains(s)) {
-			return true;
-		}
-		return false;
+		return runningBackupTasks.contains(s);
 	}
 }

@@ -820,8 +820,8 @@ public class Mainframe extends JDialog {
 		}
 		// Testen ob Quell- und Zielpfad(e) existieren:
 		ArrayList<Source> sources = task.getSources();
-		for (int i = 0; i < sources.size(); i++) {
-			if (!(new File(sources.get(i).getPath())).exists()) {
+		for (Source source : sources) {
+			if (!(new File(source.getPath())).exists()) {
 				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
 				listener.printOut(output, false, task.getTaskName());
 				listener.log(output, task);
@@ -864,8 +864,6 @@ public class Mainframe extends JDialog {
 								task.setDestinationPath(dest);
 								savePropertiesGson();
 							}
-						} else {
-							continue;
 						}
 					}
 					if (!successful) {
@@ -986,16 +984,6 @@ public class Mainframe extends JDialog {
 		// TODO: Modalität? Geht so nicht:
 		// summary.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		summary.setVisible(true);
-	}
-
-	/**
-	 * Initialisiert das Mainframe.
-	 *
-	 * @param c Controller
-	 * @deprecated
-	 */
-	public void init(Controller c) {
-		// this.controller = c;
 	}
 
 	//TODO: Sollte in den Controller (wie viele andere Methoden hier auch)
@@ -1281,8 +1269,8 @@ public class Mainframe extends JDialog {
 		if (OS.contains("win")) {
 			String destSuffix = wrongDestPath.substring(3);
 			File[] roots = File.listRoots();
-			for (int i = 0; i < roots.length; i++) {
-				File potentialDest = new File(roots[i].getAbsolutePath() + destSuffix);
+			for (File root : roots) {
+				File potentialDest = new File(root.getAbsolutePath() + destSuffix);
 				if (potentialDest.exists()) {
 					if (checkForIdentifier(taskName, potentialDest.getAbsolutePath())) {
 						foundDestPaths.add(potentialDest.getAbsolutePath());

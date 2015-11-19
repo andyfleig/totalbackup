@@ -21,8 +21,8 @@
 package data;
 
 /**
- * Einthält Informationen zu einer Datei oder einem Verzeichnis. Es wird bei der
- * Preparation angelegt und später beim eigentlichen Backup-Vorgang benutzt.
+ * Einthält Informationen zu einer Datei oder einem Verzeichnis. Es wird bei der Preparation angelegt und später beim
+ * eigentlichen Backup-Vorgang benutzt.
  *
  * @author Andreas Fleig
  */
@@ -47,10 +47,11 @@ public class BackupElement {
 	/**
 	 * Erzeugt ein neues Backup-Element.
 	 *
-	 * @param path        Pfad des Elements
+	 * @param sourcePath  Quellpfad des Elements
+	 * @param destPath    Zielpfad des Elements
 	 * @param isDirectory ob das Element ein Ordner ist
-	 * @param toLink      ob das Element kopiert oder verlinkt werden soll (Achtung:
-	 *                    Ordner können nicht verlinkt werden)
+	 * @param toLink      ob das Element kopiert oder verlinkt werden soll (Achtung: Ordner können nicht verlinkt
+	 *                    werden)
 	 */
 	public BackupElement(String sourcePath, String destPath, boolean isDirectory, boolean toLink) {
 		this.sourcePath = sourcePath;

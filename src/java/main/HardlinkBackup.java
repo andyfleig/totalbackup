@@ -139,11 +139,11 @@ public class HardlinkBackup implements Backupable {
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
 		// aktuellsten Backup-Satz finden:
-		for (int i = 0; i < destFolders.length; i++) {
+		for (File destFolder1 : destFolders) {
 			boolean indexExists = false;
-			if (destFolders[i].isDirectory()) {
+			if (destFolder1.isDirectory()) {
 				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(destFolders[i].getName(), "_");
+				StringTokenizer tokenizer = new StringTokenizer(destFolder1.getName(), "_");
 				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 				if (tokenizer.countTokens() != 2) {
 					continue;
@@ -153,10 +153,10 @@ public class HardlinkBackup implements Backupable {
 					continue;
 				}
 				// Es handelt sich wohl um einen Backup-Satz
-				File[] destFolder = destFolders[i].listFiles();
-				for (int j = 0; j < destFolder.length; j++) {
-					if (!destFolder[j].isDirectory() && destFolder[j].getName().contains(taskName) &&
-							destFolder[j].getName().contains(".ser")) {
+				File[] destFolder = destFolder1.listFiles();
+				for (File aDestFolder : destFolder) {
+					if (!aDestFolder.isDirectory() && aDestFolder.getName().contains(taskName) &&
+							aDestFolder.getName().contains(".ser")) {
 						// Ab hier wird davon ausgegangen, dass ein index-file
 						// exisitert.
 						indexExists = true;
@@ -165,12 +165,12 @@ public class HardlinkBackup implements Backupable {
 				}
 			}
 			// Falls kein index gefunden wurde, wird ein index angelegt:
-			if (indexExists == false) {
+			if (!indexExists) {
 				String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexIndexing");
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
 
-				createIndex(destFolders[i], task);
+				createIndex(destFolder1, task);
 
 				// Indizierung wurde abgebrochen:
 				if (directoryStructure == null) {
@@ -185,7 +185,7 @@ public class HardlinkBackup implements Backupable {
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
 
-				serializeIndex(taskName, destFolders[i].getAbsolutePath());
+				serializeIndex(taskName, destFolder1.getAbsolutePath());
 				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
 				listener.printOut(outprint, false, task.getTaskName());
 				listener.log(outprint, task);
@@ -303,16 +303,16 @@ public class HardlinkBackup implements Backupable {
 
 				// Queueing:
 				try {
-					for (int j = 0; j < sources.size(); j++) {
+					for (Source source : sources) {
 						// Sonderfall: Wenn der Backup-Root == Root des Systems
 						// ist:
 						if (sourceFile.getName().length() == 0) {
 							sourceRootDir = "";
 						} else {
 							sourceRootDir = sourceFile.getAbsolutePath().substring(0,
-									sources.get(j).getPath().length() - sourceFile.getName().length());
+									source.getPath().length() - sourceFile.getName().length());
 						}
-						rekursivePreparation(new File(sources.get(j).getPath()), f, task);
+						rekursivePreparation(new File(source.getPath()), f, task);
 					}
 				} catch (BackupCanceledException e) {
 					outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
@@ -431,34 +431,34 @@ public class HardlinkBackup implements Backupable {
 
 			return;
 		}
-		for (int i = 0; i < files.length; i++) {
+		for (File file : files) {
 			if (Thread.interrupted()) {
 				throw new BackupCanceledException();
 			}
-			if (files[i].isDirectory()) {
+			if (file.isDirectory()) {
 				// Filtern:
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
-				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if ((files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
+				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
+					if ((file.getAbsolutePath().equals(aFiltersOfThisSource.getPath()))) {
 						filterMatches = true;
 					}
 				}
 				if (!filterMatches) {
-					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
+					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + file.getName());
 					elementQueue.add(
-							new BackupElement(files[i].getAbsolutePath(), newBackupDir.getAbsolutePath(), true, false));
+							new BackupElement(file.getAbsolutePath(), newBackupDir.getAbsolutePath(), true, false));
 					backupInfos.increaseNumberOfDirectories();
-					rekursivePreparation(files[i], newBackupDir, task);
+					rekursivePreparation(file, newBackupDir, task);
 				}
 
 			} else {
 				// Filtern:
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
-				for (int j = 0; j < filtersOfThisSource.size(); j++) {
-					if (filtersOfThisSource.get(j).getMode() == 0 &&
-							(files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
+				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
+					if (aFiltersOfThisSource.getMode() == 0 &&
+							(file.getAbsolutePath().equals(aFiltersOfThisSource.getPath()))) {
 						filterMatches = true;
 					}
 				}
@@ -466,9 +466,9 @@ public class HardlinkBackup implements Backupable {
 					// Herausfinden ob zu kopieren oder zu verlinken:
 					// Entsprechendes StrucutreFile aus dem Index:
 
-					StructureFile fileInIndex = getStructureFileFromIndex(files[i], sourceRootDir);
+					StructureFile fileInIndex = getStructureFileFromIndex(file, sourceRootDir);
 
-					File newFile = new File(backupDir.getAbsolutePath() + File.separator + files[i].getName());
+					File newFile = new File(backupDir.getAbsolutePath() + File.separator + file.getName());
 
 					if (fileInIndex == null) {
 						// Befindet die Datei sich nicht im Index, wird sie
@@ -476,18 +476,18 @@ public class HardlinkBackup implements Backupable {
 						// Es handelt sich also um eine neue Datei (bisher nicht
 						// im Backup)
 						elementQueue.add(
-								new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
+								new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 						backupInfos.increaseNumberOfFilesToCopy();
-						backupInfos.increaseSizeToCopyBy(files[i].length());
+						backupInfos.increaseSizeToCopyBy(file.length());
 						continue;
 					}
-					if (files[i].lastModified() > fileInIndex.getLastModifiedDate()) {
+					if (file.lastModified() > fileInIndex.getLastModifiedDate()) {
 						// Datei liegt in einer älteren Version im Backup vor
 						// Datei zu kopieren:
 						elementQueue.add(
-								new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false, false));
+								new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 						backupInfos.increaseNumberOfFilesToCopy();
-						backupInfos.increaseSizeToCopyBy(files[i].length());
+						backupInfos.increaseSizeToCopyBy(file.length());
 					} else {
 						// Datei liegt in der aktuellen Version vor
 
@@ -497,9 +497,9 @@ public class HardlinkBackup implements Backupable {
 						if (fileToLinkFrom.exists()) {
 							// Filterung:
 							filterMatches = false;
-							for (int j = 0; j < filtersOfThisSource.size(); j++) {
-								if (filtersOfThisSource.get(j).getMode() == 1 &&
-										(files[i].getAbsolutePath().equals(filtersOfThisSource.get(j).getPath()))) {
+							for (Filter aFiltersOfThisSource : filtersOfThisSource) {
+								if (aFiltersOfThisSource.getMode() == 1 &&
+										(file.getAbsolutePath().equals(aFiltersOfThisSource.getPath()))) {
 									filterMatches = true;
 								}
 							}
@@ -509,12 +509,12 @@ public class HardlinkBackup implements Backupable {
 										new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile.getAbsolutePath(),
 												false, true));
 								backupInfos.increaseNumberOfFilesToLink();
-								backupInfos.increaseSizeToLinkBy(files[i].length());
+								backupInfos.increaseSizeToLinkBy(file.length());
 							} else {
 								// Überprüfung der MD5 Summe:
 								// Gleiche MD5 heißt verlinken, unterschiedliche
 								// MD5 heißt kopieren:
-								String md5OfSourceFile = BackupHelper.calcMD5(files[i]);
+								String md5OfSourceFile = BackupHelper.calcMD5(file);
 								String md5OfFileToLinkFrom = BackupHelper.calcMD5(fileToLinkFrom);
 								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null &&
 										md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
@@ -522,14 +522,14 @@ public class HardlinkBackup implements Backupable {
 									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
 											newFile.getAbsolutePath(), false, true));
 									backupInfos.increaseNumberOfFilesToLink();
-									backupInfos.increaseSizeToLinkBy(files[i].length());
+									backupInfos.increaseSizeToLinkBy(file.length());
 								} else {
 									// Datei zu kopieren:
 									elementQueue.add(
-											new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(),
-													false, false));
+											new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false,
+													false));
 									backupInfos.increaseNumberOfFilesToCopy();
-									backupInfos.increaseSizeToCopyBy(files[i].length());
+									backupInfos.increaseSizeToCopyBy(file.length());
 								}
 							}
 
@@ -545,10 +545,10 @@ public class HardlinkBackup implements Backupable {
 							listener.log(outprint, task);
 
 							// Root-Pfad des Index "sichern":
-							String rootPathForIndex = files[i].getAbsolutePath();
+							String rootPathForIndex = file.getAbsolutePath();
 
 							// Ungültiger Index wird gelöscht:
-							File badIndex = new File(files[i].getAbsolutePath() + directoryStructure.getFilePath());
+							File badIndex = new File(file.getAbsolutePath() + directoryStructure.getFilePath());
 							badIndex.delete();
 
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexDeleted");
@@ -580,10 +580,9 @@ public class HardlinkBackup implements Backupable {
 							listener.log(outprint, task);
 							// Datei zu kopieren:
 							elementQueue.add(
-									new BackupElement(files[i].getAbsolutePath(), newFile.getAbsolutePath(), false,
-											false));
+									new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 							backupInfos.increaseNumberOfFilesToCopy();
-							backupInfos.increaseSizeToCopyBy(files[i].length());
+							backupInfos.increaseSizeToCopyBy(file.length());
 						}
 					}
 				}
@@ -630,8 +629,7 @@ public class HardlinkBackup implements Backupable {
 		if (root.isDirectory()) {
 			// Verzeichnisstruktur-Objekt erzeugen:
 			try {
-				StructureFile rootFile = recCalcDirStruct(root.getAbsolutePath(), root.getAbsolutePath());
-				directoryStructure = rootFile;
+				directoryStructure = recCalcDirStruct(root.getAbsolutePath(), root.getAbsolutePath());
 			} catch (BackupCanceledException e) {
 				directoryStructure = null;
 				String output = ResourceBundle.getBundle("messages").getString("Messages.IndexingCanceled");
@@ -765,12 +763,12 @@ public class HardlinkBackup implements Backupable {
 			sFile = new StructureFile(rootPath, nameOfBackupDir);
 		}
 
-		for (int i = 0; i < files.length; i++) {
+		for (File file : files) {
 			StructureFile newFile;
-			if (files[i].isDirectory()) {
-				newFile = recCalcDirStruct(rootPath, files[i].getAbsolutePath());
+			if (file.isDirectory()) {
+				newFile = recCalcDirStruct(rootPath, file.getAbsolutePath());
 			} else {
-				newFile = new StructureFile(rootPath, files[i].getAbsolutePath().substring(rootPath.length()));
+				newFile = new StructureFile(rootPath, file.getAbsolutePath().substring(rootPath.length()));
 			}
 			sFile.addFile(newFile);
 		}
@@ -790,10 +788,10 @@ public class HardlinkBackup implements Backupable {
 		Date newestDate = null;
 		String newestBackupPath = null;
 		Date foundDate;
-		for (int i = 0; i < directories.length; i++) {
-			if (directories[i].isDirectory()) {
+		for (File directory : directories) {
+			if (directory.isDirectory()) {
 				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(directories[i].getName(), "_");
+				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
 				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
 				if (tokenizer.countTokens() != 2) {
 					continue;
@@ -814,11 +812,11 @@ public class HardlinkBackup implements Backupable {
 				}
 				if (newestDate == null) {
 					newestDate = foundDate;
-					newestBackupPath = directories[i].getName();
+					newestBackupPath = directory.getName();
 				} else {
 					if (newestDate.compareTo(foundDate) < 0) {
 						newestDate = foundDate;
-						newestBackupPath = directories[i].getName();
+						newestBackupPath = directory.getName();
 					}
 				}
 			}

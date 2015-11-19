@@ -50,18 +50,6 @@ public class AboutDialog extends JDialog {
 	private JLabel label_about;
 
 	/**
-	 * @deprecated
-	 */
-	public static void main(String[] args) {
-		/*
-		 * try { About dialog = new About();
-		 * dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		 * dialog.setVisible(true); } catch (Exception e) { e.printStackTrace();
-		 * }
-		 */
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public AboutDialog() {

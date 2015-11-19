@@ -359,9 +359,8 @@ public class EditDialog extends JDialog {
 
 				ArrayList<Filter> filterOfCurrentSource = currentSource.getFilter();
 
-				for (int i = 0; i < filterOfCurrentSource.size(); i++) {
-					sourcesDialog.addFilter(filterOfCurrentSource.get(i).getPath(),
-							filterOfCurrentSource.get(i).getMode());
+				for (Filter aFilterOfCurrentSource : filterOfCurrentSource) {
+					sourcesDialog.addFilter(aFilterOfCurrentSource.getPath(), aFilterOfCurrentSource.getMode());
 				}
 				sourcesDialog.setLocation(EditDialog.this.getLocationOnScreen());
 				sourcesDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
@@ -741,7 +740,7 @@ public class EditDialog extends JDialog {
 		spinner_numberOfBackupsToKeep = new JSpinner();
 		panel_settingsSimpleSettings.add(spinner_numberOfBackupsToKeep);
 		spinner_numberOfBackupsToKeep.setModel(
-				new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+				new SpinnerNumberModel(1, 1, null, 1));
 		tabbedPane_autoclean.addTab(ResourceBundle.getBundle("messages").getString("GUI.EditDialog.extended"),
 				panel_extendedSettings);
 		panel_extendedSettings.setLayout(new BorderLayout(0, 0));
@@ -810,6 +809,7 @@ public class EditDialog extends JDialog {
 		});
 		checkBox_toggleExtendedSettings.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				checkBox_toggleSimpleSettings.setSelected(false);
 			}
 		});
@@ -1191,8 +1191,8 @@ public class EditDialog extends JDialog {
 					if (checkBox_toggleDayInMonth.isSelected()) {
 						// Prüfen ob mindestens ein Tag ausgewählt ist:
 						boolean validSettings = false;
-						for (int i = 0; i < daysOfMonthCheckboxes.length; i++) {
-							if (daysOfMonthCheckboxes[i].isSelected()) {
+						for (JCheckBox daysOfMonthCheckboxe : daysOfMonthCheckboxes) {
+							if (daysOfMonthCheckboxe.isSelected()) {
 								validSettings = true;
 							}
 						}
@@ -1380,10 +1380,7 @@ public class EditDialog extends JDialog {
 	 */
 	private boolean isValidPath(String pfad) {
 		File f = new File(pfad);
-		if (f.exists()) {
-			return true;
-		}
-		return false;
+		return f.exists();
 	}
 
 	/**
@@ -1393,10 +1390,7 @@ public class EditDialog extends JDialog {
 	 * @return ob der Name noch nicht benutzt ist
 	 */
 	private boolean nameIsNotTaken(String name) {
-		if (editListener.getBackupTaskNames().contains(name)) {
-			return false;
-		}
-		return true;
+		return !editListener.getBackupTaskNames().contains(name);
 	}
 
 	/**
@@ -1406,10 +1400,7 @@ public class EditDialog extends JDialog {
 	 * @return ültigkeit des Namens
 	 */
 	private boolean isValidName(String name) {
-		if (!name.equals("")) {
-			return true;
-		}
-		return false;
+		return !name.equals("");
 	}
 
 	/**
@@ -1436,8 +1427,8 @@ public class EditDialog extends JDialog {
 	 * @param sources festzulegende Quellen
 	 */
 	public void setSourcePaths(ArrayList<Source> sources) {
-		for (int i = 0; i < sources.size(); i++) {
-			listModel.addElement(sources.get(i));
+		for (Source source : sources) {
+			listModel.addElement(source);
 		}
 	}
 
@@ -1556,8 +1547,8 @@ public class EditDialog extends JDialog {
 	 */
 	private DefaultComboBoxModel<String> createComboBoxModelFromTemplate(String[] template) {
 		DefaultComboBoxModel<String> result = new DefaultComboBoxModel<String>();
-		for (int i = 0; i < template.length; i++) {
-			result.addElement(template[i]);
+		for (String aTemplate : template) {
+			result.addElement(aTemplate);
 		}
 		return result;
 	}
@@ -1650,26 +1641,28 @@ public class EditDialog extends JDialog {
 	 * @param weekdays Wochentage an denen gesichert werden soll
 	 */
 	public void setBackupWeekdays(boolean[] weekdays) {
-		if (weekdays[0] == true) {
+		if (weekdays[0]) {
 			checkBox_monday.setSelected(true);
 		}
-		if (weekdays[1] == true) {
+		if (weekdays[1]) {
 			checkBox_tuesday.setSelected(true);
 		}
-		if (weekdays[2] == true) {
+		if (weekdays[2]) {
 			checkBox_wednesday.setSelected(true);
 		}
-		if (weekdays[3] == true) {
+		if (weekdays[3]) {
 			checkBox_thursday.setSelected(true);
 		}
-		if (weekdays[4] == true) {
+		if (weekdays[4]) {
 			checkBox_friday.setSelected(true);
 		}
-		if (weekdays[5] == true) {
+		if (weekdays[5]) {
 			checkBox_saturday.setSelected(true);
 		}
-		if (weekdays[6] == true) {
-			checkBox_sunday.setSelected(true);
+		if (weekdays[6]) {
+			if (weekdays[6]) {
+				checkBox_sunday.setSelected(true);
+			}
 		}
 	}
 
@@ -1679,6 +1672,7 @@ public class EditDialog extends JDialog {
 	 *
 	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
+
 	public void setBackupDaysInMonth(boolean[] daysInMonth) {
 		for (int i = 0; i < 31; i++) {
 			if (daysInMonth[i]) {
@@ -1846,25 +1840,13 @@ public class EditDialog extends JDialog {
 			case "min":
 				return true;
 			case "h":
-				if (!currentUnit.equals("min")) {
-					return true;
-				}
-				return false;
+				return !currentUnit.equals("min");
 			case "d":
-				if (!currentUnit.equals("min") && !currentUnit.equals("h")) {
-					return true;
-				}
-				return false;
+				return !currentUnit.equals("min") && !currentUnit.equals("h");
 			case "m":
-				if (currentUnit.equals("m") || currentUnit.equals("y")) {
-					return false;
-				}
-				return true;
+				return !(currentUnit.equals("m") || currentUnit.equals("y"));
 			case "y":
-				if (currentUnit.equals("y")) {
-					return false;
-				}
-				return true;
+				return !currentUnit.equals("y");
 		}
 		return false;
 	}
@@ -1880,11 +1862,8 @@ public class EditDialog extends JDialog {
 		String currentUnit = unitComboBoxes[index].getSelectedItem().toString();
 		String unitAboveCurrent = unitComboBoxes[index - 1].getSelectedItem().toString();
 		if (currentUnit.equals(unitAboveCurrent)) {
-			if (Integer.valueOf(spinners[index - 1].getValue().toString()) <
-					Integer.valueOf(spinners[index].getValue().toString())) {
-				return true;
-			}
-			return false;
+			return Integer.valueOf(spinners[index - 1].getValue().toString()) <
+					Integer.valueOf(spinners[index].getValue().toString());
 		}
 		return true;
 	}

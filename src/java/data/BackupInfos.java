@@ -21,9 +21,8 @@
 package data;
 
 /**
- * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B.
- * Größe der zu kopierenden/ verlinkgenden Dateien oder Anzahl der zu
- * kopierenden/ verlinkenden Dateien oder Verzeichnissen).
+ * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B. Größe der zu kopierenden/ verlinkgenden
+ * Dateien oder Anzahl der zu kopierenden/ verlinkenden Dateien oder Verzeichnissen).
  *
  * @author Andreas Fleig
  */
@@ -56,6 +55,7 @@ public class BackupInfos {
 	 * @return Anzahl der zu bearbeitenden Ordner
 	 */
 	public long getNumberOfDirectories() {
+
 		return numberOfDirectories;
 	}
 
@@ -63,6 +63,7 @@ public class BackupInfos {
 	 * Erhöht die Anzahl der zu bearbeitenden Ordner um 1.
 	 */
 	public void increaseNumberOfDirectories() {
+
 		numberOfDirectories++;
 	}
 
@@ -72,6 +73,7 @@ public class BackupInfos {
 	 * @return Anzahl der zu kopierenden Dateien
 	 */
 	public long getNumberOfFilesToCopy() {
+
 		return numberOfFilesToCopy;
 	}
 
@@ -79,6 +81,7 @@ public class BackupInfos {
 	 * Erhöht die Anzahl der zu kopierenden Ordner um 1.
 	 */
 	public void increaseNumberOfFilesToCopy() {
+
 		numberOfFilesToCopy++;
 	}
 
@@ -88,6 +91,7 @@ public class BackupInfos {
 	 * @return Anzahl der zu verlinkenden Dateien
 	 */
 	public long getNumberOfFilesToLink() {
+
 		return numberOfFilesToLink;
 	}
 
@@ -95,6 +99,7 @@ public class BackupInfos {
 	 * Erhöht die Anzahl der zu verlinkenden Ordner um 1.
 	 */
 	public void increaseNumberOfFilesToLink() {
+
 		numberOfFilesToLink++;
 	}
 
@@ -104,6 +109,7 @@ public class BackupInfos {
 	 * @return Gesamtgröße der zu kopierenden Dateien
 	 */
 	public double getSizeToCopy() {
+
 		return sizeToCopy;
 	}
 

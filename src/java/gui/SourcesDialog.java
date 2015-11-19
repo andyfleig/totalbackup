@@ -343,10 +343,7 @@ public class SourcesDialog extends JDialog {
 	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
 	 */
 	private boolean isUnderSourceRoot(String path) {
-		if (path.startsWith(textfield_source.getText())) {
-			return true;
-		}
-		return false;
+		return path.startsWith(textfield_source.getText());
 	}
 
 	/**
