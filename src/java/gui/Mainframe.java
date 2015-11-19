@@ -1046,11 +1046,11 @@ public class Mainframe extends JDialog {
 				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
+			cancelAllRunningTasks();
+			sendToQtTrayOverSocket(null, true);
 			if (trayProcess != null) {
 				trayProcess.destroy();
 			}
-			cancelAllRunningTasks();
-			sendToQtTrayOverSocket(null, true);
 			System.exit(0);
 		}
 	}
