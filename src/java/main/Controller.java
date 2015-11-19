@@ -986,8 +986,6 @@ public class Controller {
 	private void scheduleBackupTaskAt(final BackupTask task, LocalDateTime nextExecutionTime) {
 		// TODO: Debugging-Ausgabe raus:
 		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
-		// Autostart für diesen Task aktivieren:
-		task.setAutostart(true);
 		// scheduling:
 		// Für das Backup:
 		Runnable backup = new Runnable() {
@@ -996,7 +994,13 @@ public class Controller {
 				Thread backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						mainframe.prepareBackup(task);
+						if (task.getAutostart()) {
+							mainframe.prepareBackup(task);
+						} else {
+							task.setAutostart(true);
+							mainframe.prepareBackup(task);
+							task.setAutostart(false);
+						}
 					}
 				});
 				BackupThreadContainer newContainer = new BackupThreadContainer(backupThread, task.getTaskName());
