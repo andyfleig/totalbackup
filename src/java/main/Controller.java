@@ -788,8 +788,8 @@ public class Controller {
 				System.err.println("Error while parsing date");
 			}
 			// dateOfCurrentBackupSet in LocalTimeDate umwandeln:
-			LocalDateTime ltmOfCurrentBackupSet =
-					LocalDateTime.ofInstant(dateOfCurrentBackupSet.toInstant(), ZoneId.systemDefault());
+			LocalDateTime ltmOfCurrentBackupSet = LocalDateTime.ofInstant(dateOfCurrentBackupSet.toInstant(),
+					ZoneId.systemDefault());
 
 			// Richtiges Bucket finden und einfügen:
 			switch (task.getNumberOfExtendedCleanRules()) {
@@ -905,6 +905,7 @@ public class Controller {
 	 */
 	private void taskStarted(String taskName) {
 		runningBackupTasks.add(taskName);
+		mainframe.taskStatusChanged();
 		System.out.println("Task started:" + taskName);
 	}
 
@@ -917,6 +918,7 @@ public class Controller {
 		if (!runningBackupTasks.remove(task.getTaskName())) {
 			System.err.println("Error: This task isn't running");
 		}
+		mainframe.taskStatusChanged();
 		System.out.println("Task finished:" + task.getTaskName());
 		if (schedule) {
 			scheduleBackupTask(task);
@@ -957,14 +959,14 @@ public class Controller {
 		if (autoBackupMode == 0) {
 			return;
 		} else if (autoBackupMode == 1) {
-			nextExecutionTime =
-					calcTimeFromWeekdaysStartingFrom(task.getBackupWeekdays(), task.getStartTime(), dateTime);
+			nextExecutionTime = calcTimeFromWeekdaysStartingFrom(task.getBackupWeekdays(), task.getStartTime(),
+					dateTime);
 		} else if (autoBackupMode == 2) {
-			nextExecutionTime =
-					calcTimeFromDaysInMonthStartingFrom(task.getBackupDaysInMonth(), task.getStartTime(), dateTime);
+			nextExecutionTime = calcTimeFromDaysInMonthStartingFrom(task.getBackupDaysInMonth(), task.getStartTime(),
+					dateTime);
 		} else if (autoBackupMode == 3) {
-			nextExecutionTime =
-					calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(), dateTime);
+			nextExecutionTime = calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(),
+					dateTime);
 		}
 		scheduleBackupTaskAt(task, nextExecutionTime);
 	}
@@ -1132,7 +1134,7 @@ public class Controller {
 	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
 	 */
 	private LocalDateTime calcTimeFromDaysInMonthStartingFrom(boolean[] daysInMonth, LocalTime time,
-															  LocalDateTime startAt) {
+			LocalDateTime startAt) {
 		int currentDayInMonth = startAt.getDayOfMonth() - 1;
 		// Heute?:
 		if (daysInMonth[currentDayInMonth]) {

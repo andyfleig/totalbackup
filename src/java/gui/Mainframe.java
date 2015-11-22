@@ -277,7 +277,7 @@ public class Mainframe extends JDialog {
 
 		textfield_status = new JTextField();
 		textfield_status.setEditable(false);
-		textfield_status.setPreferredSize(new Dimension(0, 50));
+		textfield_status.setPreferredSize(new Dimension(0, 25));
 		panel_status.add(textfield_status, BorderLayout.CENTER);
 
 		JLabel label_status = new JLabel();
@@ -308,7 +308,6 @@ public class Mainframe extends JDialog {
 					editDialog.setLocation(frmTotalbackup.getLocationOnScreen());
 					editDialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 					editDialog.setVisible(true);
-
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -457,9 +456,6 @@ public class Mainframe extends JDialog {
 
 		/**
 		 * Renderer für Listenelemente der Task-List.
-		 *
-		 * @author andy
-		 *
 		 */
 		class MyListCellRenderer extends DefaultListCellRenderer {
 			@Override
@@ -491,6 +487,8 @@ public class Mainframe extends JDialog {
 					}
 				}
 				setText(labelText);
+				//TODO: Probleme mit dem Repainten aller anderen Fenster:
+				//list_tasks.repaint();
 
 				return this;
 			}
@@ -500,8 +498,8 @@ public class Mainframe extends JDialog {
 		list_tasks.setCellRenderer(new MyListCellRenderer());
 		panel_tasks.add(list_tasks, BorderLayout.CENTER);
 		list_tasks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		// list_tasks.setSelectedIndex(0);
-		// list_tasks.setVisibleRowCount(6);
+		list_tasks.setFixedCellHeight(35);
+
 
 		JButton button_clearOutput = new JButton(
 				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_clearOutput"));
@@ -532,7 +530,9 @@ public class Mainframe extends JDialog {
 							ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+
 				listener.taskStarted(taskToRun.getTaskName());
+
 				prep = new PreparingDialog(new IPreparingDialogListener() {
 
 					@Override
@@ -1349,5 +1349,13 @@ public class Mainframe extends JDialog {
 		});
 		nec.setModal(true);
 		nec.setVisible(true);
+	}
+
+	/**
+	 * Führt Änderungen am Mainframe durch, welche durch den Statuswechsel erforderlich werden (z.B. repaint der
+	 * Task-Liste).
+	 */
+	public void taskStatusChanged() {
+		list_tasks.repaint();
 	}
 }
