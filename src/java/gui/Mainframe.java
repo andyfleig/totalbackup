@@ -487,9 +487,6 @@ public class Mainframe extends JDialog {
 					}
 				}
 				setText(labelText);
-				//TODO: Probleme mit dem Repainten aller anderen Fenster:
-				//list_tasks.repaint();
-
 				return this;
 			}
 		}
