@@ -242,7 +242,7 @@ public class Mainframe extends JDialog {
 		textpane_output.setEditable(false);
 
 		DefaultCaret caret = (DefaultCaret) textpane_output.getCaret();
-		// TODO: Kein Vertikales Autoscrollen
+		// TODO: Kein Horizontales Autoscrollen
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
 		tpOutput_doc = textpane_output.getStyledDocument();
