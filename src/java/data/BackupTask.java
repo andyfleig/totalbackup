@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * Eine Backup-Aufgabe. Enthält die Einstellungen dieses Backup Tasks wie Quell-
- * und Zielpfad aber auch Informationen über autoClean usw.
+ * Eine Backup-Aufgabe. Enthält die Einstellungen dieses Backup Tasks wie Quell- und Zielpfad aber auch Informationen
+ * über autoClean usw.
  *
  * @author Andreas Fleig
  */
@@ -66,9 +66,8 @@ public class BackupTask implements Serializable {
 	private transient ScheduledFuture<?> popupScheduledFuture;
 	private LocalDateTime nextExecutionTime;
 	/**
-	 * Gibt an wie weit ein Backup sich in der Zukunft befinden darft sodass
-	 * sich das nachholen eines versäumten Backups noch lohnt. Angabe in
-	 * Minuten.
+	 * Gibt an wie weit ein Backup sich in der Zukunft befinden darft sodass sich das nachholen eines versäumten Backups
+	 * noch lohnt. Angabe in Minuten.
 	 */
 	private String catchUpTime;
 	private boolean catchUpEnabled;
@@ -122,8 +121,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt alle Quellpfade auf die übergebenen Quellpfade fest. Achtung, alle
-	 * existierenden Quellpfade werden überschrieben!
+	 * Legt alle Quellpfade auf die übergebenen Quellpfade fest. Achtung, alle existierenden Quellpfade werden
+	 * überschrieben!
 	 *
 	 * @param sources festzulegende Quellen
 	 */
@@ -169,8 +168,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt den Namen des Backup-Tasks als String zurück. Wird für das korrekte
-	 * Anzeigen des Namens in der Liste (GUI) benötigt.
+	 * Gibt den Namen des Backup-Tasks als String zurück. Wird für das korrekte Anzeigen des Namens in der Liste (GUI)
+	 * benötigt.
 	 */
 	@Override
 	public String toString() {
@@ -222,8 +221,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert
-	 * (false) ist.
+	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
 	 *
 	 * @return Zustand der Auto-Clean Funktion
 	 */
@@ -232,8 +230,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert
-	 * (false) ist.
+	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
 	 *
 	 * @return Zustand der Auto-Clean Funktion
 	 */
@@ -260,8 +257,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
-	 * fest.
+	 * Legt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln fest.
 	 *
 	 * @param backupsToKeep festzulegende Werte
 	 */
@@ -288,8 +284,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln
-	 * zurück.
+	 * Gibt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln zurück.
 	 *
 	 * @return Anzahl der zu behaltenden Backupsätze
 	 */
@@ -298,8 +293,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Löscht alle gesetzten Einstellungen/ Informationen des
-	 * AutoClean-Features.
+	 * Löscht alle gesetzten Einstellungen/ Informationen des AutoClean-Features.
 	 */
 	public void clearAutoCleanInformations() {
 		simpleAutoCleanIsEnabled = false;
@@ -338,8 +332,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht
-	 * vorbereitet.
+	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht vorbereitet.
 	 *
 	 * @param prepared true = vorbereitet, false = nicht vorbereitet
 	 */
@@ -402,8 +395,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt eine Liste von Strings zurück, wobei die Strings für die
-	 * verschiedenen Regeln eine Kombination von Zahl_Zeiteinheit ist.
+	 * Gibt eine Liste von Strings zurück, wobei die Strings für die verschiedenen Regeln eine Kombination von
+	 * Zahl_Zeiteinheit ist.
 	 *
 	 * @return Liste von Strings welche die Grenzwerte beschreiben
 	 */
@@ -416,8 +409,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 =
-	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
+	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 = Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 =
+	 * Intervall
 	 *
 	 * @param mode Backup-Modus
 	 */
@@ -426,8 +419,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt den Backup-Modus zurück. 0 = Auto-Backup deaktiviert, 1 =
-	 * Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 = Intervall
+	 * Gibt den Backup-Modus zurück. 0 = Auto-Backup deaktiviert, 1 = Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 =
+	 * Intervall
 	 *
 	 * @return Backup-Modus
 	 */
@@ -436,9 +429,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die
-	 * Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
-	 * Sonntag.
+	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Wochentagen
+	 * von [0] = Montag bis [6] = Sonntag.
 	 *
 	 * @param weekdays Wochentage an denen gesichert werden soll
 	 */
@@ -447,9 +439,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt die Wochentage zurück an denen das Backup ausgeführt werden soll.
-	 * Die Array-Felder entsprechen den Wochentagen von [0] = Montag bis [6] =
-	 * Sonntag.
+	 * Gibt die Wochentage zurück an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den
+	 * Wochentagen von [0] = Montag bis [6] = Sonntag.
 	 *
 	 * @return Wochentage an denen gesichert werden soll
 	 */
@@ -458,9 +449,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll.
-	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
-	 * 31.
+	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll. Die Array-Felder entsprechen den Tagen im
+	 * Monat von [0] = 1. bis [30] = 31.
 	 *
 	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
@@ -469,9 +459,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt die Tage im Monat zurück an denen das Backup ausgeführt werden soll.
-	 * Die Array-Felder entsprechen den Tagen im Monat von [0] = 1. bis [30] =
-	 * 31.
+	 * Gibt die Tage im Monat zurück an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Tagen
+	 * im Monat von [0] = 1. bis [30] = 31.
 	 *
 	 * @return Tage im Monat an denen das Backup ausgeführt werden soll.
 	 */
@@ -588,18 +577,17 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Resettet den nächsten Ausführungszeitpunkt (LocalDateTime). Achtung:
-	 * Hierbei wird nicht das scheduling an sich resettet sondern nur die
-	 * zusätzliche Variable für das Nachholen versäumter Backups. Diese Methode
-	 * ist nur gefolgt von task.getScheduledFuture().cancel(false) zu benutzen!
+	 * Resettet den nächsten Ausführungszeitpunkt (LocalDateTime). Achtung: Hierbei wird nicht das scheduling an sich
+	 * resettet sondern nur die zusätzliche Variable für das Nachholen versäumter Backups. Diese Methode ist nur gefolgt
+	 * von task.getScheduledFuture().cancel(false) zu benutzen!
 	 */
 	public void resetLocalDateTimeOfNextExecution() {
 		this.nextExecutionTime = null;
 	}
 
 	/**
-	 * Gibt die Dauer zum nächsten geplanten Backup, so dass sich das nachholen
-	 * eines versäumten Backups noch lohnt, zurück.
+	 * Gibt die Dauer zum nächsten geplanten Backup, so dass sich das nachholen eines versäumten Backups noch lohnt,
+	 * zurück.
 	 *
 	 * @return Dauer zum nächsten Backup
 	 */
@@ -663,9 +651,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt den "richtigen" Zielpfad fest. Dieser wird nach dem Backup zum
-	 * Zielpfad. Dies ist nötig wenn einmalig ein Backup mit einem anderen
-	 * Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
+	 * Legt den "richtigen" Zielpfad fest. Dieser wird nach dem Backup zum Zielpfad. Dies ist nötig wenn einmalig ein
+	 * Backup mit einem anderen Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
 	 *
 	 * @param path festzulegender "richtiger" Zielpfad
 	 */
@@ -674,9 +661,8 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt den "richtigen" Zielpfad zurück. Dieser wird nach dem Backup zum
-	 * Zielpfad. Dies ist nötig wenn einmalig ein Backup mit einem anderen
-	 * Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
+	 * Gibt den "richtigen" Zielpfad zurück. Dieser wird nach dem Backup zum Zielpfad. Dies ist nötig wenn einmalig ein
+	 * Backup mit einem anderen Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
 	 *
 	 * @return "richtiger" Zielpfad
 	 */

@@ -227,8 +227,8 @@ public class Mainframe extends JDialog {
 		JMenu mn_Help = new JMenu(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_help"));
 		menuBar.add(mn_Help);
 
-		JMenuItem mntm_About =
-				new JMenuItem(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_about"));
+		JMenuItem mntm_About = new JMenuItem(
+				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.menu_about"));
 		mntm_About.setAction(action_about);
 		mn_Help.add(mntm_About);
 
@@ -256,8 +256,8 @@ public class Mainframe extends JDialog {
 		panel_statusAndLog.add(scrollPane_output, BorderLayout.CENTER);
 
 		// Checkbox erweiterte Ausgabe:
-		checkbox_advancedOutput =
-				new JCheckBox(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.checkbox_advancedOutput"));
+		checkbox_advancedOutput = new JCheckBox(
+				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.checkbox_advancedOutput"));
 
 		JPanel panel_options = new JPanel();
 		panel_statusAndLog.add(panel_options, BorderLayout.SOUTH);
@@ -383,8 +383,8 @@ public class Mainframe extends JDialog {
 		panel_configureTasks.add(button_edit);
 
 		// Button reschedule:
-		JButton button_reschedule =
-				new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_reschedule"));
+		JButton button_reschedule = new JButton(
+				ResourceBundle.getBundle("messages").getString("GUI.button_reschedule"));
 		button_reschedule.setAlignmentX(Component.CENTER_ALIGNMENT);
 		button_reschedule.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -464,7 +464,7 @@ public class Mainframe extends JDialog {
 		class MyListCellRenderer extends DefaultListCellRenderer {
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
-														  boolean cellHasFocus) {
+					boolean cellHasFocus) {
 				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				BackupTask label = (BackupTask) value;
 				String name = label.getTaskName();
@@ -481,8 +481,8 @@ public class Mainframe extends JDialog {
 				} else {
 					if (listener.getRunningBackupTasks().contains(name)) {
 						labelText =
-								"<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.task") +
-										" " + name + "<br/>" +
+								"<html>" + ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list" + "" +
+										".task") + " " + name + "<br/>" +
 										ResourceBundle.getBundle("messages").getString("GUI.Mainframe.list.running");
 					} else {
 						labelText =
@@ -503,8 +503,8 @@ public class Mainframe extends JDialog {
 		// list_tasks.setSelectedIndex(0);
 		// list_tasks.setVisibleRowCount(6);
 
-		JButton button_clearOutput =
-				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_clearOutput"));
+		JButton button_clearOutput = new JButton(
+				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_clearOutput"));
 		button_clearOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				textpane_output.setText("");
@@ -516,8 +516,8 @@ public class Mainframe extends JDialog {
 		frmTotalbackup.getContentPane().add(panel_buttons, BorderLayout.SOUTH);
 
 		// Button Ausgewähltes Backup starten:
-		button_startSelected =
-				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startSelectedBackup"));
+		button_startSelected = new JButton(
+				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startSelectedBackup"));
 
 		button_startSelected.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -570,8 +570,8 @@ public class Mainframe extends JDialog {
 		panel_buttons.add(button_startSelected);
 
 		// Button Backup Abbrechen:
-		button_cancel =
-				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_cancelBackup"));
+		button_cancel = new JButton(
+				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_cancelBackup"));
 		button_cancel.setEnabled(false);
 
 		button_cancel.addActionListener(new ActionListener() {
@@ -582,8 +582,8 @@ public class Mainframe extends JDialog {
 		});
 
 		// Button Alle-Backups-Starten:
-		button_startAll =
-				new JButton(ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startAllBackups"));
+		button_startAll = new JButton(
+				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_startAllBackups"));
 		panel_buttons.add(button_startAll);
 
 		button_startAll.addActionListener(new ActionListener() {
@@ -842,8 +842,8 @@ public class Mainframe extends JDialog {
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					// ja:
-					ArrayList<String> correctDest =
-							searchForCorrectDestPath(task.getTaskName(), task.getDestinationPath());
+					ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(),
+							task.getDestinationPath());
 					boolean successful = false;
 					for (String dest : correctDest) {
 						int reply2 = JOptionPane.showConfirmDialog(null,

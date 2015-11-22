@@ -134,8 +134,8 @@ public class NormalBackup implements Backupable {
 						listener.printOut(outprint, false, task.getTaskName());
 						listener.log(outprint, task);
 					} else {
-						String outprint =
-								ResourceBundle.getBundle("messages").getString("Messages.FolderCreationError");
+						String outprint = ResourceBundle.getBundle("messages").getString(
+								"Messages.FolderCreationError");
 						listener.printOut(outprint, true, task.getTaskName());
 						listener.log(outprint, task);
 					}

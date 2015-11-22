@@ -131,7 +131,7 @@ public final class BackupHelper {
 	 * @return angelegter Root-Ordner
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener,
-										  BackupTask task) {
+			BackupTask task) {
 
 		// Ordnername mit Datum festlegen:
 		Date date = new Date();
@@ -268,8 +268,8 @@ public final class BackupHelper {
 
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
-					foundDate =
-							LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(), ZoneId.systemDefault());
+					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(),
+							ZoneId.systemDefault());
 				} catch (ParseException e) {
 					// Offenbar kein gültiges Datum
 					continue;

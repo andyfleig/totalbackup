@@ -601,8 +601,8 @@ public class HardlinkBackup implements Backupable {
 	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
 
 		// Namen der Datei "zerlegen":
-		StringTokenizer tokenizerOfFile =
-				new StringTokenizer(file.getAbsolutePath().substring(sourceRootPath.length()), File.separator);
+		StringTokenizer tokenizerOfFile = new StringTokenizer(file.getAbsolutePath().substring(sourceRootPath.length()),
+				File.separator);
 		StructureFile currentStructureFile = directoryStructure;
 		StructureFile tmp;
 
