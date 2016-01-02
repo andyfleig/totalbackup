@@ -392,7 +392,7 @@ public class Mainframe extends JDialog {
 				if (!list_tasks.isSelectionEmpty()) {
 					BackupTask selectedTask = list_tasks.getSelectedValue();
 					// Prüfen ob der gewählte Task gerade ausgeführt wird:
-					if (listener.getRunningBackupTasks().contains(selectedTask.getTaskName())) {
+					if (listener.isBackupTaskRunning(selectedTask.getTaskName())) {
 						JOptionPane.showMessageDialog(null,
 								ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errTaskIsRunning"),
 								ResourceBundle.getBundle("messages").getString("GUI.errMsg"),
