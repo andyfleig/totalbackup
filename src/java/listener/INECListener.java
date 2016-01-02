@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, 2015 Andreas Fleig (andy DOT fleig AT gmail DOT com)
+ * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
  *
  * All rights reserved.
  *
