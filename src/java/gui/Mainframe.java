@@ -131,6 +131,7 @@ public class Mainframe extends JDialog {
 
 	private TrayIcon trayIcon;
 	private Process trayProcess;
+	// Legt fest ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet wird.
 	private boolean isQTTray;
 
 	File sourceFile;
@@ -983,7 +984,6 @@ public class Mainframe extends JDialog {
 		summary.setVisible(true);
 	}
 
-	//TODO: Sollte in den Controller (wie viele andere Methoden hier auch)
 	private void startBackupTask(final BackupTask task, Backupable backup) {
 		if (!task.getAutostart()) {
 			summary.dispose();
