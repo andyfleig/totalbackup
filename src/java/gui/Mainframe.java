@@ -1032,7 +1032,9 @@ public class Mainframe extends JDialog {
 		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
 			cancelAllRunningTasks();
-			sendToQtTrayOverSocket(null, true);
+			if (isQTTray) {
+				sendToQtTrayOverSocket(null, true);
+			}
 			if (trayProcess != null) {
 				trayProcess.destroy();
 			}
