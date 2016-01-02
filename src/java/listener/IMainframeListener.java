@@ -33,7 +33,7 @@ public interface IMainframeListener {
 	 *
 	 * @param task vorzubereitender Backup-Task
 	 */
-	public Backupable startPreparation(BackupTask task);
+	public void startPreparation(BackupTask task);
 
 	/**
 	 * Startet einen bestimmten Backup-Task.
@@ -58,7 +58,8 @@ public interface IMainframeListener {
 	public ArrayList<BackupTask> getBackupTasks();
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null zurückgeliefert.
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null
+	 * zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
 	 * @return den gesuchten Backup-Task oder null
@@ -94,7 +95,8 @@ public interface IMainframeListener {
 	public void outprintBackupCanceled(BackupTask task);
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder nicht.
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder
+	 * nicht.
 	 *
 	 * @param s        auszugebender String
 	 * @param error    legt fest ob es sich um eine Fehlermeldung handelt oder nicht
@@ -159,13 +161,13 @@ public interface IMainframeListener {
 	/**
 	 * Gibt eine Liste der Namen aller aktuelle laufenden Tasks zurück.
 	 *
-	 * @return ArrayList mit den Namen (als Strings) aller aktuell laufenden
-	 * BackupTasks
+	 * @return ArrayList mit den Namen (als Strings) aller aktuell laufenden BackupTasks
 	 */
 	public ArrayList<String> getRunningBackupTasks();
 
 	/**
-	 * Entfernt den gegebenen BackupTask aus der Liste der laufenden BackupTasks und reschedult den BackupTask wenn rescheduling true ist.
+	 * Entfernt den gegebenen BackupTask aus der Liste der laufenden BackupTasks und reschedult den BackupTask wenn
+	 * rescheduling true ist.
 	 *
 	 * @param task       zu entfernender BackupTask
 	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
@@ -187,4 +189,22 @@ public interface IMainframeListener {
 	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
 	 */
 	public boolean isBackupTaskRunning(String s);
+
+	/**
+	 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
+	 */
+	public void saveProperties();
+
+	/**
+	 * Bricht den gegebenen BackupTask ab und reschedult den BackupTask wenn rescheduling true ist.
+	 *
+	 * @param task       abzubrechender BackupTask
+	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
+	 */
+	public void cancelBackup(BackupTask task, boolean reschedule);
+
+	/**
+	 * Beendet das TotalBackup.
+	 */
+	public void quitTotalBackup();
 }

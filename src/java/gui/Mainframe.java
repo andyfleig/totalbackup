@@ -120,8 +120,6 @@ public class Mainframe extends JDialog {
 
 	private StyledDocument tpOutput_doc;
 
-	private ArrayList<BackupThreadContainer> backupThreads;
-
 	private SummaryDialog summary;
 
 	private PreparingDialog prep;
@@ -140,16 +138,12 @@ public class Mainframe extends JDialog {
 	SimpleAttributeSet blackAS;
 	SimpleAttributeSet redAS;
 
-	// Größe einer Inode (in Byte):
-	private static final double SIZE_OF_INODE = 4096;
-
 	/**
 	 * Create the application.
 	 */
 	public Mainframe(IMainframeListener listener) {
 		this.listener = listener;
 		initialize();
-		backupThreads = new ArrayList<BackupThreadContainer>();
 	}
 
 	/**
@@ -189,7 +183,7 @@ public class Mainframe extends JDialog {
 
 			@Override
 			public void saveProperties() {
-				Mainframe.this.savePropertiesGson();
+				listener.saveProperties();
 			}
 
 			@Override
@@ -448,7 +442,7 @@ public class Mainframe extends JDialog {
 						listener.removeBackupTask(currentTask);
 						listener.removeBackupTaskScheduling(currentTask);
 
-						savePropertiesGson();
+						listener.saveProperties();
 					}
 				}
 
@@ -544,22 +538,13 @@ public class Mainframe extends JDialog {
 									ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
 									taskToRun.getTaskName());
 							button_cancel.setEnabled(false);
-							Mainframe.this.cancelBackup(listener.getBackupTaskWithName(taskName), true);
+							listener.cancelBackup(listener.getBackupTaskWithName(taskName), true);
 						}
 
 					}
 				}, taskToRun);
 				prep.setLocation(frmTotalbackup.getLocationOnScreen());
-
-				Thread backupThread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						prepareBackup(taskToRun);
-					}
-				});
-				BackupThreadContainer newContainer = new BackupThreadContainer(backupThread, taskToRun.getTaskName());
-				backupThreads.add(newContainer);
-				backupThread.start();
+				listener.startPreparation(taskToRun);
 				prep.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 				prep.setVisible(true);
 
@@ -620,7 +605,7 @@ public class Mainframe extends JDialog {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					quit();
+					listener.quitTotalBackup();
 				}
 			});
 			trayPopupMenu.add(close);
@@ -776,8 +761,8 @@ public class Mainframe extends JDialog {
 				int msg = in.readInt();
 				if (msg == 0) {
 					// Programm beenden:
-					savePropertiesGson();
-					quit();
+					listener.saveProperties();
+					listener.quitTotalBackup();
 					in.close();
 				} else if (msg == 1) {
 					// Programm zeigen/ verstecken:
@@ -806,147 +791,11 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Bereitet den gegebenen Task auf ein Hardlink-Backup vor (analysiert die Quelle(n)).
-	 *
-	 * @param task vorzubereitender Task
-	 */
-	public void prepareBackup(BackupTask task) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// Testen ob Quell- und Zielpfad(e) existieren:
-		ArrayList<Source> sources = task.getSources();
-		for (Source source : sources) {
-			if (!(new File(source.getPath())).exists()) {
-				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
-				listener.printOut(output, false, task.getTaskName());
-				listener.log(output, task);
-				prep.dispose();
-				listener.removeBackupTaskFromRunningTasks(task, true);
-				return;
-			}
-		}
-
-		// DestinationVerification:
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (!OS.contains("win") && task.getDestinationVerification()) {
-			File identifier = new File(task.getDestinationPath() + "/" + task.getTaskName() + ".id");
-			if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
-				// Abfrage: Pfad suchen?:
-				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("messages").getString("Messages.SearchForCorrectDestPath"), null,
-						JOptionPane.YES_NO_OPTION);
-				if (reply == JOptionPane.YES_OPTION) {
-					// ja:
-					ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(),
-							task.getDestinationPath());
-					boolean successful = false;
-					for (String dest : correctDest) {
-						int reply2 = JOptionPane.showConfirmDialog(null,
-								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " " +
-										dest + "  " +
-										ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
-								null, JOptionPane.YES_NO_OPTION);
-						if (reply2 == JOptionPane.YES_OPTION) {
-							int reply3 = JOptionPane.showConfirmDialog(null,
-									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
-									JOptionPane.YES_NO_OPTION);
-							if (reply3 == JOptionPane.YES_OPTION) {
-								successful = true;
-								task.setDestinationPath(dest);
-							} else {
-								successful = true;
-								task.setRealDestinationPath(task.getDestinationPath());
-								task.setDestinationPath(dest);
-								savePropertiesGson();
-							}
-						}
-					}
-					if (!successful) {
-						cancelBackup(task, false);
-						if (prep != null) {
-							prep.dispose();
-						}
-						askForNextExecution(task);
-						return;
-					}
-
-				} else {
-					// nein:
-					cancelBackup(task, false);
-					if (prep != null) {
-						prep.dispose();
-					}
-					askForNextExecution(task);
-					return;
-				}
-			}
-		}
-
-
-		// Prüfen ob der Zielpfad existiert:
-		if (!(new File(task.getDestinationPath())).exists()) {
-			cancelBackup(task, false);
-			if (prep != null) {
-				prep.dispose();
-			}
-			askForNextExecution(task);
-			return;
-		}
-
-		Backupable backup = listener.startPreparation(task);
-		if (prep != null) {
-			prep.dispose();
-		}
-		// TODO: nichts zu tun -> Meldung
-		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
-		File destDir = new File(task.getDestinationPath());
-		double freeSize = destDir.getFreeSpace();
-		BackupInfos backupInfos = backup.getBackupInfos();
-		// TODO: Zusätzliche Warnung wenn knapp (z.B. 1%)
-		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() +
-				SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
-		if (freeSize <= sizeNeeded) {
-			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
-			JOptionPane.showMessageDialog(null,
-					ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errNotEnoughSpace"),
-					ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
-			// Backup abbrechen:
-			return;
-		}
-		boolean isCanceled = true;
-		for (BackupThreadContainer container : backupThreads) {
-			if (container.getTaskName().equals(task.getTaskName())) {
-				isCanceled = false;
-			}
-		}
-		if (!isCanceled) {
-			if (!task.getAutostart()) {
-				showSummaryDialog(task, backup);
-				synchronized (task) {
-					try {
-						task.wait();
-						if (!backup.isCanceled()) {
-							startBackupTask(task, backup);
-						}
-					} catch (InterruptedException e) {
-						System.out.println("Backup-Thread was unexpectedly canceled");
-					}
-				}
-			} else {
-				startBackupTask(task, backup);
-			}
-		}
-	}
-
-	/**
 	 * Öffnet einen neuen SummeryDialog.
 	 *
 	 * @param task entsprechender BackupTask
 	 */
-	private void showSummaryDialog(final BackupTask task, final Backupable backup) {
+	public void showSummaryDialog(final BackupTask task, final Backupable backup) {
 		summary = new SummaryDialog(new ISummaryDialogListener() {
 
 			@Override
@@ -1018,27 +867,7 @@ public class Mainframe extends JDialog {
 
 		// Button Beenden:
 		public void actionPerformed(ActionEvent e) {
-			quit();
-		}
-	}
-
-	/**
-	 * Beendet das Programm.
-	 */
-	private void quit() {
-		int reply = JOptionPane.showConfirmDialog(null,
-				ResourceBundle.getBundle("messages").getString("Messages.ReallyQuit"),
-				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
-		if (reply == JOptionPane.YES_OPTION) {
-			savePropertiesGson();
-			cancelAllRunningTasks();
-			if (isQTTray) {
-				sendToQtTrayOverSocket(null, true);
-			}
-			if (trayProcess != null) {
-				trayProcess.destroy();
-			}
-			System.exit(0);
+			listener.quitTotalBackup();
 		}
 	}
 
@@ -1055,80 +884,10 @@ public class Mainframe extends JDialog {
 				ResourceBundle.getBundle("messages").getString("Messages.CancelBackup"),
 				ResourceBundle.getBundle("messages").getString("Messages.Cancel"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
-			cancelBackup(taskToCancel, true);
+			listener.cancelBackup(taskToCancel, true);
 		}
 	}
 
-	/**
-	 * Bricht (ohne Nachfrage!) alle laufenden Backups ab.
-	 */
-	private void cancelAllRunningTasks() {
-		for (String taskName : listener.getRunningBackupTasks()) {
-			cancelBackup(listener.getBackupTaskWithName(taskName), true);
-		}
-	}
-
-	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
-	 *
-	 * @deprecated
-	 */
-	private void saveProperties() {
-		File properties = new File("./properties.ser");
-		if (!properties.exists()) {
-			try {
-				properties.createNewFile();
-			} catch (IOException ex) {
-				System.err.println("Error: IOException in Mainframe in saveProperties while creating properties file");
-			}
-		}
-
-		OutputStream fos = null;
-		ObjectOutputStream o = null;
-
-		try {
-			fos = new FileOutputStream(properties);
-			o = new ObjectOutputStream(fos);
-
-			o.writeObject(listener.getBackupTasks());
-		} catch (IOException ex) {
-			System.out.println("Error: IOException in Mainframe in saveProperties while creating FileOutputStream, " +
-					"ObjectOutputStream and writin out Object");
-		} finally {
-			if (o != null) {
-				try {
-					o.close();
-				} catch (IOException ex) {
-					System.err.println(
-							"Error: IOException in Mainframe in saveProperties while closing ObjectOutputStream");
-				}
-			}
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException ex) {
-					System.err.println(
-							"Error: IOException in Mainframe in saveProperties while closing FileOutputStream");
-				}
-			}
-		}
-	}
-
-	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Tasks) mit Gson
-	 */
-	private void savePropertiesGson() {
-		Gson gson = new Gson();
-		String settings = gson.toJson(listener.getBackupTasks());
-		try {
-			PrintWriter out = new PrintWriter("./properties");
-			out.println(settings);
-			out.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("Error: FileNotException while writing properties");
-		}
-
-	}
 
 	/**
 	 * Gibt einen String auf der GUI (im Textfeld) aus.
@@ -1247,77 +1006,6 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Fügt den BackupThreads (laufende Backups) den gegebenen BackupThread(Container) hinzu.
-	 *
-	 * @param c hinzuzufügender BackupThread(Container)
-	 */
-	public void addBackupThreadContainerToBackupThreads(BackupThreadContainer c) {
-		backupThreads.add(c);
-	}
-
-	/**
-	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten zurück.
-	 *
-	 * @param taskName      Name des BackupTasks
-	 * @param wrongDestPath "falscher" Zielpfad
-	 * @return Liste möglicher "richiger" Zielpfade
-	 */
-	private ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
-		ArrayList<String> foundDestPaths = new ArrayList<String>();
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (OS.contains("win")) {
-			String destSuffix = wrongDestPath.substring(3);
-			File[] roots = File.listRoots();
-			for (File root : roots) {
-				File potentialDest = new File(root.getAbsolutePath() + destSuffix);
-				if (potentialDest.exists()) {
-					if (checkForIdentifier(taskName, potentialDest.getAbsolutePath())) {
-						foundDestPaths.add(potentialDest.getAbsolutePath());
-					}
-				}
-			}
-
-		} else {
-			throw new IllegalStateException("DestinationVerification is only supported under Windows");
-		}
-		return foundDestPaths;
-	}
-
-	private boolean checkForIdentifier(String taskName, String dest) {
-		for (File file : (new File(dest)).listFiles()) {
-			if (file.getName().equals(taskName + ".id")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Bricht den gegebenen BackupTask ab und reschedult den BackupTask wenn rescheduling true ist.
-	 *
-	 * @param task       abzubrechender BackupTask
-	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
-	 */
-	private void cancelBackup(BackupTask task, boolean reschedule) {
-		Mainframe.this.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false,
-				null);
-		button_cancel.setEnabled(false);
-
-		BackupThreadContainer tmpContainer = null;
-		for (BackupThreadContainer container : backupThreads) {
-			if (container.getTaskName().equals(task.getTaskName())) {
-				container.getBackupThread().interrupt();
-				tmpContainer = container;
-				break;
-			}
-		}
-		if (tmpContainer != null) {
-			backupThreads.remove(tmpContainer);
-			listener.removeBackupTaskFromRunningTasks(task, reschedule);
-		}
-	}
-
-	/**
 	 * Gibt den gegebenen String als Tray-Popup-Message aus.
 	 *
 	 * @param msg anzuzeigender Text
@@ -1326,29 +1014,6 @@ public class Mainframe extends JDialog {
 		trayIcon.displayMessage(null, msg, TrayIcon.MessageType.INFO);
 	}
 
-	/**
-	 * Erfragt beim Benutzer wann das abgebrochene Backup das nächste mal ausgeführt werden soll.
-	 */
-	public void askForNextExecution(BackupTask task) {
-		NextExecutionChooser nec = new NextExecutionChooser(new INECListener() {
-			@Override
-			public void skipBackup() {
-				listener.rescheduleBackupTask(task);
-			}
-
-			@Override
-			public void postponeBackup(LocalDateTime nextExecutionTime) {
-				listener.scheduleBackupTaskAt(task, nextExecutionTime);
-			}
-
-			@Override
-			public void retry() {
-				listener.scheduleBackupTaskNow(task);
-			}
-		});
-		nec.setModal(true);
-		nec.setVisible(true);
-	}
 
 	/**
 	 * Führt Änderungen am Mainframe durch, welche durch den Statuswechsel erforderlich werden (z.B. repaint der
@@ -1356,5 +1021,32 @@ public class Mainframe extends JDialog {
 	 */
 	public void taskStatusChanged() {
 		list_tasks.repaint();
+	}
+
+	/**
+	 * Ruft auf dem aktuellen PreparingDialog dispose() auf, wenn dieser nicht null ist.
+	 */
+	public void disposePreparingDialogIfNotNull() {
+		if (prep != null) {
+			prep.dispose();
+		}
+	}
+
+	/**
+	 * Setzt Enabled für den Cancel-Button.
+	 *
+	 * @param enabled zu setzender Wert
+	 */
+	public void setCanceledButtonEnabled(boolean enabled) {
+		button_cancel.setEnabled(enabled);
+	}
+
+	/**
+	 * Ruft destroy auf dem TrayProcess auf, wenn dieser nicht null ist.
+	 */
+	public void destroyTrayProcess() {
+		if (trayProcess != null) {
+			trayProcess.destroy();
+		}
 	}
 }

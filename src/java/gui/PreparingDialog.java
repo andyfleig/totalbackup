@@ -36,8 +36,7 @@ import listener.IPreparingDialogListener;
 import main.BackupHelper;
 
 /**
- * Minimaler Dialog welcher wärend der Preparation angezeigt wird und die
- * Möglichkeit zum Abbruch des Backups bietet.
+ * Minimaler Dialog welcher wärend der Preparation angezeigt wird und die Möglichkeit zum Abbruch des Backups bietet.
  *
  * @author Andreas Fleig
  */

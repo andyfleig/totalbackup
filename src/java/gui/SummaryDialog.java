@@ -102,10 +102,10 @@ public class SummaryDialog extends JDialog {
 				backupIsNotFinished = true;
 				synchronized (task) {
 					task.notify();
+					SummaryDialog.this.dispose();
 				}
 			}
 		});
-		btn_ok.setActionCommand("OK");
 		panel_buttons.add(btn_ok);
 		getRootPane().setDefaultButton(btn_ok);
 

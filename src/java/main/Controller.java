@@ -20,17 +20,14 @@
  */
 package main;
 
+import data.BackupInfos;
+import data.Source;
 import gui.Mainframe;
+import gui.NextExecutionChooser;
 import listener.IBackupListener;
 import listener.IMainframeListener;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.FileInputStream;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.net.ServerSocket;
@@ -53,13 +50,14 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import data.BackupTask;
 import data.BackupThreadContainer;
+import listener.INECListener;
 
 /**
  * Controller zur Steuerung der Anwendung.
@@ -93,12 +91,17 @@ public class Controller {
 	 */
 	private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(3);
 
+	private ArrayList<BackupThreadContainer> backupThreads;
+
 	/**
 	 * Gibt an um wie viele Sekunden das nachzuholenden Backup (von now an) verzögert werden soll.
 	 */
 	private static final int DELAY_FOR_MISSED_BACKUP = 2;
 
 	private static final long NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP = 90;
+
+	// Größe einer Inode (in Byte):
+	private static final double SIZE_OF_INODE = 4096;
 
 	/**
 	 * Startet und initialisiert den Controller.
@@ -114,14 +117,16 @@ public class Controller {
 			System.exit(1);
 		}
 
+		backupThreads = new ArrayList<BackupThreadContainer>();
+
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
 					mainframe = new Mainframe(new IMainframeListener() {
 
 						@Override
-						public Backupable startPreparation(BackupTask task) {
-							return Controller.this.startPreparation(task);
+						public void startPreparation(BackupTask task) {
+							Controller.this.startPreparation(task);
 						}
 
 						@Override
@@ -234,6 +239,21 @@ public class Controller {
 						public boolean isBackupTaskRunning(String s) {
 							return Controller.this.isBackupTaskRunning(s);
 						}
+
+						@Override
+						public void saveProperties() {
+							savePropertiesGson();
+						}
+
+						@Override
+						public void cancelBackup(BackupTask task, boolean reschedule) {
+							cancelBackup(task, reschedule);
+						}
+
+						@Override
+						public void quitTotalBackup() {
+							quit();
+						}
 					});
 				}
 			});
@@ -345,10 +365,98 @@ public class Controller {
 	}
 
 	/**
-	 * Startet die Backup-Vorbereitung.
+	 * Startet die Backup-Vorbereitung (in eigenem Thread).
 	 */
-	public Backupable startPreparation(BackupTask task) {
+	public void startPreparation(BackupTask task) {
+		Thread backupThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				runPreparation(task);
+			}
+		});
+		backupThreads.add(new BackupThreadContainer(backupThread, task.getTaskName()));
+		backupThread.start();
+	}
 
+
+	private void runPreparation(BackupTask task) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		// Testen ob Quell- und Zielpfad(e) existieren:
+		ArrayList<Source> sources = task.getSources();
+		for (Source source : sources) {
+			if (!(new File(source.getPath())).exists()) {
+				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
+				printOut(output, false, task.getTaskName());
+				log(output, task);
+				mainframe.disposePreparingDialogIfNotNull();
+				taskFinished(task, true);
+				return;
+			}
+		}
+
+		// DestinationVerification:
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (!OS.contains("win") && task.getDestinationVerification()) {
+			File identifier = new File(task.getDestinationPath() + "/" + task.getTaskName() + ".id");
+			if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
+				// Abfrage: Pfad suchen?:
+				int reply = JOptionPane.showConfirmDialog(null,
+						ResourceBundle.getBundle("messages").getString("Messages.SearchForCorrectDestPath"), null,
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					// ja:
+					ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(),
+							task.getDestinationPath());
+					boolean successful = false;
+					for (String dest : correctDest) {
+						int reply2 = JOptionPane.showConfirmDialog(null,
+								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " " +
+										dest + "  " +
+										ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
+								null, JOptionPane.YES_NO_OPTION);
+						if (reply2 == JOptionPane.YES_OPTION) {
+							int reply3 = JOptionPane.showConfirmDialog(null,
+									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
+									JOptionPane.YES_NO_OPTION);
+							if (reply3 == JOptionPane.YES_OPTION) {
+								successful = true;
+								task.setDestinationPath(dest);
+							} else {
+								successful = true;
+								task.setRealDestinationPath(task.getDestinationPath());
+								task.setDestinationPath(dest);
+								savePropertiesGson();
+							}
+						}
+					}
+					if (!successful) {
+						cancelBackup(task, false);
+						mainframe.disposePreparingDialogIfNotNull();
+						askForNextExecution(task);
+						return;
+					}
+
+				} else {
+					// nein:
+					cancelBackup(task, false);
+					mainframe.disposePreparingDialogIfNotNull();
+					askForNextExecution(task);
+					return;
+				}
+			}
+		}
+
+		// Prüfen ob der Zielpfad existiert:
+		if (!(new File(task.getDestinationPath())).exists()) {
+			cancelBackup(task, false);
+			mainframe.disposePreparingDialogIfNotNull();
+			askForNextExecution(task);
+			return;
+		}
 		// Listener anlegen:
 		backupListener = new IBackupListener() {
 
@@ -456,7 +564,195 @@ public class Controller {
 
 		// TODO: Probleme mit setPrepared bei abbruch?
 		task.setPrepared(true);
-		return backup;
+
+		mainframe.disposePreparingDialogIfNotNull();
+
+		// TODO: nichts zu tun -> Meldung
+		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
+		File destDir = new File(task.getDestinationPath());
+		double freeSize = destDir.getFreeSpace();
+		BackupInfos backupInfos = backup.getBackupInfos();
+		// TODO: Zusätzliche Warnung wenn knapp (z.B. 1%)
+		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() +
+				SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
+		if (freeSize <= sizeNeeded) {
+			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
+			JOptionPane.showMessageDialog(null,
+					ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errNotEnoughSpace"),
+					ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
+			// Backup abbrechen:
+			return;
+		}
+		boolean isCanceled = true;
+		for (BackupThreadContainer container : backupThreads) {
+			if (container.getTaskName().equals(task.getTaskName())) {
+				isCanceled = false;
+			}
+		}
+		if (!isCanceled) {
+			if (!task.getAutostart()) {
+				mainframe.showSummaryDialog(task, backup);
+				synchronized (task) {
+					try {
+						task.wait();
+						if (!backup.isCanceled()) {
+							startBackup(task, backup);
+						}
+					} catch (InterruptedException e) {
+						System.out.println("Backup-Thread was unexpectedly canceled");
+					}
+				}
+			} else {
+				startBackup(task, backup);
+			}
+		}
+	}
+
+	/**
+	 * Serialisiert die Programm-Einstellungen (Backup-Tasks) mit Gson.
+	 */
+	private void savePropertiesGson() {
+		Gson gson = new Gson();
+		String settings = gson.toJson(backupTasks);
+		try {
+			PrintWriter out = new PrintWriter("./properties");
+			out.println(settings);
+			out.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Error: FileNotException while writing properties");
+		}
+
+	}
+
+	/**
+	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
+	 *
+	 * @deprecated
+	 */
+	private void saveProperties() {
+		File properties = new File("./properties.ser");
+		if (!properties.exists()) {
+			try {
+				properties.createNewFile();
+			} catch (IOException ex) {
+				System.err.println("Error: IOException in Mainframe in saveProperties while creating properties file");
+			}
+		}
+
+		OutputStream fos = null;
+		ObjectOutputStream o = null;
+
+		try {
+			fos = new FileOutputStream(properties);
+			o = new ObjectOutputStream(fos);
+
+			o.writeObject(backupTasks);
+		} catch (IOException ex) {
+			System.out.println("Error: IOException in Mainframe in saveProperties while creating FileOutputStream, " +
+					"ObjectOutputStream and writin out Object");
+		} finally {
+			if (o != null) {
+				try {
+					o.close();
+				} catch (IOException ex) {
+					System.err.println(
+							"Error: IOException in Mainframe in saveProperties while closing ObjectOutputStream");
+				}
+			}
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException ex) {
+					System.err.println(
+							"Error: IOException in Mainframe in saveProperties while closing FileOutputStream");
+				}
+			}
+		}
+	}
+
+	/**
+	 * Bricht den gegebenen BackupTask ab und reschedult den BackupTask wenn rescheduling true ist.
+	 *
+	 * @param task       abzubrechender BackupTask
+	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
+	 */
+	private void cancelBackup(BackupTask task, boolean reschedule) {
+		mainframe.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false, null);
+		mainframe.setCanceledButtonEnabled(false);
+
+		BackupThreadContainer tmpContainer = null;
+		for (BackupThreadContainer container : backupThreads) {
+			if (container.getTaskName().equals(task.getTaskName())) {
+				container.getBackupThread().interrupt();
+				tmpContainer = container;
+				break;
+			}
+		}
+		if (tmpContainer != null) {
+			backupThreads.remove(tmpContainer);
+			taskFinished(task, reschedule);
+		}
+	}
+
+	/**
+	 * Erfragt beim Benutzer wann das abgebrochene Backup das nächste mal ausgeführt werden soll.
+	 */
+	public void askForNextExecution(BackupTask task) {
+		NextExecutionChooser nec = new NextExecutionChooser(new INECListener() {
+			@Override
+			public void skipBackup() {
+				rescheduleBackupTask(task);
+			}
+
+			@Override
+			public void postponeBackup(LocalDateTime nextExecutionTime) {
+				scheduleBackupTaskAt(task, nextExecutionTime);
+			}
+
+			@Override
+			public void retry() {
+				scheduleBackupTaskNow(task);
+			}
+		});
+		nec.setModal(true);
+		nec.setVisible(true);
+	}
+
+	/**
+	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten zurück.
+	 *
+	 * @param taskName      Name des BackupTasks
+	 * @param wrongDestPath "falscher" Zielpfad
+	 * @return Liste möglicher "richiger" Zielpfade
+	 */
+	public ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
+		ArrayList<String> foundDestPaths = new ArrayList<String>();
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.contains("win")) {
+			String destSuffix = wrongDestPath.substring(3);
+			File[] roots = File.listRoots();
+			for (File root : roots) {
+				File potentialDest = new File(root.getAbsolutePath() + destSuffix);
+				if (potentialDest.exists()) {
+					if (checkForIdentifier(taskName, potentialDest.getAbsolutePath())) {
+						foundDestPaths.add(potentialDest.getAbsolutePath());
+					}
+				}
+			}
+
+		} else {
+			throw new IllegalStateException("DestinationVerification is only supported under Windows");
+		}
+		return foundDestPaths;
+	}
+
+	private boolean checkForIdentifier(String taskName, String dest) {
+		for (File file : (new File(dest)).listFiles()) {
+			if (file.getName().equals(taskName + ".id")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -993,6 +1289,7 @@ public class Controller {
 	 * @param nextExecutionTime Zeit auf die der Task geschedulet wird
 	 */
 	private void scheduleBackupTaskAt(final BackupTask task, LocalDateTime nextExecutionTime) {
+		task.resetLocalDateTimeOfNextExecution();
 		// TODO: Debugging-Ausgabe raus:
 		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
 		// scheduling:
@@ -1004,16 +1301,16 @@ public class Controller {
 					@Override
 					public void run() {
 						if (task.getAutostart()) {
-							mainframe.prepareBackup(task);
+							startPreparation(task);
 						} else {
 							task.setAutostart(true);
-							mainframe.prepareBackup(task);
+							startPreparation(task);
 							task.setAutostart(false);
 						}
 					}
 				});
 				BackupThreadContainer newContainer = new BackupThreadContainer(backupThread, task.getTaskName());
-				mainframe.addBackupThreadContainerToBackupThreads(newContainer);
+				backupThreads.add(newContainer);
 				backupThread.start();
 			}
 		};
@@ -1256,5 +1553,43 @@ public class Controller {
 	 */
 	public boolean isBackupTaskRunning(String s) {
 		return runningBackupTasks.contains(s);
+	}
+
+	/**
+	 * Reschedult den gegebenen BackupTask.
+	 *
+	 * @param task zu reschedulender BackupTask
+	 */
+	public void rescheduleBackupTask(BackupTask task) {
+		LocalDateTime nextExecution = task.getLocalDateTimeOfNextBackup();
+		task.resetLocalDateTimeOfNextExecution();
+		Controller.this.scheduleBackupTaskStartingAt(task, nextExecution.plusSeconds(1));
+	}
+
+	/**
+	 * Bricht (ohne Nachfrage!) alle laufenden Backups ab.
+	 */
+	private void cancelAllRunningTasks() {
+		for (String taskName : runningBackupTasks) {
+			cancelBackup(getBackupTaskWithName(taskName), true);
+		}
+	}
+
+	/**
+	 * Beendet das Programm.
+	 */
+	private void quit() {
+		int reply = JOptionPane.showConfirmDialog(null,
+				ResourceBundle.getBundle("messages").getString("Messages.ReallyQuit"),
+				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
+			savePropertiesGson();
+			cancelAllRunningTasks();
+			if (mainframe.isQTTray()) {
+				mainframe.sendToQtTrayOverSocket(null, true);
+			}
+			mainframe.destroyTrayProcess();
+			System.exit(0);
+		}
 	}
 }
