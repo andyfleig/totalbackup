@@ -247,7 +247,7 @@ public class Controller {
 
 						@Override
 						public void cancelBackup(BackupTask task, boolean reschedule) {
-							cancelBackup(task, reschedule);
+							Controller.this.cancelBackup(task, reschedule);
 						}
 
 						@Override
@@ -678,7 +678,6 @@ public class Controller {
 	 */
 	private void cancelBackup(BackupTask task, boolean reschedule) {
 		mainframe.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false, null);
-		mainframe.setCanceledButtonEnabled(false);
 
 		BackupThreadContainer tmpContainer = null;
 		for (BackupThreadContainer container : backupThreads) {

@@ -555,12 +555,13 @@ public class Mainframe extends JDialog {
 		// Button Backup Abbrechen:
 		button_cancel = new JButton(
 				ResourceBundle.getBundle("messages").getString("GUI.Mainframe.button_cancelBackup"));
-		button_cancel.setEnabled(false);
 
 		button_cancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				BackupTask taskToCancel = listModel.getElementAt(list_tasks.getSelectedIndex());
-				cancelBackupAfterConfirmation(taskToCancel);
+				if (listener.isBackupTaskRunning(taskToCancel.getTaskName())) {
+					cancelBackupAfterConfirmation(taskToCancel);
+				}
 			}
 		});
 
@@ -980,23 +981,6 @@ public class Mainframe extends JDialog {
 	}
 
 	/**
-	 * Sperrt bzw. entsperrt die Buttons der GUI.
-	 *
-	 * @param noBackupRunning false = "sperrt" die Buttons der GUI (während laufendem Backup), true = entsperrt
-	 * @deprecated Sollte nicht verwendet werden. Buttons sollten immer freigeben sein, um zu verhindern das ein
-	 * laufender BackupTask alles blockiert (z.B. das Bearbeiten eines anderen BackupTasks oder das erstellen eines
-	 * neuen BackupTasks)
-	 */
-	public void setButtonsToBackupRunning(boolean noBackupRunning) {
-		button_cancel.setEnabled(!noBackupRunning);
-		button_startSelected.setEnabled(noBackupRunning);
-		button_startAll.setEnabled(noBackupRunning);
-		button_add.setEnabled(noBackupRunning);
-		button_edit.setEnabled(noBackupRunning);
-		button_delete.setEnabled(noBackupRunning);
-	}
-
-	/**
 	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
 	 *
 	 * @return Status der erweiterten Ausgabe
@@ -1030,15 +1014,6 @@ public class Mainframe extends JDialog {
 		if (prep != null) {
 			prep.dispose();
 		}
-	}
-
-	/**
-	 * Setzt Enabled für den Cancel-Button.
-	 *
-	 * @param enabled zu setzender Wert
-	 */
-	public void setCanceledButtonEnabled(boolean enabled) {
-		button_cancel.setEnabled(enabled);
 	}
 
 	/**
