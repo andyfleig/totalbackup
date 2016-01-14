@@ -431,7 +431,7 @@ public class EditDialog extends JDialog {
 				null, tabbedPane_autostart, null);
 
 		JPanel panel_time = new JPanel();
-		tabbedPane_autostart.addTab(ResourceBundle.getBundle("messages").getString("EditDialog.panel.title_2"), null,
+		tabbedPane_autostart.addTab(ResourceBundle.getBundle("messages").getString("EditDialog.panel.title"), null,
 				panel_time, null);
 		panel_time.setLayout(new BorderLayout(0, 0));
 
