@@ -179,7 +179,6 @@ public class NormalBackup implements Backupable {
 	 *
 	 * @param task Backup-Tasks welcher ausgeführt wird
 	 * @throws FileNotFoundException
-	 * @throws IOException
 	 */
 	public void runBackup(BackupTask task) throws FileNotFoundException {
 		// Test ob die Vorbereitung durchgeführt wurden:
