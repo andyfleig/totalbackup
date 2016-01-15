@@ -356,7 +356,17 @@ public class Controller {
 			Type listOfBackupTasks = new TypeToken<ArrayList<BackupTask>>() {
 			}.getType();
 			if (settings != null) {
-				backupTasks = gson.fromJson(settings, listOfBackupTasks);
+				try {
+					backupTasks = gson.fromJson(settings, listOfBackupTasks);
+				} catch (com.google.gson.JsonSyntaxException e) {
+					System.err.println("Error: Could not read properties file! Seems like the syntax of the file is " +
+							"not correct.");
+					if (mainframe.isQTTray()) {
+						mainframe.sendToQtTrayOverSocket(null, true);
+					}
+					mainframe.destroyTrayProcess();
+					System.exit(1);
+				}
 			}
 			for (BackupTask backupTask : backupTasks) {
 				mainframe.addBackupTaskToList(backupTask);
