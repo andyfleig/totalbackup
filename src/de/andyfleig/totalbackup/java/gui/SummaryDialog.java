@@ -171,9 +171,9 @@ public class SummaryDialog extends JDialog {
 
 		// Inhalte hinzufügen:
 		label_taskNameDyn.setText(listener.getTaskName());
-		label_numberToCopyDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToCopy()).toString());
-		label_numberToLinkDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToLink()).toString());
-		label_numberOfDirsDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfDirectories()).toString());
+		label_numberToCopyDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToCopy()));
+		label_numberToLinkDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfFilesToLink()));
+		label_numberOfDirsDyn.setText(String.valueOf(backup.getBackupInfos().getNumberOfDirectories()));
 
 		// Größe der zu kopierenden Dateien:
 		label_sizeToCopyDyn.setText(formatSize(backup.getBackupInfos().getSizeToCopy()));
