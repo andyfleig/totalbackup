@@ -3,8 +3,9 @@ src/bin/
 *.class
 *.ser
 properties
-src/cpp/build/
-src/cpp/.kdev4/TotalBackupTray.kdev4
+src/de/andyfleig/totalbackup/cpp/build/
+src/de/andyfleig/totalbackup/cpp/.kdev4/
+src/de/andyfleig/totalbackup/cpp/cpp.kdev4
 /bin/
 /.idea
 TotalBackup.iml

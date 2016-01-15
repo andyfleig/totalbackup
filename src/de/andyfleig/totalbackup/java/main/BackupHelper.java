@@ -54,7 +54,7 @@ public final class BackupHelper {
 	/**
 	 * Ort des Programm-Icons.
 	 */
-	public static final String ICON_LOCATION = "./resources/TB_logo.png";
+	public static final String ICON_LOCATION = "./src/de/andyfleig/totalbackup/resources/TB_logo.png";
 
 	/**
 	 * Datum-Vorlage.
