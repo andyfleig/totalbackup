@@ -23,15 +23,10 @@ package gui;
 import listener.*;
 import main.BackupHelper;
 import main.Backupable;
-import main.Controller;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.lang.NullPointerException;
 import java.net.ServerSocket;
@@ -77,12 +72,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JOptionPane;
 
-import com.google.gson.Gson;
-
-import data.BackupInfos;
 import data.BackupTask;
-import data.BackupThreadContainer;
-import data.Source;
 
 /**
  * Mainframe von TotalBackup.

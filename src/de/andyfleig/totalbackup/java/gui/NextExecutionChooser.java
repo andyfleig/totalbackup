@@ -28,7 +28,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ResourceBundle;
 
 public class NextExecutionChooser extends JDialog {

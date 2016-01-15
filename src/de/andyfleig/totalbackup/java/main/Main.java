@@ -20,10 +20,6 @@
  */
 package main;
 
-import java.util.ResourceBundle;
-
-import main.Controller;
-
 /**
  * Main-Klasse von TotalBackup.
  *
