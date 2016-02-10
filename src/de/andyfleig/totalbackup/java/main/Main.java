@@ -20,6 +20,8 @@
  */
 package main;
 
+import gui.FxMainframe;
+
 /**
  * Main-Klasse von TotalBackup.
  *
@@ -33,7 +35,12 @@ public class Main {
 	 * @param args Start-Argumente
 	 */
 	public static void main(String[] args) {
-		Controller c = new Controller();
-		c.startController(args);
+
+		FxMainframe fxMainframe = new FxMainframe();
+
+
+		Controller c = new Controller(fxMainframe);
+		//c.startController(args);
+		fxMainframe.startFxMainframe();
 	}
 }

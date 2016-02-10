@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox>
+         <children>
+            <Label text="Aktueller Backup-Task:">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Label>
+            <Label text="taskName">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      <GridPane hgap="15.0" vgap="5.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="ALWAYS" />
+          <ColumnConstraints />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Anzahl der zu sichernden Ordner:" />
+            <Label text="Anzahl der zu kopierenden Dateien:" GridPane.rowIndex="1" />
+            <Label text="Anzahl der zu verlinkenden Dateien:" GridPane.rowIndex="2" />
+            <Label text="Größe der zu kopierenden Dateien:" GridPane.rowIndex="3" />
+            <Label text="Größe der zu verlinkenden Dateien:" GridPane.rowIndex="4" />
+            <Label text="100" GridPane.columnIndex="1" />
+            <Label text="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="500MB" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="500MB" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="15.0" top="10.0" />
+         </VBox.margin>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </GridPane>
+      <HBox nodeOrientation="RIGHT_TO_LEFT">
+         <children>
+            <Button mnemonicParsing="false" text="Abbrechen">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" text="OK">
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="5.0" top="10.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
+   </children>
+</VBox>

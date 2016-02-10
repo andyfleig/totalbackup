@@ -50,13 +50,6 @@ public interface IBackupListener {
 	public void setStatus(String status);
 
 	/**
-	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
-	 *
-	 * @return Status der erweiterten Ausgabe
-	 */
-	public boolean advancedOutputIsEnabled();
-
-	/**
 	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
 	 *
 	 * @param taskName Name des hinzuzufügenden Backup-Tasks

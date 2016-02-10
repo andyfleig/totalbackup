@@ -22,10 +22,10 @@ package main;
 
 import data.BackupInfos;
 import data.Source;
-import gui.Mainframe;
+import gui.FxMainframe;
+import gui.GuiController;
 import gui.NextExecutionChooser;
 import listener.IBackupListener;
-import listener.IMainframeListener;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +56,7 @@ import com.google.gson.reflect.TypeToken;
 
 import data.BackupTask;
 import data.BackupThreadContainer;
+import listener.IGUIControllerListener;
 import listener.INECListener;
 
 /**
@@ -69,10 +70,6 @@ public class Controller {
 	 * Kommandozeilenargumente welche aus der Main übergeben werden.
 	 */
 	private String[] arguments;
-	/**
-	 * Aktuelle Mainframe-Instanz.
-	 */
-	private Mainframe mainframe;
 	/**
 	 * Liste aller erstellten Backup-Tasks.
 	 */
@@ -102,10 +99,34 @@ public class Controller {
 	// Größe einer Inode (in Byte):
 	private static final double SIZE_OF_INODE = 4096;
 
+	private GuiController guiController;
+
+	public Controller(FxMainframe fxMainframe) {
+		guiController = new GuiController(new IGUIControllerListener() {
+			@Override
+			public boolean argsContains(String s) {
+				return Controller.this.argsContains(s);
+			}
+
+			@Override
+			public void quitTotalBackup() {
+				Controller.this.quit();
+			}
+
+			@Override
+			public void saveProperties() {
+				//ToDo
+			}
+		}, fxMainframe);
+	}
+
+	public void startController(String[] args) {
+	}
+
 	/**
 	 * Startet und initialisiert den Controller.
 	 */
-	public void startController(String[] args) {
+	public void startController2(String[] args) {
 		this.arguments = args;
 		// Dafür sorgen dass nur eine Instanz des Programms laufen kann:
 		try {
@@ -121,6 +142,10 @@ public class Controller {
 		try {
 			java.awt.EventQueue.invokeAndWait(new Runnable() {
 				public void run() {
+
+					//GuiController guiController = new GuiController();
+
+					/*
 					mainframe = new Mainframe(new IMainframeListener() {
 
 						@Override
@@ -253,7 +278,7 @@ public class Controller {
 						public void quitTotalBackup() {
 							quit();
 						}
-					});
+					});*/
 				}
 			});
 
@@ -291,55 +316,6 @@ public class Controller {
 		}
 	}
 
-	/**
-	 * Lädt die serialisierten Einstellungen.
-	 *
-	 * @deprecated
-	 */
-	private void loadSerialization() {
-		// Prüfen ob bereits Einstellungen gespeichert wurden:
-		File file = new File("./properties.ser");
-		if (file.exists()) {
-			ObjectInputStream ois = null;
-			FileInputStream fis = null;
-
-			File properties = new File("./properties.ser");
-			try {
-				fis = new FileInputStream(properties);
-				ois = new ObjectInputStream(fis);
-
-				backupTasks = (ArrayList<BackupTask>) ois.readObject();
-			} catch (IOException e) {
-				System.err.println(
-						"Error: IOException in Controller in loadSerialization while creating FileInputStream and " +
-								"ObjectInputStream");
-			} catch (ClassNotFoundException e) {
-				System.err.println("Error: ClassNotFoundException in Controller in loadSerialization while creating " +
-						"FileInputStream and ObjectInputStream");
-			} finally {
-				if (ois != null) {
-					try {
-						ois.close();
-					} catch (IOException e) {
-						System.err.println("Error: IOException in Controller in loadSerialization while closing " +
-								"ObjectInputStream");
-					}
-				}
-				if (fis != null) {
-					try {
-						fis.close();
-					} catch (IOException e) {
-						System.err.println("Error: IOException in Controller in loadSerialization while closing " +
-								"FileInputStream");
-					}
-				}
-			}
-			for (BackupTask backupTask : backupTasks) {
-				mainframe.addBackupTaskToList(backupTask);
-			}
-		}
-	}
-
 	private void loadSerializationGson() {
 		String settings = "";
 		File properties = new File("./properties");
@@ -360,15 +336,15 @@ public class Controller {
 				} catch (com.google.gson.JsonSyntaxException e) {
 					System.err.println("Error: Could not read properties file! Seems like the syntax of the file is " +
 							"not correct.");
-					if (mainframe.isQTTray()) {
-						mainframe.sendToQtTrayOverSocket(null, true);
+					if (guiController.isQTTray()) {
+						guiController.sendToQtTrayOverSocket(null, true);
 					}
-					mainframe.destroyTrayProcess();
+					guiController.destroyTrayProcess();
 					System.exit(1);
 				}
 			}
 			for (BackupTask backupTask : backupTasks) {
-				mainframe.addBackupTaskToList(backupTask);
+				guiController.addBackupTask(backupTask.getTaskName());
 			}
 		}
 	}
@@ -401,7 +377,7 @@ public class Controller {
 				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
 				printOut(output, false, task.getTaskName());
 				log(output, task);
-				mainframe.disposePreparingDialogIfNotNull();
+				guiController.disposePreparingDialogIfNotNull();
 				taskFinished(task, true);
 				return;
 			}
@@ -444,7 +420,7 @@ public class Controller {
 					}
 					if (!successful) {
 						cancelBackup(task, false);
-						mainframe.disposePreparingDialogIfNotNull();
+						guiController.disposePreparingDialogIfNotNull();
 						askForNextExecution(task);
 						return;
 					}
@@ -452,7 +428,7 @@ public class Controller {
 				} else {
 					// nein:
 					cancelBackup(task, false);
-					mainframe.disposePreparingDialogIfNotNull();
+					guiController.disposePreparingDialogIfNotNull();
 					askForNextExecution(task);
 					return;
 				}
@@ -462,7 +438,7 @@ public class Controller {
 		// Prüfen ob der Zielpfad existiert:
 		if (!(new File(task.getDestinationPath())).exists()) {
 			cancelBackup(task, false);
-			mainframe.disposePreparingDialogIfNotNull();
+			guiController.disposePreparingDialogIfNotNull();
 			askForNextExecution(task);
 			return;
 		}
@@ -487,8 +463,9 @@ public class Controller {
 
 					@Override
 					public void run() {
-						Controller.this.setStatus(status);
+						guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
 					}
+
 
 				});
 			}
@@ -497,11 +474,6 @@ public class Controller {
 			public void log(String event, BackupTask task) {
 				Controller.this.log(event, task);
 
-			}
-
-			@Override
-			public boolean advancedOutputIsEnabled() {
-				return Controller.this.advancedOutputIsEnabled();
 			}
 
 			@Override
@@ -574,7 +546,7 @@ public class Controller {
 		// TODO: Probleme mit setPrepared bei abbruch?
 		task.setPrepared(true);
 
-		mainframe.disposePreparingDialogIfNotNull();
+		guiController.disposePreparingDialogIfNotNull();
 
 		// TODO: nichts zu tun -> Meldung
 		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
@@ -600,7 +572,7 @@ public class Controller {
 		}
 		if (!isCanceled) {
 			if (!task.getAutostart()) {
-				mainframe.showSummaryDialog(task, backup);
+				guiController.showSummaryDialog(task, backup);
 				synchronized (task) {
 					try {
 						task.wait();
@@ -686,7 +658,8 @@ public class Controller {
 	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
 	 */
 	private void cancelBackup(BackupTask task, boolean reschedule) {
-		mainframe.addToOutput(ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"), false, null);
+		guiController.setStatusOfBackupTask(task.getTaskName(), false,
+				ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"));
 
 		BackupThreadContainer tmpContainer = null;
 		for (BackupThreadContainer container : backupThreads) {
@@ -804,7 +777,7 @@ public class Controller {
 
 					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " " +
 							toDelete.getAbsolutePath();
-					setStatus(output);
+					guiController.setStatusOfBackupTask(task.getTaskName(), false, output);
 					log(output, task);
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
@@ -847,16 +820,7 @@ public class Controller {
 	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	private void printOut(String s, boolean error, String taskName) {
-		mainframe.addToOutput(s, error, taskName);
-	}
-
-	/**
-	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
-	 *
-	 * @param status auszugebender String
-	 */
-	private void setStatus(String status) {
-		mainframe.setStatus(status);
+		guiController.setStatusOfBackupTask(taskName, error, s);
 	}
 
 	/**
@@ -916,7 +880,7 @@ public class Controller {
 	 */
 	public void addBackupTask(BackupTask task) {
 		backupTasks.add(task);
-		mainframe.addBackupTaskToList(task);
+		guiController.addBackupTask(task.getTaskName());
 	}
 
 	/**
@@ -926,16 +890,7 @@ public class Controller {
 	 */
 	public void removeBackupTask(BackupTask task) {
 		backupTasks.remove(task);
-		mainframe.removeBackupTaskFromList(task);
-	}
-
-	/**
-	 * Gibt zurück ob die erweiterte Ausgabe aktiviert ist.
-	 *
-	 * @return Status der erweiterten Ausgabe
-	 */
-	public boolean advancedOutputIsEnabled() {
-		return mainframe.advancedOutputIsEnabled();
+		guiController.removeBackupTask(task.getTaskName());
 	}
 
 	/**
@@ -1209,7 +1164,6 @@ public class Controller {
 	 */
 	private void taskStarted(String taskName) {
 		runningBackupTasks.add(taskName);
-		mainframe.taskStatusChanged();
 		System.out.println("Task started:" + taskName);
 	}
 
@@ -1222,7 +1176,6 @@ public class Controller {
 		if (!runningBackupTasks.remove(task.getTaskName())) {
 			System.err.println("Error: This task isn't running");
 		}
-		mainframe.taskStatusChanged();
 		System.out.println("Task finished:" + task.getTaskName());
 		if (schedule) {
 			scheduleBackupTask(task);
@@ -1531,10 +1484,10 @@ public class Controller {
 	 * @param msg anzuzeigender String
 	 */
 	private void showTrayPopupMessage(String msg) {
-		if (mainframe.isQTTray()) {
-			mainframe.sendToQtTrayOverSocket(msg, false);
+		if (guiController.isQTTray()) {
+			guiController.sendToQtTrayOverSocket(msg, false);
 		} else {
-			mainframe.showTrayPopupMessage(msg);
+			guiController.showTrayPopupMessage(msg);
 		}
 	}
 
@@ -1593,10 +1546,10 @@ public class Controller {
 		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
 			cancelAllRunningTasks();
-			if (mainframe.isQTTray()) {
-				mainframe.sendToQtTrayOverSocket(null, true);
+			if (guiController.isQTTray()) {
+				guiController.sendToQtTrayOverSocket(null, true);
 			}
-			mainframe.destroyTrayProcess();
+			guiController.destroyTrayProcess();
 			System.exit(0);
 		}
 	}

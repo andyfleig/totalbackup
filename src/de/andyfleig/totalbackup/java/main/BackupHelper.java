@@ -77,9 +77,6 @@ public final class BackupHelper {
 
 		String output = ResourceBundle.getBundle("messages").getString("Messages.copying") + " " + source.getPath();
 		listener.setStatus(output);
-		if (listener.advancedOutputIsEnabled()) {
-			listener.printOut(output, false, currentTask.getTaskName());
-		}
 		listener.log(output, currentTask);
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
@@ -106,9 +103,6 @@ public final class BackupHelper {
 		}
 
 		String output = ResourceBundle.getBundle("messages").getString("Messages.linking") + " " + source.getPath();
-		if (listener.advancedOutputIsEnabled()) {
-			listener.printOut(output, false, task.getTaskName());
-		}
 		listener.setStatus(output);
 		listener.log(output, task);
 
