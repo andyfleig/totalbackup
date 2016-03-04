@@ -25,6 +25,8 @@ import data.Source;
 import gui.FxMainframe;
 import gui.GuiController;
 import gui.NextExecutionChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import listener.IBackupListener;
 
 import java.io.*;

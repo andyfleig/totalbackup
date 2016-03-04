@@ -8,9 +8,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BackupTaskDialog">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BackupTaskDialog">
    <children>
-      <TabPane rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" tabMinHeight="100.0" tabMinWidth="100.0">
+      <TabPane prefHeight="425.0" prefWidth="600.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" tabMinHeight="100.0" tabMinWidth="100.0">
          <tabs>
             <Tab>
                <content>
@@ -42,9 +42,9 @@
                               <ListView fx:id="lv_sourcePaths" HBox.hgrow="ALWAYS" />
                               <VBox>
                                  <children>
-                                    <Button mnemonicParsing="false" text="Hinzufügen" />
-                                    <Button mnemonicParsing="false" text="Bearbeiten" />
-                                    <Button mnemonicParsing="false" text="Löschen" />
+                                    <Button mnemonicParsing="false" onAction="#addSourcePathAction" text="Hinzufügen" />
+                                    <Button mnemonicParsing="false" onAction="#editSourcePathAction" text="Bearbeiten" />
+                                    <Button mnemonicParsing="false" onAction="#removeSourcePathAction" text="Löschen" />
                                  </children>
                                  <padding>
                                     <Insets left="10.0" />
@@ -67,7 +67,7 @@
                                     <Insets right="1.0" />
                                  </HBox.margin>
                               </TextField>
-                              <Button mnemonicParsing="false" text="Durchsuchen...">
+                              <Button mnemonicParsing="false" onAction="#addDestinationPath" text="Durchsuchen...">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>
@@ -91,20 +91,23 @@
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="tg_BackupMode" />
+                                 </toggleGroup>
                               </RadioButton>
-                              <RadioButton fx:id="rb_hardlinkBackup" mnemonicParsing="false" text="Hardlink">
+                              <RadioButton fx:id="rb_hardlinkBackup" mnemonicParsing="false" text="Hardlink" toggleGroup="$tg_BackupMode">
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
                               </RadioButton>
                            </children>
                         </HBox>
-                        <CheckBox mnemonicParsing="false" text="DestinationVerification">
+                        <CheckBox fx:id="cb_destinationVerification" mnemonicParsing="false" text="DestinationVerification">
                            <padding>
                               <Insets bottom="10.0" left="10.0" />
                            </padding>
                         </CheckBox>
-                        <CheckBox mnemonicParsing="false" text="Backup nach der Analyse automatisch starten">
+                        <CheckBox fx:id="cb_autostart" mnemonicParsing="false" text="Backup nach der Analyse automatisch starten">
                            <padding>
                               <Insets left="10.0" top="10.0" />
                            </padding>
@@ -115,33 +118,36 @@
             </Tab>
             <Tab>
                <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox prefHeight="425.0" prefWidth="518.0">
                      <children>
-                        <HBox>
+                        <HBox prefHeight="38.0" prefWidth="493.0">
                            <children>
-                              <RadioButton mnemonicParsing="false" text="Aus">
+                              <RadioButton fx:id="rb_off" mnemonicParsing="false" selected="true" text="Aus">
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="tg_autocleanMode" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="rb_weekday" mnemonicParsing="false" text="Wochentag" toggleGroup="$tg_autocleanMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Wochentag">
+                              <RadioButton fx:id="rb_dayInMonth" mnemonicParsing="false" text="Tag im Monat" toggleGroup="$tg_autocleanMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Tag im Monat">
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Intervall">
+                              <RadioButton fx:id="rb_interval" mnemonicParsing="false" text="Intervall" toggleGroup="$tg_autocleanMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
                            </children>
                         </HBox>
-                        <TabPane tabClosingPolicy="UNAVAILABLE">
+                        <TabPane prefWidth="784.0" tabClosingPolicy="UNAVAILABLE">
                            <tabs>
                               <Tab text="Wochentag">
                                  <content>
@@ -152,37 +158,37 @@
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
                                           </Label>
-                                          <CheckBox mnemonicParsing="false" text="Montag">
+                                          <CheckBox fx:id="cb_monday" mnemonicParsing="false" text="Montag">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox mnemonicParsing="false" text="Dienstag">
+                                          <CheckBox fx:id="cb_tuesday" mnemonicParsing="false" text="Dienstag">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox mnemonicParsing="false" text="Mittwoch">
+                                          <CheckBox fx:id="cb_wednesday" mnemonicParsing="false" text="Mittwoch">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox mnemonicParsing="false" text="Donnerstag">
+                                          <CheckBox fx:id="cb_thursday" mnemonicParsing="false" text="Donnerstag">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox mnemonicParsing="false" text="Freitag">
+                                          <CheckBox fx:id="cb_friday" mnemonicParsing="false" text="Freitag">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox mnemonicParsing="false" text="Samstag">
+                                          <CheckBox fx:id="cb_saturday" mnemonicParsing="false" text="Samstag">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox mnemonicParsing="false" text="Sonntag">
+                                          <CheckBox fx:id="cb_sunday" mnemonicParsing="false" text="Sonntag">
                                              <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
@@ -218,157 +224,157 @@
                                                 <RowConstraints minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <CheckBox mnemonicParsing="false" text="1">
+                                                <CheckBox fx:id="cb_day1" mnemonicParsing="false" text="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="2" GridPane.columnIndex="1">
+                                                <CheckBox fx:id="cb_day2" mnemonicParsing="false" text="2" GridPane.columnIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="3" GridPane.columnIndex="2">
+                                                <CheckBox fx:id="cb_day3" mnemonicParsing="false" text="3" GridPane.columnIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="4" GridPane.columnIndex="3">
+                                                <CheckBox fx:id="cb_day4" mnemonicParsing="false" text="4" GridPane.columnIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="5" GridPane.columnIndex="4">
+                                                <CheckBox fx:id="cb_day5" mnemonicParsing="false" text="5" GridPane.columnIndex="4">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="6" GridPane.columnIndex="5">
+                                                <CheckBox fx:id="cb_day6" mnemonicParsing="false" text="6" GridPane.columnIndex="5">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="7" GridPane.columnIndex="6">
+                                                <CheckBox fx:id="cb_day7" mnemonicParsing="false" text="7" GridPane.columnIndex="6">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="8" GridPane.columnIndex="7">
+                                                <CheckBox fx:id="cb_day8" mnemonicParsing="false" text="8" GridPane.columnIndex="7">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="9" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day9" mnemonicParsing="false" text="9" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day10" mnemonicParsing="false" text="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="11" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day11" mnemonicParsing="false" text="11" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="12" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day12" mnemonicParsing="false" text="12" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="13" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day13" mnemonicParsing="false" text="13" GridPane.columnIndex="4" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="14" GridPane.columnIndex="5" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day14" mnemonicParsing="false" text="14" GridPane.columnIndex="5" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="15" GridPane.columnIndex="6" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day15" mnemonicParsing="false" text="15" GridPane.columnIndex="6" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="16" GridPane.columnIndex="7" GridPane.rowIndex="1">
+                                                <CheckBox fx:id="cb_day16" mnemonicParsing="false" text="16" GridPane.columnIndex="7" GridPane.rowIndex="1">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="17" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day17" mnemonicParsing="false" text="17" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="18" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day18" mnemonicParsing="false" text="18" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="19" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day19" mnemonicParsing="false" text="19" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="20" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day20" mnemonicParsing="false" text="20" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="21" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day21" mnemonicParsing="false" text="21" GridPane.columnIndex="4" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="22" GridPane.columnIndex="5" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day22" mnemonicParsing="false" text="22" GridPane.columnIndex="5" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="23" GridPane.columnIndex="6" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day23" mnemonicParsing="false" text="23" GridPane.columnIndex="6" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="24" GridPane.columnIndex="7" GridPane.rowIndex="2">
+                                                <CheckBox fx:id="cb_day24" mnemonicParsing="false" text="24" GridPane.columnIndex="7" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="25" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day25" mnemonicParsing="false" text="25" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="26" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day26" mnemonicParsing="false" text="26" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="27" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day27" mnemonicParsing="false" text="27" GridPane.columnIndex="2" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="28" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day28" mnemonicParsing="false" text="28" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="29" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day29" mnemonicParsing="false" text="29" GridPane.columnIndex="4" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="30" GridPane.columnIndex="5" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day30" mnemonicParsing="false" text="30" GridPane.columnIndex="5" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
                                                 </CheckBox>
-                                                <CheckBox mnemonicParsing="false" text="31" GridPane.columnIndex="6" GridPane.rowIndex="3">
+                                                <CheckBox fx:id="cb_day31" mnemonicParsing="false" text="31" GridPane.columnIndex="6" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets left="5.0" />
                                                    </GridPane.margin>
@@ -430,9 +436,9 @@
                               </TextField>
                            </children>
                         </HBox>
-                        <HBox>
+                        <HBox prefHeight="76.0" prefWidth="481.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="versäumte Backups nachholen,&#10;wenn die Zeit bis zur nächsten&#10;Ausführung größer ist als:">
+                              <CheckBox mnemonicParsing="false" prefHeight="62.0" prefWidth="242.0" text="versäumte Backups nachholen,&#10;wenn die Zeit bis zur nächsten&#10;Ausführung größer ist als:">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

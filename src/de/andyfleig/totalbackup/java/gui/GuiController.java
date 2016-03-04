@@ -47,7 +47,7 @@ public class GuiController {
 	private FxMainframe fxMainframe;
 	private BackupTaskDialog backupTaskDialog;
 	private Parent root;
-	private final Stage backupTaskDialogStage;
+	public Stage backupTaskDialogStage;
 
 	//ToDo: setzen (isQTTray)!
 	private TrayIcon trayIcon;
@@ -61,6 +61,7 @@ public class GuiController {
 	private Socket clientSocket = null;
 
 	public GuiController(IGUIControllerListener guiControllerListener, FxMainframe fxMainframe) {
+
 		this.fxMainframe = fxMainframe;
 		fxMainframe.init(new IFxMainframeListener() {
 			@Override
@@ -77,6 +78,7 @@ public class GuiController {
 
 			@Override
 			public void startBackupTaskDialog() {
+				backupTaskDialogStage = new Stage(StageStyle.UTILITY);
 				backupTaskDialog = new BackupTaskDialog();
 				backupTaskDialogStage.initModality(Modality.APPLICATION_MODAL);
 				try {
@@ -108,7 +110,6 @@ public class GuiController {
 	}
 
 	public void initialize() {
-		backupTaskDialogStage = new Stage(StageStyle.UTILITY);
 		// Entscheidung für den Tray-Typ treffen:
 		// Wird der Java-SystemTray unterstützt wird dieser auch verwendet:
 		if (SystemTray.isSupported() && !guiControllerListener.argsContains("force_qt")) {
