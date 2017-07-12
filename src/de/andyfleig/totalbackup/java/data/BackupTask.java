@@ -53,7 +53,7 @@ public class BackupTask implements Serializable {
 	// Für das erweiterte AutoClean:
 	private int[] threshold = new int[5];
 	private String[] thresholdUnits = new String[5];
-	private String[] backupsToKeep = new String[5];
+	private int[] backupsToKeep = new int[5];
 
 	// Für AutoBackup:
 	private int autoBackupMode;
@@ -261,7 +261,7 @@ public class BackupTask implements Serializable {
 	 *
 	 * @param backupsToKeep festzulegende Werte
 	 */
-	public void setBackupsToKeep(String[] backupsToKeep) {
+	public void setBackupsToKeep(int[] backupsToKeep) {
 		this.backupsToKeep = backupsToKeep;
 	}
 
@@ -288,7 +288,7 @@ public class BackupTask implements Serializable {
 	 *
 	 * @return Anzahl der zu behaltenden Backupsätze
 	 */
-	public String[] getBackupsToKeep() {
+	public int[] getBackupsToKeep() {
 		return backupsToKeep;
 	}
 

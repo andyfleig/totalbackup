@@ -8,7 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BackupTaskDialog">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="452.0" prefWidth="630.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.BackupTaskDialog">
    <children>
       <TabPane prefHeight="425.0" prefWidth="600.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" tabMinHeight="100.0" tabMinWidth="100.0">
          <tabs>
@@ -127,20 +127,20 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                                  <toggleGroup>
-                                    <ToggleGroup fx:id="tg_autocleanMode" />
+                                    <ToggleGroup fx:id="tg_autoBackupMode" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton fx:id="rb_weekday" mnemonicParsing="false" text="Wochentag" toggleGroup="$tg_autocleanMode">
+                              <RadioButton fx:id="rb_weekday" mnemonicParsing="false" text="Wochentag" toggleGroup="$tg_autoBackupMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton fx:id="rb_dayInMonth" mnemonicParsing="false" text="Tag im Monat" toggleGroup="$tg_autocleanMode">
+                              <RadioButton fx:id="rb_dayInMonth" mnemonicParsing="false" text="Tag im Monat" toggleGroup="$tg_autoBackupMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton fx:id="rb_interval" mnemonicParsing="false" text="Intervall" toggleGroup="$tg_autocleanMode">
+                              <RadioButton fx:id="rb_interval" mnemonicParsing="false" text="Intervall" toggleGroup="$tg_autoBackupMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
@@ -405,7 +405,7 @@
                                                 <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                                              </HBox.margin>
                                           </TextField>
-                                          <ComboBox promptText="min">
+                                          <ComboBox fx:id="cb_unit" promptText="min">
                                              <HBox.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </HBox.margin>
@@ -438,12 +438,12 @@
                         </HBox>
                         <HBox prefHeight="76.0" prefWidth="481.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" prefHeight="62.0" prefWidth="242.0" text="versäumte Backups nachholen,&#10;wenn die Zeit bis zur nächsten&#10;Ausführung größer ist als:">
+                              <CheckBox fx:id="cb_catchUpBackups" mnemonicParsing="false" prefHeight="62.0" prefWidth="242.0" text="versäumte Backups nachholen,&#10;wenn die Zeit bis zur nächsten&#10;Ausführung größer ist als:">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
                               </CheckBox>
-                              <ComboBox prefWidth="150.0">
+                              <ComboBox fx:id="cb_catchUpComboBox" prefWidth="150.0">
                                  <HBox.margin>
                                     <Insets left="10.0" top="15.0" />
                                  </HBox.margin>
@@ -463,7 +463,18 @@
                      <children>
                         <HBox>
                            <children>
-                              <RadioButton mnemonicParsing="false" text="Aus">
+                              <RadioButton fx:id="rb_autoclean_off" mnemonicParsing="false" selected="true" text="Aus">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="tg_autocleanMode" />
+                                 </toggleGroup>
+                              </RadioButton>
+                              <RadioButton fx:id="rb_autoclean_simple" mnemonicParsing="false" text="Einfach" toggleGroup="$tg_autocleanMode">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -471,15 +482,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Einfach">
-                                 <HBox.margin>
-                                    <Insets />
-                                 </HBox.margin>
-                                 <padding>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </padding>
-                              </RadioButton>
-                              <RadioButton mnemonicParsing="false" text="Erweitert">
+                              <RadioButton fx:id="rb_autoclean_extended" mnemonicParsing="false" text="Erweitert" toggleGroup="$tg_autocleanMode">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -495,12 +498,12 @@
                                  <content>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Label text="Behalte letzt X Backupsätze. X =">
+                                          <Label text="Behalte letzte X Backupsätze. X =">
                                              <HBox.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                                              </HBox.margin>
                                           </Label>
-                                          <Spinner prefHeight="26.0" prefWidth="96.0">
+                                          <Spinner fx:id="sp_keep_last_x_backups" prefHeight="26.0" prefWidth="96.0">
                                              <HBox.margin>
                                                 <Insets bottom="5.0" right="5.0" top="16.0" />
                                              </HBox.margin>
@@ -520,7 +523,7 @@
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <Spinner prefHeight="26.0" prefWidth="65.0">
+                                                <Spinner fx:id="sp_number_of_rules" prefHeight="26.0" prefWidth="65.0">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="10.0" right="5.0" top="16.0" />
                                                    </HBox.margin>
@@ -529,11 +532,11 @@
                                           </HBox>
                                           <GridPane hgap="5.0" vgap="10.0">
                                              <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="80.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="70.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="220.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="80.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="57.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="82.0" minWidth="10.0" prefWidth="60.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="105.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0" prefWidth="187.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.0" minWidth="10.0" prefWidth="60.0" />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -548,26 +551,25 @@
                                                 <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                                                 <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
                                                 <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
-                                                <Spinner GridPane.columnIndex="1" />
-                                                <Spinner GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Spinner GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Spinner GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <Spinner GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="2" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="4" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                <ComboBox prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                <Spinner fx:id="sp_rule_1" GridPane.columnIndex="1" />
+                                                <Spinner fx:id="sp_rule_2" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Spinner fx:id="sp_rule_3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <Spinner fx:id="sp_rule_4" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <ComboBox fx:id="cb_rule_1_unit" prefWidth="150.0" GridPane.columnIndex="2" />
+                                                <ComboBox fx:id="cb_rule_2_unit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <ComboBox fx:id="cb_rule_3_unit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                <ComboBox fx:id="cb_rule_4_unit" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                <Spinner fx:id="sp_rule_1_number" prefWidth="150.0" GridPane.columnIndex="4" />
+                                                <Spinner fx:id="sp_rule_2_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                <Spinner fx:id="sp_rule_3_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                <Spinner fx:id="sp_rule_4_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                <Spinner fx:id="sp_rule_5_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                 <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" />
                                                 <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                 <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                 <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="3" />
                                                 <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                <Label text="inf" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -584,7 +586,7 @@
       </TabPane>
       <ButtonBar>
         <buttons>
-          <Button mnemonicParsing="false" text="OK" />
+          <Button mnemonicParsing="false" onAction="#okAction" text="OK" />
             <Button mnemonicParsing="false" onAction="#cancelAction" text="Abbrechen" />
         </buttons>
       </ButtonBar>

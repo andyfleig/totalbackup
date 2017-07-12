@@ -1,5 +1,7 @@
 package listener;
 
+import data.BackupTask;
+
 /**
  * ToDo
  *
@@ -23,4 +25,21 @@ public interface IGUIControllerListener {
 	 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
 	 */
 	public void saveProperties();
+
+	/**
+	 * Fügt einen Backup-Task hinzu.
+	 *
+	 * @param task hinzuzufügender Backup-Task
+	 */
+	public void addBackupTask(BackupTask task);
+
+	/**
+	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
+	 */
+	public void savePropertiers();
+
+	/**
+	 * Rescheduled den gegebenen BackupTask.
+	 */
+	public void scheduleBackupTask(BackupTask task);
 }

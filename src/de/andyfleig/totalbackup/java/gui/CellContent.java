@@ -1,15 +1,18 @@
 package gui;
 
+import javafx.css.PseudoClass;
+import javafx.scene.control.ListCell;
+
 /**
  * ToDo
  *
  * @author Andreas Fleig
  */
-public class cellContent {
+public class CellContent {
 	private String taskName;
 	private String taskStaus;
 
-	public cellContent(String taskName, String taskStaus) {
+	public CellContent(String taskName, String taskStaus) {
 		this.taskName = taskName;
 		this.taskStaus = taskStaus;
 	}

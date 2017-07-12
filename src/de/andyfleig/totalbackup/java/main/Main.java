@@ -40,7 +40,7 @@ public class Main {
 
 
 		Controller c = new Controller(fxMainframe);
-		//c.startController(args);
+		c.startController2(args);
 		fxMainframe.startFxMainframe();
 	}
 }

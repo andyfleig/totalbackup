@@ -5,22 +5,15 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import listener.IFxMainframeListener;
-import listener.IMainframeListener;
 import main.Backupable;
-import main.Controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -32,8 +25,8 @@ import java.util.ResourceBundle;
 public class FxMainframe extends Application implements Initializable {
 
 	@FXML
-	public ListView listView;
-	final ObservableList<cellContent> observableList = FXCollections.observableArrayList();
+	public ListView<CellContent> listView;
+	final ObservableList<CellContent> observableList = FXCollections.observableArrayList();
 	@FXML
 	public VBox vBoxMain;
 
@@ -44,25 +37,30 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
-		mainframeListener.startMainframe(stage);
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+
+		listView.setItems(observableList);
+		listView.setCellFactory(new Callback<ListView<CellContent>, ListCell<CellContent>>() {
+			@Override
+			public ListCell<CellContent> call(ListView<CellContent> listView) {
+				return new BackupTaskListCell();
+			}
+		});
+		observableList.add(new CellContent("bla", "bla"));
 	}
 
 	@Override
-	public void initialize(URL url, ResourceBundle rs) {
-		listView.setItems(observableList);
-		listView.setCellFactory(new Callback<ListView, BackupTaskListCell>() {
-			@Override
-			public BackupTaskListCell call(ListView listView) {
-				BackupTaskListCell cell = new BackupTaskListCell();
-				return cell;
-			}
-		});
+	public void start(Stage stage) throws Exception {
+
+		mainframeListener.startMainframe(stage);
+
+
 	}
 
 	@FXML
 	public void quitAction() {
 		//ToDo
+		mainframeListener.saveProperties();
 		System.exit(0);
 	}
 
@@ -86,8 +84,10 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskName
 	 */
 	public void addBackupTask(String taskName) {
-		//Vorlage: observableList.add(new cellContent("testName", "testStatus"));
-		observableList.add(new cellContent(taskName, ""));
+		System.out.println("addBackupTask");
+		// Vorlage: observableList.add(new CellContent("testName", "testStatus"));
+		observableList.add(new CellContent(taskName, "test"));
+
 	}
 
 	/**

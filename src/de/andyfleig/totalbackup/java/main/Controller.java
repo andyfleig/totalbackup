@@ -119,6 +119,21 @@ public class Controller {
 			public void saveProperties() {
 				//ToDo
 			}
+
+			@Override
+			public void addBackupTask(BackupTask task) {
+				Controller.this.addBackupTask(task);
+			}
+
+			@Override
+			public void savePropertiers() {
+				savePropertiesGson();
+			}
+
+			@Override
+			public void scheduleBackupTask(BackupTask task) {
+				Controller.this.scheduleBackupTask(task);
+			}
 		}, fxMainframe);
 	}
 
@@ -127,6 +142,7 @@ public class Controller {
 
 	/**
 	 * Startet und initialisiert den Controller.
+	 * ToDo: Rename
 	 */
 	public void startController2(String[] args) {
 		this.arguments = args;
@@ -1102,7 +1118,7 @@ public class Controller {
 
 		// Alle Buckets der maximalgröße Entsprechend "ausmisten":
 		// Kontrolle auf Wert "all":
-		if (task.getBackupsToKeep().length > 0 && !task.getBackupsToKeep()[0].equals("all")) {
+		if (task.getBackupsToKeep().length > 0 && task.getBackupsToKeep()[0] != -1) {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket1, task)))) {
@@ -1112,7 +1128,7 @@ public class Controller {
 			}
 		}
 
-		if (task.getBackupsToKeep().length > 1 && !task.getBackupsToKeep()[1].equals("all")) {
+		if (task.getBackupsToKeep().length > 1 && task.getBackupsToKeep()[1] != -1) {
 			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(task.getBackupsToKeep()[1])) {
 				File oldestBackupSet = new File(task.getDestinationPath() + "/" + findOldestBackup(bucket2, task));
 				if (!BackupHelper.deleteDirectory(oldestBackupSet)) {
@@ -1123,7 +1139,7 @@ public class Controller {
 			}
 		}
 
-		if (task.getBackupsToKeep().length > 2 && !task.getBackupsToKeep()[2].equals("all")) {
+		if (task.getBackupsToKeep().length > 2 && task.getBackupsToKeep()[2] != -1) {
 			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(task.getBackupsToKeep()[2])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket3, task)))) {
@@ -1133,7 +1149,7 @@ public class Controller {
 			}
 		}
 
-		if (task.getBackupsToKeep().length > 3 && !task.getBackupsToKeep()[3].equals("all")) {
+		if (task.getBackupsToKeep().length > 3 && task.getBackupsToKeep()[3] != -1) {
 			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(task.getBackupsToKeep()[3])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket4, task)))) {
@@ -1143,7 +1159,7 @@ public class Controller {
 			}
 		}
 
-		if (task.getBackupsToKeep().length > 4 && !task.getBackupsToKeep()[4].equals("all")) {
+		if (task.getBackupsToKeep().length > 4 && task.getBackupsToKeep()[4] != -1) {
 			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(task.getBackupsToKeep()[4])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket5, task)))) {

@@ -1,21 +1,13 @@
 package gui;
 
 import data.BackupTask;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
+import listener.IBackupTaskDialogListener;
 import listener.IFxMainframeListener;
 import listener.IGUIControllerListener;
 import main.BackupHelper;
@@ -30,9 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 /**
  * ToDo
@@ -79,7 +69,25 @@ public class GuiController {
 			@Override
 			public void startBackupTaskDialog() {
 				backupTaskDialogStage = new Stage(StageStyle.UTILITY);
+				IBackupTaskDialogListener backupTaskDialogListener = new IBackupTaskDialogListener() {
+					@Override
+					public void addBackupTask(BackupTask task) {
+						guiControllerListener.addBackupTask(task);
+					}
+
+					@Override
+					public void saveProperties() {
+						guiControllerListener.savePropertiers();
+					}
+
+					@Override
+					public void scheduleBackupTask(BackupTask task) {
+						guiControllerListener.scheduleBackupTask(task);
+					}
+				};
+
 				backupTaskDialog = new BackupTaskDialog();
+				backupTaskDialog.setBackupTaskDialogListener(backupTaskDialogListener);
 				backupTaskDialogStage.initModality(Modality.APPLICATION_MODAL);
 				try {
 					backupTaskDialogStage.setScene(
@@ -103,6 +111,14 @@ public class GuiController {
 				} catch (IOException e) {
 					System.err.println("IOException while starting AboutDialog");
 				}
+			}
+
+			/**
+			 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
+			 */
+			@Override
+			public void saveProperties() {
+				guiControllerListener.saveProperties();
 			}
 		});
 		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)
