@@ -134,6 +134,16 @@ public class Controller {
 			public void scheduleBackupTask(BackupTask task) {
 				Controller.this.scheduleBackupTask(task);
 			}
+
+			@Override
+			public BackupTask getBackupTaskWithName(String taskName) {
+				for (BackupTask task : backupTasks) {
+					if (task.getTaskName().equals(taskName)) {
+						return task;
+					}
+				}
+				return null;
+			}
 		}, fxMainframe);
 	}
 

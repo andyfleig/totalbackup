@@ -70,7 +70,7 @@ public class GuiController {
 			}
 
 			@Override
-			public void startBackupTaskDialog() {
+			public void startBackupTaskDialog(String taskName) {
 				backupTaskDialogStage = new Stage(StageStyle.UTILITY);
 				IBackupTaskDialogListener backupTaskDialogListener = new IBackupTaskDialogListener() {
 					@Override
@@ -89,7 +89,7 @@ public class GuiController {
 					}
 				};
 
-				backupTaskDialog = new BackupTaskDialog();
+				backupTaskDialog = new BackupTaskDialog(guiControllerListener.getBackupTaskWithName(taskName));
 				backupTaskDialog.setBackupTaskDialogListener(backupTaskDialogListener);
 				backupTaskDialogStage.initModality(Modality.APPLICATION_MODAL);
 				try {

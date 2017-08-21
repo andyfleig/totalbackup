@@ -1,5 +1,6 @@
 package listener;
 
+import data.BackupTask;
 import gui.FxMainframe;
 import javafx.stage.Stage;
 
@@ -10,7 +11,7 @@ import javafx.stage.Stage;
  */
 public interface IFxMainframeListener {
 	public void startMainframe(Stage stage);
-	public void startBackupTaskDialog();
+	public void startBackupTaskDialog(String taskName);
 	public void startAboutDialog();
 	/**
 	 * Serialisiert die Programm-Einstellungen (Backup-Tasks).

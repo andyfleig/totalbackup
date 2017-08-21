@@ -42,4 +42,11 @@ public interface IGUIControllerListener {
 	 * Rescheduled den gegebenen BackupTask.
 	 */
 	public void scheduleBackupTask(BackupTask task);
+
+	/**
+	 * Gibt aus der Liste der BackupTasks den Task mit dem Namen taskName zurück. Wird kein entsprechender Eintrag
+	 * gefunden, wird null zurückgegeben.
+	 * @param taskName Name des gesuchten BackupTasks
+	 */
+	public BackupTask getBackupTaskWithName(String taskName);
 }

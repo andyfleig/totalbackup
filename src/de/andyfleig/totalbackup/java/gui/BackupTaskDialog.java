@@ -214,9 +214,185 @@ public class BackupTaskDialog {
 	SpinnerValueFactory<Integer> valueFactory_number_5 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1);
 
 
-	public BackupTaskDialog() {
+	public BackupTaskDialog(BackupTask task) {
+		if (task != null) {
+			//GUI nach Einstellungen von task setzen:
+			tf_taskName.setText(task.getTaskName());
+			for (Source source : task.getSources()) {
+				sourcePaths.add(source.getPath());
+			}
+			tf_destPath.setText(task.getDestinationPath());
 
+			if (task.getBackupMode() == 1) {
+				rb_hardlinkBackup.setSelected(true);
+			} else {
+				rb_normalBackup.setSelected(true);
+			}
+			cb_destinationVerification.setSelected(task.getDestinationVerification());
+			cb_autostart.setSelected(task.getAutostart());
+
+			//Auto-Backup Einstellungen:
+			if (task.getAutoBackupMode() != 0) {
+				if (task.getAutoBackupMode() == 1) {
+					//Wochentag:
+					rb_weekday.setSelected(true);
+					if (task.getBackupWeekdays()[0] == true) {
+						cb_monday.setSelected(true);
+					}
+					if (task.getBackupWeekdays()[1] == true) {
+						cb_tuesday.setSelected(true);
+					}
+					if (task.getBackupWeekdays()[2] == true) {
+						cb_wednesday.setSelected(true);
+					}
+					if (task.getBackupWeekdays()[3] == true) {
+						cb_thursday.setSelected(true);
+					}
+					if (task.getBackupWeekdays()[4] == true) {
+						cb_friday.setSelected(true);
+					}
+					if (task.getBackupWeekdays()[5] == true) {
+						cb_saturday.setSelected(true);
+					}
+					if (task.getBackupWeekdays()[6] == true) {
+						cb_sunday.setSelected(true);
+					}
+				}
+				if (task.getAutoBackupMode() == 2) {
+					rb_dayInMonth.setSelected(true);
+					if (task.getBackupDaysInMonth()[0] == true) {
+						cb_day1.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[1] == true) {
+						cb_day2.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[2] == true) {
+						cb_day3.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[3] == true) {
+						cb_day4.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[4] == true) {
+						cb_day5.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[5] == true) {
+						cb_day6.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[6] == true) {
+						cb_day7.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[7] == true) {
+						cb_day8.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[8] == true) {
+						cb_day9.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[9] == true) {
+						cb_day10.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[10] == true) {
+						cb_day11.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[11] == true) {
+						cb_day12.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[12] == true) {
+						cb_day13.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[13] == true) {
+						cb_day14.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[14] == true) {
+						cb_day15.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[15] == true) {
+						cb_day16.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[16] == true) {
+						cb_day17.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[17] == true) {
+						cb_day18.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[18] == true) {
+						cb_day19.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[19] == true) {
+						cb_day20.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[20] == true) {
+						cb_day21.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[21] == true) {
+						cb_day22.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[22] == true) {
+						cb_day23.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[23] == true) {
+						cb_day24.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[24] == true) {
+						cb_day25.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[25] == true) {
+						cb_day26.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[26] == true) {
+						cb_day27.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[27] == true) {
+						cb_day28.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[28] == true) {
+						cb_day29.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[29] == true) {
+						cb_day30.setSelected(true);
+					}
+					if (task.getBackupDaysInMonth()[30] == true) {
+						cb_day31.setSelected(true);
+					}
+				}
+				if (task.getAutoBackupMode() == 3) {
+					rb_interval.setSelected(true);
+					tf_intervall.setText(String.valueOf(task.getIntervalTime()));
+					cb_unit.setValue(task.getIntervalUnit());
+				}
+				tf_startAt.setText(task.getStartTime().toString());
+				if (task.isCatchUpEnabled()) {
+					cb_catchUpBackups.setSelected(true);
+					cb_catchUpComboBox.setValue(task.getCatchUpTime());
+				}
+			}
+			//Auto-Clean Einstellungen:
+			if (rb_autoclean_simple.isSelected()) {
+				sp_keep_last_x_backups.getValueFactory().setValue(task.getNumberOfBackupsToKeep());
+			}
+			if (rb_autoclean_extended.isSelected()) {
+				sp_number_of_rules.getValueFactory().setValue(task.getNumberOfExtendedCleanRules());
+				sp_rule_1.getValueFactory().setValue(task.getThreshold()[0]);
+				cb_rule_1_unit.setValue(task.getThresholdUnits()[0]);
+				sp_rule_1_number.getValueFactory().setValue(task.getBackupsToKeep()[0]);
+
+				sp_rule_2.getValueFactory().setValue(task.getThreshold()[1]);
+				cb_rule_2_unit.setValue(task.getThresholdUnits()[1]);
+				sp_rule_2_number.getValueFactory().setValue(task.getBackupsToKeep()[1]);
+
+				sp_rule_3.getValueFactory().setValue(task.getThreshold()[2]);
+				cb_rule_3_unit.setValue(task.getThresholdUnits()[2]);
+				sp_rule_3_number.getValueFactory().setValue(task.getBackupsToKeep()[2]);
+
+				sp_rule_4.getValueFactory().setValue(task.getThreshold()[3]);
+				cb_rule_4_unit.setValue(task.getThresholdUnits()[3]);
+				sp_rule_4_number.getValueFactory().setValue(task.getBackupsToKeep()[3]);
+
+				sp_rule_5_number.getValueFactory().setValue(task.getBackupsToKeep()[4]);
+			}
+
+		}
 		lv_sourcePaths.setItems(sourcePaths);
+
 	}
 	public void setBackupTaskDialogListener(IBackupTaskDialogListener listener) {
 		this.backupTaskDialogListener = listener;

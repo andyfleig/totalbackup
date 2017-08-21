@@ -53,7 +53,6 @@ public class FxMainframe extends Application implements Initializable {
 
 		mainframeListener.startMainframe(stage);
 
-
 	}
 
 	@FXML
@@ -65,7 +64,17 @@ public class FxMainframe extends Application implements Initializable {
 
 	@FXML
 	public void addEntryAction() {
-		mainframeListener.startBackupTaskDialog();
+		mainframeListener.startBackupTaskDialog(null);
+	}
+
+	@FXML
+	public void editEntryAction() {
+		if (listView.getSelectionModel().getSelectedIndex() == -1) {
+			return;
+		}
+
+		mainframeListener.startBackupTaskDialog(listView.getSelectionModel().getSelectedItem().getTaskName());
+
 	}
 
 	@FXML
