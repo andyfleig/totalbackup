@@ -57,11 +57,14 @@ public class GuiController {
 			@Override
 			public void startMainframe(Stage stage) {
 				try {
-					root = FXMLLoader.load(getClass().getResource("FxMainframe.fxml"));
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("FxMainframe.fxml"));
+					loader.setController(fxMainframe);
+					root = loader.load();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				stage.setTitle("TotalBackup");
+
 				stage.setScene(new Scene(root));
 				stage.show();
 			}

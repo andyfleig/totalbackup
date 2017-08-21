@@ -46,7 +46,6 @@ public class FxMainframe extends Application implements Initializable {
 				return new BackupTaskListCell();
 			}
 		});
-		observableList.add(new CellContent("bla", "bla"));
 	}
 
 	@Override
@@ -85,8 +84,7 @@ public class FxMainframe extends Application implements Initializable {
 	 */
 	public void addBackupTask(String taskName) {
 		System.out.println("addBackupTask");
-		// Vorlage: observableList.add(new CellContent("testName", "testStatus"));
-		observableList.add(new CellContent(taskName, "test"));
+		observableList.add(new CellContent(taskName, "testStatus"));
 
 	}
 
