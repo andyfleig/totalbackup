@@ -17,4 +17,11 @@ public interface IFxMainframeListener {
 	 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
 	 */
 	public void saveProperties();
+
+	/**
+	 * Löscht den BackupTask mit dem gegebenen Namen.
+	 * Existiert kein BackupTask mit dem gegebenen Namen, passiert nichts.
+	 * @param taskName Name des BackupTasks
+	 */
+	public void deleteBackupTaskWithName(String taskName);
 }

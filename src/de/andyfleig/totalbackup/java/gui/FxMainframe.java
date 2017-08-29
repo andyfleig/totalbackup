@@ -78,6 +78,15 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	@FXML
+	public void deleteEntryAction() {
+		if (listView.getSelectionModel().getSelectedIndex() == -1) {
+			return;
+		}
+		mainframeListener.deleteBackupTaskWithName(listView.getSelectionModel().getSelectedItem().getTaskName());
+
+	}
+
+	@FXML
 	public void startAboutDialog() {
 		mainframeListener.startAboutDialog();
 	}
@@ -92,7 +101,6 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskName
 	 */
 	public void addBackupTask(String taskName) {
-		System.out.println("addBackupTask");
 		observableList.add(new CellContent(taskName, "testStatus"));
 
 	}

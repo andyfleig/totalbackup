@@ -34,11 +34,6 @@ public interface IGUIControllerListener {
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
-	 */
-	public void savePropertiers();
-
-	/**
 	 * Rescheduled den gegebenen BackupTask.
 	 */
 	public void scheduleBackupTask(BackupTask task);
@@ -46,7 +41,15 @@ public interface IGUIControllerListener {
 	/**
 	 * Gibt aus der Liste der BackupTasks den Task mit dem Namen taskName zurück. Wird kein entsprechender Eintrag
 	 * gefunden, wird null zurückgegeben.
+	 *
 	 * @param taskName Name des gesuchten BackupTasks
 	 */
 	public BackupTask getBackupTaskWithName(String taskName);
+
+	/**
+	 * Löscht aus der Liste der BackupTasks den Task mit dem Namen taskName. Gibt bei erfolg 1 zurück, sonst 0;
+	 *
+	 * @param taskName Name des gesuchten BackupTasks
+	 */
+	public int deleteBackupTaskWithName(String taskName);
 }

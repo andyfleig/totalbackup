@@ -80,12 +80,26 @@ public class GuiController {
 
 					@Override
 					public void saveProperties() {
-						guiControllerListener.savePropertiers();
+						guiControllerListener.saveProperties();
 					}
 
 					@Override
 					public void scheduleBackupTask(BackupTask task) {
 						guiControllerListener.scheduleBackupTask(task);
+					}
+
+					@Override
+					public boolean backupTaskWithNameExisting(String taskName) {
+						if (guiControllerListener.getBackupTaskWithName(taskName) == null) {
+							return false;
+						} else {
+							return true;
+						}
+					}
+
+					@Override
+					public void deleteBackupTaskWithName(String taskName) {
+						guiControllerListener.deleteBackupTaskWithName(taskName);
 					}
 				};
 
@@ -93,13 +107,18 @@ public class GuiController {
 				backupTaskDialog.setBackupTaskDialogListener(backupTaskDialogListener);
 				backupTaskDialogStage.initModality(Modality.APPLICATION_MODAL);
 				try {
-					backupTaskDialogStage.setScene(
-							new Scene(FXMLLoader.load(getClass().getResource("BackupTaskDialog.fxml"))));
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("BackupTaskDialog.fxml"));
+					loader.setController(backupTaskDialog);
+					Scene scene = new Scene(loader.load());
+					backupTaskDialogStage.setScene(scene);
+
 					backupTaskDialog.setStage(backupTaskDialogStage);
 					backupTaskDialogStage.showAndWait();
 				} catch (IOException e) {
+					System.err.println(e.toString());
 					System.err.println("IOException while starting BackupTaskDialog");
 				}
+
 			}
 
 			@Override
@@ -122,6 +141,11 @@ public class GuiController {
 			@Override
 			public void saveProperties() {
 				guiControllerListener.saveProperties();
+			}
+
+			@Override
+			public void deleteBackupTaskWithName(String taskName) {
+				guiControllerListener.deleteBackupTaskWithName(taskName);
 			}
 		});
 		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)

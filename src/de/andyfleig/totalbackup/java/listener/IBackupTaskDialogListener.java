@@ -28,4 +28,17 @@ public interface IBackupTaskDialogListener {
 	 */
 	public void scheduleBackupTask(BackupTask task);
 
+	/**
+	 * Prüft ob bereits ein BackupTask mit dem gegebenen Namen existiert.
+	 * @param taskName zu prüfender Name
+	 */
+	public boolean backupTaskWithNameExisting(String taskName);
+
+	/**
+	 * Löscht den BackupTask mit dem gegebenen Namen.
+	 * Existiert kein BackupTask mit dem gegebenen Namen, passiert nichts.
+	 * @param taskName Name des BackupTasks
+	 */
+	public void deleteBackupTaskWithName(String taskName);
+
 }

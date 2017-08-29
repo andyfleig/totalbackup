@@ -116,17 +116,12 @@ public class Controller {
 			}
 
 			@Override
-			public void saveProperties() {
-				//ToDo
-			}
-
-			@Override
 			public void addBackupTask(BackupTask task) {
 				Controller.this.addBackupTask(task);
 			}
 
 			@Override
-			public void savePropertiers() {
+			public void saveProperties() {
 				savePropertiesGson();
 			}
 
@@ -143,6 +138,17 @@ public class Controller {
 					}
 				}
 				return null;
+			}
+
+			@Override
+			public int deleteBackupTaskWithName(String taskName) {
+				for (int i = 0; i < backupTasks.size(); i++) {
+					if (backupTasks.get(i).getTaskName().equals(taskName)) {
+						Controller.this.removeBackupTask(backupTasks.get(i));
+						return 1;
+					}
+				}
+				return 0;
 			}
 		}, fxMainframe);
 	}
