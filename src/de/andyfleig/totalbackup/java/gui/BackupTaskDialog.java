@@ -19,6 +19,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 /**
  * ToDo
  *
@@ -205,10 +208,10 @@ public class BackupTaskDialog {
 			1);
 
 	//Einzelne Regeln:
-	SpinnerValueFactory<Integer> valueFactory_rules_1 = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1, 59, 1);
-	SpinnerValueFactory<Integer> valueFactory_rules_2 = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1, 59, 1);
-	SpinnerValueFactory<Integer> valueFactory_rules_3 = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1, 59, 1);
-	SpinnerValueFactory<Integer> valueFactory_rules_4 = new SpinnerValueFactory.IntegerSpinnerValueFactory(-1, 59, 1);
+	SpinnerValueFactory<Integer> valueFactory_rules_1 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
+	SpinnerValueFactory<Integer> valueFactory_rules_2 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
+	SpinnerValueFactory<Integer> valueFactory_rules_3 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
+	SpinnerValueFactory<Integer> valueFactory_rules_4 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
 
 	SpinnerValueFactory<Integer> valueFactory_number_1 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1);
 	SpinnerValueFactory<Integer> valueFactory_number_2 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1);
@@ -222,6 +225,7 @@ public class BackupTaskDialog {
 			initTask = task;
 		}
 		lv_sourcePaths.setItems(sourcePaths);
+		//TODO: initialize from task
 	}
 
 
@@ -280,6 +284,83 @@ public class BackupTaskDialog {
 		sp_rule_3_number.setEditable(true);
 		sp_rule_4_number.setEditable(true);
 		sp_rule_5_number.setEditable(true);
+
+		//limit rules to numbers:
+		sp_rule_1.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_1.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_2.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_2.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_3.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_3.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_4.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_4.getEditor().setText(oldValue);
+				}
+			}
+		});
+
+		sp_rule_1_number.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_1_number.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_2_number.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_2_number.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_3_number.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_3_number.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_4_number.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_4_number.getEditor().setText(oldValue);
+				}
+			}
+		});
+		sp_rule_5_number.getEditor().textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					sp_rule_5_number.getEditor().setText(oldValue);
+				}
+			}
+		});
+
+
 
 		//Alle Regeln ab Nr.2 sind deaktiviert (da Anzahl Regeln default = 1)
 		sp_rule_2.setDisable(true);
@@ -514,28 +595,39 @@ public class BackupTaskDialog {
 			}
 		}
 		//Auto-Clean Einstellungen:
-		if (rb_autoclean_simple.isSelected()) {
+		if (initTask.simpleAutoCleanIsEnabled()) {
+			rb_autoclean_simple.setSelected(true);
 			sp_keep_last_x_backups.getValueFactory().setValue(initTask.getNumberOfBackupsToKeep());
 		}
-		if (rb_autoclean_extended.isSelected()) {
+		if (initTask.extendedAutoCleanIsEnabled()) {
+			rb_autoclean_extended.setSelected(true);
 			sp_number_of_rules.getValueFactory().setValue(initTask.getNumberOfExtendedCleanRules());
-			sp_rule_1.getValueFactory().setValue(initTask.getThreshold()[0]);
-			cb_rule_1_unit.setValue(initTask.getThresholdUnits()[0]);
-			sp_rule_1_number.getValueFactory().setValue(initTask.getBackupsToKeep()[0]);
+			int numberOfRules = initTask.getNumberOfExtendedCleanRules();
+			if (numberOfRules >= 1) {
+				sp_rule_1.getValueFactory().setValue(initTask.getThreshold()[0]);
+				cb_rule_1_unit.setValue(initTask.getThresholdUnits()[0]);
+				sp_rule_1_number.getValueFactory().setValue(initTask.getBackupsToKeep()[0]);
+			}
+			if (numberOfRules >= 2) {
+				sp_rule_2.getValueFactory().setValue(initTask.getThreshold()[1]);
+				cb_rule_2_unit.setValue(initTask.getThresholdUnits()[1]);
+				sp_rule_2_number.getValueFactory().setValue(initTask.getBackupsToKeep()[1]);
+			}
+			if (numberOfRules >= 3) {
+				sp_rule_3.getValueFactory().setValue(initTask.getThreshold()[2]);
+				cb_rule_3_unit.setValue(initTask.getThresholdUnits()[2]);
+				sp_rule_3_number.getValueFactory().setValue(initTask.getBackupsToKeep()[2]);
+			}
 
-			sp_rule_2.getValueFactory().setValue(initTask.getThreshold()[1]);
-			cb_rule_2_unit.setValue(initTask.getThresholdUnits()[1]);
-			sp_rule_2_number.getValueFactory().setValue(initTask.getBackupsToKeep()[1]);
+			if (numberOfRules >= 4) {
+				sp_rule_4.getValueFactory().setValue(initTask.getThreshold()[3]);
+				cb_rule_4_unit.setValue(initTask.getThresholdUnits()[3]);
+				sp_rule_4_number.getValueFactory().setValue(initTask.getBackupsToKeep()[3]);
+			}
+			if (numberOfRules >= 5) {
+				sp_rule_5_number.getValueFactory().setValue(initTask.getBackupsToKeep()[4]);
+			}
 
-			sp_rule_3.getValueFactory().setValue(initTask.getThreshold()[2]);
-			cb_rule_3_unit.setValue(initTask.getThresholdUnits()[2]);
-			sp_rule_3_number.getValueFactory().setValue(initTask.getBackupsToKeep()[2]);
-
-			sp_rule_4.getValueFactory().setValue(initTask.getThreshold()[3]);
-			cb_rule_4_unit.setValue(initTask.getThresholdUnits()[3]);
-			sp_rule_4_number.getValueFactory().setValue(initTask.getBackupsToKeep()[3]);
-
-			sp_rule_5_number.getValueFactory().setValue(initTask.getBackupsToKeep()[4]);
 		}
 	}
 
@@ -574,7 +666,7 @@ public class BackupTaskDialog {
 		}
 
 		// auto-backup settings:
-		if (rb_weekday.isPressed()) {
+		if (rb_weekday.isSelected()) {
 			// weekdays:
 			newTask.setAutoBackupMode(1);
 			boolean[] weekdays = new boolean[7];
@@ -601,7 +693,7 @@ public class BackupTaskDialog {
 			}
 			newTask.setBackupWeekdays(weekdays);
 
-		} else if (rb_dayInMonth.isPressed()) {
+		} else if (rb_dayInMonth.isSelected()) {
 			newTask.setAutoBackupMode(2);
 			boolean[] daysInMonth = new boolean[31];
 			if (cb_day1.isSelected()) {
@@ -699,13 +791,14 @@ public class BackupTaskDialog {
 			}
 
 			newTask.setBackupDaysInMonth(daysInMonth);
-		} else if (rb_interval.isPressed()) {
+		} else if (rb_interval.isSelected()) {
 			// intervall:
 			newTask.setAutoBackupMode(3);
 			newTask.setIntervalTime(Integer.parseInt(tf_intervall.getText()));
 			newTask.setIntervalUnit(cb_unit.getValue().toString());
 
-		} else if (rb_weekday.isPressed() || rb_dayInMonth.isPressed() || rb_interval.isPressed()) {
+		}
+		if (rb_weekday.isSelected() || rb_dayInMonth.isSelected() || rb_interval.isSelected()) {
 			// start-zeit:
 			try {
 				newTask.setBackupStartTime(LocalTime.parse(tf_startAt.getText()));
@@ -718,12 +811,12 @@ public class BackupTaskDialog {
 			}
 		}
 
-		// Aufräum-Einstellungen:
-		if (rb_autoclean_simple.isPressed()) {
+		// auto-clean settings:
+		if (rb_autoclean_simple.isSelected()) {
 			newTask.setSimpleAutoCleanEnabled(true);
-			newTask.setNumberOfBackupsToKeep(Integer.getInteger(sp_keep_last_x_backups.getValue().toString()));
+			newTask.setNumberOfBackupsToKeep(Integer.parseInt(sp_keep_last_x_backups.getValue().toString()));
 		}
-		if (rb_autoclean_extended.isPressed()) {
+		if (rb_autoclean_extended.isSelected()) {
 			newTask.setExtendedAutoCleanEnabled(true);
 			int numberOfRules = sp_number_of_rules.getValue();
 			newTask.setNumberOfExtendedAutoCleanRules(numberOfRules);
@@ -731,15 +824,34 @@ public class BackupTaskDialog {
 			String[] thresholdUnits = new String[numberOfRules];
 			int[] backupsToKeep = new int[numberOfRules];
 
-			for (int i = 0; i < sp_number_of_rules.getValue(); i++) {
-				threshold[i] = sp_rule_1.getValue();
-				thresholdUnits[i] = cb_rule_1_unit.getValue().toString();
-				backupsToKeep[i] = sp_rule_1_number.getValue();
+			if (numberOfRules >= 1) {
+				threshold[0] = sp_rule_1.getValue();
+				thresholdUnits[0] = cb_rule_1_unit.getValue().toString();
+				backupsToKeep[0] = sp_rule_1_number.getValue();
+			}
+			if (numberOfRules >= 2) {
+				threshold[1] = sp_rule_2.getValue();
+				thresholdUnits[1] = cb_rule_2_unit.getValue().toString();
+				backupsToKeep[1] = sp_rule_2_number.getValue();
+			}
+			if (numberOfRules >= 3) {
+				threshold[2] = sp_rule_3.getValue();
+				thresholdUnits[2] = cb_rule_3_unit.getValue().toString();
+				backupsToKeep[2] = sp_rule_3_number.getValue();
+			}
+			if (numberOfRules >= 4) {
+				threshold[3] = sp_rule_4.getValue();
+				thresholdUnits[3] = cb_rule_4_unit.getValue().toString();
+				backupsToKeep[3] = sp_rule_4_number.getValue();
+			}
+			if (numberOfRules >= 5) {
+				backupsToKeep[4] = sp_rule_5_number.getValue();
 			}
 			newTask.setThreshold(threshold);
 			newTask.setThresholdUnits(thresholdUnits);
 			newTask.setBackupsToKeep(backupsToKeep);
 		}
+
 		//Prüfen ob bereits ein BackupTask mit diesem Namen existiert:
 		if (initTask == null && backupTaskDialogListener.backupTaskWithNameExisting(newTask.getTaskName())) {
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -816,7 +928,95 @@ public class BackupTaskDialog {
 				}
 			}
 		}
+
+		if (rb_autoclean_extended.isSelected()) {
+			//last rule_unit and only it must be "inf"
+			if (sp_number_of_rules.getValue() == 1) {
+				if (!cb_rule_1_unit.getValue().equals("inf")) {
+					return false;
+				}
+			} else if (sp_number_of_rules.getValue() == 2) {
+				if (cb_rule_1_unit.getValue().equals("inf") || !cb_rule_2_unit.getValue().equals("inf")) {
+					return false;
+				}
+			} else if (sp_number_of_rules.getValue() == 3) {
+				if (cb_rule_1_unit.getValue().equals("inf") || cb_rule_2_unit.getValue().equals("inf") ||
+						!cb_rule_3_unit.getValue().equals("inf")) {
+					return false;
+				}
+			} else if (sp_number_of_rules.getValue() == 4) {
+				if (cb_rule_1_unit.getValue().equals("inf") || cb_rule_2_unit.getValue().equals("inf") ||
+						cb_rule_3_unit.getValue().equals("inf") || !cb_rule_4_unit.getValue().equals("inf")) {
+					return false;
+				}
+			} else if (sp_number_of_rules.getValue() == 5) {
+				if (cb_rule_1_unit.getValue().equals("inf") || cb_rule_2_unit.getValue().equals("inf") ||
+						cb_rule_3_unit.getValue().equals("inf") || cb_rule_4_unit.getValue().equals("inf")) {
+					return false;
+				}
+			}
+
+			//time slots have to be rising:
+			if (sp_number_of_rules.getValue() == 2) {
+				// check whether rule 1 is "smaller" than rule 2
+				if (getValueOfRuleInMinutes(2) < getValueOfRuleInMinutes(1)) {
+					return false;
+				}
+			} else if (sp_number_of_rules.getValue() == 3) {
+				// check whether rule 1 is "smaller" than rule 2
+				if (getValueOfRuleInMinutes(2) < getValueOfRuleInMinutes(1)) {
+					return false;
+				}
+				if (getValueOfRuleInMinutes(3) < getValueOfRuleInMinutes(2)) {
+					return false;
+				}
+			} else if (sp_number_of_rules.getValue() == 4 || sp_number_of_rules.getValue() == 5) {
+				// check whether rule 1 is "smaller" than rule 2
+				if (getValueOfRuleInMinutes(2) < getValueOfRuleInMinutes(1)) {
+					return false;
+				}
+				if (getValueOfRuleInMinutes(3) < getValueOfRuleInMinutes(2)) {
+					return false;
+				}
+				if (getValueOfRuleInMinutes(4) < getValueOfRuleInMinutes(3)) {
+					return false;
+				}
+			}
+		}
+
 		return true;
+	}
+
+	private int getValueOfRuleInMinutes(int numberOfRuleToCheck) {
+		assert numberOfRuleToCheck > 0 && numberOfRuleToCheck < 5;
+
+		String unit;
+		int value;
+
+		if (numberOfRuleToCheck == 1) {
+			unit = String.valueOf(cb_rule_1_unit.getValue());
+			value = sp_rule_1.getValue();
+		} else if (numberOfRuleToCheck == 2) {
+			unit = String.valueOf(cb_rule_2_unit.getValue());
+			value = sp_rule_2.getValue();
+		} else if (numberOfRuleToCheck == 3) {
+			unit = String.valueOf(cb_rule_3_unit.getValue());
+			value = sp_rule_3.getValue();
+		} else {
+			unit = String.valueOf(cb_rule_4_unit.getValue());
+			value = sp_rule_4.getValue();
+		}
+		if (unit.equals("min")) {
+			return sp_rule_1.getValue();
+		} else if (unit.equals("hour(s)")) {
+			return sp_rule_1.getValue() * 60;
+		} else if (unit.equals("days(s)")) {
+			return sp_rule_1.getValue() * 60 * 24;
+		} else if (unit.equals("days(s)")) {
+			return sp_rule_1.getValue() * 60 * 24 * 7;
+		} else {
+			return sp_rule_1.getValue() * 60 * 24 * 7 * 365;
+		}
 	}
 
 	public void addSourcePathAction() {
