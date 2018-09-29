@@ -20,28 +20,13 @@
  */
 package gui;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import main.BackupHelper;
-
-import java.awt.*;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.AbstractAction;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.Action;
-
+import javafx.scene.image.Image;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 /**
  * Über-Dialog mit Informationen zu TotalBackup.
@@ -51,11 +36,31 @@ import java.util.ResourceBundle;
 public class AboutDialog {
 	static Stage stage;
 
+	@FXML
+	private Label lbl_versionAndCopyright;
+	@FXML
+	private ImageView if_logo;
+
 	public void OKAction() {
 		stage.close();
 	}
 
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	public void initialize() {
+		lbl_versionAndCopyright.setText("v0.1pre5 beta\nCopyright 2014-2018 Andreas Fleig - Alle Rechte " +
+				"vorbehalten\nLizenz: GPLv3+\n" + System.getProperty("java.runtime.name") + " " + System.getProperty(
+						"java.version"));
+		try {
+			FileInputStream input = new FileInputStream("./src/de/andyfleig/totalbackup/resources/TB_logo.png");
+			Image image = new Image(input);
+			if_logo.setImage(image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		//if_logo.setImage(new Image("/home/andy/totalbackup/src/de/andyfleig/totalbackup/resources/TB_logo.png"));
 	}
 }

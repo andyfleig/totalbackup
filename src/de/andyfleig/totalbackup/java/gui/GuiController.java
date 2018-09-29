@@ -36,6 +36,7 @@ public class GuiController {
 	private IGUIControllerListener guiControllerListener;
 	private FxMainframe fxMainframe;
 	private BackupTaskDialog backupTaskDialog;
+	private AboutDialog aboutDialog;
 	private Parent root;
 	public Stage backupTaskDialogStage;
 
@@ -123,7 +124,7 @@ public class GuiController {
 
 			@Override
 			public void startAboutDialog() {
-				AboutDialog aboutDialog = new AboutDialog();
+				aboutDialog = new AboutDialog();
 				final Stage aboutDialogStage = new Stage(StageStyle.UTILITY);
 				aboutDialogStage.initModality(Modality.APPLICATION_MODAL);
 				try {
