@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
@@ -29,6 +30,9 @@ public class FxMainframe extends Application implements Initializable {
 	final ObservableList<CellContent> observableList = FXCollections.observableArrayList();
 	@FXML
 	public VBox vBoxMain;
+
+	@FXML
+	public ContextMenu contextMenu;
 
 	private static IFxMainframeListener mainframeListener;
 
@@ -72,6 +76,7 @@ public class FxMainframe extends Application implements Initializable {
 		if (listView.getSelectionModel().getSelectedIndex() == -1) {
 			return;
 		}
+		contextMenu.hide();
 
 		mainframeListener.startBackupTaskDialog(listView.getSelectionModel().getSelectedItem().getTaskName());
 

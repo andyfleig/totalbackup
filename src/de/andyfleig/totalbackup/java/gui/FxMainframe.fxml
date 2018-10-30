@@ -4,7 +4,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="vBoxMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="vBoxMain" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.162-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
@@ -27,6 +27,14 @@
           </Menu>
         </menus>
       </MenuBar>
-      <ListView fx:id="listView" />
+      <ListView fx:id="listView">
+         <contextMenu>
+            <ContextMenu fx:id="contextMenu">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit" />
+                <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete" />
+              </items>
+            </ContextMenu>
+         </contextMenu></ListView>
    </children>
 </VBox>
