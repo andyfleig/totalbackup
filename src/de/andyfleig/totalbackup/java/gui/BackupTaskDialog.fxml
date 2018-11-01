@@ -12,7 +12,7 @@
    <children>
       <TabPane prefHeight="425.0" prefWidth="600.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" tabMinHeight="100.0" tabMinWidth="100.0">
          <tabs>
-            <Tab>
+            <Tab fx:id="tab_main">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
@@ -116,7 +116,7 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab>
+            <Tab fx:id="tab_autorun">
                <content>
                   <VBox prefHeight="425.0" prefWidth="518.0">
                      <children>
@@ -457,7 +457,7 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab>
+            <Tab fx:id="tab_autoclean">
                <content>
                   <VBox>
                      <children>
