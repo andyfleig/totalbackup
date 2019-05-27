@@ -348,6 +348,7 @@ public class Controller {
 		} catch (InvocationTargetException ex) {
 			System.err.println("Error: InvocationTargetException while starting Controller");
 		}
+		guiController.initialize();
 	}
 
 	private void loadSerializationGson() {

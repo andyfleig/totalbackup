@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
@@ -38,6 +39,7 @@ public class GuiController {
 	private BackupTaskDialog backupTaskDialog;
 	private AboutDialog aboutDialog;
 	private Parent root;
+	private Stage root_stage;
 	public Stage backupTaskDialogStage;
 
 	//ToDo: setzen (isQTTray)!
@@ -52,11 +54,12 @@ public class GuiController {
 	private Socket clientSocket = null;
 
 	public GuiController(IGUIControllerListener guiControllerListener, FxMainframe fxMainframe) {
-
+		this.guiControllerListener = guiControllerListener;
 		this.fxMainframe = fxMainframe;
 		fxMainframe.init(new IFxMainframeListener() {
 			@Override
 			public void startMainframe(Stage stage) {
+				root_stage = stage;
 				try {
 					FXMLLoader loader = new FXMLLoader(getClass().getResource("FxMainframe.fxml"));
 					loader.setController(fxMainframe);
@@ -64,10 +67,10 @@ public class GuiController {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				stage.setTitle("TotalBackup");
+				root_stage.setTitle("TotalBackup");
 
-				stage.setScene(new Scene(root));
-				stage.show();
+				root_stage.setScene(new Scene(root));
+				root_stage.show();
 			}
 
 			@Override
@@ -150,7 +153,8 @@ public class GuiController {
 			}
 		});
 		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)
-		image = Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION);
+		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
+		image = Toolkit.getDefaultToolkit().getImage(url);
 	}
 
 	public void initialize() {
@@ -345,13 +349,7 @@ public class GuiController {
 					in.close();
 				} else if (msg == 1) {
 					// Programm zeigen/ verstecken:
-					if (backupTaskDialogStage.isShowing()) {
-						//ToDo: richtig?
-						backupTaskDialogStage.hide();
-					} else {
-						//ToDo: richtig? - oder showAndWait()?
-						backupTaskDialogStage.show();
-					}
+					// todo
 					in.close();
 				}
 
@@ -388,6 +386,7 @@ public class GuiController {
 	public void addBackupTask(String taskName) {
 		fxMainframe.addBackupTask(taskName);
 	}
+
 	/**
 	 * Fügt einen Task (Namen) in die Liste der Tasks in der GUI hinzu.
 	 *
