@@ -6,9 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -16,6 +14,7 @@ import listener.IFxMainframeListener;
 import main.Backupable;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
@@ -87,7 +86,20 @@ public class FxMainframe extends Application implements Initializable {
 		if (listView.getSelectionModel().getSelectedIndex() == -1) {
 			return;
 		}
-		mainframeListener.deleteBackupTaskWithName(listView.getSelectionModel().getSelectedItem().getTaskName());
+		// Ask for confirmation
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Deleting the backup-task will cancel " +
+				"future executions of this task. \nThis can not be undone.", ButtonType.YES, ButtonType.NO);
+		alert.setTitle("Warning");
+		alert.setHeaderText("Do you really want to delete the selected backup-task?");
+		alert.setResizable(true);
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.YES) {
+			mainframeListener.deleteBackupTaskWithName(listView.getSelectionModel().getSelectedItem().getTaskName());
+		} else {
+			return;
+		}
+
 
 	}
 
@@ -106,7 +118,7 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskName
 	 */
 	public void addBackupTask(String taskName) {
-		observableList.add(new CellContent(taskName, "testStatus"));
+		observableList.add(new CellContent(taskName, "Okay"));
 
 	}
 
