@@ -2,17 +2,24 @@ package gui;
 
 import data.BackupTask;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import listener.IFxMainframeListener;
+import listener.ISummaryDialogListener;
 import main.Backupable;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -29,6 +36,8 @@ public class FxMainframe extends Application implements Initializable {
 	final ObservableList<CellContent> observableList = FXCollections.observableArrayList();
 	@FXML
 	public VBox vBoxMain;
+
+	private SummaryDialog summaryDialog;
 
 	@FXML
 	public ContextMenu contextMenu;
@@ -168,11 +177,62 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	/**
-	 * Öffnet einen neuen SummeryDialog.
+	 * Öffnet einen neuen SummaryDialog.
 	 *
 	 * @param task entsprechender BackupTask
 	 */
 	public void showSummaryDialog(final BackupTask task, final Backupable backup) {
 		//ToDo: Implementieren!
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				final Stage summaryDialogStage = new Stage(StageStyle.UTILITY);
+				summaryDialogStage.initModality(Modality.APPLICATION_MODAL);
+				try {
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/SummaryDialog.fxml"));
+					Scene scene = new Scene(loader.load());
+					SummaryDialog summaryDialog = loader.getController();
+					summaryDialogStage.setScene(scene);
+
+					summaryDialog.setStage(summaryDialogStage);
+
+					summaryDialog.init(new ISummaryDialogListener() {
+										   @Override
+										   public void startBackup() {
+
+										   }
+
+										   @Override
+										   public String getTaskName() {
+											   return null;
+										   }
+
+										   @Override
+										   public void deleteEmptyBackupFolders(BackupTask task) {
+										   	mainframeListener.deleteEmptyBackupFolders("", task);
+
+										   }
+
+										   @Override
+										   public void outprintBackupCanceled(BackupTask task) {
+
+										   }
+
+										   @Override
+										   public void taskFinished(BackupTask task) {
+
+										   }
+									   }, task, backup.getBackupInfos().getNumberOfFilesToCopy(),
+							backup.getBackupInfos().getNumberOfFilesToCopy(),
+							backup.getBackupInfos().getNumberOfDirectories(), backup.getBackupInfos().getSizeToCopy(),
+							backup.getBackupInfos().getSizeToLink());
+
+					summaryDialogStage.showAndWait();
+				} catch (IOException e) {
+					System.err.println(e);
+				}
+			}
+		});
+
 	}
 }

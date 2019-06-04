@@ -52,4 +52,11 @@ public interface IGUIControllerListener {
 	 * @param taskName Name des gesuchten BackupTasks
 	 */
 	public int deleteBackupTaskWithName(String taskName);
+
+	/**
+	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
+	 *
+	 * @param task entsprechender BackupTask
+	 */
+	public void deleteEmptyBackupFolders(String path, BackupTask task);
 }

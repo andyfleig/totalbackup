@@ -1118,6 +1118,7 @@ public class BackupTaskDialog {
 		final Stage sourcesDialogStage = new Stage(StageStyle.UTILITY);
 		sourcesDialogStage.initModality(Modality.APPLICATION_MODAL);
 		try {
+			// ToDo: AboutDialog?
 			sourcesDialogStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("AboutDialog.fxml"))));
 			sourcesDialog.setStage(sourcesDialogStage);
 			sourcesDialogStage.showAndWait();

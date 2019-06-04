@@ -1,6 +1,7 @@
 package gui;
 
 import data.BackupTask;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +11,8 @@ import javafx.stage.StageStyle;
 import listener.IBackupTaskDialogListener;
 import listener.IFxMainframeListener;
 import listener.IGUIControllerListener;
+import listener.ISummaryDialogListener;
+import main.BackupCanceledException;
 import main.BackupHelper;
 import main.Backupable;
 
@@ -150,6 +153,11 @@ public class GuiController {
 			@Override
 			public void deleteBackupTaskWithName(String taskName) {
 				guiControllerListener.deleteBackupTaskWithName(taskName);
+			}
+
+			@Override
+			public void deleteEmptyBackupFolders(String path, BackupTask task) {
+				guiControllerListener.deleteEmptyBackupFolders(path, task);
 			}
 		});
 		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)

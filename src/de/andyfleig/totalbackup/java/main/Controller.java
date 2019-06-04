@@ -150,6 +150,11 @@ public class Controller {
 				}
 				return 0;
 			}
+
+			@Override
+			public void deleteEmptyBackupFolders(String path, BackupTask task) {
+				Controller.this.deleteEmptyBackupFolders(path, task);
+			}
 		}, fxMainframe);
 	}
 
@@ -1486,10 +1491,10 @@ public class Controller {
 	/**
 	 * Löscht einen leeren Backup-Ordner.
 	 *
-	 * @param path Pfad an dem sich der Ordner befindet
 	 * @param task BackupTask zu dem der Ordner gehört
 	 */
-	private void deleteEmptyBackupFolders(String path, BackupTask task) {
+	private void deleteEmptyBackupFolders(String path2, BackupTask task) {
+		String path = task.getDestinationPath();
 		File currentDest = new File(path);
 		File[] backupFolders = currentDest.listFiles();
 		for (File backupFolder : backupFolders) {
