@@ -29,7 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
- * Über-Dialog mit Informationen zu TotalBackup.
+ * AboutDialog containing general information about totalbackup like the version number.
  *
  * @author Andreas Fleig
  */
@@ -50,8 +50,8 @@ public class AboutDialog {
 	}
 
 	public void initialize() {
-		lbl_versionAndCopyright.setText("v0.1pre5 beta\nCopyright 2014-2018 Andreas Fleig - Alle Rechte " +
-				"vorbehalten\nLizenz: GPLv3+\n" + System.getProperty("java.runtime.name") + " " + System.getProperty(
+		lbl_versionAndCopyright.setText("TotalBackup v0.1pre5 beta\nCopyright 2014-2019 Andreas Fleig - All rights " +
+				"reserved\nLicense: GPLv3+\n" + System.getProperty("java.runtime.name") + " " + System.getProperty(
 						"java.version"));
 		try {
 			FileInputStream input = new FileInputStream("./src/de/andyfleig/totalbackup/resources/TB_logo.png");
@@ -60,7 +60,5 @@ public class AboutDialog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		//if_logo.setImage(new Image("/home/andy/totalbackup/src/de/andyfleig/totalbackup/resources/TB_logo.png"));
 	}
 }
