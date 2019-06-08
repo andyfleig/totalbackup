@@ -1,6 +1,6 @@
  # TotalBackup
 
- ![](./bin/TB_logo.png)
+ ![](./src/de/andyfleig/totalbackup/resources/TB_logo.png)
 
 TotalBackup is a powerful tool to create backups. It offers a wide range of configuration options from hardlink backups to automated backups with complex timing rules.
 
