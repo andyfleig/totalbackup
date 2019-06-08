@@ -20,44 +20,178 @@
  */
 package gui;
 
-import java.awt.*;
-
-import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JScrollPane;
-
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-
 import data.Filter;
 import data.Source;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import listener.IFilterDialogListener;
 import listener.ISourcesDialogListener;
-import main.BackupHelper;
 
 /**
  * Dialog zum Festlegen und Bearbeiten der Quellen.
  *
  * @author Andreas Fleig
  */
-public class SourcesDialog extends JDialog {
+public class SourcesDialog implements Initializable {
 	private static Stage stage;
+	private ISourcesDialogListener listener;
+
+	@FXML
+	private TextField tf_sourcePath;
+	@FXML
+	private ListView<SourceFilterCellContent> lv_filters;
+	final ObservableList<SourceFilterCellContent> ol_filters = FXCollections.observableArrayList();
+
+
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		lv_filters.setItems(ol_filters);
+		lv_filters.setCellFactory(new Callback<ListView<SourceFilterCellContent>, ListCell<SourceFilterCellContent>>() {
+			@Override
+			public ListCell<SourceFilterCellContent> call(
+					ListView<SourceFilterCellContent> sourceFilterCellContentListView) {
+				return new FilterListCell();
+			}
+		});
+	}
+
+	public void init(ISourcesDialogListener listener) {
+		this.listener = listener;
+	}
+
+	@FXML
+	public void addSourcePathAction() {
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("choose SourcePath");
+		File sourcePath = dirChooser.showDialog(stage);
+		if (sourcePath == null) {
+			return;
+		}
+		tf_sourcePath.setText(sourcePath.getAbsolutePath());
+	}
+
+	@FXML
+	public void addFilterAction() {
+		startFilterDialog("", 0);
+	}
+
+	@FXML
+	public void editFilterAction() {
+		int selectedIndex = lv_filters.getSelectionModel().getSelectedIndex();
+		if (selectedIndex == -1) {
+			return;
+		}
+		SourceFilterCellContent selectedCell = lv_filters.getSelectionModel().getSelectedItem();
+		startFilterDialog(selectedCell.getFilterPath(), selectedCell.getFilerMode());
+	}
+
+	@FXML
+	public void removeFilterAction() {
+		int selectedIndex = lv_filters.getSelectionModel().getSelectedIndex();
+		if (selectedIndex == -1) {
+			return;
+		}
+		ol_filters.remove(selectedIndex);
+	}
+
+	@FXML
+	public void cancelAction() {
+		stage.close();
+	}
+
+	@FXML
+	public void okAction() {
+		// check source-path validity
+		File file = new File(tf_sourcePath.getText());
+		if (file == null || !file.exists()) {
+			// show error message
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Invalid source path.");
+			alert.setContentText("The selected source is not a valid path.");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			return;
+		}
+		// check whether the selected source is already defined as source
+		if (listener.isAlreadyCoveredByExistingSource(tf_sourcePath.getText())) {
+			// show error message
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Same source.");
+			alert.setContentText("The selected source is already defined as source.");
+
+			Optional<ButtonType> result = alert.showAndWait();
+			return;
+		}
+
+		Source source = new Source(tf_sourcePath.getText());
+		Iterator itr = ol_filters.iterator();
+		while (itr.hasNext()) {
+			SourceFilterCellContent currentCell = (SourceFilterCellContent)itr.next();
+			source.addFilter(new Filter(currentCell.getFilterPath(), currentCell.getFilerMode()));
+		}
+		listener.addSource(source);
+		stage.close();
+	}
+
+	public void setPath(String path) {
+		tf_sourcePath.setText(path);
+	}
+
+	private void startFilterDialog(String initPath, int initMode) {
+		final Stage filterDialogStage = new Stage(StageStyle.UTILITY);
+		filterDialogStage.initModality(Modality.APPLICATION_MODAL);
+		try {
+			FXMLLoader loader = new FXMLLoader((getClass().getResource("FilterDialog.fxml")));
+			Scene scene = new Scene(loader.load());
+			FilterDialog filterDialog = loader.getController();
+			filterDialog.init(new IFilterDialogListener() {
+				@Override
+				public void addFilter(String path, int mode) {
+					ol_filters.add(new SourceFilterCellContent(path, mode));
+				}
+
+				@Override
+				public boolean isUnderSourceRoot(String path) {
+					// ToDo: implement here and check within the filterDialog
+					return false;
+				}
+			});
+
+			filterDialogStage.setScene(scene);
+			filterDialog.setStage(filterDialogStage);
+
+			if (initPath != "") {
+				filterDialog.setInitPath(initPath);
+			}
+			filterDialog.setInitMode(initMode);
+
+			filterDialogStage.showAndWait();
+		} catch (IOException e) {
+			System.err.println("IOException while starting FilterDialog: " + e.toString());
+		}
 	}
 }

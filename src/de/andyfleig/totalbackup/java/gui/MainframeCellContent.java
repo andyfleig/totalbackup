@@ -8,11 +8,11 @@ import javafx.scene.control.ListCell;
  *
  * @author Andreas Fleig
  */
-public class CellContent {
+public class MainframeCellContent {
 	private String taskName;
 	private String taskStaus;
 
-	public CellContent(String taskName, String taskStaus) {
+	public MainframeCellContent(String taskName, String taskStaus) {
 		this.taskName = taskName;
 		this.taskStaus = taskStaus;
 	}

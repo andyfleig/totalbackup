@@ -1,6 +1,7 @@
 package gui;
 
 import data.BackupTask;
+import data.Filter;
 import data.Source;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -14,14 +15,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
+import javafx.util.Callback;
 import listener.IBackupTaskDialogListener;
 import javafx.scene.image.ImageView;
+import listener.ISourcesDialogListener;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 
 
@@ -55,8 +60,8 @@ public class BackupTaskDialog {
 	private RadioButton rb_hardlinkBackup;
 
 	@FXML
-	private ListView<String> lv_sourcePaths = new ListView<>();
-	private ObservableList<String> sourcePaths = FXCollections.observableArrayList();
+	private ListView<Source> lv_sources = new ListView<>();
+	private ObservableList<Source> ol_sources = FXCollections.observableArrayList();
 	@FXML
 	private CheckBox cb_destinationVerification;
 	@FXML
@@ -234,7 +239,13 @@ public class BackupTaskDialog {
 		if (task != null) {
 			initTask = task;
 		}
-		lv_sourcePaths.setItems(sourcePaths);
+		lv_sources.setItems(ol_sources);
+		lv_sources.setCellFactory(new Callback<ListView<Source>, ListCell<Source>>() {
+			@Override
+			public ListCell<Source> call(ListView<Source> sourceListView) {
+				return new SourceListCell();
+			}
+		});
 	}
 
 
@@ -486,7 +497,7 @@ public class BackupTaskDialog {
 			initWithTask();
 		}
 
-		lv_sourcePaths.setItems(sourcePaths);
+		lv_sources.setItems(ol_sources);
 
 	}
 
@@ -495,7 +506,7 @@ public class BackupTaskDialog {
 		tf_taskName.setDisable(true);
 
 		for (Source source : initTask.getSources()) {
-			sourcePaths.add(source.getPath());
+			ol_sources.add(source);
 		}
 		tf_destPath.setText(initTask.getDestinationPath());
 
@@ -698,9 +709,9 @@ public class BackupTaskDialog {
 		} else {
 			newTask.setBackupMode(0);
 		}
-		for (String path : sourcePaths) {
+		for (Source source : ol_sources) {
 			//TODO: check if path is ok?
-			newTask.addSourcePath(new Source(path));
+			newTask.addSourcePath(source);
 		}
 		newTask.setDestinationPath(tf_destPath.getText());
 
@@ -1066,40 +1077,27 @@ public class BackupTaskDialog {
 		}
 	}
 
+	@FXML
 	public void addSourcePathAction() {
-		DirectoryChooser dirChooser = new DirectoryChooser();
-		dirChooser.setTitle("choose SourcePath");
-		File sourcePath = dirChooser.showDialog(stage);
-		if (sourcePath == null) {
-			return;
-		}
-		sourcePaths.add(sourcePath.getAbsolutePath());
-		lv_sourcePaths.setItems(sourcePaths);
+		startSourcesDialog(null);
 	}
 
 	public void editSourcePathAction() {
-		int selectedIndex = lv_sourcePaths.getSelectionModel().getSelectedIndex();
+		int selectedIndex = lv_sources.getSelectionModel().getSelectedIndex();
 		if (selectedIndex == -1) {
 			return;
 		}
-		File selectedPath = new File(sourcePaths.get(selectedIndex));
-		if (!selectedPath.isDirectory()) {
-			return;
-		}
-		DirectoryChooser dirChooser = new DirectoryChooser();
-		dirChooser.setInitialDirectory(selectedPath);
-		File destPath = dirChooser.showDialog(stage);
-		if (destPath != null) {
-			tf_destPath.setText(destPath.getAbsolutePath());
-		}
+		Source source = lv_sources.getSelectionModel().getSelectedItem();
+		// CONTINUE: handle filter
+		startSourcesDialog(source);
 	}
 
 	public void removeSourcePathAction() {
-		int selectedIndex = lv_sourcePaths.getSelectionModel().getSelectedIndex();
+		int selectedIndex = lv_sources.getSelectionModel().getSelectedIndex();
 		if (selectedIndex == -1) {
 			return;
 		}
-		sourcePaths.remove(selectedIndex);
+		ol_sources.remove(selectedIndex);
 	}
 
 	public void addDestinationPath() {
@@ -1112,18 +1110,49 @@ public class BackupTaskDialog {
 
 	}
 
-	@FXML
-	public void startSourcesDialog() {
-		SourcesDialog sourcesDialog = new SourcesDialog();
+	public void startSourcesDialog(Source source) {
 		final Stage sourcesDialogStage = new Stage(StageStyle.UTILITY);
 		sourcesDialogStage.initModality(Modality.APPLICATION_MODAL);
 		try {
-			// ToDo: AboutDialog?
-			sourcesDialogStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("AboutDialog.fxml"))));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("SourcesDialog.fxml"));
+			Scene scene = new Scene(loader.load());
+			SourcesDialog sourcesDialog = loader.getController();
+			sourcesDialog.init(new ISourcesDialogListener() {
+				@Override
+				public boolean isAlreadyCoveredByExistingSource(String path) {
+					Iterator itr = ol_sources.iterator();
+					while (itr.hasNext()) {
+						Source currentSource = (Source)itr.next();
+						if (path.startsWith(currentSource.getPath())) {
+							return true;
+						}
+					}
+					return false;
+				}
+
+				@Override
+				public void addSource(Source source) {
+					ol_sources.add(source);
+					lv_sources.setItems(ol_sources);
+				}
+			});
+			sourcesDialogStage.setScene(scene);
 			sourcesDialog.setStage(sourcesDialogStage);
+
+			// set initial values:
+			if (source != null) {
+				sourcesDialog.setPath(source.getPath());
+				ArrayList<Filter> filters = source.getFilter();
+				for (int i = 0; i < filters.size(); i++) {
+					Filter current_filter = filters.get(i);
+					sourcesDialog.ol_filters.add(new SourceFilterCellContent(current_filter.getPath(),
+							current_filter.getMode()));
+				}
+			}
+
 			sourcesDialogStage.showAndWait();
 		} catch (IOException e) {
-			System.err.println("IOException while starting AboutDialog");
+			System.err.println("IOException while starting SourcesDialog: " + e.toString());
 		}
 	}
 

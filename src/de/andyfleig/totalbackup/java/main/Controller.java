@@ -1291,8 +1291,7 @@ public class Controller {
 	 */
 	private void scheduleBackupTaskAt(final BackupTask task, LocalDateTime nextExecutionTime) {
 		task.resetLocalDateTimeOfNextExecution();
-		// TODO: Debugging-Ausgabe raus:
-		System.out.println("Nächste Ausführung von " + task.getTaskName() + ": " + nextExecutionTime.toString());
+		guiController.setStatusOfBackupTask(task.getTaskName(), false, "Next Execution: " + nextExecutionTime.toString());
 		// scheduling:
 		// Für das Backup:
 		Runnable backup = new Runnable() {

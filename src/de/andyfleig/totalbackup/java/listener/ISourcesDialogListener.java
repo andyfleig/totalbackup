@@ -24,12 +24,13 @@ import data.Source;
 
 public interface ISourcesDialogListener {
 	/**
-	 * Prüft für den gegebenen String ob dieser bereits Quellpfad ist.
+	 * Checks whether the given source-path is already covered by the specified sources. An existing source covers
+	 * the new one if they are either equal or the new one is a sub-path of an existing one.
 	 *
-	 * @param path zu prüfender Quellpfad
-	 * @return ob der Pfad bereits Quellpfad ist
+	 * @param path path to check
+	 * @return whether the path is already covered
 	 */
-	public boolean isAlreadySourcePath(String path);
+	public boolean isAlreadyCoveredByExistingSource(String path);
 
 	/**
 	 * Fügt eine Quelle hinzu.
@@ -38,17 +39,4 @@ public interface ISourcesDialogListener {
 	 */
 	public void addSource(Source source);
 
-	/**
-	 * Sucht nach einer Quelle mit dem gegebenen Pfad. Wird diese gefunden wird sie gelöscht.
-	 *
-	 * @param path zu löschende Quelle
-	 */
-	public void deleteSource(String path);
-
-	/**
-	 * Prüft der entsprechende BackupTask gerade ausgeführt wird.
-	 *
-	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
-	 */
-	public boolean isBackupTaskRunning();
 }

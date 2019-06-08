@@ -32,8 +32,8 @@ import java.util.ResourceBundle;
 public class FxMainframe extends Application implements Initializable {
 
 	@FXML
-	public ListView<CellContent> listView;
-	final ObservableList<CellContent> observableList = FXCollections.observableArrayList();
+	public ListView<MainframeCellContent> listView;
+	final ObservableList<MainframeCellContent> observableList = FXCollections.observableArrayList();
 	@FXML
 	public VBox vBoxMain;
 
@@ -52,9 +52,9 @@ public class FxMainframe extends Application implements Initializable {
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 
 		listView.setItems(observableList);
-		listView.setCellFactory(new Callback<ListView<CellContent>, ListCell<CellContent>>() {
+		listView.setCellFactory(new Callback<ListView<MainframeCellContent>, ListCell<MainframeCellContent>>() {
 			@Override
-			public ListCell<CellContent> call(ListView<CellContent> listView) {
+			public ListCell<MainframeCellContent> call(ListView<MainframeCellContent> listView) {
 				return new BackupTaskListCell();
 			}
 		});
@@ -127,7 +127,7 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskName
 	 */
 	public void addBackupTask(String taskName) {
-		observableList.add(new CellContent(taskName, "Okay"));
+		observableList.add(new MainframeCellContent(taskName, "Okay"));
 
 	}
 
@@ -146,7 +146,7 @@ public class FxMainframe extends Application implements Initializable {
 
 	//ToDo: Wohin? + private?
 	/**
-	 * Sucht aus der observableList den Eintrag eines bestimmten Tasks heraus.
+	 * Sucht aus der ol_filters den Eintrag eines bestimmten Tasks heraus.
 	 *
 	 * @param taskName Name des gesuchten Tasks
 	 * @return Index an dem sich der gesuchte Task in der observalbe List befindet

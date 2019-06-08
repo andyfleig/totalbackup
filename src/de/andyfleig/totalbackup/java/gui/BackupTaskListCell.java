@@ -9,7 +9,7 @@ import javafx.scene.layout.GridPane;
  *
  * @author Andreas Fleig
  */
-public class BackupTaskListCell extends ListCell<CellContent> {
+public class BackupTaskListCell extends ListCell<MainframeCellContent> {
 	private GridPane gridPane = new GridPane();
 	private Label taskName = new Label();
 	private Label taskStatus = new Label();
@@ -20,7 +20,7 @@ public class BackupTaskListCell extends ListCell<CellContent> {
 	}
 
 	@Override
-	public void updateItem(CellContent content, boolean empty) {
+	public void updateItem(MainframeCellContent content, boolean empty) {
 		super.updateItem(content, empty);
 		if (empty) {
 			setText(null);

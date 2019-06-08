@@ -5,17 +5,19 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<VBox xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<VBox xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.FilterDialog">
    <children>
       <HBox>
          <children>
-            <RadioButton mnemonicParsing="false" text="Ausschluss-Filter">
+            <RadioButton fx:id="rb_exclutionFilter" mnemonicParsing="false" selected="true" text="Ausschluss-Filter">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
+               <toggleGroup>
+                  <ToggleGroup fx:id="tg_filterType" />
+               </toggleGroup>
             </RadioButton>
-            <RadioButton mnemonicParsing="false" text="MD5-Filter">
+            <RadioButton fx:id="rb_md5Filter" mnemonicParsing="false" text="MD5-Filter" toggleGroup="$tg_filterType">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
@@ -29,12 +31,12 @@
       </Label>
       <HBox>
          <children>
-            <TextField HBox.hgrow="ALWAYS">
+            <TextField fx:id="tf_filterPath" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                </HBox.margin>
             </TextField>
-            <Button mnemonicParsing="false" text="Durchsuchen...">
+            <Button mnemonicParsing="false" onAction="#addFilterAction" text="Durchsuchen...">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="10.0" top="5.0" />
                </HBox.margin>
@@ -43,12 +45,12 @@
       </HBox>
       <HBox alignment="TOP_RIGHT">
          <children>
-            <Button mnemonicParsing="false" text="OK">
+            <Button mnemonicParsing="false" onAction="#okAction" text="OK">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="5.0" top="10.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Abbrechen">
+            <Button mnemonicParsing="false" onAction="#cancelAction" text="Abbrechen">
                <HBox.margin>
                   <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
                </HBox.margin>
