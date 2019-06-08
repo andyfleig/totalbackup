@@ -182,7 +182,6 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param task entsprechender BackupTask
 	 */
 	public void showSummaryDialog(final BackupTask task, final Backupable backup) {
-		//ToDo: Implementieren!
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {

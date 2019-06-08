@@ -22,6 +22,7 @@ package gui;
 
 import java.awt.*;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.swing.ButtonGroup;
@@ -43,6 +44,8 @@ import javax.swing.JRadioButton;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -237,13 +240,30 @@ public class FilterDialog implements Initializable {
 	private void okAction() {
 		File filterPath = new File(tf_filterPath.getText());
 		if (filterPath == null || !filterPath.exists()) {
-			// ToDo: implement error message
+			// show error message
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Invalid filter.");
+			alert.setContentText("The following filter path is not valid: " + tf_filterPath.getText());
+
+			Optional<ButtonType> result = alert.showAndWait();
 			return;
 		}
 		// filterMode 0 (default) is exclusion-filter, 1 is md5-filter
 		int filterMode = 0;
 		if (rb_md5Filter.isSelected()) {
 			filterMode = 1;
+		}
+		if (!listener.isUnderSourceRoot(filterPath.getAbsolutePath())) {
+			// show error message
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("Invalid Filter.");
+			alert.setContentText("The filter path has to be inside the specified source!");
+			alert.setResizable(true);
+
+			Optional<ButtonType> result = alert.showAndWait();
+			return;
 		}
 		listener.addFilter(filterPath.getAbsolutePath(), filterMode);
 		stage.close();

@@ -176,7 +176,9 @@ public class SourcesDialog implements Initializable {
 
 				@Override
 				public boolean isUnderSourceRoot(String path) {
-					// ToDo: implement here and check within the filterDialog
+					if (path.startsWith(tf_sourcePath.getText())) {
+						return true;
+					}
 					return false;
 				}
 			});

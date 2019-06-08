@@ -710,7 +710,17 @@ public class BackupTaskDialog {
 			newTask.setBackupMode(0);
 		}
 		for (Source source : ol_sources) {
-			//TODO: check if path is ok?
+			File currentSource = new File(source.getPath());
+			if (currentSource == null || !currentSource.exists()) {
+				// show error message
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText("Invalid source.");
+				alert.setContentText("The following source path is not valid: " + source.getPath());
+
+				Optional<ButtonType> result = alert.showAndWait();
+				return;
+			}
 			newTask.addSourcePath(source);
 		}
 		newTask.setDestinationPath(tf_destPath.getText());
@@ -861,7 +871,7 @@ public class BackupTaskDialog {
 			try {
 				newTask.setBackupStartTime(LocalTime.parse(tf_startAt.getText()));
 			} catch (DateTimeParseException e) {
-				//TODO: error message
+				System.out.println("Error: " + e.toString());
 			}
 			if (cb_catchUpBackups.isSelected()) {
 				newTask.setCatchUpEnabled(true);
