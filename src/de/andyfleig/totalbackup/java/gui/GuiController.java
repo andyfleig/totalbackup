@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 /**
@@ -428,14 +429,23 @@ public class GuiController {
 	}
 
 	/**
-	 * Setzt den Status für den Task mit dem gegebenen Namen (taskName).
+	 * Sets the status for the BackupTask with the given name.
 	 *
-	 * @param taskName   Task für den der Status gesetzt werden soll
-	 * @param error      Ob es sich um einen Fehler oder um einen "normalen" Status handelt. true = Fehler, false =
-	 *                   Status
-	 * @param taskStatus zu setzender Status
+	 * @param taskName   name of the BackupTask to set status
+	 * @param error      whether it is an error status or not
+	 * @param taskStatus status to set
 	 */
 	public void setStatusOfBackupTask(String taskName, boolean error, String taskStatus) {
 		fxMainframe.setStatusOfBackupTask(taskName, error, taskStatus);
+	}
+
+	/**
+	 * Sets the next-execution part of the status for the BackupTask with the given name.
+	 *
+	 * @param taskName                name of the BackupTask to set next-execution part of the status
+	 * @param taskNextExecutionTimeStatus next-execution status to set
+	 */
+	public void setNextExecutionTimeStatus(String taskName, LocalDateTime taskNextExecutionTimeStatus) {
+		fxMainframe.setNextExecutionTimeStatusOfBackupTask(taskName, taskNextExecutionTimeStatus);
 	}
 }

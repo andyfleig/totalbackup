@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ import data.Source;
 import gui.FxMainframe;
 import gui.GuiController;
 import gui.NextExecutionChooser;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import listener.IBackupListener;
@@ -167,8 +168,7 @@ public class Controller {
 	}
 
 	/**
-	 * Startet und initialisiert den Controller.
-	 * ToDo: Rename
+	 * Startet und initialisiert den Controller. ToDo: Rename
 	 */
 	public void startController2(String[] args) {
 		this.arguments = args;
@@ -508,10 +508,14 @@ public class Controller {
 
 					@Override
 					public void run() {
-						guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
+						// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
+							}
+						});
 					}
-
-
 				});
 			}
 
@@ -703,6 +707,7 @@ public class Controller {
 	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
 	 */
 	private void cancelBackup(BackupTask task, boolean reschedule) {
+		// ToDo: non-JavaFX thread?
 		guiController.setStatusOfBackupTask(task.getTaskName(), false,
 				ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"));
 
@@ -865,7 +870,14 @@ public class Controller {
 	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
 	private void printOut(String s, boolean error, String taskName) {
-		guiController.setStatusOfBackupTask(taskName, error, s);
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				guiController.setStatusOfBackupTask(taskName, error, s);
+			}
+		});
+
 	}
 
 	/**
@@ -1210,6 +1222,7 @@ public class Controller {
 	private void taskStarted(String taskName) {
 		runningBackupTasks.add(taskName);
 		System.out.println("Task started:" + taskName);
+		printOut("Started", false, taskName);
 	}
 
 	/**
@@ -1222,6 +1235,7 @@ public class Controller {
 			System.err.println("Error: This task isn't running");
 		}
 		System.out.println("Task finished:" + task.getTaskName());
+		printOut("Finished", false, task.getTaskName());
 		if (schedule) {
 			scheduleBackupTask(task);
 		}
@@ -1296,7 +1310,7 @@ public class Controller {
 	 */
 	private void scheduleBackupTaskAt(final BackupTask task, LocalDateTime nextExecutionTime) {
 		task.resetLocalDateTimeOfNextExecution();
-		guiController.setStatusOfBackupTask(task.getTaskName(), false, "Next Execution: " + nextExecutionTime.toString());
+		guiController.setNextExecutionTimeStatus(task.getTaskName(), nextExecutionTime);
 		// scheduling:
 		// Für das Backup:
 		Runnable backup = new Runnable() {

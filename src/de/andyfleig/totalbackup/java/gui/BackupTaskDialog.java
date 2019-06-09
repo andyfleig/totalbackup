@@ -257,12 +257,12 @@ public class BackupTaskDialog {
 	public void initialize() {
 
 		try {
-			FileInputStream in_general = new FileInputStream("./src/de/andyfleig/totalbackup/resources/tab_general" +
-					".png");
-			FileInputStream in_autorun = new FileInputStream("./src/de/andyfleig/totalbackup/resources" +
-					"/tab_autorun.png");
-			FileInputStream in_autoclean = new FileInputStream("./src/de/andyfleig/totalbackup/resources" +
-					"/tab_autoclean.png");
+			FileInputStream in_general = new FileInputStream(
+					"./src/de/andyfleig/totalbackup/resources/tab_general" + ".png");
+			FileInputStream in_autorun = new FileInputStream(
+					"./src/de/andyfleig/totalbackup/resources" + "/tab_autorun.png");
+			FileInputStream in_autoclean = new FileInputStream(
+					"./src/de/andyfleig/totalbackup/resources" + "/tab_autoclean.png");
 
 
 			Image image_general = new Image(in_general);
@@ -288,7 +288,7 @@ public class BackupTaskDialog {
 			tab_main.setGraphic(tp_general);
 			tab_autorun.setGraphic(tp_autorun);
 			tab_autoclean.setGraphic(tp_autoclean);
-		} catch(IOException e) {
+		} catch (IOException e) {
 			System.out.println(e);
 		}
 
@@ -417,7 +417,6 @@ public class BackupTaskDialog {
 				}
 			}
 		});
-
 
 
 		//Alle Regeln ab Nr.2 sind deaktiviert (da Anzahl Regeln default = 1)
@@ -920,8 +919,10 @@ public class BackupTaskDialog {
 			newTask.setBackupsToKeep(backupsToKeep);
 		}
 
-		//Prüfen ob bereits ein BackupTask mit diesem Namen existiert:
+		// checks whether a BackupTask with the given name already exists
 		if (initTask == null && backupTaskDialogListener.backupTaskWithNameExisting(newTask.getTaskName())) {
+			// error is only shown if initTask is null which means this is a new BackupTask and not a change on an
+			// existin gone (edit)
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 			alert.setTitle("Warning");
 			alert.setHeaderText("BackupTask with this name already exists.");
@@ -977,12 +978,14 @@ public class BackupTaskDialog {
 				//Untertab: Tag im Monat
 				if (!(cb_day1.isSelected() || cb_day2.isSelected() || cb_day3.isSelected() || cb_day4.isSelected() ||
 						cb_day5.isSelected() || cb_day6.isSelected() || cb_day7.isSelected() || cb_day8.isSelected() ||
-						cb_day9.isSelected() || cb_day10.isSelected() || cb_day11.isSelected() || cb_day12.isSelected() ||
-						cb_day13.isSelected() || cb_day14.isSelected() || cb_day15.isSelected() || cb_day16.isSelected() ||
-						cb_day17.isSelected() || cb_day18.isSelected() || cb_day19.isSelected() || cb_day20.isSelected() ||
-						cb_day21.isSelected() || cb_day22.isSelected() || cb_day23.isSelected() || cb_day24.isSelected() ||
-						cb_day25.isSelected() || cb_day26.isSelected() || cb_day27.isSelected() || cb_day28.isSelected() ||
-						cb_day29.isSelected() || cb_day30.isSelected() || cb_day31.isSelected())) {
+						cb_day9.isSelected() || cb_day10.isSelected() || cb_day11.isSelected() ||
+						cb_day12.isSelected() || cb_day13.isSelected() || cb_day14.isSelected() ||
+						cb_day15.isSelected() || cb_day16.isSelected() || cb_day17.isSelected() ||
+						cb_day18.isSelected() || cb_day19.isSelected() || cb_day20.isSelected() ||
+						cb_day21.isSelected() || cb_day22.isSelected() || cb_day23.isSelected() ||
+						cb_day24.isSelected() || cb_day25.isSelected() || cb_day26.isSelected() ||
+						cb_day27.isSelected() || cb_day28.isSelected() || cb_day29.isSelected() ||
+						cb_day30.isSelected() || cb_day31.isSelected())) {
 					System.out.println("At least one day has to be selected");
 					return false;
 				}
@@ -1132,7 +1135,7 @@ public class BackupTaskDialog {
 				public boolean isAlreadyCoveredByExistingSource(String path) {
 					Iterator itr = ol_sources.iterator();
 					while (itr.hasNext()) {
-						Source currentSource = (Source)itr.next();
+						Source currentSource = (Source) itr.next();
 						if (path.startsWith(currentSource.getPath())) {
 							return true;
 						}
@@ -1155,8 +1158,8 @@ public class BackupTaskDialog {
 				ArrayList<Filter> filters = source.getFilter();
 				for (int i = 0; i < filters.size(); i++) {
 					Filter current_filter = filters.get(i);
-					sourcesDialog.ol_filters.add(new SourceFilterCellContent(current_filter.getPath(),
-							current_filter.getMode()));
+					sourcesDialog.ol_filters.add(
+							new SourceFilterCellContent(current_filter.getPath(), current_filter.getMode()));
 				}
 			}
 

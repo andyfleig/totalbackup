@@ -21,6 +21,7 @@ import main.Backupable;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -106,15 +107,17 @@ public class FxMainframe extends Application implements Initializable {
 			return;
 		}
 		// Ask for confirmation
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Deleting the backup-task will cancel " +
-				"future executions of this task. \nThis can not be undone.", ButtonType.YES, ButtonType.NO);
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+				"Deleting the backup-task will cancel " + "future executions of this task. \nThis can not be undone.",
+				ButtonType.YES, ButtonType.NO);
 		alert.setTitle("Warning");
 		alert.setHeaderText("Do you really want to delete the selected backup-task?");
 		alert.setResizable(true);
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.YES) {
-			mainframeListener.deleteBackupTaskWithName(lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
+			mainframeListener.deleteBackupTaskWithName(
+					lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
 		} else {
 			return;
 		}
@@ -137,7 +140,7 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskName
 	 */
 	public void addBackupTask(String taskName) {
-		ol_backupTasks.add(new MainframeCellContent(taskName, "Okay"));
+		ol_backupTasks.add(new MainframeCellContent(taskName, "Okay", null));
 
 	}
 
@@ -155,6 +158,7 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	//ToDo: Wohin? + private?
+
 	/**
 	 * Sucht aus der ol_filters den Eintrag eines bestimmten Tasks heraus.
 	 *
@@ -171,18 +175,32 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	/**
-	 * Setzt den Status für den Task mit dem gegebenen Namen (taskName).
+	 * Sets the status for the BackupTask with the given name.
 	 *
-	 * @param taskName   Task für den der Status gesetzt werden soll
-	 * @param error      Ob es sich um einen Fehler oder um einen "normalen" Status handelt. true = Fehler, false =
-	 *                   Status
-	 * @param taskStatus zu setzender Status
+	 * @param taskName   name of the BackupTask to set status
+	 * @param error      whether it is an error status or not
+	 * @param taskStatus status to set
 	 */
 	public void setStatusOfBackupTask(String taskName, boolean error, String taskStatus) {
 		//ToDo: Farbe (Error)
 		int indexOfTask = getIndexOfObservableListFromName(taskName);
 		if (indexOfTask >= 0) {
 			ol_backupTasks.get(indexOfTask).setTaskStaus(taskStatus);
+			lv_backupTasks.fireEvent(new ListView.EditEvent<>(lv_backupTasks, ListView.editCommitEvent(),
+					ol_backupTasks.get(indexOfTask), indexOfTask));
+		}
+	}
+
+	/**
+	 * Sets the next-execution part of the status for the BackupTask with the given name.
+	 *
+	 * @param taskName                    name of the BackupTask to set next-execution part of the status
+	 * @param taskNextExecutionTimeStatus next-execution-time status to set (as LocalDateTime)
+	 */
+	public void setNextExecutionTimeStatusOfBackupTask(String taskName, LocalDateTime taskNextExecutionTimeStatus) {
+		int indexOfTask = getIndexOfObservableListFromName(taskName);
+		if (indexOfTask >= 0) {
+			ol_backupTasks.get(indexOfTask).setTaskNextExecutionTimeStatus(taskNextExecutionTimeStatus);
 		}
 	}
 
@@ -218,7 +236,7 @@ public class FxMainframe extends Application implements Initializable {
 
 										   @Override
 										   public void deleteEmptyBackupFolders(BackupTask task) {
-										   	mainframeListener.deleteEmptyBackupFolders("", task);
+											   mainframeListener.deleteEmptyBackupFolders("", task);
 
 										   }
 
