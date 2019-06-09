@@ -1,13 +1,10 @@
 package listener;
 
 import data.BackupTask;
-import gui.FxMainframe;
-import gui.SummaryDialog;
 import javafx.stage.Stage;
-import main.Backupable;
 
 /**
- * ToDo
+ * JavaFX based Main-Windows of TotalBackp.
  *
  * @author Andreas Fleig
  */
@@ -16,21 +13,27 @@ public interface IFxMainframeListener {
 	public void startBackupTaskDialog(String taskName);
 	public void startAboutDialog();
 	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
+	 * Serializes all the BackupTasks.
 	 */
 	public void saveProperties();
 
 	/**
-	 * Löscht den BackupTask mit dem gegebenen Namen.
-	 * Existiert kein BackupTask mit dem gegebenen Namen, passiert nichts.
-	 * @param taskName Name des BackupTasks
+	 * Deletes the BackupTask with the given name.
+	 * No action will be performed if no BackupTask with the given name exists.
+	 * @param taskName name of the BackupTask to delete
 	 */
 	public void deleteBackupTaskWithName(String taskName);
 
 	/**
-	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
+	 * Deletes all empty Backup-Folders (e.g. created but not removed when a backup was canceled)
 	 *
-	 * @param task entsprechernder BackupTask
+	 * @param task corresponding BackupTask
 	 */
 	public void deleteEmptyBackupFolders(String path, BackupTask task);
+
+	/***
+	 * Executes the BackupTask with the given Name immediately.
+	 * @param taskName
+	 */
+	public void runBackupTaskWithName(String taskName);
 }

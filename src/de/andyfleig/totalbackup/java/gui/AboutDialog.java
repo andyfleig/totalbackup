@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -50,9 +51,13 @@ public class AboutDialog {
 	}
 
 	public void initialize() {
-		lbl_versionAndCopyright.setText("TotalBackup v0.1pre5 beta\nCopyright 2014-2019 Andreas Fleig - All rights " +
-				"reserved\nLicense: GPLv3+\n" + System.getProperty("java.runtime.name") + " " + System.getProperty(
-						"java.version"));
+		String infoText = "TotalBackup v0.1pre5 beta";
+		infoText = infoText.concat("\nCopyright 2014-2019 Andreas Fleig - All rights reserved");
+		infoText = infoText.concat("\nLicense: GPLv3+");
+		infoText = infoText.concat("\n" + System.getProperty("java.runtime.name") + " " + System.getProperty("java.version"));
+
+
+		lbl_versionAndCopyright.setText(infoText);
 		try {
 			FileInputStream input = new FileInputStream("./src/de/andyfleig/totalbackup/resources/TB_logo.png");
 			Image image = new Image(input);

@@ -34,9 +34,18 @@ public interface IGUIControllerListener {
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Rescheduled den gegebenen BackupTask.
+	 * Reschedules the given BackupTask according to its properties.
+	 *
+	 * @param task BackupTask to reschedule
 	 */
 	public void scheduleBackupTask(BackupTask task);
+
+	/**
+	 * Reschedules the given BackupTask to be executed immediately.
+	 *
+	 * @param task BackupTask to execute
+	 */
+	public void scheduleBackupTaskNow(BackupTask task);
 
 	/**
 	 * Gibt aus der Liste der BackupTasks den Task mit dem Namen taskName zurück. Wird kein entsprechender Eintrag

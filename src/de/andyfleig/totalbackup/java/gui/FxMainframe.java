@@ -32,8 +32,8 @@ import java.util.ResourceBundle;
 public class FxMainframe extends Application implements Initializable {
 
 	@FXML
-	public ListView<MainframeCellContent> listView;
-	final ObservableList<MainframeCellContent> observableList = FXCollections.observableArrayList();
+	public ListView<MainframeCellContent> lv_backupTasks;
+	final ObservableList<MainframeCellContent> ol_backupTasks = FXCollections.observableArrayList();
 	@FXML
 	public VBox vBoxMain;
 
@@ -51,8 +51,8 @@ public class FxMainframe extends Application implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 
-		listView.setItems(observableList);
-		listView.setCellFactory(new Callback<ListView<MainframeCellContent>, ListCell<MainframeCellContent>>() {
+		lv_backupTasks.setItems(ol_backupTasks);
+		lv_backupTasks.setCellFactory(new Callback<ListView<MainframeCellContent>, ListCell<MainframeCellContent>>() {
 			@Override
 			public ListCell<MainframeCellContent> call(ListView<MainframeCellContent> listView) {
 				return new BackupTaskListCell();
@@ -80,19 +80,29 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	@FXML
+	public void runNowAction() {
+		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
+			return;
+		}
+		MainframeCellContent selectedCell = lv_backupTasks.getSelectionModel().getSelectedItem();
+		mainframeListener.runBackupTaskWithName(selectedCell.getTaskName());
+
+	}
+
+	@FXML
 	public void editEntryAction() {
-		if (listView.getSelectionModel().getSelectedIndex() == -1) {
+		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
 			return;
 		}
 		contextMenu.hide();
 
-		mainframeListener.startBackupTaskDialog(listView.getSelectionModel().getSelectedItem().getTaskName());
+		mainframeListener.startBackupTaskDialog(lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
 
 	}
 
 	@FXML
 	public void deleteEntryAction() {
-		if (listView.getSelectionModel().getSelectedIndex() == -1) {
+		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
 			return;
 		}
 		// Ask for confirmation
@@ -104,7 +114,7 @@ public class FxMainframe extends Application implements Initializable {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.YES) {
-			mainframeListener.deleteBackupTaskWithName(listView.getSelectionModel().getSelectedItem().getTaskName());
+			mainframeListener.deleteBackupTaskWithName(lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
 		} else {
 			return;
 		}
@@ -127,7 +137,7 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskName
 	 */
 	public void addBackupTask(String taskName) {
-		observableList.add(new MainframeCellContent(taskName, "Okay"));
+		ol_backupTasks.add(new MainframeCellContent(taskName, "Okay"));
 
 	}
 
@@ -139,7 +149,7 @@ public class FxMainframe extends Application implements Initializable {
 	public void removeBackupTask(String taskName) {
 		int indexOfTask = getIndexOfObservableListFromName(taskName);
 		if (indexOfTask >= 0) {
-			observableList.remove(getIndexOfObservableListFromName(taskName));
+			ol_backupTasks.remove(getIndexOfObservableListFromName(taskName));
 		}
 
 	}
@@ -152,8 +162,8 @@ public class FxMainframe extends Application implements Initializable {
 	 * @return Index an dem sich der gesuchte Task in der observalbe List befindet
 	 */
 	private int getIndexOfObservableListFromName(String taskName) {
-		for (int i = 0; i < observableList.size(); i++) {
-			if (observableList.get(i).getTaskName().equals(taskName)) {
+		for (int i = 0; i < ol_backupTasks.size(); i++) {
+			if (ol_backupTasks.get(i).getTaskName().equals(taskName)) {
 				return i;
 			}
 		}
@@ -172,7 +182,7 @@ public class FxMainframe extends Application implements Initializable {
 		//ToDo: Farbe (Error)
 		int indexOfTask = getIndexOfObservableListFromName(taskName);
 		if (indexOfTask >= 0) {
-			observableList.get(indexOfTask).setTaskStaus(taskStatus);
+			ol_backupTasks.get(indexOfTask).setTaskStaus(taskStatus);
 		}
 	}
 

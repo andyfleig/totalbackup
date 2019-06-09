@@ -142,9 +142,6 @@ public class GuiController {
 				}
 			}
 
-			/**
-			 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
-			 */
 			@Override
 			public void saveProperties() {
 				guiControllerListener.saveProperties();
@@ -158,6 +155,13 @@ public class GuiController {
 			@Override
 			public void deleteEmptyBackupFolders(String path, BackupTask task) {
 				guiControllerListener.deleteEmptyBackupFolders(path, task);
+			}
+
+			@Override
+			public void runBackupTaskWithName(String taskName) {
+				BackupTask task = guiControllerListener.getBackupTaskWithName(taskName);
+				guiControllerListener.scheduleBackupTaskNow(task);
+
 			}
 		});
 		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)

@@ -131,6 +131,11 @@ public class Controller {
 			}
 
 			@Override
+			public void scheduleBackupTaskNow(BackupTask task) {
+				Controller.this.scheduleBackupTaskNow(task);
+			}
+
+			@Override
 			public BackupTask getBackupTaskWithName(String taskName) {
 				for (BackupTask task : backupTasks) {
 					if (task.getTaskName().equals(taskName)) {
