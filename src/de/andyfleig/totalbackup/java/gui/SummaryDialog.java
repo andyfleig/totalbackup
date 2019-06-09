@@ -123,7 +123,7 @@ public class SummaryDialog implements Initializable {
 	@FXML
 	public void cancelAction() {
 		outprintBackupCanceled(task);
-		listener.taskFinished(task);
+		listener.taskFinished(task, true);
 		deleteEmptyBackupFolders(task);
 		synchronized (task) {
 			task.notify();

@@ -76,7 +76,7 @@ public final class BackupHelper {
 		}
 
 		String output = ResourceBundle.getBundle("messages").getString("Messages.copying") + " " + source.getPath();
-		listener.setStatus(output);
+		listener.setStatus(output, currentTask);
 		listener.log(output, currentTask);
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
@@ -87,7 +87,7 @@ public final class BackupHelper {
 
 		in.close();
 		out.close();
-		listener.setStatus("");
+		listener.setStatus("", currentTask);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public final class BackupHelper {
 		}
 
 		String output = ResourceBundle.getBundle("messages").getString("Messages.linking") + " " + source.getPath();
-		listener.setStatus(output);
+		listener.setStatus(output, task);
 		listener.log(output, task);
 
 		try {
@@ -112,7 +112,7 @@ public final class BackupHelper {
 			System.out.println("Fehler: IO-Problem");
 		}
 
-		listener.setStatus("");
+		listener.setStatus("", task);
 	}
 
 	/**

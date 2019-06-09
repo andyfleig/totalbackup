@@ -206,7 +206,7 @@ public class FilterDialog implements Initializable {
 //				} else if (radioButton_useMD5.isSelected()) {
 //					addFilter(textfield_filter.getText(), 1);
 //				}
-//				FilterDialog.this.dispose();
+//				FilterDialog.this.disposeDialog();
 //			}
 //		});
 //		button_ok.setActionCommand("OK");
@@ -217,7 +217,7 @@ public class FilterDialog implements Initializable {
 //		JButton button_cancel = new JButton(ResourceBundle.getBundle("messages").getString("GUI.button_cancel"));
 //		button_cancel.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
-//				FilterDialog.this.dispose();
+//				FilterDialog.this.disposeDialog();
 //			}
 //		});
 //		button_cancel.setActionCommand("Cancel");

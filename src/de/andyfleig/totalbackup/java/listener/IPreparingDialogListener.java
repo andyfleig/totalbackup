@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -22,4 +22,6 @@ package listener;
 
 public interface IPreparingDialogListener {
 	public void cancelBackup(String taskName);
+
+	public void disposeDialog();
 }

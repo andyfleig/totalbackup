@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -20,61 +20,49 @@
  */
 package gui;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-
-import data.BackupTask;
-
-import java.awt.*;
+import java.net.URL;
 import java.util.ResourceBundle;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.stage.Stage;
 import listener.IPreparingDialogListener;
-import main.BackupHelper;
+import main.Backupable;
 
 /**
- * Minimaler Dialog welcher wärend der Preparation angezeigt wird und die Möglichkeit zum Abbruch des Backups bietet.
+ * Small dialog indicating that the preparation of the backup is running with the option of canceling the backup.
  *
  * @author Andreas Fleig
  */
-public class PreparingDialog extends JDialog {
+public class PreparingDialog implements Initializable {
 
+	static Stage stage;
 	private IPreparingDialogListener listener;
+	String taskName;
+	Backupable backup;
 
-	/**
-	 * Create the panel.
-	 */
-	public PreparingDialog(IPreparingDialogListener listener, final BackupTask task) {
-		setSize(220, 80);
-		setResizable(false);
-		this.listener = listener;
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+	public PreparingDialog() {
 
-		getContentPane().setLayout(new BorderLayout(0, 0));
-
-		JPanel panel_message = new JPanel();
-		getContentPane().add(panel_message, BorderLayout.NORTH);
-		JLabel label_preparing = new JLabel(
-				ResourceBundle.getBundle("messages").getString("GUI.PreparingDialog.label_preparing"));
-		panel_message.add(label_preparing);
-
-		JPanel panel_button = new JPanel();
-		getContentPane().add(panel_button, BorderLayout.SOUTH);
-
-		JButton button_cancelBackup = new JButton(
-				ResourceBundle.getBundle("messages").getString("GUI.PreparingDialog.button_cancelBackup"));
-		button_cancelBackup.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cancelBackup(task.getTaskName());
-			}
-		});
-		panel_button.add(button_cancelBackup);
 	}
 
-	private void cancelBackup(String taskName) {
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
+
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+
+	}
+
+	public void init(IPreparingDialogListener listener, String taskName, Backupable backup) {
+		this.listener = listener;
+		this.taskName = taskName;
+		this.backup = backup;
+	}
+
+	@FXML
+	private void cancelAction() {
 		listener.cancelBackup(taskName);
+		backup.cancel();
 	}
 }

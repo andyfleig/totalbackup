@@ -47,7 +47,7 @@ public interface IBackupListener {
 	 *
 	 * @param status auszugebender String
 	 */
-	public void setStatus(String status);
+	public void setStatus(String status, BackupTask task);
 
 	/**
 	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.

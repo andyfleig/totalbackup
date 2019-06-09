@@ -159,7 +159,12 @@ public class Controller {
 
 			@Override
 			public void deleteEmptyBackupFolders(String path, BackupTask task) {
-				Controller.this.deleteEmptyBackupFolders(path, task);
+				Controller.this.deleteEmptyBackupFolders(task);
+			}
+
+			@Override
+			public void taskFinished(BackupTask task, boolean schedule) {
+				Controller.this.taskFinished(task, schedule);
 			}
 		}, fxMainframe);
 	}
@@ -326,6 +331,64 @@ public class Controller {
 				}
 			});
 
+			// Listener anlegen:
+			backupListener = new IBackupListener() {
+
+				@Override
+				public void printOut(final String s, final boolean error, final String taskName) {
+					SwingUtilities.invokeLater(new Runnable() {
+
+						@Override
+						public void run() {
+							Controller.this.printOut(s, error, taskName);
+						}
+
+					});
+				}
+
+				@Override
+				public void setStatus(final String status, BackupTask task) {
+					SwingUtilities.invokeLater(new Runnable() {
+
+						@Override
+						public void run() {
+							// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+							Platform.runLater(new Runnable() {
+								@Override
+								public void run() {
+									guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
+								}
+							});
+						}
+					});
+				}
+
+				@Override
+				public void log(String event, BackupTask task) {
+					Controller.this.log(event, task);
+
+				}
+
+				@Override
+				public void taskStarted(String taskName) {
+					Controller.this.taskStarted(taskName);
+
+				}
+
+				@Override
+				public void taskFinished(BackupTask task) {
+					Controller.this.taskFinished(task, true);
+
+				}
+
+				@Override
+				public void deleteEmptyBackupFolders(String path, BackupTask task) {
+					Controller.this.deleteEmptyBackupFolders(task);
+
+				}
+
+			};
+
 			loadSerializationGson();
 			// Liste aller versäumten BackupTasks:
 			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
@@ -415,6 +478,58 @@ public class Controller {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		Backupable backup;
+		// Backup-Objekt in Abhängigkeit des Backup-Modus erstellen:
+		if (task.getBackupMode() == 1) {
+			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
+			// sich um die erste Ausführung handelt:
+			File[] files = new File(task.getDestinationPath()).listFiles();
+			boolean backupSetFound = false;
+			for (File file : files) {
+				if (file.isDirectory()) {
+					// Namen des Ordners "zerlegen":
+					StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
+					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+					if (tokenizer.countTokens() != 2) {
+						continue;
+					}
+					// Erster Token muss dem TaskName entsprechen:
+					if (!tokenizer.nextToken().equals(task.getTaskName())) {
+						continue;
+					}
+					backupSetFound = true;
+					break;
+				}
+			}
+			if (backupSetFound) {
+				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
+				printOut(output, false, task.getTaskName());
+				log(output, task);
+				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
+						task.getDestinationPath());
+			} else {
+				String output = ResourceBundle.getBundle("messages").getString("Messages.startNormalBackup");
+				printOut(output, false, task.getTaskName());
+				log(output, task);
+				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
+						task.getDestinationPath());
+			}
+		} else {
+			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(), task.getDestinationPath());
+		}
+
+		// show PreparingDialog if not in autostart-mode
+		if (!task.getAutostart()) {
+			guiController.showPreparingDialog(task, backup);
+			try {
+				// Workaround to force JavaFX to show PreparingDialog
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+
+			}
+		}
+
 		// Testen ob Quell- und Zielpfad(e) existieren:
 		ArrayList<Source> sources = task.getSources();
 		for (Source source : sources) {
@@ -487,102 +602,6 @@ public class Controller {
 			askForNextExecution(task);
 			return;
 		}
-		// Listener anlegen:
-		backupListener = new IBackupListener() {
-
-			@Override
-			public void printOut(final String s, final boolean error, final String taskName) {
-				SwingUtilities.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-						Controller.this.printOut(s, error, taskName);
-					}
-
-				});
-			}
-
-			@Override
-			public void setStatus(final String status) {
-				SwingUtilities.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-						// Avoid throwing IllegalStateException by running from a non-JavaFX thread
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
-							}
-						});
-					}
-				});
-			}
-
-			@Override
-			public void log(String event, BackupTask task) {
-				Controller.this.log(event, task);
-
-			}
-
-			@Override
-			public void taskStarted(String taskName) {
-				Controller.this.taskStarted(taskName);
-
-			}
-
-			@Override
-			public void taskFinished(BackupTask task) {
-				Controller.this.taskFinished(task, true);
-
-			}
-
-			@Override
-			public void deleteEmptyBackupFolders(String path, BackupTask task) {
-				Controller.this.deleteEmptyBackupFolders(path, task);
-
-			}
-
-		};
-		Backupable backup;
-		// Backup-Objekt in Abhängigkeit des Backup-Modus erstellen:
-		if (task.getBackupMode() == 1) {
-			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
-			// sich um die erste Ausführung handelt:
-			File[] files = new File(task.getDestinationPath()).listFiles();
-			boolean backupSetFound = false;
-			for (File file : files) {
-				if (file.isDirectory()) {
-					// Namen des Ordners "zerlegen":
-					StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
-					if (tokenizer.countTokens() != 2) {
-						continue;
-					}
-					// Erster Token muss dem TaskName entsprechen:
-					if (!tokenizer.nextToken().equals(task.getTaskName())) {
-						continue;
-					}
-					backupSetFound = true;
-					break;
-				}
-			}
-			if (backupSetFound) {
-				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
-				printOut(output, false, task.getTaskName());
-				log(output, task);
-				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
-						task.getDestinationPath());
-			} else {
-				String output = ResourceBundle.getBundle("messages").getString("Messages.startNormalBackup");
-				printOut(output, false, task.getTaskName());
-				log(output, task);
-				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
-						task.getDestinationPath());
-			}
-		} else {
-			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(), task.getDestinationPath());
-		}
 
 		try {
 			backup.runPreparation(task);
@@ -619,7 +638,11 @@ public class Controller {
 				isCanceled = false;
 			}
 		}
-		if (!isCanceled) {
+		// disposeDialog PreparingDialog:
+		guiController.disposePreparingDialogIfNotNull();
+
+		// show SummaryDialog if not canceled and not in autostart-mode
+		if (!isCanceled && !backup.isCanceled()) {
 			if (!task.getAutostart()) {
 				guiController.showSummaryDialog(task, backup);
 				synchronized (task) {
@@ -1511,7 +1534,7 @@ public class Controller {
 	 *
 	 * @param task BackupTask zu dem der Ordner gehört
 	 */
-	private void deleteEmptyBackupFolders(String path2, BackupTask task) {
+	private void deleteEmptyBackupFolders(BackupTask task) {
 		String path = task.getDestinationPath();
 		File currentDest = new File(path);
 		File[] backupFolders = currentDest.listFiles();

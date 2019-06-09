@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import listener.IFxMainframeListener;
+import listener.IPreparingDialogListener;
 import listener.ISummaryDialogListener;
 import main.Backupable;
 
@@ -38,7 +39,8 @@ public class FxMainframe extends Application implements Initializable {
 	@FXML
 	public VBox vBoxMain;
 
-	private SummaryDialog summaryDialog;
+	IPreparingDialogListener preparingDialogListener;
+
 
 	@FXML
 	public ContextMenu contextMenu;
@@ -205,11 +207,15 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	/**
-	 * Öffnet einen neuen SummaryDialog.
+	 * Opens the SummaryDialog window giving an overview over some stats of the BackupTask (like number of files to
+	 * copy)
 	 *
-	 * @param task entsprechender BackupTask
+	 * @param task   corresponding BackupTask
+	 * @param backup Backup object of the BackupTask
 	 */
 	public void showSummaryDialog(final BackupTask task, final Backupable backup) {
+		//
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -242,12 +248,12 @@ public class FxMainframe extends Application implements Initializable {
 
 										   @Override
 										   public void outprintBackupCanceled(BackupTask task) {
-
+											   setStatusOfBackupTask(task.getTaskName(), false, "Canceled");
 										   }
 
 										   @Override
-										   public void taskFinished(BackupTask task) {
-
+										   public void taskFinished(BackupTask task, boolean schedule) {
+												mainframeListener.taskFinished(task, schedule);
 										   }
 									   }, task, backup.getBackupInfos().getNumberOfFilesToCopy(),
 							backup.getBackupInfos().getNumberOfFilesToCopy(),
@@ -260,6 +266,65 @@ public class FxMainframe extends Application implements Initializable {
 				}
 			}
 		});
+	}
 
+	/**
+	 * Opens the PreparingDialog window.
+	 *
+	 * @param task corresponding BackupTask
+	 */
+	public void showPreparingDialog(BackupTask task, Backupable backup) {
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				final Stage preparingDialogStage = new Stage(StageStyle.UTILITY);
+				preparingDialogStage.initModality(Modality.APPLICATION_MODAL);
+				try {
+					FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/PreparingDialog.fxml"));
+					Scene scene = new Scene(loader.load());
+					PreparingDialog preparingDialog = loader.getController();
+					preparingDialogStage.setScene(scene);
+
+					preparingDialog.setStage(preparingDialogStage);
+					preparingDialogListener = new IPreparingDialogListener() {
+						@Override
+						public void cancelBackup(String taskName) {
+							setStatusOfBackupTask(task.getTaskName(), false, "Canceled");
+							mainframeListener.taskFinished(task, true);
+							mainframeListener.deleteEmptyBackupFolders("", task);
+							synchronized (task) {
+								task.notify();
+							}
+							preparingDialogListener.disposeDialog();
+						}
+
+						@Override
+						public void disposeDialog() {
+							preparingDialogStage.close();
+						}
+					};
+
+					preparingDialog.init(preparingDialogListener, task.getTaskName(), backup);
+
+					preparingDialogStage.showAndWait();
+					int useless = 1;
+				} catch (IOException e) {
+					System.err.println(e);
+				}
+			}
+		});
+	}
+
+	public void disposePreparingDialogIfNotNull() {
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (preparingDialogListener != null) {
+					preparingDialogListener.disposeDialog();
+				}
+			}
+		});
 	}
 }

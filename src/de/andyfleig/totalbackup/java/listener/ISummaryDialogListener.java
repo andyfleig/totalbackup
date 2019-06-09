@@ -53,9 +53,9 @@ public interface ISummaryDialogListener {
 	public void outprintBackupCanceled(BackupTask task);
 
 	/**
-	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
-	 *
-	 * @param task der zu entfernenden Backup-Tasks
+	 * Markes the given task as finished and thus as not currently running. Allows to reschedule.
+	 * @param task task to mark as finished
+	 * @param schedule whether the task should be rescheduled
 	 */
-	public void taskFinished(BackupTask task);
+	public void taskFinished(BackupTask task, boolean schedule);
 }

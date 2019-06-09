@@ -732,7 +732,7 @@ public class BackupTaskDialog {
 			newTask.setAutostart(true);
 		}
 
-		// auto-backup settings:
+		// autorun settings:
 		if (rb_weekday.isSelected()) {
 			// weekdays:
 			newTask.setAutoBackupMode(1);
@@ -878,7 +878,7 @@ public class BackupTaskDialog {
 			}
 		}
 
-		// auto-clean settings:
+		// autoclean settings:
 		if (rb_autoclean_simple.isSelected()) {
 			newTask.setSimpleAutoCleanEnabled(true);
 			newTask.setNumberOfBackupsToKeep(Integer.parseInt(sp_keep_last_x_backups.getValue().toString()));

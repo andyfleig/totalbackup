@@ -164,6 +164,11 @@ public class GuiController {
 				guiControllerListener.scheduleBackupTaskNow(task);
 
 			}
+
+			@Override
+			public void taskFinished(BackupTask task, boolean schedule) {
+				guiControllerListener.taskFinished(task, schedule);
+			}
 		});
 		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)
 		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
@@ -410,22 +415,28 @@ public class GuiController {
 	}
 
 	/**
-	 * Ruft auf dem aktuellen PreparingDialog dispose() auf, wenn dieser nicht null ist.
+	 * Ruft auf dem aktuellen PreparingDialog disposeDialog() auf, wenn dieser nicht null ist.
 	 */
 	public void disposePreparingDialogIfNotNull() {
-		//ToDo: Implementieren
-		//if (prep != null) {
-		//	prep.dispose();
-		//}
+		fxMainframe.disposePreparingDialogIfNotNull();
 	}
 
 	/**
-	 * Öffnet einen neuen SummeryDialog.
+	 * Opens the SummaryDialog window giving an overview over some stats of the BackupTask (like number of files to
+	 * copy)
 	 *
-	 * @param task entsprechender BackupTask
+	 * @param task corresponding BackupTask
+	 * @param backup Backup object of the BackupTask
 	 */
 	public void showSummaryDialog(final BackupTask task, final Backupable backup) {
 		fxMainframe.showSummaryDialog(task, backup);
+	}
+
+	/**
+	 * Opens the PreparingDialog window.
+	 */
+	public void showPreparingDialog(BackupTask task, Backupable backup) {
+		fxMainframe.showPreparingDialog(task, backup);
 	}
 
 	/**
@@ -442,7 +453,7 @@ public class GuiController {
 	/**
 	 * Sets the next-execution part of the status for the BackupTask with the given name.
 	 *
-	 * @param taskName                name of the BackupTask to set next-execution part of the status
+	 * @param taskName                    name of the BackupTask to set next-execution part of the status
 	 * @param taskNextExecutionTimeStatus next-execution status to set
 	 */
 	public void setNextExecutionTimeStatus(String taskName, LocalDateTime taskNextExecutionTimeStatus) {

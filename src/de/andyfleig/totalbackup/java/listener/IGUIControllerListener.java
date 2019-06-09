@@ -68,4 +68,11 @@ public interface IGUIControllerListener {
 	 * @param task entsprechender BackupTask
 	 */
 	public void deleteEmptyBackupFolders(String path, BackupTask task);
+
+	/**
+	 * Markes the given task as finished and thus as not currently running. Allows to reschedule.
+	 * @param task task to mark as finished
+	 * @param schedule whether the task should be rescheduled
+	 */
+	public void taskFinished(BackupTask task, boolean schedule);
 }
