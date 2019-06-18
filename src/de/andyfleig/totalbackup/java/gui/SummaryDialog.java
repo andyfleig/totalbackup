@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -20,33 +20,16 @@
  */
 package gui;
 
-import java.awt.*;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-
-import java.awt.event.ActionListener;
-import javafx.event.ActionEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 import data.BackupTask;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import listener.ISummaryDialogListener;
-import main.BackupHelper;
-import main.Backupable;
-
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * Dialog welcher nach der Preparation die Zusammenfassung des bevorstehenden Backups anzeigt.

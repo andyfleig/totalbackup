@@ -4,7 +4,7 @@ import data.BackupTask;
 import javafx.stage.Stage;
 
 /**
- * JavaFX based Main-Windows of TotalBackp.
+ * JavaFX based Main-Windows of TotalBackup.
  *
  * @author Andreas Fleig
  */

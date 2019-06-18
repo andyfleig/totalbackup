@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ import data.BackupTask;
 public interface IBackupListener {
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um
-	 * eine Fehlermeldung (rot) handelt oder nicht.
+	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder
+	 * nicht.
 	 *
 	 * @param s        auszugebender String
 	 * @param error    legt fest ob es sich um eine Fehlermeldung handelt oder nicht
-	 * @param taskName Name des entsprechenen Tasks
+	 * @param taskName Name des entsprechenden Tasks
 	 */
 	public void printOut(String s, boolean error, final String taskName);
 
@@ -64,8 +64,7 @@ public interface IBackupListener {
 	public void taskFinished(BackupTask task);
 
 	/**
-	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
-	 * Backup-Vorgangs nach der Übersicht)
+	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
 	 *
 	 * @param task entsprechernder BackupTask
 	 */

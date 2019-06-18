@@ -2,8 +2,6 @@ package listener;
 
 import data.BackupTask;
 
-import java.io.File;
-
 /**
  * ToDo
  *
@@ -19,7 +17,7 @@ public interface IBackupTaskDialogListener {
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
+	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
 	 */
 	public void saveProperties();
 
@@ -30,13 +28,15 @@ public interface IBackupTaskDialogListener {
 
 	/**
 	 * Prüft ob bereits ein BackupTask mit dem gegebenen Namen existiert.
+	 *
 	 * @param taskName zu prüfender Name
 	 */
 	public boolean backupTaskWithNameExisting(String taskName);
 
 	/**
-	 * Löscht den BackupTask mit dem gegebenen Namen.
-	 * Existiert kein BackupTask mit dem gegebenen Namen, passiert nichts.
+	 * Löscht den BackupTask mit dem gegebenen Namen. Existiert kein BackupTask mit dem gegebenen Namen, passiert
+	 * nichts.
+	 *
 	 * @param taskName Name des BackupTasks
 	 */
 	public void deleteBackupTaskWithName(String taskName);

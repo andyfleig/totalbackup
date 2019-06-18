@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Quellobjekt zur Haltung des Quellpfades und der dazughörigen Filter.
+ * Quellobjekt zur Haltung des Quellpfades und der dazugehörigen Filter.
  *
  * @author Andreas Fleig
  */
@@ -49,7 +49,7 @@ public class Source implements Serializable {
 	 */
 	public Source(String path) {
 		this.path = path;
-		filterOfSource = new ArrayList<Filter>();
+		filterOfSource = new ArrayList<>();
 	}
 
 	/**

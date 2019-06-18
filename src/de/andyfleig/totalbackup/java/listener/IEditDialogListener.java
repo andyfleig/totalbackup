@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ import data.BackupTask;
 
 public interface IEditDialogListener {
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Existiert kein Backup mit dem angegebenen Namen so wird null
 	 * zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
@@ -56,7 +56,7 @@ public interface IEditDialogListener {
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Seriallisiert die Programm-Einstellungen (Backup-Taks)
+	 * Serialisiert die Programm-Einstellungen (Backup-Task)
 	 */
 	public void saveProperties();
 

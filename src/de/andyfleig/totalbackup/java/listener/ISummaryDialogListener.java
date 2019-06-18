@@ -25,18 +25,6 @@ import data.BackupTask;
 public interface ISummaryDialogListener {
 
 	/**
-	 * Startet den Backup-Vorgang.
-	 */
-	public void startBackup();
-
-	/**
-	 * Gibt den Namen des Backup-Tasks zurück.
-	 *
-	 * @return Name des Backup-Tasks
-	 */
-	public String getTaskName();
-
-	/**
 	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines
 	 * Backup-Vorgangs nach der Übersicht)
 	 *

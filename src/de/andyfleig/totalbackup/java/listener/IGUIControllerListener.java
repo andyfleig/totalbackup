@@ -56,11 +56,11 @@ public interface IGUIControllerListener {
 	public BackupTask getBackupTaskWithName(String taskName);
 
 	/**
-	 * Löscht aus der Liste der BackupTasks den Task mit dem Namen taskName. Gibt bei erfolg 1 zurück, sonst 0;
+	 * Deletes the BackupTask with the given taskName from the list of BackupTasks (if any).
 	 *
-	 * @param taskName Name des gesuchten BackupTasks
+	 * @param taskName name of the BackupTask to delete
 	 */
-	public int deleteBackupTaskWithName(String taskName);
+	public void deleteBackupTaskWithName(String taskName);
 
 	/**
 	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)

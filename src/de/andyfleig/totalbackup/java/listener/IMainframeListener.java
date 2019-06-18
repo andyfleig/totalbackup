@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ public interface IMainframeListener {
 	public ArrayList<BackupTask> getBackupTasks();
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Existiert kein Backup mit dem angegebenen Namen so wird null
 	 * zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
@@ -83,14 +83,14 @@ public interface IMainframeListener {
 	/**
 	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
 	 *
-	 * @param task entsprechernder BackupTask
+	 * @param task entsprechender BackupTask
 	 */
 	public void deleteEmptyBackupFolders(String path, BackupTask task);
 
 	/**
 	 * Gibt eine Meldung aus, dass das laufende Backup (in der Zusammenfassung) abgebrochen wurde.
 	 *
-	 * @param task entpsrechender BackupTask
+	 * @param task entsprechender BackupTask
 	 */
 	public void outprintBackupCanceled(BackupTask task);
 
@@ -100,7 +100,7 @@ public interface IMainframeListener {
 	 *
 	 * @param s        auszugebender String
 	 * @param error    legt fest ob es sich um eine Fehlermeldung handelt oder nicht
-	 * @param taskName Name des entsprechenen Tasks
+	 * @param taskName Name des entsprechenden Tasks
 	 */
 	public void printOut(String s, boolean error, String taskName);
 

@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -19,9 +19,6 @@
  * along with TotalBackup.  If not, see <http://www.gnu.org/licenses/>.
  */
 package main;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import data.BackupInfos;
 import data.BackupTask;
@@ -44,10 +41,8 @@ public interface Backupable {
 	 * Führt das Backup aus.
 	 *
 	 * @param task auszuführender Backup-Tasks
-	 * @throws FileNotFoundException
-	 * @throws IOException
 	 */
-	public void runBackup(BackupTask task) throws FileNotFoundException, IOException;
+	public void runBackup(BackupTask task);
 
 	/**
 	 * Gibt die BackupInfos zu diesem Backup zurück.

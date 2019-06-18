@@ -9,7 +9,7 @@
    <children>
       <HBox>
          <children>
-            <RadioButton fx:id="rb_exclutionFilter" mnemonicParsing="false" selected="true" text="Ausschluss-Filter">
+            <RadioButton fx:id="rb_exclusionFilter" mnemonicParsing="false" selected="true" text="Ausschluss-Filter">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>

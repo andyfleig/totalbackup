@@ -26,12 +26,9 @@ import gui.FxMainframe;
 import gui.GuiController;
 import gui.NextExecutionChooser;
 import javafx.application.Platform;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import listener.IBackupListener;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -76,7 +73,7 @@ public class Controller {
 	/**
 	 * Liste aller erstellten Backup-Tasks.
 	 */
-	private ArrayList<BackupTask> backupTasks = new ArrayList<BackupTask>();
+	private ArrayList<BackupTask> backupTasks = new ArrayList<>();
 	/**
 	 * Aktuelle IBackupListener-Instanz.
 	 */
@@ -84,7 +81,7 @@ public class Controller {
 	/**
 	 * Alle laufenden Backup-Taks
 	 */
-	private ArrayList<String> runningBackupTasks = new ArrayList<String>();
+	private ArrayList<String> runningBackupTasks = new ArrayList<>();
 	/**
 	 * Timer für die AutoBackup-Funktion.
 	 */
@@ -147,14 +144,12 @@ public class Controller {
 			}
 
 			@Override
-			public int deleteBackupTaskWithName(String taskName) {
-				for (int i = 0; i < backupTasks.size(); i++) {
-					if (backupTasks.get(i).getTaskName().equals(taskName)) {
-						Controller.this.removeBackupTask(backupTasks.get(i));
-						return 1;
+			public void deleteBackupTaskWithName(String taskName) {
+				for (BackupTask backupTask : backupTasks) {
+					if (backupTask.getTaskName().equals(taskName)) {
+						Controller.this.removeBackupTask(backupTask);
 					}
 				}
-				return 0;
 			}
 
 			@Override
@@ -169,13 +164,10 @@ public class Controller {
 		}, fxMainframe);
 	}
 
-	public void startController(String[] args) {
-	}
-
 	/**
-	 * Startet und initialisiert den Controller. ToDo: Rename
+	 * Starts and initializes the Controller.
 	 */
-	public void startController2(String[] args) {
+	public void startController(String[] args) {
 		this.arguments = args;
 		// Dafür sorgen dass nur eine Instanz des Programms laufen kann:
 		try {
@@ -186,240 +178,92 @@ public class Controller {
 			System.exit(1);
 		}
 
-		backupThreads = new ArrayList<BackupThreadContainer>();
+		backupThreads = new ArrayList<>();
 
-		try {
-			java.awt.EventQueue.invokeAndWait(new Runnable() {
-				public void run() {
+		// Listener anlegen:
+		backupListener = new IBackupListener() {
 
-					//GuiController guiController = new GuiController();
+			@Override
+			public void printOut(final String s, final boolean error, final String taskName) {
+				SwingUtilities.invokeLater(new Runnable() {
 
-					/*
-					mainframe = new Mainframe(new IMainframeListener() {
+					@Override
+					public void run() {
+						Controller.this.printOut(s, error, taskName);
+					}
 
-						@Override
-						public void startPreparation(BackupTask task) {
-							Controller.this.startPreparation(task);
-						}
-
-						@Override
-						public void startBackupTask(BackupTask task, Backupable backup) {
-							Controller.this.startBackup(task, backup);
-
-						}
-
-						@Override
-						public void removeBackupTask(BackupTask task) {
-							Controller.this.removeBackupTask(task);
-						}
-
-						@Override
-						public ArrayList<BackupTask> getBackupTasks() {
-							return backupTasks;
-						}
-
-						@Override
-						public BackupTask getBackupTaskWithName(String name) {
-							return Controller.this.getBackupTaskWithName(name);
-						}
-
-						@Override
-						public ArrayList<String> getBackupTaskNames() {
-							return Controller.this.getBackupTaskNames();
-						}
-
-						@Override
-						public void addBackupTask(BackupTask task) {
-							Controller.this.addBackupTask(task);
-						}
-
-						@Override
-						public void deleteEmptyBackupFolders(String path, BackupTask task) {
-							Controller.this.deleteEmptyBackupFolders(path, task);
-						}
-
-						@Override
-						public void outprintBackupCanceled(BackupTask task) {
-							String outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupCanceled");
-							backupListener.printOut(outprint, false, task.getTaskName());
-							backupListener.log(outprint, task);
-						}
-
-						@Override
-						public void printOut(String s, boolean error, String taskName) {
-							Controller.this.printOut(s, error, taskName);
-						}
-
-						@Override
-						public void log(String event, BackupTask task) {
-							Controller.this.log(event, task);
-						}
-
-						@Override
-						public void taskStarted(String taskName) {
-							Controller.this.taskStarted(taskName);
-						}
-
-						@Override
-						public void taskFinished(BackupTask task) {
-							Controller.this.taskFinished(task, true);
-						}
-
-						@Override
-						public void scheduleBackupTask(BackupTask task) {
-							Controller.this.scheduleBackupTask(task);
-						}
-
-						@Override
-						public void removeBackupTaskScheduling(BackupTask task) {
-							Controller.this.removeBackupTaskScheduling(task);
-						}
-
-						@Override
-						public ArrayList<String> getRunningBackupTasks() {
-							return runningBackupTasks;
-						}
-
-						@Override
-						public void scheduleBackupTaskNow(BackupTask task) {
-							Controller.this.scheduleBackupTaskNow(task);
-						}
-
-						@Override
-						public void removeBackupTaskFromRunningTasks(BackupTask task, boolean schedule) {
-							Controller.this.taskFinished(task, schedule);
-						}
-
-						@Override
-						public void scheduleBackupTaskAt(BackupTask task, LocalDateTime time) {
-							task.resetLocalDateTimeOfNextExecution();
-							Controller.this.scheduleBackupTaskAt(task, time);
-						}
-
-						@Override
-						public void rescheduleBackupTask(BackupTask task) {
-							LocalDateTime nextExecution = task.getLocalDateTimeOfNextBackup();
-							task.resetLocalDateTimeOfNextExecution();
-							Controller.this.scheduleBackupTaskStartingAt(task, nextExecution.plusSeconds(1));
-						}
-
-						@Override
-						public boolean argsContains(String s) {
-							return Controller.this.argsContains(s);
-						}
-
-						@Override
-						public boolean isBackupTaskRunning(String s) {
-							return Controller.this.isBackupTaskRunning(s);
-						}
-
-						@Override
-						public void saveProperties() {
-							savePropertiesGson();
-						}
-
-						@Override
-						public void cancelBackup(BackupTask task, boolean reschedule) {
-							Controller.this.cancelBackup(task, reschedule);
-						}
-
-						@Override
-						public void quitTotalBackup() {
-							quit();
-						}
-					});*/
-				}
-			});
-
-			// Listener anlegen:
-			backupListener = new IBackupListener() {
-
-				@Override
-				public void printOut(final String s, final boolean error, final String taskName) {
-					SwingUtilities.invokeLater(new Runnable() {
-
-						@Override
-						public void run() {
-							Controller.this.printOut(s, error, taskName);
-						}
-
-					});
-				}
-
-				@Override
-				public void setStatus(final String status, BackupTask task) {
-					SwingUtilities.invokeLater(new Runnable() {
-
-						@Override
-						public void run() {
-							// Avoid throwing IllegalStateException by running from a non-JavaFX thread
-							Platform.runLater(new Runnable() {
-								@Override
-								public void run() {
-									guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
-								}
-							});
-						}
-					});
-				}
-
-				@Override
-				public void log(String event, BackupTask task) {
-					Controller.this.log(event, task);
-
-				}
-
-				@Override
-				public void taskStarted(String taskName) {
-					Controller.this.taskStarted(taskName);
-
-				}
-
-				@Override
-				public void taskFinished(BackupTask task) {
-					Controller.this.taskFinished(task, true);
-
-				}
-
-				@Override
-				public void deleteEmptyBackupFolders(String path, BackupTask task) {
-					Controller.this.deleteEmptyBackupFolders(task);
-
-				}
-
-			};
-
-			loadSerializationGson();
-			// Liste aller versäumten BackupTasks:
-			ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
-			// Prüfen ob Backups versäumt wurden:
-			for (BackupTask task : backupTasks) {
-				if (task.getLocalDateTimeOfNextBackup() != null &&
-						task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
-					// Dieses Backup wurde versäumt
-					missedBackupTaks.add(task);
-				}
+				});
 			}
-			// Alle Tasks werden neu geschedulet:
-			scheduleBackupTasks();
 
-			// Versäumte Backups nachholen:
-			for (BackupTask task : missedBackupTaks) {
-				// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
-				// von profitableTimeUntilNextExecution des Tasks):
-				if ((task.getLocalDateTimeOfNextBackup().minusMinutes(
-						task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
-					String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " " +
-							task.getTaskName() + " " +
-							ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
-					showTrayPopupMessage(msg);
-					scheduleBackupTaskNow(task);
-				}
+			@Override
+			public void setStatus(final String status, BackupTask task) {
+				SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+						// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+						Platform.runLater(new Runnable() {
+							@Override
+							public void run() {
+								guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
+							}
+						});
+					}
+				});
 			}
-		} catch (InterruptedException e) {
-			System.err.println("Error: InterruptedException while starting Controller");
-		} catch (InvocationTargetException ex) {
-			System.err.println("Error: InvocationTargetException while starting Controller");
+
+			@Override
+			public void log(String event, BackupTask task) {
+				Controller.this.log(event, task);
+
+			}
+
+			@Override
+			public void taskStarted(String taskName) {
+				Controller.this.taskStarted(taskName);
+
+			}
+
+			@Override
+			public void taskFinished(BackupTask task) {
+				Controller.this.taskFinished(task, true);
+
+			}
+
+			@Override
+			public void deleteEmptyBackupFolders(String path, BackupTask task) {
+				Controller.this.deleteEmptyBackupFolders(task);
+
+			}
+
+		};
+
+		loadSerializationGson();
+		// Liste aller versäumten BackupTasks:
+		ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
+		// Prüfen ob Backups versäumt wurden:
+		for (BackupTask task : backupTasks) {
+			if (task.getLocalDateTimeOfNextBackup() != null &&
+					task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
+				// Dieses Backup wurde versäumt
+				missedBackupTaks.add(task);
+			}
+		}
+		// Alle Tasks werden neu geschedulet:
+		scheduleBackupTasks();
+
+		// Versäumte Backups nachholen:
+		for (BackupTask task : missedBackupTaks) {
+			// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
+			// von profitableTimeUntilNextExecution des Tasks):
+			if ((task.getLocalDateTimeOfNextBackup().minusMinutes(
+					task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
+				String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " " +
+						task.getTaskName() + " " +
+						ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
+				showTrayPopupMessage(msg);
+				scheduleBackupTaskNow(task);
+			}
 		}
 		guiController.initialize();
 	}
@@ -486,22 +330,25 @@ public class Controller {
 			// sich um die erste Ausführung handelt:
 			File[] files = new File(task.getDestinationPath()).listFiles();
 			boolean backupSetFound = false;
-			for (File file : files) {
-				if (file.isDirectory()) {
-					// Namen des Ordners "zerlegen":
-					StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
-					if (tokenizer.countTokens() != 2) {
-						continue;
+			if (files.length > 0) {
+				for (File file : files) {
+					if (file.isDirectory()) {
+						// Namen des Ordners "zerlegen":
+						StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
+						// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+						if (tokenizer.countTokens() != 2) {
+							continue;
+						}
+						// Erster Token muss dem TaskName entsprechen:
+						if (!tokenizer.nextToken().equals(task.getTaskName())) {
+							continue;
+						}
+						backupSetFound = true;
+						break;
 					}
-					// Erster Token muss dem TaskName entsprechen:
-					if (!tokenizer.nextToken().equals(task.getTaskName())) {
-						continue;
-					}
-					backupSetFound = true;
-					break;
 				}
 			}
+
 			if (backupSetFound) {
 				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
 				printOut(output, false, task.getTaskName());
@@ -526,7 +373,7 @@ public class Controller {
 				// Workaround to force JavaFX to show PreparingDialog
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-
+				System.out.println("Warning: Sleeping thread was interrupted.");
 			}
 		}
 
@@ -678,52 +525,6 @@ public class Controller {
 	}
 
 	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
-	 *
-	 * @deprecated
-	 */
-	private void saveProperties() {
-		File properties = new File("./properties.ser");
-		if (!properties.exists()) {
-			try {
-				properties.createNewFile();
-			} catch (IOException ex) {
-				System.err.println("Error: IOException in Mainframe in saveProperties while creating properties file");
-			}
-		}
-
-		OutputStream fos = null;
-		ObjectOutputStream o = null;
-
-		try {
-			fos = new FileOutputStream(properties);
-			o = new ObjectOutputStream(fos);
-
-			o.writeObject(backupTasks);
-		} catch (IOException ex) {
-			System.out.println("Error: IOException in Mainframe in saveProperties while creating FileOutputStream, " +
-					"ObjectOutputStream and writin out Object");
-		} finally {
-			if (o != null) {
-				try {
-					o.close();
-				} catch (IOException ex) {
-					System.err.println(
-							"Error: IOException in Mainframe in saveProperties while closing ObjectOutputStream");
-				}
-			}
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException ex) {
-					System.err.println(
-							"Error: IOException in Mainframe in saveProperties while closing FileOutputStream");
-				}
-			}
-		}
-	}
-
-	/**
 	 * Bricht den gegebenen BackupTask ab und reschedult den BackupTask wenn rescheduling true ist.
 	 *
 	 * @param task       abzubrechender BackupTask
@@ -780,7 +581,7 @@ public class Controller {
 	 * @return Liste möglicher "richiger" Zielpfade
 	 */
 	public ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
-		ArrayList<String> foundDestPaths = new ArrayList<String>();
+		ArrayList<String> foundDestPaths = new ArrayList<>();
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.contains("win")) {
 			String destSuffix = wrongDestPath.substring(3);
@@ -801,9 +602,15 @@ public class Controller {
 	}
 
 	private boolean checkForIdentifier(String taskName, String dest) {
-		for (File file : (new File(dest)).listFiles()) {
-			if (file.getName().equals(taskName + ".id")) {
-				return true;
+		File destFile = new File(dest);
+		if (destFile.exists()) {
+			File[] files = destFile.listFiles();
+			if (files.length > 0) {
+				for (File file : (new File(dest)).listFiles()) {
+					if (file.getName().equals(taskName + ".id")) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;
@@ -821,14 +628,12 @@ public class Controller {
 			task.setRealDestinationPath(null);
 		}
 
-		if (!task.isPrepered()) {
+		if (!task.isPrepared()) {
 			return;
 		}
 
 		try {
 			backup.runBackup(task);
-		} catch (IOException e) {
-			System.err.println("Fehler beim einlesen der Datei(en)");
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
 			printOut(output, false, task.getTaskName());
@@ -845,7 +650,7 @@ public class Controller {
 			try {
 				while (this.calcNumberOfBackups(task) > task.getNumberOfBackupsToKeep()) {
 					File toDelete = new File(task.getDestinationPath() + File.separator + findOldestBackup(
-							new ArrayList<File>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
+							new ArrayList<>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
 							task));
 
 					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " " +
@@ -878,7 +683,7 @@ public class Controller {
 	 * @return Liste der Namen aller Backup-Tasks
 	 */
 	public ArrayList<String> getBackupTaskNames() {
-		ArrayList<String> backupTaskNames = new ArrayList<String>();
+		ArrayList<String> backupTaskNames = new ArrayList<>();
 		for (BackupTask backupTask : backupTasks) {
 			backupTaskNames.add(backupTask.getTaskName());
 		}
@@ -915,7 +720,7 @@ public class Controller {
 			return;
 		}
 		File log = new File(task.getDestinationPath() + File.separator + task.getTaskName() + ".log");
-		// Kontrollieren ob bereits eine log Datei exisitert:
+		// Kontrollieren ob bereits eine log Datei existiert:
 		if (!log.exists()) {
 			try {
 				log.createNewFile();
@@ -938,7 +743,7 @@ public class Controller {
 	}
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Exisitert kein Backup mit dem angegebenen Namen so wird null
+	 * Liefert den Backup-Task mit gegebenem Namen zurück. Existiert kein Backup mit dem angegebenen Namen so wird null
 	 * zurückgeliefert.
 	 *
 	 * @param name Name des "gesuchten" Backup-Tasks
@@ -993,29 +798,32 @@ public class Controller {
 	 */
 	private ArrayList<File> findBackupSets(File dir, BackupTask task) {
 		File[] files = dir.listFiles();
-		ArrayList<File> foundBackupsets = new ArrayList<File>();
-		for (File file : files) {
-			// Namen des Ordners "zerlegen":
-			StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-			// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
-			if (tokenizer.countTokens() != 2) {
-				continue;
-			}
-			// Erster Token muss dem TaskName entsprechen:
-			if (!tokenizer.nextToken().equals(task.getTaskName())) {
-				continue;
-			}
-			// Zweiter Token muss analysiert werden:
-			String backupDate = tokenizer.nextToken();
+		ArrayList<File> foundBackupsets = new ArrayList<>();
+		if (files.length > 0) {
+			for (File file : files) {
+				// Namen des Ordners "zerlegen":
+				StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
+				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				if (tokenizer.countTokens() != 2) {
+					continue;
+				}
+				// Erster Token muss dem TaskName entsprechen:
+				if (!tokenizer.nextToken().equals(task.getTaskName())) {
+					continue;
+				}
+				// Zweiter Token muss analysiert werden:
+				String backupDate = tokenizer.nextToken();
 
-			try {
-				SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
-				sdfToDate.parse(backupDate);
-				foundBackupsets.add(file);
-			} catch (ParseException e) {
-				// Offenbar kein gültiges Datum
+				try {
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
+					sdfToDate.parse(backupDate);
+					foundBackupsets.add(file);
+				} catch (ParseException e) {
+					// Offenbar kein gültiges Datum
+				}
 			}
 		}
+
 		return foundBackupsets;
 	}
 
@@ -1083,11 +891,11 @@ public class Controller {
 			return;
 		}
 		// Buckets anlegen (Anzahl = Menge der Regeln):
-		ArrayList<File> bucket1 = new ArrayList<File>();
-		ArrayList<File> bucket2 = new ArrayList<File>();
-		ArrayList<File> bucket3 = new ArrayList<File>();
-		ArrayList<File> bucket4 = new ArrayList<File>();
-		ArrayList<File> bucket5 = new ArrayList<File>();
+		ArrayList<File> bucket1 = new ArrayList<>();
+		ArrayList<File> bucket2 = new ArrayList<>();
+		ArrayList<File> bucket3 = new ArrayList<>();
+		ArrayList<File> bucket4 = new ArrayList<>();
+		ArrayList<File> bucket5 = new ArrayList<>();
 
 		// Dates für die Bucket-Grenzen erstellen:
 		LocalDateTime[] boundaries = new LocalDateTime[task.getNumberOfExtendedCleanRules() - 1];
@@ -1512,7 +1320,7 @@ public class Controller {
 	 *
 	 * @param interval     gegebenes Intervall
 	 * @param intervalUnit Einheit des Intervals (min, h, d, m)
-	 * @param startAt      Zeitpunkt von dem aus gerchnet werden soll
+	 * @param startAt      Zeitpunkt von dem aus gerechnet werden soll
 	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
 	 */
 	private LocalDateTime calcTimeFromIntervalStartingFrom(int interval, String intervalUnit, LocalDateTime startAt) {
@@ -1538,22 +1346,25 @@ public class Controller {
 		String path = task.getDestinationPath();
 		File currentDest = new File(path);
 		File[] backupFolders = currentDest.listFiles();
-		for (File backupFolder : backupFolders) {
-			if (!backupFolder.isDirectory()) {
-				continue;
-			}
-			boolean deleteThisDir = true;
-			File[] filesInBackupFolder = backupFolder.listFiles();
-			for (File aFilesInBackupFolder : filesInBackupFolder) {
-				if (aFilesInBackupFolder.isDirectory() && aFilesInBackupFolder.listFiles().length != 0) {
-					deleteThisDir = false;
-					break;
+		if (backupFolders.length > 0) {
+			for (File backupFolder : backupFolders) {
+				if (!backupFolder.isDirectory()) {
+					continue;
+				}
+				boolean deleteThisDir = true;
+				File[] filesInBackupFolder = backupFolder.listFiles();
+				for (File aFilesInBackupFolder : filesInBackupFolder) {
+					if (aFilesInBackupFolder.isDirectory() && aFilesInBackupFolder.listFiles().length != 0) {
+						deleteThisDir = false;
+						break;
+					}
+				}
+				if (deleteThisDir) {
+					BackupHelper.deleteDirectory(backupFolder);
 				}
 			}
-			if (deleteThisDir) {
-				BackupHelper.deleteDirectory(backupFolder);
-			}
 		}
+
 		String outprint = ResourceBundle.getBundle("messages").getString("Messages.deletedBackupFolder");
 		backupListener.printOut(outprint, false, task.getTaskName());
 		backupListener.log(outprint, task);
@@ -1588,19 +1399,19 @@ public class Controller {
 	}
 
 	/**
-	 * Prüft ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird.
+	 * Returns whether the BackupTask with the given name is currently running.
 	 *
-	 * @param s Name des BackupTasks
-	 * @return ob ein BackupTask mit dem gegebenen Namen gerade ausgeführt wird
+	 * @param taskName name of the BackupTask
+	 * @return whether the corresponding task is running (true) or not (false)
 	 */
-	public boolean isBackupTaskRunning(String s) {
-		return runningBackupTasks.contains(s);
+	public boolean backupTaskIsRunning(String taskName) {
+		return runningBackupTasks.contains(taskName);
 	}
 
 	/**
-	 * Reschedult den gegebenen BackupTask.
+	 * Reschedules the given BackupTask.
 	 *
-	 * @param task zu reschedulender BackupTask
+	 * @param task BackupTask to be rescheduled
 	 */
 	public void rescheduleBackupTask(BackupTask task) {
 		LocalDateTime nextExecution = task.getLocalDateTimeOfNextBackup();
@@ -1609,9 +1420,9 @@ public class Controller {
 	}
 
 	/**
-	 * Bricht (ohne Nachfrage!) alle laufenden Backups ab.
+	 * Cancels all running tasks without further confirmation.
 	 */
-	private void cancelAllRunningTasks() {
+	private void cancelAllRunningTasksImmediately() {
 		for (String taskName : runningBackupTasks) {
 			cancelBackup(getBackupTaskWithName(taskName), true);
 		}
@@ -1626,7 +1437,7 @@ public class Controller {
 				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			savePropertiesGson();
-			cancelAllRunningTasks();
+			cancelAllRunningTasksImmediately();
 			if (guiController.isQTTray()) {
 				guiController.sendToQtTrayOverSocket(null, true);
 			}

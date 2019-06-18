@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@
 package main;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -119,7 +118,7 @@ public class HardlinkBackup implements Backupable {
 		this.taskName = nameOfTask;
 		this.sources = sources;
 		this.destinationPath = destination;
-		elementQueue = new LinkedList<BackupElement>();
+		elementQueue = new LinkedList<>();
 	}
 
 	@Override
@@ -139,58 +138,61 @@ public class HardlinkBackup implements Backupable {
 
 		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
 		// aktuellsten Backup-Satz finden:
-		for (File destFolder1 : destFolders) {
-			boolean indexExists = false;
-			if (destFolder1.isDirectory()) {
-				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(destFolder1.getName(), "_");
-				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
-				if (tokenizer.countTokens() != 2) {
-					continue;
-				}
-				// Erster Token muss dem TaskName entsprechen:
-				if (!tokenizer.nextToken().equals(taskName)) {
-					continue;
-				}
-				// Es handelt sich wohl um einen Backup-Satz
-				File[] destFolder = destFolder1.listFiles();
-				for (File aDestFolder : destFolder) {
-					if (!aDestFolder.isDirectory() && aDestFolder.getName().contains(taskName) &&
-							aDestFolder.getName().contains(".ser")) {
-						// Ab hier wird davon ausgegangen, dass ein index-file
-						// exisitert.
-						indexExists = true;
-						break;
+		if (destFolders.length > 0) {
+			for (File destFolder1 : destFolders) {
+				boolean indexExists = false;
+				if (destFolder1.isDirectory()) {
+					// Namen des Ordners "zerlegen":
+					StringTokenizer tokenizer = new StringTokenizer(destFolder1.getName(), "_");
+					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+					if (tokenizer.countTokens() != 2) {
+						continue;
+					}
+					// Erster Token muss dem TaskName entsprechen:
+					if (!tokenizer.nextToken().equals(taskName)) {
+						continue;
+					}
+					// Es handelt sich wohl um einen Backup-Satz
+					File[] destFolder = destFolder1.listFiles();
+					for (File aDestFolder : destFolder) {
+						if (!aDestFolder.isDirectory() && aDestFolder.getName().contains(taskName) &&
+								aDestFolder.getName().contains(".ser")) {
+							// Ab hier wird davon ausgegangen, dass ein index-file
+							// exisitert.
+							indexExists = true;
+							break;
+						}
 					}
 				}
-			}
-			// Falls kein index gefunden wurde, wird ein index angelegt:
-			if (!indexExists) {
-				String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexIndexing");
-				listener.printOut(outprint, false, task.getTaskName());
-				listener.log(outprint, task);
+				// Falls kein index gefunden wurde, wird ein index angelegt:
+				if (!indexExists) {
+					String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexIndexing");
+					listener.printOut(outprint, false, task.getTaskName());
+					listener.log(outprint, task);
 
-				createIndex(destFolder1, task);
+					createIndex(destFolder1, task);
 
-				// Indizierung wurde abgebrochen:
-				if (directoryStructure == null) {
-					throw new BackupCanceledException();
+					// Indizierung wurde abgebrochen:
+					if (directoryStructure == null) {
+						throw new BackupCanceledException();
+					}
+
+					outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
+					listener.printOut(outprint, false, task.getTaskName());
+					listener.log(outprint, task);
+
+					outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
+					listener.printOut(outprint, false, task.getTaskName());
+					listener.log(outprint, task);
+
+					serializeIndex(taskName, destFolder1.getAbsolutePath());
+					outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
+					listener.printOut(outprint, false, task.getTaskName());
+					listener.log(outprint, task);
 				}
-
-				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
-				listener.printOut(outprint, false, task.getTaskName());
-				listener.log(outprint, task);
-
-				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
-				listener.printOut(outprint, false, task.getTaskName());
-				listener.log(outprint, task);
-
-				serializeIndex(taskName, destFolder1.getAbsolutePath());
-				outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
-				listener.printOut(outprint, false, task.getTaskName());
-				listener.log(outprint, task);
 			}
 		}
+
 
 		// Herausfinden welcher Backup-Satz der Neuste ist und diesen laden:
 		// Neusten Backup-Ordner finden:
@@ -338,7 +340,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	@Override
-	public void runBackup(BackupTask task) throws FileNotFoundException {
+	public void runBackup(BackupTask task) {
 		// Test ob die Vorbereitung durchgeführt wurden:
 		if (!preparationDone) {
 			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
@@ -376,7 +378,7 @@ public class HardlinkBackup implements Backupable {
 				}
 			}
 
-			// Index des Backup-Satzen erzeugen und serialisiert:
+			// Index des Backup-Satzes erzeugen und serialisiert:
 			createIndex(backupDir, task);
 
 			// Indizierung wurde abgebrochen:
@@ -516,8 +518,7 @@ public class HardlinkBackup implements Backupable {
 								// MD5 heißt kopieren:
 								String md5OfSourceFile = BackupHelper.calcMD5(file);
 								String md5OfFileToLinkFrom = BackupHelper.calcMD5(fileToLinkFrom);
-								if (md5OfSourceFile != null && md5OfFileToLinkFrom != null &&
-										md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
+								if (md5OfSourceFile != null && md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
 									// Datei verlinken:
 									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
 											newFile.getAbsolutePath(), false, true));
@@ -534,7 +535,7 @@ public class HardlinkBackup implements Backupable {
 							}
 
 						} else {
-							// File exisitiert im Backup-Satz nicht (aber im
+							// File existiert im Backup-Satz nicht (aber im
 							// Index)
 							String outprint = ResourceBundle.getBundle("messages").getString("Messages.BadIndex");
 							listener.printOut(outprint, false, task.getTaskName());
@@ -650,7 +651,7 @@ public class HardlinkBackup implements Backupable {
 		// Verzeichnisstruktur speichern:
 		// File anlegen:
 		File index = new File(backupSetPath + File.separator + "index_" + taskName + ".ser");
-		// Prüfen ob bereits ein Index existert:
+		// Prüfen ob bereits ein Index existiert:
 		if (!index.exists()) {
 			try {
 				index.createNewFile();
@@ -762,16 +763,18 @@ public class HardlinkBackup implements Backupable {
 		} else {
 			sFile = new StructureFile(rootPath, nameOfBackupDir);
 		}
-
-		for (File file : files) {
-			StructureFile newFile;
-			if (file.isDirectory()) {
-				newFile = recCalcDirStruct(rootPath, file.getAbsolutePath());
-			} else {
-				newFile = new StructureFile(rootPath, file.getAbsolutePath().substring(rootPath.length()));
+		if (files.length > 0) {
+			for (File file : files) {
+				StructureFile newFile;
+				if (file.isDirectory()) {
+					newFile = recCalcDirStruct(rootPath, file.getAbsolutePath());
+				} else {
+					newFile = new StructureFile(rootPath, file.getAbsolutePath().substring(rootPath.length()));
+				}
+				sFile.addFile(newFile);
 			}
-			sFile.addFile(newFile);
 		}
+
 		return sFile;
 	}
 
@@ -788,35 +791,37 @@ public class HardlinkBackup implements Backupable {
 		Date newestDate = null;
 		String newestBackupPath = null;
 		Date foundDate;
-		for (File directory : directories) {
-			if (directory.isDirectory()) {
-				// Namen des Ordners "zerlegen":
-				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
-				if (tokenizer.countTokens() != 2) {
-					continue;
-				}
-				// Erster Token muss dem TaskName entsprechen:
-				if (!tokenizer.nextToken().equals(taskName)) {
-					continue;
-				}
-				// Zweiter Token muss analysiert werden:
-				String backupDate = tokenizer.nextToken();
+		if (directories.length > 0) {
+			for (File directory : directories) {
+				if (directory.isDirectory()) {
+					// Namen des Ordners "zerlegen":
+					StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
+					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+					if (tokenizer.countTokens() != 2) {
+						continue;
+					}
+					// Erster Token muss dem TaskName entsprechen:
+					if (!tokenizer.nextToken().equals(taskName)) {
+						continue;
+					}
+					// Zweiter Token muss analysiert werden:
+					String backupDate = tokenizer.nextToken();
 
-				try {
-					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
-					foundDate = sdfToDate.parse(backupDate);
-				} catch (ParseException e) {
-					// Offenbar kein gültiges Datum
-					continue;
-				}
-				if (newestDate == null) {
-					newestDate = foundDate;
-					newestBackupPath = directory.getName();
-				} else {
-					if (newestDate.compareTo(foundDate) < 0) {
+					try {
+						SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
+						foundDate = sdfToDate.parse(backupDate);
+					} catch (ParseException e) {
+						// Offenbar kein gültiges Datum
+						continue;
+					}
+					if (newestDate == null) {
 						newestDate = foundDate;
 						newestBackupPath = directory.getName();
+					} else {
+						if (newestDate.compareTo(foundDate) < 0) {
+							newestDate = foundDate;
+							newestBackupPath = directory.getName();
+						}
 					}
 				}
 			}

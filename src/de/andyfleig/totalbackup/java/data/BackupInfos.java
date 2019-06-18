@@ -21,7 +21,7 @@
 package data;
 
 /**
- * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B. Größe der zu kopierenden/ verlinkgenden
+ * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B. Größe der zu kopierenden/ verlinkenden
  * Dateien oder Anzahl der zu kopierenden/ verlinkenden Dateien oder Verzeichnissen).
  *
  * @author Andreas Fleig
@@ -138,16 +138,5 @@ public class BackupInfos {
 	 */
 	public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
 		sizeToLink += sizeToIncreaseBy;
-	}
-
-	/**
-	 * Löscht alle Backup-Infos.
-	 */
-	public void clear() {
-		numberOfDirectories = 0;
-		numberOfFilesToCopy = 0;
-		numberOfFilesToLink = 0;
-		sizeToCopy = 0;
-		sizeToLink = 0;
 	}
 }

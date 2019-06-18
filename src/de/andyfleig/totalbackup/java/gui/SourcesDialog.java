@@ -125,14 +125,13 @@ public class SourcesDialog implements Initializable {
 	public void okAction() {
 		// check source-path validity
 		File file = new File(tf_sourcePath.getText());
-		if (file == null || !file.exists()) {
+		if (!file.exists()) {
 			// show error message
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Error");
 			alert.setHeaderText("Invalid source path.");
 			alert.setContentText("The selected source is not a valid path.");
-
-			Optional<ButtonType> result = alert.showAndWait();
+			alert.showAndWait();
 			return;
 		}
 		// check whether the selected source is already defined as source
@@ -181,12 +180,17 @@ public class SourcesDialog implements Initializable {
 					}
 					return false;
 				}
+
+				@Override
+				public String getSourcePath() {
+					return tf_sourcePath.getText();
+				}
 			});
 
 			filterDialogStage.setScene(scene);
 			filterDialog.setStage(filterDialogStage);
 
-			if (initPath != "") {
+			if (initPath.equals("")) {
 				filterDialog.setInitPath(initPath);
 			}
 			filterDialog.setInitMode(initMode);

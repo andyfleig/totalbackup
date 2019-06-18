@@ -3,7 +3,6 @@ package gui;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 
 /**
  * ToDo
@@ -18,8 +17,8 @@ public class BackupTaskListCell extends ListCell<MainframeCellContent> {
 
 	public BackupTaskListCell() {
 		gridPane.add(taskName, 0, 0);
-		gridPane.add(taskStatus, 0 ,1);
-		gridPane.add(taskNextExecution, 0 ,2);
+		gridPane.add(taskStatus, 0, 1);
+		gridPane.add(taskNextExecution, 0, 2);
 	}
 
 	@Override

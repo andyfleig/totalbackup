@@ -170,12 +170,12 @@ public final class BackupHelper {
 		}
 		if (path.exists()) {
 			File[] files = path.listFiles();
-			for (File file : files) {
-				if (file.isDirectory()) {
-					deleteDirectory(file);
-				} else {
-					//TODO: if raus?
-					if (!file.delete()) {
+			if (files.length > 0) {
+				for (File file : files) {
+					if (file.isDirectory()) {
+						deleteDirectory(file);
+					} else {
+						file.delete();
 					}
 				}
 			}
@@ -186,7 +186,7 @@ public final class BackupHelper {
 	/**
 	 * Berechnet den MD5 Hashwert der gegebenen Datei.
 	 *
-	 * @param f Datei von der der Hadhwert berechnet werden soll
+	 * @param f Datei von der der Hashwert berechnet werden soll
 	 * @return MD5-Hashwert der gegebenen Datei
 	 */
 	public static String calcMD5(File f) {

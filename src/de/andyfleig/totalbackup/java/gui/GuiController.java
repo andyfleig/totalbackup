@@ -1,7 +1,6 @@
 package gui;
 
 import data.BackupTask;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,9 +10,6 @@ import javafx.stage.StageStyle;
 import listener.IBackupTaskDialogListener;
 import listener.IFxMainframeListener;
 import listener.IGUIControllerListener;
-import listener.ISummaryDialogListener;
-import main.BackupCanceledException;
-import main.BackupHelper;
 import main.Backupable;
 
 import javax.swing.*;
@@ -170,7 +166,7 @@ public class GuiController {
 				guiControllerListener.taskFinished(task, schedule);
 			}
 		});
-		//ToDo: Wohin? (Konstruktor, initilazie oder wo anders?)
+		//ToDo: Wohin? (Konstruktor, initialize oder wo anders?)
 		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
 		image = Toolkit.getDefaultToolkit().getImage(url);
 	}
@@ -252,7 +248,7 @@ public class GuiController {
 	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die Nachricht maximal 999 Zeichen lang sein!
 	 *
 	 * @param msg               zu sendende Nachricht
-	 * @param terminationSignal wenn es sich bei der Nachricht um ein terminationSignal (true) und keine anzuzuegende
+	 * @param terminationSignal wenn es sich bei der Nachricht um ein terminationSignal (true) und keine anzuzeigende
 	 *                          Nachricht (false) handelt
 	 */
 	public void sendToQtTrayOverSocket(String msg, boolean terminationSignal) {
@@ -299,7 +295,7 @@ public class GuiController {
 			clientSocket = new Socket("127.0.0.1", 1235);
 			clientSocket.setReuseAddress(true);
 		} catch (IOException e) {
-			System.err.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while creating Socket and " +
+			System.err.println("Error: IOException in Mainframe in sendToQtTrayOverSocket while creating Socket and " +
 					"setReuseAddress");
 			return;
 		}
@@ -308,11 +304,11 @@ public class GuiController {
 		try {
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 		} catch (IOException e) {
-			System.err.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while creating PrintWriter");
+			System.err.println("Error: IOException in Mainframe in sendToQtTrayOverSocket while creating PrintWriter");
 			try {
 				clientSocket.close();
 			} catch (IOException ex) {
-				System.out.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while closing Socket");
+				System.out.println("Error: IOException in Mainframe in sendToQtTrayOverSocket while closing Socket");
 			}
 			return;
 		}
@@ -322,7 +318,7 @@ public class GuiController {
 			out.close();
 			clientSocket.close();
 		} catch (IOException e) {
-			System.err.println("Error: IOExcpetion in Mainframe in sendToQtTrayOverSocket while closing " +
+			System.err.println("Error: IOException in Mainframe in sendToQtTrayOverSocket while closing " +
 					"PrintWriter and Socket");
 		}
 	}
@@ -347,6 +343,7 @@ public class GuiController {
 				server = new ServerSocket(1234);
 			} catch (IOException e) {
 				System.err.println("Error: IOException in Mainframe in recvLoop while creating new ServerSocket");
+				return;
 			}
 
 			// 2. Verbinden:
@@ -373,7 +370,7 @@ public class GuiController {
 
 			} catch (IOException e) {
 				System.err.println("Error: IOException in Mainframe in recvLoop while creating DataInputStream and " +
-						"rading int");
+						"reading int");
 			}
 
 			// Socket schließen:

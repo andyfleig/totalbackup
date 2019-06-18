@@ -67,7 +67,7 @@
                                     <Insets right="1.0" />
                                  </HBox.margin>
                               </TextField>
-                              <Button mnemonicParsing="false" onAction="#addDestinationPath" text="Durchsuchen...">
+                              <Button mnemonicParsing="false" onAction="#addDestinationPathAction" text="Durchsuchen...">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>

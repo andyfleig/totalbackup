@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.*;
@@ -258,11 +257,11 @@ public class BackupTaskDialog {
 
 		try {
 			FileInputStream in_general = new FileInputStream(
-					"./src/de/andyfleig/totalbackup/resources/tab_general" + ".png");
+					"./src/de/andyfleig/totalbackup/resources/tab_general.png");
 			FileInputStream in_autorun = new FileInputStream(
-					"./src/de/andyfleig/totalbackup/resources" + "/tab_autorun.png");
+					"./src/de/andyfleig/totalbackup/resources/tab_autorun.png");
 			FileInputStream in_autoclean = new FileInputStream(
-					"./src/de/andyfleig/totalbackup/resources" + "/tab_autoclean.png");
+					"./src/de/andyfleig/totalbackup/resources/tab_autoclean.png");
 
 
 			Image image_general = new Image(in_general);
@@ -289,7 +288,7 @@ public class BackupTaskDialog {
 			tab_autorun.setGraphic(tp_autorun);
 			tab_autoclean.setGraphic(tp_autoclean);
 		} catch (IOException e) {
-			System.out.println(e);
+			System.err.println("IOException while accessing one of the tab-logos of the BackupTaskDialog.");
 		}
 
 
@@ -522,121 +521,121 @@ public class BackupTaskDialog {
 			if (initTask.getAutoBackupMode() == 1) {
 				//Wochentag:
 				rb_weekday.setSelected(true);
-				if (initTask.getBackupWeekdays()[0] == true) {
+				if (initTask.getBackupWeekdays()[0]) {
 					cb_monday.setSelected(true);
 				}
-				if (initTask.getBackupWeekdays()[1] == true) {
+				if (initTask.getBackupWeekdays()[1]) {
 					cb_tuesday.setSelected(true);
 				}
-				if (initTask.getBackupWeekdays()[2] == true) {
+				if (initTask.getBackupWeekdays()[2]) {
 					cb_wednesday.setSelected(true);
 				}
-				if (initTask.getBackupWeekdays()[3] == true) {
+				if (initTask.getBackupWeekdays()[3]) {
 					cb_thursday.setSelected(true);
 				}
-				if (initTask.getBackupWeekdays()[4] == true) {
+				if (initTask.getBackupWeekdays()[4]) {
 					cb_friday.setSelected(true);
 				}
-				if (initTask.getBackupWeekdays()[5] == true) {
+				if (initTask.getBackupWeekdays()[5]) {
 					cb_saturday.setSelected(true);
 				}
-				if (initTask.getBackupWeekdays()[6] == true) {
+				if (initTask.getBackupWeekdays()[6]) {
 					cb_sunday.setSelected(true);
 				}
 			}
 			if (initTask.getAutoBackupMode() == 2) {
 				rb_dayInMonth.setSelected(true);
-				if (initTask.getBackupDaysInMonth()[0] == true) {
+				if (initTask.getBackupDaysInMonth()[0]) {
 					cb_day1.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[1] == true) {
+				if (initTask.getBackupDaysInMonth()[1]) {
 					cb_day2.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[2] == true) {
+				if (initTask.getBackupDaysInMonth()[2]) {
 					cb_day3.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[3] == true) {
+				if (initTask.getBackupDaysInMonth()[3]) {
 					cb_day4.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[4] == true) {
+				if (initTask.getBackupDaysInMonth()[4]) {
 					cb_day5.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[5] == true) {
+				if (initTask.getBackupDaysInMonth()[5]) {
 					cb_day6.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[6] == true) {
+				if (initTask.getBackupDaysInMonth()[6]) {
 					cb_day7.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[7] == true) {
+				if (initTask.getBackupDaysInMonth()[7]) {
 					cb_day8.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[8] == true) {
+				if (initTask.getBackupDaysInMonth()[8]) {
 					cb_day9.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[9] == true) {
+				if (initTask.getBackupDaysInMonth()[9]) {
 					cb_day10.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[10] == true) {
+				if (initTask.getBackupDaysInMonth()[10]) {
 					cb_day11.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[11] == true) {
+				if (initTask.getBackupDaysInMonth()[11]) {
 					cb_day12.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[12] == true) {
+				if (initTask.getBackupDaysInMonth()[12]) {
 					cb_day13.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[13] == true) {
+				if (initTask.getBackupDaysInMonth()[13]) {
 					cb_day14.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[14] == true) {
+				if (initTask.getBackupDaysInMonth()[14]) {
 					cb_day15.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[15] == true) {
+				if (initTask.getBackupDaysInMonth()[15]) {
 					cb_day16.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[16] == true) {
+				if (initTask.getBackupDaysInMonth()[16]) {
 					cb_day17.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[17] == true) {
+				if (initTask.getBackupDaysInMonth()[17]) {
 					cb_day18.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[18] == true) {
+				if (initTask.getBackupDaysInMonth()[18]) {
 					cb_day19.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[19] == true) {
+				if (initTask.getBackupDaysInMonth()[19]) {
 					cb_day20.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[20] == true) {
+				if (initTask.getBackupDaysInMonth()[20]) {
 					cb_day21.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[21] == true) {
+				if (initTask.getBackupDaysInMonth()[21]) {
 					cb_day22.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[22] == true) {
+				if (initTask.getBackupDaysInMonth()[22]) {
 					cb_day23.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[23] == true) {
+				if (initTask.getBackupDaysInMonth()[23]) {
 					cb_day24.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[24] == true) {
+				if (initTask.getBackupDaysInMonth()[24]) {
 					cb_day25.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[25] == true) {
+				if (initTask.getBackupDaysInMonth()[25]) {
 					cb_day26.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[26] == true) {
+				if (initTask.getBackupDaysInMonth()[26]) {
 					cb_day27.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[27] == true) {
+				if (initTask.getBackupDaysInMonth()[27]) {
 					cb_day28.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[28] == true) {
+				if (initTask.getBackupDaysInMonth()[28]) {
 					cb_day29.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[29] == true) {
+				if (initTask.getBackupDaysInMonth()[29]) {
 					cb_day30.setSelected(true);
 				}
-				if (initTask.getBackupDaysInMonth()[30] == true) {
+				if (initTask.getBackupDaysInMonth()[30]) {
 					cb_day31.setSelected(true);
 				}
 			}
@@ -692,10 +691,12 @@ public class BackupTaskDialog {
 		this.stage = stage;
 	}
 
+	@FXML
 	public void cancelAction() {
 		stage.close();
 	}
 
+	@FXML
 	public void okAction() {
 		if (!settingsAreValid()) {
 			System.out.println("Error: invalid parameters!");
@@ -710,14 +711,13 @@ public class BackupTaskDialog {
 		}
 		for (Source source : ol_sources) {
 			File currentSource = new File(source.getPath());
-			if (currentSource == null || !currentSource.exists()) {
+			if (!currentSource.exists()) {
 				// show error message
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Invalid source.");
 				alert.setContentText("The following source path is not valid: " + source.getPath());
-
-				Optional<ButtonType> result = alert.showAndWait();
+				alert.showAndWait();
 				return;
 			}
 			newTask.addSourcePath(source);
@@ -922,7 +922,7 @@ public class BackupTaskDialog {
 		// checks whether a BackupTask with the given name already exists
 		if (initTask == null && backupTaskDialogListener.backupTaskWithNameExisting(newTask.getTaskName())) {
 			// error is only shown if initTask is null which means this is a new BackupTask and not a change on an
-			// existin gone (edit)
+			// existing one (edit)
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 			alert.setTitle("Warning");
 			alert.setHeaderText("BackupTask with this name already exists.");
@@ -1077,16 +1077,17 @@ public class BackupTaskDialog {
 			unit = String.valueOf(cb_rule_4_unit.getValue());
 			value = sp_rule_4.getValue();
 		}
-		if (unit.equals("min")) {
-			return sp_rule_1.getValue();
-		} else if (unit.equals("hour(s)")) {
-			return sp_rule_1.getValue() * 60;
-		} else if (unit.equals("days(s)")) {
-			return sp_rule_1.getValue() * 60 * 24;
-		} else if (unit.equals("days(s)")) {
-			return sp_rule_1.getValue() * 60 * 24 * 7;
-		} else {
-			return sp_rule_1.getValue() * 60 * 24 * 7 * 365;
+		switch (unit) {
+			case "min":
+				return sp_rule_1.getValue();
+			case "hour(s)":
+				return sp_rule_1.getValue() * 60;
+			case "days(s)":
+				return sp_rule_1.getValue() * 60 * 24;
+			case "weeks(s)":
+				return sp_rule_1.getValue() * 60 * 24 * 7;
+			default:
+				return sp_rule_1.getValue() * 60 * 24 * 7 * 365;
 		}
 	}
 
@@ -1095,6 +1096,7 @@ public class BackupTaskDialog {
 		startSourcesDialog(null);
 	}
 
+	@FXML
 	public void editSourcePathAction() {
 		int selectedIndex = lv_sources.getSelectionModel().getSelectedIndex();
 		if (selectedIndex == -1) {
@@ -1105,6 +1107,7 @@ public class BackupTaskDialog {
 		startSourcesDialog(source);
 	}
 
+	@FXML
 	public void removeSourcePathAction() {
 		int selectedIndex = lv_sources.getSelectionModel().getSelectedIndex();
 		if (selectedIndex == -1) {
@@ -1113,7 +1116,8 @@ public class BackupTaskDialog {
 		ol_sources.remove(selectedIndex);
 	}
 
-	public void addDestinationPath() {
+	@FXML
+	public void addDestinationPathAction() {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("choose DestinationPath");
 		File destPath = dirChooser.showDialog(stage);
@@ -1156,8 +1160,7 @@ public class BackupTaskDialog {
 			if (source != null) {
 				sourcesDialog.setPath(source.getPath());
 				ArrayList<Filter> filters = source.getFilter();
-				for (int i = 0; i < filters.size(); i++) {
-					Filter current_filter = filters.get(i);
+				for (Filter current_filter : filters) {
 					sourcesDialog.ol_filters.add(
 							new SourceFilterCellContent(current_filter.getPath(), current_filter.getMode()));
 				}
@@ -1167,10 +1170,5 @@ public class BackupTaskDialog {
 		} catch (IOException e) {
 			System.err.println("IOException while starting SourcesDialog: " + e.toString());
 		}
-	}
-
-	@FXML
-	public void numberOfRulesChanged() {
-		System.out.println("test");
 	}
 }

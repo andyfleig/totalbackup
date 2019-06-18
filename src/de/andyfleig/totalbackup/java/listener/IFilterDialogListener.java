@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -20,8 +20,6 @@
  */
 package listener;
 
-import java.io.File;
-
 public interface IFilterDialogListener {
 	/**
 	 * Fügt einen neuen Filter hinzu.
@@ -38,4 +36,11 @@ public interface IFilterDialogListener {
 	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
 	 */
 	public boolean isUnderSourceRoot(String path);
+
+	/**
+	 * Returns the path of the current Source.
+	 *
+	 * @return
+	 */
+	public String getSourcePath();
 }

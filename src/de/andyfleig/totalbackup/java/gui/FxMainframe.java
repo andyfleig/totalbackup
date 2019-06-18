@@ -64,10 +64,8 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	@Override
-	public void start(Stage stage) throws Exception {
-
+	public void start(Stage stage) {
 		mainframeListener.startMainframe(stage);
-
 	}
 
 	@FXML
@@ -120,11 +118,7 @@ public class FxMainframe extends Application implements Initializable {
 		if (result.get() == ButtonType.YES) {
 			mainframeListener.deleteBackupTaskWithName(
 					lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
-		} else {
-			return;
 		}
-
-
 	}
 
 	@FXML
@@ -165,7 +159,7 @@ public class FxMainframe extends Application implements Initializable {
 	 * Sucht aus der ol_filters den Eintrag eines bestimmten Tasks heraus.
 	 *
 	 * @param taskName Name des gesuchten Tasks
-	 * @return Index an dem sich der gesuchte Task in der observalbe List befindet
+	 * @return Index an dem sich der gesuchte Task in der observable List befindet
 	 */
 	private int getIndexOfObservableListFromName(String taskName) {
 		for (int i = 0; i < ol_backupTasks.size(); i++) {
@@ -214,7 +208,6 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param backup Backup object of the BackupTask
 	 */
 	public void showSummaryDialog(final BackupTask task, final Backupable backup) {
-		//
 		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
 		Platform.runLater(new Runnable() {
 			@Override
@@ -230,16 +223,6 @@ public class FxMainframe extends Application implements Initializable {
 					summaryDialog.setStage(summaryDialogStage);
 
 					summaryDialog.init(new ISummaryDialogListener() {
-										   @Override
-										   public void startBackup() {
-
-										   }
-
-										   @Override
-										   public String getTaskName() {
-											   return null;
-										   }
-
 										   @Override
 										   public void deleteEmptyBackupFolders(BackupTask task) {
 											   mainframeListener.deleteEmptyBackupFolders("", task);
@@ -262,7 +245,7 @@ public class FxMainframe extends Application implements Initializable {
 
 					summaryDialogStage.showAndWait();
 				} catch (IOException e) {
-					System.err.println(e);
+					System.err.println("IOException while loading fxml of SummaryDialog.");
 				}
 			}
 		});
@@ -308,9 +291,8 @@ public class FxMainframe extends Application implements Initializable {
 					preparingDialog.init(preparingDialogListener, task.getTaskName(), backup);
 
 					preparingDialogStage.showAndWait();
-					int useless = 1;
 				} catch (IOException e) {
-					System.err.println(e);
+					System.err.println("IOException while loading fxml of PreparingDialog.");
 				}
 			}
 		});

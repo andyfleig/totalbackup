@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -81,7 +81,7 @@ public class BackupTask implements Serializable {
 	 */
 	public BackupTask(String name) {
 		this.taskName = name;
-		sources = new ArrayList<Source>();
+		sources = new ArrayList<>();
 	}
 
 	/**
@@ -121,16 +121,6 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt alle Quellpfade auf die übergebenen Quellpfade fest. Achtung, alle existierenden Quellpfade werden
-	 * überschrieben!
-	 *
-	 * @param sources festzulegende Quellen
-	 */
-	public void setSources(ArrayList<Source> sources) {
-		this.sources = sources;
-	}
-
-	/**
 	 * Gibt den Zielpfad zurück.
 	 *
 	 * @return Zielpfad
@@ -140,48 +130,12 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Löscht den gegebenen Pfad aus der Liste der zu sichernden Quellpfade.
-	 *
-	 * @param path zu löschender Pfad
-	 */
-	public void deletePath(String path) {
-		int index = getIndexOfPath(path);
-		if (index != -1) {
-			sources.remove(index);
-		}
-
-	}
-
-	/**
-	 * Sucht den Index zum gegebenen Pfad.
-	 *
-	 * @param path Pfad zu welchem der Index gesucht wird
-	 * @return Index, -1 falls der gesuchte Pfad nicht gefunden wurde
-	 */
-	private int getIndexOfPath(String path) {
-		for (int i = 0; i < sources.size(); i++) {
-			if (sources.get(i).equals(path)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	/**
 	 * Gibt den Namen des Backup-Tasks als String zurück. Wird für das korrekte Anzeigen des Namens in der Liste (GUI)
 	 * benötigt.
 	 */
 	@Override
 	public String toString() {
 		return taskName;
-	}
-
-	/**
-	 * Löscht alle Quell- und Zielpfade.
-	 */
-	public void resetPaths() {
-		sources.clear();
-		destinationPath = null;
 	}
 
 	/**
@@ -196,7 +150,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Gibt den gewählten Backup-Modus zurück. 0 = normal, 1 = hardlink.
 	 *
-	 * @return gewälter Backup-Modus
+	 * @return gewählter Backup-Modus
 	 */
 	public int getBackupMode() {
 		return backupMode;
@@ -293,18 +247,6 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Löscht alle gesetzten Einstellungen/ Informationen des AutoClean-Features.
-	 */
-	public void clearAutoCleanInformations() {
-		simpleAutoCleanIsEnabled = false;
-		extendedAutoCleanIsEnabled = false;
-		numberOfBackupsToKeep = 0;
-		threshold = null;
-		thresholdUnits = null;
-		backupsToKeep = null;
-	}
-
-	/**
 	 * Legt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze fest
 	 *
 	 * @param numberOfBackupsToKeep Anzahl der zu behaltenden Backup-Sätze
@@ -327,7 +269,7 @@ public class BackupTask implements Serializable {
 	 *
 	 * @return true wenn die Vorbereitungen getroffen wurden, false sonst
 	 */
-	public boolean isPrepered() {
+	public boolean isPrepared() {
 		return isPrepared;
 	}
 
@@ -352,10 +294,10 @@ public class BackupTask implements Serializable {
 	/**
 	 * Setzt die DestinationVerification-Option.
 	 *
-	 * @param destVerificaion zu setzende DestinationVerification-Option
+	 * @param destVerification zu setzende DestinationVerification-Option
 	 */
-	public void setDestinationVerification(boolean destVerificaion) {
-		this.destVerification = destVerificaion;
+	public void setDestinationVerification(boolean destVerification) {
+		this.destVerification = destVerification;
 	}
 
 	/**
@@ -449,7 +391,7 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt die Tage im Monat fest an denen das Backup ausgefürt werden soll. Die Array-Felder entsprechen den Tagen im
+	 * Legt die Tage im Monat fest an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Tagen im
 	 * Monat von [0] = 1. bis [30] = 31.
 	 *
 	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.

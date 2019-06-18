@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ public class Filter implements Serializable {
 	/**
 	 * Gibt den Filter-Modus des Filters zurück.
 	 *
-	 * @return Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 * @return Filter-Modus (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
 	public int getMode() {
 		return mode;
@@ -74,7 +74,7 @@ public class Filter implements Serializable {
 	/**
 	 * Setzt den Filter-Modus des Filters.
 	 *
-	 * @param mode Filter-Mdous (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 * @param mode Filter-Modus (0 = Ausschluss-Filter; 1 = MD5-Filter)
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;

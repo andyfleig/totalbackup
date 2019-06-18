@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
  */
 package main;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.util.*;
@@ -91,7 +90,7 @@ public class NormalBackup implements Backupable {
 		this.taskName = nameOfTask;
 		this.sources = sources;
 		this.destinationPath = destination;
-		elementQueue = new LinkedList<BackupElement>();
+		elementQueue = new LinkedList<>();
 	}
 
 	@Override
@@ -178,9 +177,8 @@ public class NormalBackup implements Backupable {
 	 * Startet den Backup-Vorgang.
 	 *
 	 * @param task Backup-Tasks welcher ausgeführt wird
-	 * @throws FileNotFoundException
 	 */
-	public void runBackup(BackupTask task) throws FileNotFoundException {
+	public void runBackup(BackupTask task) {
 		// Test ob die Vorbereitung durchgeführt wurden:
 		if (!preparationDone) {
 			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");

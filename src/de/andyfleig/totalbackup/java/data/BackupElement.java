@@ -21,8 +21,7 @@
 package data;
 
 /**
- * Einthält Informationen zu einer Datei oder einem Verzeichnis. Es wird bei der Preparation angelegt und später beim
- * eigentlichen Backup-Vorgang benutzt.
+ * Contains information about a file or directory to backup.
  *
  * @author Andreas Fleig
  */

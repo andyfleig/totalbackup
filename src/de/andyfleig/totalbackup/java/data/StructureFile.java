@@ -32,7 +32,7 @@ import java.io.Serializable;
 public class StructureFile implements Serializable {
 
 	/**
-	 * Versionsnummer für die Seriallisierung.
+	 * Versionsnummer für die Serialisierung.
 	 */
 	private static final long serialVersionUID = 7289482994627565945L;
 	private String filePath;
@@ -61,7 +61,7 @@ public class StructureFile implements Serializable {
 	 */
 	public void addFile(StructureFile file) {
 		if (!isDirectory) {
-			existingFiles = new ArrayList<StructureFile>();
+			existingFiles = new ArrayList<>();
 			isDirectory = true;
 		}
 		existingFiles.add(file);
@@ -86,7 +86,7 @@ public class StructureFile implements Serializable {
 	}
 
 	/**
-	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht exisitert.
+	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht existiert.
 	 *
 	 * @param name Name der zu suchenden Datei
 	 * @return Datei oder null
