@@ -189,7 +189,7 @@ public class Controller {
 
 					@Override
 					public void run() {
-						Controller.this.printOut(s, error, taskName);
+						Controller.this.printStatus(s, error, taskName);
 					}
 
 				});
@@ -249,6 +249,9 @@ public class Controller {
 				missedBackupTaks.add(task);
 			}
 		}
+
+		guiController.initialize();
+
 		// Alle Tasks werden neu geschedulet:
 		scheduleBackupTasks();
 
@@ -256,16 +259,15 @@ public class Controller {
 		for (BackupTask task : missedBackupTaks) {
 			// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
 			// von profitableTimeUntilNextExecution des Tasks):
-			if ((task.getLocalDateTimeOfNextBackup().minusMinutes(
-					task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
+			if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution())).isAfter(
+					LocalDateTime.now())) {
 				String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " " +
 						task.getTaskName() + " " +
 						ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
 				showTrayPopupMessage(msg);
-				scheduleBackupTaskNow(task);
+				scheduleBackupTaskNow(task, true);
 			}
 		}
-		guiController.initialize();
 	}
 
 	private void loadSerializationGson() {
@@ -351,13 +353,13 @@ public class Controller {
 
 			if (backupSetFound) {
 				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
-				printOut(output, false, task.getTaskName());
+				printStatus(output, false, task.getTaskName());
 				log(output, task);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
 				String output = ResourceBundle.getBundle("messages").getString("Messages.startNormalBackup");
-				printOut(output, false, task.getTaskName());
+				printStatus(output, false, task.getTaskName());
 				log(output, task);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
@@ -382,7 +384,7 @@ public class Controller {
 		for (Source source : sources) {
 			if (!(new File(source.getPath())).exists()) {
 				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
-				printOut(output, false, task.getTaskName());
+				printStatus(output, false, task.getTaskName());
 				log(output, task);
 				guiController.disposePreparingDialogIfNotNull();
 				taskFinished(task, true);
@@ -454,7 +456,7 @@ public class Controller {
 			backup.runPreparation(task);
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			printOut(output, false, task.getTaskName());
+			printStatus(output, false, task.getTaskName());
 			log(output, task);
 		}
 
@@ -636,7 +638,7 @@ public class Controller {
 			backup.runBackup(task);
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			printOut(output, false, task.getTaskName());
+			printStatus(output, false, task.getTaskName());
 			log(output, task);
 		}
 		// "Richtigen" Zielpfad setzten (wenn nötig):
@@ -650,8 +652,7 @@ public class Controller {
 			try {
 				while (this.calcNumberOfBackups(task) > task.getNumberOfBackupsToKeep()) {
 					File toDelete = new File(task.getDestinationPath() + File.separator + findOldestBackup(
-							new ArrayList<>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))),
-							task));
+							new ArrayList<>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))), task));
 
 					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " " +
 							toDelete.getAbsolutePath();
@@ -660,13 +661,13 @@ public class Controller {
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
-					printOut(toDelete.getAbsolutePath() + " " +
+					printStatus(toDelete.getAbsolutePath() + " " +
 									ResourceBundle.getBundle("messages").getString("Messages.deleted"), false,
 							task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-				printOut(outprint, false, task.getTaskName());
+				printStatus(outprint, false, task.getTaskName());
 				log(outprint, task);
 			}
 		} else if (task.extendedAutoCleanIsEnabled()) {
@@ -697,7 +698,7 @@ public class Controller {
 	 * @param s     auszugebender String
 	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
 	 */
-	private void printOut(String s, boolean error, String taskName) {
+	private void printStatus(String s, boolean error, String taskName) {
 		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
 		Platform.runLater(new Runnable() {
 			@Override
@@ -1053,7 +1054,7 @@ public class Controller {
 	private void taskStarted(String taskName) {
 		runningBackupTasks.add(taskName);
 		System.out.println("Task started:" + taskName);
-		printOut("Started", false, taskName);
+		printStatus("Started", false, taskName);
 	}
 
 	/**
@@ -1066,7 +1067,7 @@ public class Controller {
 			System.err.println("Error: This task isn't running");
 		}
 		System.out.println("Task finished:" + task.getTaskName());
-		printOut("Finished", false, task.getTaskName());
+		printStatus("Finished", false, task.getTaskName());
 		if (schedule) {
 			scheduleBackupTask(task);
 		}
@@ -1123,14 +1124,21 @@ public class Controller {
 	 *
 	 * @param task zu schedulender Task
 	 */
-	public void scheduleBackupTaskNow(final BackupTask task) {
+	public void scheduleBackupTaskNow(final BackupTask task, boolean silent) {
 		// Kontrollieren ob dieser Task bereits läuft:
 		if (runningBackupTasks.contains(task.getTaskName())) {
 			return;
 		}
-		printOut(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
-				task.getTaskName());
+		if (!silent) {
+			printStatus(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
+					task.getTaskName());
+		}
+
 		scheduleBackupTaskAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
+	}
+
+	public void scheduleBackupTaskNow(final BackupTask task) {
+		scheduleBackupTaskNow(task, false);
 	}
 
 	/**
