@@ -4,6 +4,7 @@ package gui;
  * ToDo
  *
  * @author Andreas Fleig
+ * @deprecated
  */
 public class SourceFilterCellContent {
 	private String path;

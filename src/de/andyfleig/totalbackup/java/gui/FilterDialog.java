@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.io.File;
 
+import data.Filter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -42,6 +43,7 @@ public class FilterDialog implements Initializable {
 	private static Stage stage;
 
 	private IFilterDialogListener listener;
+	private boolean inEditMode;
 
 	@FXML
 	private TextField tf_filterPath;
@@ -59,8 +61,18 @@ public class FilterDialog implements Initializable {
 		this.stage = stage;
 	}
 
-	public void init(IFilterDialogListener listener) {
+	/**
+	 * Initialize the FilterDialog with the corresponding FilterDialogListener and Filter.
+	 * @param filter corresponding Filter
+	 */
+	public void init(IFilterDialogListener listener, Filter filter, boolean inEditMode) {
 		this.listener = listener;
+		this.filter = filter;
+		this.inEditMode = inEditMode;
+		this.tf_filterPath.setText(filter.getPath());
+		if (filter.getMode() == 1)  {
+			rb_md5Filter.setSelected(true);
+		}
 	}
 
 	public void setInitPath(String initPath) {
@@ -76,7 +88,7 @@ public class FilterDialog implements Initializable {
 	/**
 	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
 	 */
-	private boolean inEditMode;
+	private Filter filter;
 
 	@FXML
 	private void addFilterAction() {
@@ -103,12 +115,14 @@ public class FilterDialog implements Initializable {
 			alert.showAndWait();
 			return;
 		}
+		Filter newFilter = new Filter();
+
 		// filterMode 0 (default) is exclusion-filter, 1 is md5-filter
 		int filterMode = 0;
 		if (rb_md5Filter.isSelected()) {
-			filterMode = 1;
+			newFilter.setMode(1);
 		}
-		if (isUnderSourceRoot(filterPath.getAbsolutePath())) {
+		if (!isUnderSourceRoot(filterPath.getAbsolutePath())) {
 			// show error message
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.setTitle("Error");
@@ -118,7 +132,23 @@ public class FilterDialog implements Initializable {
 			alert.showAndWait();
 			return;
 		}
-		listener.addFilter(filterPath.getAbsolutePath(), filterMode);
+		newFilter.setPath(filterPath.getAbsolutePath());
+		if (inEditMode) {
+			// delete old filter first
+			listener.removeFilter(filter);
+		}
+		// check whether same filter already exists:
+		if (listener.hasFilter(newFilter)) {
+			// show error message
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setResizable(true);
+			alert.setTitle("Error");
+			alert.setHeaderText("Filter already exists.");
+			alert.setContentText("The given filter already exists for this source path.");
+			alert.showAndWait();
+			return;
+		}
+		listener.addFilter(newFilter);
 		stage.close();
 	}
 

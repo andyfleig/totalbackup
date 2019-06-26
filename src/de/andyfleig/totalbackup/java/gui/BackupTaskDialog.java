@@ -1162,7 +1162,7 @@ public class BackupTaskDialog {
 				ArrayList<Filter> filters = source.getFilter();
 				for (Filter current_filter : filters) {
 					sourcesDialog.ol_filters.add(
-							new SourceFilterCellContent(current_filter.getPath(), current_filter.getMode()));
+							new Filter(current_filter.getPath(), current_filter.getMode()));
 				}
 			}
 

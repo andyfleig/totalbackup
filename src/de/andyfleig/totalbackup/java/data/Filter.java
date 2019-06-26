@@ -29,19 +29,26 @@ public class Filter implements Serializable {
 	 */
 	private String path;
 	/**
-	 * Filter-Modus 0 = Ausschluss-Filter; 1 = MD5-Filter
+	 * mode of filter: 0 = exclusion-filter (default); 1 = MD5-filter
 	 */
-	private int mode;
+	private int mode = 0;
 
 	/**
-	 * Erstellt einen neuen Filter.
+	 * Creates a new Filter with the given path and mode.
 	 *
-	 * @param path Pfad des Filters
-	 * @param mode Filter-Modus 0 = Ausschluss-Filter; 1 = MD5-Filter
+	 * @param path path of the filter
+	 * @param mode mode of the filter 0 = exclusion-filter; 1 = MD5-filter
 	 */
 	public Filter(String path, int mode) {
 		this.path = path;
 		this.mode = mode;
+	}
+
+	/**
+	 * Creates a new empty Filter.
+	 */
+	public Filter() {
+
 	}
 
 	/**
@@ -88,5 +95,15 @@ public class Filter implements Serializable {
 			return "MD5: " + path;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (object != null && object instanceof Filter) {
+			if (this.mode == ((Filter) object).mode && this.path.equals(((Filter) object).path)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

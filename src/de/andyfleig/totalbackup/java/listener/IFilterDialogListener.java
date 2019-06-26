@@ -20,14 +20,30 @@
  */
 package listener;
 
+import data.Filter;
+
 public interface IFilterDialogListener {
 	/**
-	 * Fügt einen neuen Filter hinzu.
+	 * Adds the given filter.
 	 *
-	 * @param path Pfad des Filters
-	 * @param mode Filter-Modus (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 * @param filter filter to add
 	 */
-	public void addFilter(String path, int mode);
+	public void addFilter(Filter filter);
+
+	/**
+	 * Removes the given filter.
+	 *
+	 * @param filter filter to remove
+	 */
+	public void removeFilter(Filter filter);
+
+
+	/**
+	 * Returns whether the given filter already exists.
+	 *
+	 * @param filter filter to check
+	 */
+	public boolean hasFilter(Filter filter);
 
 	/**
 	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.

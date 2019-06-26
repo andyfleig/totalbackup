@@ -57,8 +57,8 @@ public class SourcesDialog implements Initializable {
 	@FXML
 	private TextField tf_sourcePath;
 	@FXML
-	private ListView<SourceFilterCellContent> lv_filters;
-	final ObservableList<SourceFilterCellContent> ol_filters = FXCollections.observableArrayList();
+	private ListView<Filter> lv_filters;
+	final ObservableList<Filter> ol_filters = FXCollections.observableArrayList();
 
 
 	public void setStage(Stage stage) {
@@ -68,10 +68,9 @@ public class SourcesDialog implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
 		lv_filters.setItems(ol_filters);
-		lv_filters.setCellFactory(new Callback<ListView<SourceFilterCellContent>, ListCell<SourceFilterCellContent>>() {
+		lv_filters.setCellFactory(new Callback<ListView<Filter>, ListCell<Filter>>() {
 			@Override
-			public ListCell<SourceFilterCellContent> call(
-					ListView<SourceFilterCellContent> sourceFilterCellContentListView) {
+			public ListCell<Filter> call(ListView<Filter> sourceFilterListView) {
 				return new FilterListCell();
 			}
 		});
@@ -94,7 +93,7 @@ public class SourcesDialog implements Initializable {
 
 	@FXML
 	public void addFilterAction() {
-		startFilterDialog("", 0);
+		startFilterDialog(new Filter(), false);
 	}
 
 	@FXML
@@ -103,8 +102,8 @@ public class SourcesDialog implements Initializable {
 		if (selectedIndex == -1) {
 			return;
 		}
-		SourceFilterCellContent selectedCell = lv_filters.getSelectionModel().getSelectedItem();
-		startFilterDialog(selectedCell.getFilterPath(), selectedCell.getFilerMode());
+		Filter filter = lv_filters.getSelectionModel().getSelectedItem();
+		startFilterDialog(new Filter(filter.getPath(), filter.getMode()), true);
 	}
 
 	@FXML
@@ -149,8 +148,8 @@ public class SourcesDialog implements Initializable {
 		Source source = new Source(tf_sourcePath.getText());
 		Iterator itr = ol_filters.iterator();
 		while (itr.hasNext()) {
-			SourceFilterCellContent currentCell = (SourceFilterCellContent)itr.next();
-			source.addFilter(new Filter(currentCell.getFilterPath(), currentCell.getFilerMode()));
+			Filter currFilter = (Filter)itr.next();
+			source.addFilter(new Filter(currFilter.getPath(), currFilter.getMode()));
 		}
 		listener.addSource(source);
 		stage.close();
@@ -160,7 +159,7 @@ public class SourcesDialog implements Initializable {
 		tf_sourcePath.setText(path);
 	}
 
-	private void startFilterDialog(String initPath, int initMode) {
+	private void startFilterDialog(Filter filter, boolean inEditMode) {
 		final Stage filterDialogStage = new Stage(StageStyle.UTILITY);
 		filterDialogStage.initModality(Modality.APPLICATION_MODAL);
 		try {
@@ -169,8 +168,21 @@ public class SourcesDialog implements Initializable {
 			FilterDialog filterDialog = loader.getController();
 			filterDialog.init(new IFilterDialogListener() {
 				@Override
-				public void addFilter(String path, int mode) {
-					ol_filters.add(new SourceFilterCellContent(path, mode));
+				public void addFilter(Filter filter) {
+					ol_filters.add(filter);
+				}
+
+				@Override
+				public void removeFilter(Filter filter) {
+					ol_filters.remove(filter);
+				}
+
+				@Override
+				public boolean hasFilter(Filter filter) {
+					if (ol_filters.contains(filter)) {
+						return true;
+					}
+					return false;
 				}
 
 				@Override
@@ -185,15 +197,9 @@ public class SourcesDialog implements Initializable {
 				public String getSourcePath() {
 					return tf_sourcePath.getText();
 				}
-			});
-
+			}, filter, inEditMode);
 			filterDialogStage.setScene(scene);
 			filterDialog.setStage(filterDialogStage);
-
-			if (initPath.equals("")) {
-				filterDialog.setInitPath(initPath);
-			}
-			filterDialog.setInitMode(initMode);
 
 			filterDialogStage.showAndWait();
 		} catch (IOException e) {

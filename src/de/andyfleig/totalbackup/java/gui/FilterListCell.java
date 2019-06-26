@@ -1,5 +1,6 @@
 package gui;
 
+import data.Filter;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
@@ -9,7 +10,7 @@ import javafx.scene.layout.GridPane;
  *
  * @author Andreas Fleig
  */
-public class FilterListCell extends ListCell<SourceFilterCellContent> {
+public class FilterListCell extends ListCell<Filter> {
 	private GridPane gridPane = new GridPane();
 	private Label lb_path = new Label();
 	private Label lb_mode = new Label();
@@ -20,17 +21,17 @@ public class FilterListCell extends ListCell<SourceFilterCellContent> {
 	}
 
 	@Override
-	public void updateItem(SourceFilterCellContent content, boolean empty) {
+	public void updateItem(Filter content, boolean empty) {
 		super.updateItem(content, empty);
 		if (empty) {
 			setText(null);
 			setGraphic(null);
 		} else {
 			setText(null);
-			lb_path.setText(content.getFilterPath());
-			if (content.getFilerMode() == 0) {
+			lb_path.setText(content.getPath());
+			if (content.getMode() == 0) {
 				lb_mode.setText("Exclusion-Filter");
-			} else if (content.getFilerMode() == 1) {
+			} else if (content.getMode() == 1) {
 				lb_mode.setText("MD5-Filter");
 			}
 			setGraphic(gridPane);
