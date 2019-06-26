@@ -1,8 +1,8 @@
 /*
- * Copyright 2014 - 2016 Andreas Fleig (andy DOT fleig AT gmail DOT com)
- * 
+ * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -18,13 +18,14 @@
  * You should have received a copy of the GNU General Public License
  * along with TotalBackup.  If not, see <http://www.gnu.org/licenses/>.
  */
-package data;
 
 /**
  * Contains information about a file or directory to backup.
  *
  * @author Andreas Fleig
  */
+package data;
+
 public class BackupElement {
 	/**
 	 * Legt den Quell-Pfad des Elements fest
