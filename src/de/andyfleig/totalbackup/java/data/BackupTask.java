@@ -66,8 +66,8 @@ public class BackupTask implements Serializable {
 	private transient ScheduledFuture<?> popupScheduledFuture;
 	private LocalDateTime nextExecutionTime;
 	/**
-	 * Gibt an wie weit ein Backup sich in der Zukunft befinden darft sodass sich das nachholen eines versäumten Backups
-	 * noch lohnt. Angabe in Minuten.
+	 * Number of minutes until next scheduled backup so it is reasonably the catch up the missed one
+	 * (default is 10 minutes)
 	 */
 	private String catchUpTime;
 	private boolean catchUpEnabled;
@@ -528,12 +528,15 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt die Dauer zum nächsten geplanten Backup, so dass sich das nachholen eines versäumten Backups noch lohnt,
-	 * zurück.
+	 * Returns the number of minutes until next scheduled backup so it is reasonably the catch up the missed one
+	 * (default is 10 minutes)
 	 *
-	 * @return Dauer zum nächsten Backup
+	 * @return threshold in minutes
 	 */
 	public int getProfitableTimeUntilNextExecution() {
+		if (this.catchUpTime == null) {
+			return 10;
+		}
 		switch (catchUpTime) {
 			case "10min":
 				return 10;
@@ -552,7 +555,7 @@ public class BackupTask implements Serializable {
 			case "24h":
 				return 1440;
 			default:
-				return 5;
+				return 10;
 		}
 	}
 
