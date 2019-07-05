@@ -1099,7 +1099,7 @@ public class Controller {
 				e.printStackTrace();
 			}
 		}
-		scheduleBackupTaskAt(task, LocalDateTime.now());
+		scheduleBackupTaskStartingAt(task, LocalDateTime.now());
 	}
 
 	/**
@@ -1118,7 +1118,7 @@ public class Controller {
 					task.getTaskName());
 		}
 
-		scheduleBackupTaskStartingAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
+		scheduleBackupTaskAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
 	}
 
 	/**
