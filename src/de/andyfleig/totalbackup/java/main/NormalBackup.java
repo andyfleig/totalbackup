@@ -219,7 +219,7 @@ public class NormalBackup implements Backupable {
 			}
 			if (file.isDirectory()) {
 				// filtering
-				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilters();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
 					if ((file.getAbsolutePath().equals(aFiltersOfThisSource.getPath()))) {
@@ -235,11 +235,11 @@ public class NormalBackup implements Backupable {
 				}
 			} else {
 				// filtering
-				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilters();
 				boolean filterMatches = false;
-				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
-					if (aFiltersOfThisSource.getMode() == 0 &&
-							file.getAbsolutePath().equals(aFiltersOfThisSource.getPath())) {
+				for (Filter filter : filtersOfThisSource) {
+					if (filter.getMode() == 0 &&
+							file.getAbsolutePath().equals(filter.getPath())) {
 						filterMatches = true;
 					}
 				}

@@ -394,7 +394,7 @@ public class HardlinkBackup implements Backupable {
 			}
 			if (file.isDirectory()) {
 				// filtering
-				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilters();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
 					if ((file.getAbsolutePath().equals(aFiltersOfThisSource.getPath()))) {
@@ -411,7 +411,7 @@ public class HardlinkBackup implements Backupable {
 
 			} else {
 				// filtering
-				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
+				ArrayList<Filter> filtersOfThisSource = currentSource.getFilters();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
 					if (aFiltersOfThisSource.getMode() == 0 &&

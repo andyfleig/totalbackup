@@ -66,7 +66,7 @@ public class Source implements Serializable {
 	 *
 	 * @return list of filters
 	 */
-	public ArrayList<Filter> getFilter() {
+	public ArrayList<Filter> getFilters() {
 		return filters;
 	}
 

@@ -1207,7 +1207,7 @@ public class BackupTaskDialog {
 			// set initial values:
 			if (source != null) {
 				sourcesDialog.setPath(source.getPath());
-				ArrayList<Filter> filters = source.getFilter();
+				ArrayList<Filter> filters = source.getFilters();
 				for (Filter current_filter : filters) {
 					sourcesDialog.ol_filters.add(new Filter(current_filter.getPath(), current_filter.getMode()));
 				}

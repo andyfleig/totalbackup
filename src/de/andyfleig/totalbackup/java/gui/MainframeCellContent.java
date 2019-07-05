@@ -64,9 +64,17 @@ public class MainframeCellContent {
 		this.taskStaus = "Status: " + taskStaus;
 	}
 
+	/**
+	 * Sets the next-execution-time-status to the given time.
+	 *
+	 * @param taskNextExecutionDateTime next-execution-time-status to set, sets no next-execution-time-status if
+	 *                                  taskNextExecutionDateTime is null
+	 */
 	public void setTaskNextExecutionTimeStatus(LocalDateTime taskNextExecutionDateTime) {
 		if (taskNextExecutionDateTime != null) {
 			this.taskNextExecutionStatus = buildNextExecutionStatusString(taskNextExecutionDateTime);
+		} else {
+			this.taskNextExecutionStatus = "";
 		}
 	}
 

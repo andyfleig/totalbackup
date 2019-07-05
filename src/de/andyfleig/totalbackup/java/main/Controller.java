@@ -726,6 +726,24 @@ public class Controller {
 	}
 
 	/**
+	 * Sets the next execution status of the BackupTask with the given name to the given message. The error-flag
+	 * indicates whether it is a error status and thus has to be highlighted.
+	 *
+	 * @param nextExecutionTime next execution time
+	 * @param taskName          name of the corresponding BackupTask
+	 */
+	private void setNextExecutionStatus(LocalDateTime nextExecutionTime, String taskName) {
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				guiController.setNextExecutionTimeStatus(taskName, nextExecutionTime);
+			}
+		});
+
+	}
+
+	/**
 	 * Logs the given message for the given BackupTask.
 	 *
 	 * @param msg  message to log
@@ -1079,6 +1097,7 @@ public class Controller {
 		}
 		System.out.println("Task finished:" + task.getTaskName());
 		setStatus("Finished", false, task.getTaskName());
+		setNextExecutionStatus(null, task.getTaskName());
 		if (schedule) {
 			scheduleBackupTask(task);
 		}
