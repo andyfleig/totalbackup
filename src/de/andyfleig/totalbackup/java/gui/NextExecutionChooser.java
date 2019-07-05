@@ -28,7 +28,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ResourceBundle;
 
 public class NextExecutionChooser extends JDialog {
 	private INextExecutionChooserListener listener;
@@ -70,18 +69,18 @@ public class NextExecutionChooser extends JDialog {
 		panel_button.add(btn_ok);
 		getContentPane().add(panel_button, BorderLayout.SOUTH);
 
-		label_message.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.text"));
+		label_message.setText("Destination not found. How to proceed?");
 
 		panel_rbuttons.setLayout(new BoxLayout(panel_rbuttons, BoxLayout.Y_AXIS));
 		panel_rbuttons.add(rButton_tryAgain);
 		panel_rbuttons.add(rButton_skip);
 		panel_rbuttons.add(rButton_postpone);
 
-		rButton_tryAgain.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.rButton_tryAgain"));
+		rButton_tryAgain.setText("try again");
 		rButton_tryAgain.setSelected(true);
-		rButton_skip.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.rButton_skip"));
+		rButton_skip.setText("skip");
 		rButton_skip.setSelected(false);
-		rButton_postpone.setText(ResourceBundle.getBundle("messages").getString("GUI.NextExecutionChooser.rButton_postpone"));
+		rButton_postpone.setText("postpone");
 		rButton_postpone.setSelected(false);
 
 		group.add(rButton_tryAgain);

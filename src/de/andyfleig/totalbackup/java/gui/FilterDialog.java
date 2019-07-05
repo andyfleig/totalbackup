@@ -21,8 +21,8 @@
 package gui;
 
 import java.net.URL;
-import java.util.ResourceBundle;
 import java.io.File;
+import java.util.ResourceBundle;
 
 import data.Filter;
 import javafx.fxml.FXML;

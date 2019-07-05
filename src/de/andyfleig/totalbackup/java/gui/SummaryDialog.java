@@ -101,7 +101,7 @@ public class SummaryDialog implements Initializable {
 	}
 
 	/**
-	 * Correclty formats the given size to the printed text for the summary.
+	 * Correctly formats the given size to the printed text for the summary.
 	 *
 	 * @param size size in Bytes
 	 * @return formatted string of the size

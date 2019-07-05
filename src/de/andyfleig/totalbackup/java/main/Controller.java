@@ -33,7 +33,6 @@ import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.util.Date;
@@ -250,9 +249,7 @@ public class Controller {
 			// check whether it is worth catching those backups up (by checking the next regularly planned execution)
 			if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution())).isAfter(
 					LocalDateTime.now())) {
-				String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " " +
-						task.getTaskName() + " " +
-						ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp2");
+				String msg = "Catch up task" + " " + task.getTaskName();
 				showTrayPopupMessage(msg);
 				scheduleBackupTaskNow(task, true);
 			}
@@ -366,13 +363,13 @@ public class Controller {
 			}
 
 			if (backupSetFound) {
-				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
+				String output = "At least one Backup-Set found. Starting Hardlink Backup...";
 				setStatus(output, false, task.getTaskName());
 				log(output, task);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
-				String output = ResourceBundle.getBundle("messages").getString("Messages.startNormalBackup");
+				String output = "No Backup-Set found. Starting 'normal' Backup";
 				setStatus(output, false, task.getTaskName());
 				log(output, task);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
@@ -398,7 +395,7 @@ public class Controller {
 		ArrayList<Source> sources = task.getSources();
 		for (Source source : sources) {
 			if (!(new File(source.getPath())).exists()) {
-				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
+				String output = "Error: At least one of the source paths doesn't exists";
 				setStatus(output, false, task.getTaskName());
 				log(output, task);
 				guiController.disposePreparingDialogIfNotNull();
@@ -414,7 +411,7 @@ public class Controller {
 			if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
 				// request to user: try to find path?
 				int reply = JOptionPane.showConfirmDialog(null,
-						ResourceBundle.getBundle("messages").getString("Messages.SearchForCorrectDestPath"), null,
+						"Could not find Destination. Should I try to find the right Destination?", null,
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					// user response: YES
@@ -424,15 +421,13 @@ public class Controller {
 					for (String dest : correctDest) {
 						// request to user: possible path found ... is it correct?
 						int reply2 = JOptionPane.showConfirmDialog(null,
-								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " " +
-										dest + "  " +
-										ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
-								null, JOptionPane.YES_NO_OPTION);
+								"Found possible Destination-Path:" + " " + dest + "  " + "s it correct?", null,
+								JOptionPane.YES_NO_OPTION);
 						if (reply2 == JOptionPane.YES_OPTION) {
 							// user response: YES
 							// request to user: set this path as new destination path?
 							int reply3 = JOptionPane.showConfirmDialog(null,
-									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
+									"Do you want to set this path as new Destination-Path (for future backups)?", null,
 									JOptionPane.YES_NO_OPTION);
 							if (reply3 == JOptionPane.YES_OPTION) {
 								// user response: YES
@@ -476,7 +471,7 @@ public class Controller {
 		try {
 			backup.runPreparation(task);
 		} catch (BackupCanceledException ex) {
-			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
+			String output = "Backup canceled by User";
 			setStatus(output, false, task.getTaskName());
 			log(output, task);
 		}
@@ -495,9 +490,8 @@ public class Controller {
 				SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
 		if (freeSize <= sizeNeeded) {
 			// not enough free space available
-			JOptionPane.showMessageDialog(null,
-					ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errNotEnoughSpace"),
-					ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "There is not enough free space for this Backup.", "Error",
+					JOptionPane.INFORMATION_MESSAGE);
 			// cancel backup
 			return;
 		}
@@ -538,8 +532,7 @@ public class Controller {
 	 */
 	private void cancelBackup(BackupTask task, boolean reschedule) {
 		// ToDo: non-JavaFX thread?
-		guiController.setStatusOfBackupTask(task.getTaskName(), false,
-				ResourceBundle.getBundle("messages").getString("Messages.CancelingBackup"));
+		guiController.setStatusOfBackupTask(task.getTaskName(), false, "Canceling Backup...");
 
 		BackupThreadContainer tmpContainer = null;
 		for (BackupThreadContainer container : backupThreads) {
@@ -651,7 +644,7 @@ public class Controller {
 		try {
 			backup.runBackup(task);
 		} catch (BackupCanceledException ex) {
-			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
+			String output = "Backup canceled by User";
 			setStatus(output, false, task.getTaskName());
 			log(output, task);
 		}
@@ -669,19 +662,16 @@ public class Controller {
 					File toDelete = new File(task.getDestinationPath() + File.separator + findOldestBackup(
 							new ArrayList<>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))), task));
 
-					String output = ResourceBundle.getBundle("messages").getString("Messages.deleting") + " " +
-							toDelete.getAbsolutePath();
+					String output = "Deleting Backup" + " " + toDelete.getAbsolutePath();
 					guiController.setStatusOfBackupTask(task.getTaskName(), false, output);
 					log(output, task);
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
-					setStatus(toDelete.getAbsolutePath() + " " +
-									ResourceBundle.getBundle("messages").getString("Messages.deleted"), false,
-							task.getTaskName());
+					setStatus(toDelete.getAbsolutePath() + " deleted", false, task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
-				String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
+				String outprint = "Backup canceled by User";
 				setStatus(outprint, false, task.getTaskName());
 				log(outprint, task);
 			}
@@ -1021,7 +1011,7 @@ public class Controller {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket1, task)))) {
-					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					System.err.println("Error: Directory could not be deleted");
 					break;
 				}
 			}
@@ -1031,7 +1021,7 @@ public class Controller {
 			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(task.getBackupsToKeep()[1])) {
 				File oldestBackupSet = new File(task.getDestinationPath() + "/" + findOldestBackup(bucket2, task));
 				if (!BackupHelper.deleteDirectory(oldestBackupSet)) {
-					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					System.err.println("Error: Directory could not be deleted");
 					break;
 				}
 				bucket2.remove(oldestBackupSet);
@@ -1042,7 +1032,7 @@ public class Controller {
 			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(task.getBackupsToKeep()[2])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket3, task)))) {
-					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					System.err.println("Error: Directory could not be deleted");
 					break;
 				}
 			}
@@ -1052,7 +1042,7 @@ public class Controller {
 			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(task.getBackupsToKeep()[3])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket4, task)))) {
-					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					System.err.println("Error: Directory could not be deleted");
 					break;
 				}
 			}
@@ -1062,7 +1052,7 @@ public class Controller {
 			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(task.getBackupsToKeep()[4])) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket5, task)))) {
-					System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
+					System.err.println("Error: Directory could not be deleted");
 					break;
 				}
 			}
@@ -1133,8 +1123,7 @@ public class Controller {
 			return;
 		}
 		if (!silent) {
-			setStatus(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
-					task.getTaskName());
+			setStatus("backup starts in 2 seconds", false, task.getTaskName());
 		}
 
 		scheduleBackupTaskAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
@@ -1240,9 +1229,7 @@ public class Controller {
 		// for the popup
 		Runnable popup = new Runnable() {
 			public void run() {
-				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask") + " " +
-						task.getTaskName() + " " +
-						ResourceBundle.getBundle("messages").getString("Messages.popup.startsInOneMinute"));
+				showTrayPopupMessage("BackupTask " + task.getTaskName() + " starts in one minute.");
 			}
 		};
 		// schedule task
@@ -1416,7 +1403,7 @@ public class Controller {
 			}
 		}
 
-		String outprint = ResourceBundle.getBundle("messages").getString("Messages.deletedBackupFolder");
+		String outprint = "Deleted Backup-Directory";
 		backupListener.setStatus(outprint, false, task.getTaskName());
 		backupListener.log(outprint, task);
 	}
@@ -1473,8 +1460,8 @@ public class Controller {
 	 */
 	private void quit() {
 		int reply = JOptionPane.showConfirmDialog(null,
-				ResourceBundle.getBundle("messages").getString("Messages.ReallyQuit"),
-				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
+				"Really want to quit?\\nAll runningn Backups will be canceled!\\nNo scheduled Backups will be executed!",
+				"Quit", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			saveSerialization();
 			cancelAllRunningTasksImmediately();

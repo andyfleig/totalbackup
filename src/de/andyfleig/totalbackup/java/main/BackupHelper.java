@@ -34,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.nio.file.Files;
@@ -75,7 +74,7 @@ public final class BackupHelper {
 			return;
 		}
 
-		String msg = ResourceBundle.getBundle("messages").getString("Messages.copying") + " " + source.getPath();
+		String msg = "copying" + " " + source.getPath();
 		listener.setStatus(msg, false, currentTask.getTaskName());
 		listener.log(msg, currentTask);
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
@@ -102,7 +101,7 @@ public final class BackupHelper {
 			return;
 		}
 
-		String output = ResourceBundle.getBundle("messages").getString("Messages.linking") + " " + source.getPath();
+		String output = "linking" + " " + source.getPath();
 		listener.setStatus(output, false, task.getTaskName());
 		listener.log(output, task);
 
@@ -133,7 +132,7 @@ public final class BackupHelper {
 
 		File destinationFile = new File(destinationPath);
 		if (!destinationFile.exists()) {
-			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
+			String output = "Error while creating Backup-Folder";
 			listener.setStatus(output, true, task.getTaskName());
 			listener.log(output, task);
 
@@ -144,12 +143,12 @@ public final class BackupHelper {
 		File dir = new File(backupDir);
 		// create backup dir
 		if (dir.mkdir()) {
-			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreated");
+			String output = "Backup-Folder created";
 			listener.setStatus(output, false, task.getTaskName());
 			listener.log(output, task);
 
 		} else {
-			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
+			String output = "Error while creating Backup-Folder";
 			listener.setStatus(output, true, task.getTaskName());
 			listener.log(output, task);
 

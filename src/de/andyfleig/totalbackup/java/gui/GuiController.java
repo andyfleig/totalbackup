@@ -43,7 +43,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ResourceBundle;
 
 /**
  * Controller of the JavaFx based GUI of TotalBackup.
@@ -202,7 +201,7 @@ public class GuiController {
 		if (SystemTray.isSupported() && !guiControllerListener.argsContains("force_qt")) {
 			SystemTray systemTray = SystemTray.getSystemTray();
 			PopupMenu trayPopupMenu = new PopupMenu();
-			MenuItem action = new MenuItem(ResourceBundle.getBundle("messages").getString("GUI.button_show"));
+			MenuItem action = new MenuItem("Show");
 			action.addActionListener(new ActionListener() {
 
 				@Override
@@ -213,7 +212,7 @@ public class GuiController {
 			});
 			trayPopupMenu.add(action);
 
-			MenuItem close = new MenuItem(ResourceBundle.getBundle("messages").getString("GUI.button_close"));
+			MenuItem close = new MenuItem("Close");
 			close.addActionListener(new ActionListener() {
 
 				@Override
@@ -225,7 +224,7 @@ public class GuiController {
 			int trayIconWidth = new TrayIcon(image).getSize().width;
 
 			trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
-					ResourceBundle.getBundle("messages").getString("GUI.Mainframe.title"), trayPopupMenu);
+					"TotalBackup", trayPopupMenu);
 
 			try {
 				systemTray.add(trayIcon);
@@ -240,9 +239,8 @@ public class GuiController {
 			try {
 				trayProcess = builder.start();
 			} catch (IOException e1) {
-				JOptionPane.showMessageDialog(null,
-						ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errStartingQtTray"),
-						ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Could not start QT Tray!", "Error",
+						JOptionPane.INFORMATION_MESSAGE);
 			}
 
 			// create and run thread for communication with QtTray
