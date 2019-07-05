@@ -9,7 +9,7 @@
    <children>
       <HBox>
          <children>
-            <Label text="Quellpfad:">
+            <Label text="Source path:">
                <HBox.margin>
                   <Insets bottom="5.0" left="10.0" right="5.0" top="10.0" />
                </HBox.margin>
@@ -18,7 +18,7 @@
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin></TextField>
-            <Button mnemonicParsing="false" onAction="#addSourceAction" text="Durchsuchen...">
+            <Button mnemonicParsing="false" onAction="#addSourceAction" text="Find...">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin></Button>
@@ -36,15 +36,15 @@
                </HBox.margin></ListView>
             <VBox alignment="TOP_CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#addFilterAction" text="Hinzufügen">
+                  <Button mnemonicParsing="false" onAction="#addFilterAction" text="Add">
                      <VBox.margin>
                         <Insets top="2.0" />
                      </VBox.margin></Button>
-                  <Button mnemonicParsing="false" onAction="#editFilterAction" text="Bearbeiten">
+                  <Button mnemonicParsing="false" onAction="#editFilterAction" text="Edit">
                      <VBox.margin>
                         <Insets top="2.0" />
                      </VBox.margin></Button>
-                  <Button mnemonicParsing="false" onAction="#removeFilterAction" text="Löschen">
+                  <Button mnemonicParsing="false" onAction="#removeFilterAction" text="Delete">
                      <VBox.margin>
                         <Insets top="2.0" />
                      </VBox.margin></Button>
@@ -58,7 +58,7 @@
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#cancelAction" text="Abbrechen">
+            <Button mnemonicParsing="false" onAction="#cancelAction" text="Cancel">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>

@@ -32,7 +32,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                            </padding>
                         </HBox>
-                        <Label text="Quellpfade:">
+                        <Label text="Sources:">
                            <padding>
                               <Insets left="10.0" right="10.0" />
                            </padding>
@@ -42,9 +42,9 @@
                               <ListView fx:id="lv_sources" HBox.hgrow="ALWAYS" />
                               <VBox>
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#addSourceAction" text="Hinzufügen" />
-                                    <Button mnemonicParsing="false" onAction="#editSourcePathAction" text="Bearbeiten" />
-                                    <Button mnemonicParsing="false" onAction="#removeSourcePathAction" text="Löschen" />
+                                    <Button mnemonicParsing="false" onAction="#addSourceAction" text="Add" />
+                                    <Button mnemonicParsing="false" onAction="#editSourcePathAction" text="Edit" />
+                                    <Button mnemonicParsing="false" onAction="#removeSourcePathAction" text="Delete" />
                                  </children>
                                  <padding>
                                     <Insets left="10.0" />
@@ -55,7 +55,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </HBox>
-                        <Label text="Zielpfad:">
+                        <Label text="Destintion-path:">
                            <padding>
                               <Insets left="10.0" right="10.0" />
                            </padding>
@@ -67,7 +67,7 @@
                                     <Insets right="1.0" />
                                  </HBox.margin>
                               </TextField>
-                              <Button mnemonicParsing="false" onAction="#addDestinationPathAction" text="Durchsuchen...">
+                              <Button mnemonicParsing="false" onAction="#addDestinationPathAction" text="Find...">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>
@@ -79,7 +79,7 @@
                         </HBox>
                         <HBox>
                            <children>
-                              <Label text="Art des Backups:">
+                              <Label text="Backup type:">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
@@ -130,12 +130,12 @@
                                     <ToggleGroup fx:id="tg_autoBackupMode" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton fx:id="rb_weekday" mnemonicParsing="false" text="Wochentag" toggleGroup="$tg_autoBackupMode">
+                              <RadioButton fx:id="rb_weekday" mnemonicParsing="false" text="Weekday" toggleGroup="$tg_autoBackupMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton fx:id="rb_dayInMonth" mnemonicParsing="false" text="Tag im Monat" toggleGroup="$tg_autoBackupMode">
+                              <RadioButton fx:id="rb_dayInMonth" mnemonicParsing="false" text="Day in month" toggleGroup="$tg_autoBackupMode">
                                  <padding>
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
@@ -149,46 +149,46 @@
                         </HBox>
                         <TabPane prefWidth="784.0" tabClosingPolicy="UNAVAILABLE">
                            <tabs>
-                              <Tab text="Wochentag">
+                              <Tab text="Weekday">
                                  <content>
                                     <VBox>
                                        <children>
-                                          <Label text="Tage an denen gesichert werden soll:">
+                                          <Label text="Days to run backup:">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
                                           </Label>
-                                          <CheckBox fx:id="cb_monday" mnemonicParsing="false" text="Montag">
+                                          <CheckBox fx:id="cb_monday" mnemonicParsing="false" text="Monday">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cb_tuesday" mnemonicParsing="false" text="Dienstag">
+                                          <CheckBox fx:id="cb_tuesday" mnemonicParsing="false" text="Tuesday">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cb_wednesday" mnemonicParsing="false" text="Mittwoch">
+                                          <CheckBox fx:id="cb_wednesday" mnemonicParsing="false" text="Wednesday">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cb_thursday" mnemonicParsing="false" text="Donnerstag">
+                                          <CheckBox fx:id="cb_thursday" mnemonicParsing="false" text="Thursday">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cb_friday" mnemonicParsing="false" text="Freitag">
+                                          <CheckBox fx:id="cb_friday" mnemonicParsing="false" text="Friday">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cb_saturday" mnemonicParsing="false" text="Samstag">
+                                          <CheckBox fx:id="cb_saturday" mnemonicParsing="false" text="Saturday">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
                                              </padding>
                                           </CheckBox>
-                                          <CheckBox fx:id="cb_sunday" mnemonicParsing="false" text="Sonntag">
+                                          <CheckBox fx:id="cb_sunday" mnemonicParsing="false" text="Sunday">
                                              <padding>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
@@ -197,11 +197,11 @@
                                     </VBox>
                                  </content>
                               </Tab>
-                              <Tab text="Tag im Monat">
+                              <Tab text="Day in month">
                                  <content>
                                     <VBox prefHeight="200.0" prefWidth="100.0">
                                        <children>
-                                          <Label text="Tage an denen gesichert werden soll:">
+                                          <Label text="Days to run backup:">
                                              <padding>
                                                 <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
@@ -391,11 +391,11 @@
                                     </VBox>
                                  </content>
                               </Tab>
-                              <Tab text="Intervall">
+                              <Tab text="Interval">
                                  <content>
                                     <HBox>
                                        <children>
-                                          <Label text="Alle:">
+                                          <Label text="Every:">
                                              <HBox.margin>
                                                 <Insets bottom="10.0" left="5.0" right="5.0" top="15.0" />
                                              </HBox.margin>
@@ -418,7 +418,7 @@
                         </TabPane>
                         <HBox>
                            <children>
-                              <Label text="Start um:">
+                              <Label text="Start at:">
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </padding>
@@ -438,7 +438,7 @@
                         </HBox>
                         <HBox prefHeight="76.0" prefWidth="481.0">
                            <children>
-                              <CheckBox fx:id="cb_catchUpBackups" mnemonicParsing="false" prefHeight="62.0" prefWidth="242.0" text="versäumte Backups nachholen,&#10;wenn die Zeit bis zur nächsten&#10;Ausführung größer ist als:">
+                              <CheckBox fx:id="cb_catchUpBackups" mnemonicParsing="false" prefHeight="62.0" prefWidth="242.0" text="catch up backups if time to&#10;next execution is bigger than:">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>
@@ -474,7 +474,7 @@
                                     <ToggleGroup fx:id="tg_autocleanMode" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton fx:id="rb_autoclean_simple" mnemonicParsing="false" text="Einfach" toggleGroup="$tg_autocleanMode">
+                              <RadioButton fx:id="rb_autoclean_simple" mnemonicParsing="false" text="Basic" toggleGroup="$tg_autocleanMode">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -482,7 +482,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                  </padding>
                               </RadioButton>
-                              <RadioButton fx:id="rb_autoclean_extended" mnemonicParsing="false" text="Erweitert" toggleGroup="$tg_autocleanMode">
+                              <RadioButton fx:id="rb_autoclean_extended" mnemonicParsing="false" text="Advanced" toggleGroup="$tg_autocleanMode">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin>
@@ -494,11 +494,11 @@
                         </HBox>
                         <TabPane prefHeight="328.0" prefWidth="491.0" tabClosingPolicy="UNAVAILABLE">
                            <tabs>
-                              <Tab text="Einfach">
+                              <Tab text="Basic">
                                  <content>
                                     <HBox prefHeight="100.0" prefWidth="200.0">
                                        <children>
-                                          <Label text="Behalte letzte X Backupsätze. X =">
+                                          <Label text="Number of most recent backup sets to keep:">
                                              <HBox.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                                              </HBox.margin>
@@ -512,13 +512,13 @@
                                     </HBox>
                                  </content>
                               </Tab>
-                              <Tab text="Erweitert">
+                              <Tab text="Advanced">
                                  <content>
                                     <VBox prefHeight="70.0" prefWidth="491.0">
                                        <children>
                                           <HBox prefHeight="60.0" prefWidth="491.0">
                                              <children>
-                                                <Label text="Anzahl der Regeln:">
+                                                <Label text="Number of rules:">
                                                    <HBox.margin>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
                                                    </HBox.margin>
@@ -546,11 +546,11 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <Label text="Jetzt bis:" GridPane.halignment="RIGHT" />
-                                                <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
-                                                <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
-                                                <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-                                                <Label text="bis:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                                                <Label text="Now until:" GridPane.halignment="RIGHT" />
+                                                <Label text="to:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                                                <Label text="to:" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                                                <Label text="to:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
+                                                <Label text="to:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
                                                 <Spinner fx:id="sp_rule_1" GridPane.columnIndex="1" />
                                                 <Spinner fx:id="sp_rule_2" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <Spinner fx:id="sp_rule_3" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -564,11 +564,11 @@
                                                 <Spinner fx:id="sp_rule_3_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                                 <Spinner fx:id="sp_rule_4_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="3" />
                                                 <Spinner fx:id="sp_rule_5_number" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="4" />
-                                                <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" />
-                                                <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                <Label text="Zu behaltende Backupsätze:" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                                                <Label text="Nr of backup sets to keep:" GridPane.columnIndex="3" />
+                                                <Label text="Nr of backup sets to keep:" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                <Label text="Nr of backup sets to keep:" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                                <Label text="Nr of backup sets to keep:" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                                                <Label text="Nr of backup sets to keep:" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                                                 <Label text="inf" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                              </children>
                                           </GridPane>
@@ -587,7 +587,7 @@
       <ButtonBar>
         <buttons>
           <Button mnemonicParsing="false" onAction="#okAction" text="OK" />
-            <Button mnemonicParsing="false" onAction="#cancelAction" text="Abbrechen" />
+            <Button mnemonicParsing="false" onAction="#cancelAction" text="Cancel" />
         </buttons>
       </ButtonBar>
    </children>

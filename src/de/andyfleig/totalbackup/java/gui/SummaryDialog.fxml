@@ -9,7 +9,7 @@
    <children>
       <HBox>
          <children>
-            <Label text="Aktueller Backup-Task:">
+            <Label text="Current Backup-Task:">
                <HBox.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
@@ -34,11 +34,11 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Anzahl der zu sichernden Ordner:" />
-            <Label text="Anzahl der zu kopierenden Dateien:" GridPane.rowIndex="1" />
-            <Label text="Anzahl der zu verlinkenden Dateien:" GridPane.rowIndex="2" />
-            <Label text="Größe der zu kopierenden Dateien:" GridPane.rowIndex="3" />
-            <Label text="Größe der zu verlinkenden Dateien:" GridPane.rowIndex="4" />
+            <Label text="Number of directories to backup:" />
+            <Label text="Number of files to copy:" GridPane.rowIndex="1" />
+            <Label text="Number of files to link:" GridPane.rowIndex="2" />
+            <Label text="Total size of files to copy:" GridPane.rowIndex="3" />
+            <Label text="Total size of files to link:" GridPane.rowIndex="4" />
             <Label fx:id="label_numberOfDirsDyn" text="100" GridPane.columnIndex="1" />
             <Label fx:id="label_numberToCopyDyn" text="100" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label fx:id="label_numberToLinkDyn" text="100" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -54,7 +54,7 @@
       </GridPane>
       <HBox nodeOrientation="RIGHT_TO_LEFT">
          <children>
-            <Button mnemonicParsing="false" onAction="#cancelAction" text="Abbrechen">
+            <Button mnemonicParsing="false" onAction="#cancelAction" text="Cancel">
                <HBox.margin>
                   <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
                </HBox.margin>
