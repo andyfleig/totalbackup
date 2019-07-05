@@ -24,7 +24,7 @@ import data.BackupTask;
 import javafx.stage.Stage;
 
 /**
- * JavaFX based Main-Windows of TotalBackup.
+ * JavaFX based Main-Window of TotalBackup.
  *
  * @author Andreas Fleig
  */
@@ -41,19 +41,18 @@ public interface IFxMainframeListener {
 	public void saveProperties();
 
 	/**
-	 * Deletes the BackupTask with the given name. No action will be performed if no BackupTask with the given name
-	 * exists.
+	 * Deletes the BackupTask with the given taskName from the list of BackupTasks (if any).
 	 *
 	 * @param taskName name of the BackupTask to delete
 	 */
 	public void deleteBackupTaskWithName(String taskName);
 
 	/**
-	 * Deletes all empty Backup-Folders (e.g. created but not removed when a backup was canceled)
+	 * Deletes empty backup folders within the destination path.
 	 *
 	 * @param task corresponding BackupTask
 	 */
-	public void deleteEmptyBackupFolders(String path, BackupTask task);
+	public void deleteEmptyBackupFolders(BackupTask task);
 
 	/***
 	 * Executes the BackupTask with the given Name immediately.
@@ -62,7 +61,7 @@ public interface IFxMainframeListener {
 	public void runBackupTaskWithName(String taskName);
 
 	/**
-	 * Markes the given task as finished and thus as not currently running. Allows to reschedule.
+	 * Marks the given task as finished and thus as not currently running. Allows to reschedule.
 	 *
 	 * @param task     task to mark as finished
 	 * @param schedule whether the task should be rescheduled

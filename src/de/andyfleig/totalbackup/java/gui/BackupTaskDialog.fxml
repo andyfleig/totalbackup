@@ -42,7 +42,7 @@
                               <ListView fx:id="lv_sources" HBox.hgrow="ALWAYS" />
                               <VBox>
                                  <children>
-                                    <Button mnemonicParsing="false" onAction="#addSourcePathAction" text="Hinzufügen" />
+                                    <Button mnemonicParsing="false" onAction="#addSourceAction" text="Hinzufügen" />
                                     <Button mnemonicParsing="false" onAction="#editSourcePathAction" text="Bearbeiten" />
                                     <Button mnemonicParsing="false" onAction="#removeSourcePathAction" text="Löschen" />
                                  </children>

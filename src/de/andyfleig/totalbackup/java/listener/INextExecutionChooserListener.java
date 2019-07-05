@@ -22,17 +22,26 @@ package listener;
 
 import java.time.LocalDateTime;
 
-public interface ISchedulingDialogListener {
+/**
+ * Listener of the INextExecutionChooserDialog.
+ *
+ * @author Andreas Fleig
+ */
+public interface INextExecutionChooserListener {
+	/**
+	 * Skips this execution of the BackupTask. The BackupTask will be rescheduled accorting to its configuration.
+	 */
+	public void skipBackup();
 
 	/**
-	 * Schedult den betreffenden BackupTask neu auf die gegebene Zeit.
+	 * Postpones this BackupTask to the given time.
 	 *
-	 * @param time Zeit auf die der BackupTask geschedult werden soll
+	 * @param nextExecutionTime time to postpone the execution of the BackupTask to
 	 */
-	public void scheduleBackup(LocalDateTime time);
+	public void postponeBackupTo(LocalDateTime nextExecutionTime);
 
 	/**
-	 * Reschedult den betreffenden BackupTask.
+	 * Reschedules the BackupTask to be executed immediately.
 	 */
-	public void rescheduleTask();
+	public void retry();
 }

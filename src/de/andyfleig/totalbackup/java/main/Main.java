@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -23,21 +23,20 @@ package main;
 import gui.FxMainframe;
 
 /**
- * Main-Klasse von TotalBackup.
+ * Main class of TotalBackup.
  *
  * @author Andreas Fleig
  */
 public class Main {
 
 	/**
-	 * Main-Methode von TotalBackup.
+	 * Main method of TotalBackup.
 	 *
-	 * @param args Start-Argumente
+	 * @param args execution arguments
 	 */
 	public static void main(String[] args) {
 
 		FxMainframe fxMainframe = new FxMainframe();
-
 
 		Controller c = new Controller(fxMainframe);
 		c.startController(args);

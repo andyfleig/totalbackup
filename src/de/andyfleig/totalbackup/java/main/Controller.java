@@ -57,55 +57,61 @@ import com.google.gson.reflect.TypeToken;
 import data.BackupTask;
 import data.BackupThreadContainer;
 import listener.IGUIControllerListener;
-import listener.INECListener;
+import listener.INextExecutionChooserListener;
 
 /**
- * Controller zur Steuerung der Anwendung.
+ * Main controller of TotalBackup.
  *
  * @author Andreas Fleig
  */
 public class Controller {
 
 	/**
-	 * Kommandozeilenargumente welche aus der Main übergeben werden.
+	 * Call arguments.
 	 */
 	private String[] arguments;
 	/**
-	 * Liste aller erstellten Backup-Tasks.
+	 * List of all BackupTasks.
 	 */
 	private ArrayList<BackupTask> backupTasks = new ArrayList<>();
 	/**
-	 * Aktuelle IBackupListener-Instanz.
+	 * IBackupListener instance.
 	 */
 	private IBackupListener backupListener;
 	/**
-	 * Alle laufenden Backup-Taks
+	 * List containing the names of all currently running BackupTasks.
 	 */
 	private ArrayList<String> runningBackupTasks = new ArrayList<>();
-	/**
-	 * Timer für die AutoBackup-Funktion.
-	 */
-	private ScheduledThreadPoolExecutor timer = new ScheduledThreadPoolExecutor(3);
 
+	private ScheduledThreadPoolExecutor threadExecutor = new ScheduledThreadPoolExecutor(3);
+	/**
+	 * List of all BackupThreads.
+	 */
 	private ArrayList<BackupThreadContainer> backupThreads;
 
 	/**
-	 * Gibt an um wie viele Sekunden das nachzuholenden Backup (von now an) verzögert werden soll.
+	 * Defines how many seconds a backup to catch-up should be delayed.
 	 */
 	private static final int DELAY_FOR_MISSED_BACKUP = 2;
 
 	private static final long NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP = 90;
 
-	// Größe einer Inode (in Byte):
+	// size of one inode (in Byte):
 	private static final double SIZE_OF_INODE = 4096;
 
+	// Controller of TotalBackups GUI.
 	private GuiController guiController;
 
+	/**
+	 * Creates a new controller with the given FxMainframe.
+	 *
+	 * @param fxMainframe current mainframe instance
+	 */
 	public Controller(FxMainframe fxMainframe) {
 		guiController = new GuiController(new IGUIControllerListener() {
 			@Override
-			public boolean argsContains(String s) {
-				return Controller.this.argsContains(s);
+			public boolean argsContains(String arg) {
+				return Controller.this.argsContains(arg);
 			}
 
 			@Override
@@ -120,7 +126,7 @@ public class Controller {
 
 			@Override
 			public void saveProperties() {
-				savePropertiesGson();
+				saveSerialization();
 			}
 
 			@Override
@@ -153,7 +159,7 @@ public class Controller {
 			}
 
 			@Override
-			public void deleteEmptyBackupFolders(String path, BackupTask task) {
+			public void deleteEmptyBackupFolders(BackupTask task) {
 				Controller.this.deleteEmptyBackupFolders(task);
 			}
 
@@ -169,52 +175,32 @@ public class Controller {
 	 */
 	public void startController(String[] args) {
 		this.arguments = args;
-		// Dafür sorgen dass nur eine Instanz des Programms laufen kann:
+		// Restrict number of running instances of TotalBackup to 1 using a opened network socket
 		try {
 			new ServerSocket(2210);
 		} catch (IOException e) {
-			// Programm läuft schon:
 			System.out.println("TotalBackup is already running");
 			System.exit(1);
 		}
 
 		backupThreads = new ArrayList<>();
 
-		// Listener anlegen:
 		backupListener = new IBackupListener() {
-
 			@Override
-			public void printOut(final String s, final boolean error, final String taskName) {
+			public void setStatus(final String msg, final boolean error, final String taskName) {
 				SwingUtilities.invokeLater(new Runnable() {
 
 					@Override
 					public void run() {
-						Controller.this.printStatus(s, error, taskName);
+						Controller.this.setStatus(msg, error, taskName);
 					}
 
 				});
 			}
 
 			@Override
-			public void setStatus(final String status, BackupTask task) {
-				SwingUtilities.invokeLater(new Runnable() {
-
-					@Override
-					public void run() {
-						// Avoid throwing IllegalStateException by running from a non-JavaFX thread
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								guiController.setStatusOfBackupTask(task.getTaskName(), true, status);
-							}
-						});
-					}
-				});
-			}
-
-			@Override
-			public void log(String event, BackupTask task) {
-				Controller.this.log(event, task);
+			public void log(String msg, BackupTask task) {
+				Controller.this.log(msg, task);
 
 			}
 
@@ -231,34 +217,33 @@ public class Controller {
 			}
 
 			@Override
-			public void deleteEmptyBackupFolders(String path, BackupTask task) {
+			public void deleteEmptyBackupFolders(BackupTask task) {
 				Controller.this.deleteEmptyBackupFolders(task);
 
 			}
 
 		};
+		// load serialized settings of TotalBackup (the BackupTasks)
+		loadSerialization();
 
-		loadSerializationGson();
-		// Liste aller versäumten BackupTasks:
+		// list of all missed BackupTasks to catch up
 		ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
-		// Prüfen ob Backups versäumt wurden:
+		// check whether backups has been missed since the last execution of TotalBackup
 		for (BackupTask task : backupTasks) {
 			if (task.getLocalDateTimeOfNextBackup() != null &&
 					task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
-				// Dieses Backup wurde versäumt
 				missedBackupTaks.add(task);
 			}
 		}
 
 		guiController.initialize();
 
-		// Alle Tasks werden neu geschedulet:
+		// reschedule all backup tasks according to there auto-backup configuration (if any)
 		scheduleBackupTasks();
 
-		// Versäumte Backups nachholen:
+		// catch up missed backups
 		for (BackupTask task : missedBackupTaks) {
-			// Prüfen ob es sich noch lohnt das Backup nachzuholen (anhand
-			// von profitableTimeUntilNextExecution des Tasks):
+			// check whether it is worth catching those backups up (by checking the next regularly planned execution)
 			if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution())).isAfter(
 					LocalDateTime.now())) {
 				String msg = ResourceBundle.getBundle("messages").getString("Messages.popup.catchUp1") + " " +
@@ -270,7 +255,26 @@ public class Controller {
 		}
 	}
 
-	private void loadSerializationGson() {
+	/**
+	 * Creating and writing GSON-based serialization of the BackupTasks.
+	 */
+	private void saveSerialization() {
+		Gson gson = new Gson();
+		String settings = gson.toJson(backupTasks);
+		try {
+			PrintWriter out = new PrintWriter("./properties");
+			out.println(settings);
+			out.close();
+		} catch (FileNotFoundException e) {
+			System.err.println("Error: FileNotException while writing properties");
+		}
+
+	}
+
+	/**
+	 * Loads the GSON-based serialization of the BackupTasks and adds them to the local list of BackupTasks.
+	 */
+	private void loadSerialization() {
 		String settings = "";
 		File properties = new File("./properties");
 		if (properties.exists()) {
@@ -298,13 +302,15 @@ public class Controller {
 				}
 			}
 			for (BackupTask backupTask : backupTasks) {
-				guiController.addBackupTask(backupTask.getTaskName());
+				guiController.addBackupTask(backupTask);
 			}
 		}
 	}
 
 	/**
-	 * Startet die Backup-Vorbereitung (in eigenem Thread).
+	 * Starts the preparation of the given BackupTask.
+	 *
+	 * @param task BackupTask to start preparation for
 	 */
 	public void startPreparation(BackupTask task) {
 		Thread backupThread = new Thread(new Runnable() {
@@ -317,7 +323,11 @@ public class Controller {
 		backupThread.start();
 	}
 
-
+	/**
+	 * Runs the actual preparation of the given BackupTask (runs the analysis).
+	 *
+	 * @param task corresponding BackupTask
+	 */
 	private void runPreparation(BackupTask task) {
 		try {
 			Thread.sleep(1000);
@@ -326,22 +336,22 @@ public class Controller {
 		}
 
 		Backupable backup;
-		// Backup-Objekt in Abhängigkeit des Backup-Modus erstellen:
+		// create the backup instance (Backupable) depending on the backup type
 		if (task.getBackupMode() == 1) {
-			// Prüfen ob bereits ein "normales" Backup erstellt wurde oder ob es
-			// sich um die erste Ausführung handelt:
+			// case: hardlink backup
+			// check whether it is the first execution of the hardlink backup which means it has to be executed as
+			// normal backup since there is no backup set yet to link to
 			File[] files = new File(task.getDestinationPath()).listFiles();
 			boolean backupSetFound = false;
 			if (files.length > 0) {
 				for (File file : files) {
 					if (file.isDirectory()) {
-						// Namen des Ordners "zerlegen":
+						// split up name of the directory
 						StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-						// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+						// has to consist of exactly two parts (name of the BackupTask and date)
 						if (tokenizer.countTokens() != 2) {
 							continue;
 						}
-						// Erster Token muss dem TaskName entsprechen:
 						if (!tokenizer.nextToken().equals(task.getTaskName())) {
 							continue;
 						}
@@ -353,38 +363,39 @@ public class Controller {
 
 			if (backupSetFound) {
 				String output = ResourceBundle.getBundle("messages").getString("Messages.startHardlinkBackup");
-				printStatus(output, false, task.getTaskName());
+				setStatus(output, false, task.getTaskName());
 				log(output, task);
 				backup = new HardlinkBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			} else {
 				String output = ResourceBundle.getBundle("messages").getString("Messages.startNormalBackup");
-				printStatus(output, false, task.getTaskName());
+				setStatus(output, false, task.getTaskName());
 				log(output, task);
 				backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(),
 						task.getDestinationPath());
 			}
 		} else {
+			// case: normal backup
 			backup = new NormalBackup(backupListener, task.getTaskName(), task.getSources(), task.getDestinationPath());
 		}
 
 		// show PreparingDialog if not in autostart-mode
-		if (!task.getAutostart()) {
+		if (!task.autostartIsEnabled()) {
 			guiController.showPreparingDialog(task, backup);
 			try {
-				// Workaround to force JavaFX to show PreparingDialog
+				// workaround to force JavaFX to show PreparingDialog
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				System.out.println("Warning: Sleeping thread was interrupted.");
 			}
 		}
 
-		// Testen ob Quell- und Zielpfad(e) existieren:
+		// check whether sources and destination exist
 		ArrayList<Source> sources = task.getSources();
 		for (Source source : sources) {
 			if (!(new File(source.getPath())).exists()) {
 				String output = ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errorSourceDontExists");
-				printStatus(output, false, task.getTaskName());
+				setStatus(output, false, task.getTaskName());
 				log(output, task);
 				guiController.disposePreparingDialogIfNotNull();
 				taskFinished(task, true);
@@ -394,40 +405,46 @@ public class Controller {
 
 		// DestinationVerification:
 		String OS = System.getProperty("os.name").toLowerCase();
-		if (!OS.contains("win") && task.getDestinationVerification()) {
+		if (!OS.contains("win") && task.destinationVerificationIsEnabled()) {
 			File identifier = new File(task.getDestinationPath() + "/" + task.getTaskName() + ".id");
 			if (!(new File(task.getDestinationPath())).exists() || !identifier.exists()) {
-				// Abfrage: Pfad suchen?:
+				// request to user: try to find path?
 				int reply = JOptionPane.showConfirmDialog(null,
 						ResourceBundle.getBundle("messages").getString("Messages.SearchForCorrectDestPath"), null,
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
-					// ja:
+					// user response: YES
 					ArrayList<String> correctDest = searchForCorrectDestPath(task.getTaskName(),
 							task.getDestinationPath());
 					boolean successful = false;
 					for (String dest : correctDest) {
+						// request to user: possible path found ... is it correct?
 						int reply2 = JOptionPane.showConfirmDialog(null,
 								ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect1") + " " +
 										dest + "  " +
 										ResourceBundle.getBundle("messages").getString("Messages.FoundDestCorrect2"),
 								null, JOptionPane.YES_NO_OPTION);
 						if (reply2 == JOptionPane.YES_OPTION) {
+							// user response: YES
+							// request to user: set this path as new destination path?
 							int reply3 = JOptionPane.showConfirmDialog(null,
 									ResourceBundle.getBundle("messages").getString("Messages.SetNewPathAsDest"), null,
 									JOptionPane.YES_NO_OPTION);
 							if (reply3 == JOptionPane.YES_OPTION) {
+								// user response: YES
 								successful = true;
 								task.setDestinationPath(dest);
 							} else {
+								// user response: NO
 								successful = true;
 								task.setRealDestinationPath(task.getDestinationPath());
 								task.setDestinationPath(dest);
-								savePropertiesGson();
+								saveSerialization();
 							}
 						}
 					}
 					if (!successful) {
+						// DestinationVerification as not successful -> cancel backup
 						cancelBackup(task, false);
 						guiController.disposePreparingDialogIfNotNull();
 						askForNextExecution(task);
@@ -435,7 +452,7 @@ public class Controller {
 					}
 
 				} else {
-					// nein:
+					// user response: NO
 					cancelBackup(task, false);
 					guiController.disposePreparingDialogIfNotNull();
 					askForNextExecution(task);
@@ -444,7 +461,7 @@ public class Controller {
 			}
 		}
 
-		// Prüfen ob der Zielpfad existiert:
+		// check whether destination path exists
 		if (!(new File(task.getDestinationPath())).exists()) {
 			cancelBackup(task, false);
 			guiController.disposePreparingDialogIfNotNull();
@@ -456,29 +473,28 @@ public class Controller {
 			backup.runPreparation(task);
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			printStatus(output, false, task.getTaskName());
+			setStatus(output, false, task.getTaskName());
 			log(output, task);
 		}
 
-		// TODO: Probleme mit setPrepared bei abbruch?
-		task.setPrepared(true);
+		// TODO: problems with setPrepared when cancelling?
+		task.setPrepared();
 
 		guiController.disposePreparingDialogIfNotNull();
 
-		// TODO: nichts zu tun -> Meldung
-		// Prüfen ob ausreichend freier Speicherplatz verfügbar ist:
+		// check whether enough free space is available
 		File destDir = new File(task.getDestinationPath());
 		double freeSize = destDir.getFreeSpace();
 		BackupInfos backupInfos = backup.getBackupInfos();
-		// TODO: Zusätzliche Warnung wenn knapp (z.B. 1%)
+		// ToDo: additional warning if there is not much more free space than necessary (e.g. 1%)?
 		double sizeNeeded = backupInfos.getSizeToCopy() + SIZE_OF_INODE * backupInfos.getNumberOfFilesToCopy() +
 				SIZE_OF_INODE * backupInfos.getNumberOfDirectories();
 		if (freeSize <= sizeNeeded) {
-			// Es steht nicht ausreichend Speicherplatz zur Verfügung:
+			// not enough free space available
 			JOptionPane.showMessageDialog(null,
 					ResourceBundle.getBundle("messages").getString("GUI.Mainframe.errNotEnoughSpace"),
 					ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
-			// Backup abbrechen:
+			// cancel backup
 			return;
 		}
 		boolean isCanceled = true;
@@ -490,9 +506,9 @@ public class Controller {
 		// disposeDialog PreparingDialog:
 		guiController.disposePreparingDialogIfNotNull();
 
-		// show SummaryDialog if not canceled and not in autostart-mode
+		// show SummaryDialog if not canceled and not in auto-backup mode
 		if (!isCanceled && !backup.isCanceled()) {
-			if (!task.getAutostart()) {
+			if (!task.autostartIsEnabled()) {
 				guiController.showSummaryDialog(task, backup);
 				synchronized (task) {
 					try {
@@ -511,26 +527,10 @@ public class Controller {
 	}
 
 	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Tasks) mit Gson.
-	 */
-	private void savePropertiesGson() {
-		Gson gson = new Gson();
-		String settings = gson.toJson(backupTasks);
-		try {
-			PrintWriter out = new PrintWriter("./properties");
-			out.println(settings);
-			out.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("Error: FileNotException while writing properties");
-		}
-
-	}
-
-	/**
-	 * Bricht den gegebenen BackupTask ab und reschedult den BackupTask wenn rescheduling true ist.
+	 * Cancels the given BackupTask and reschedules if desired.
 	 *
-	 * @param task       abzubrechender BackupTask
-	 * @param reschedule gibt an, ob der BackupTask rescheduled werden soll
+	 * @param task       BackupTask to cancel
+	 * @param reschedule whether the BackupTask should be rescheduled (true) or not (false)
 	 */
 	private void cancelBackup(BackupTask task, boolean reschedule) {
 		// ToDo: non-JavaFX thread?
@@ -552,17 +552,19 @@ public class Controller {
 	}
 
 	/**
-	 * Erfragt beim Benutzer wann das abgebrochene Backup das nächste mal ausgeführt werden soll.
+	 * Request from user when the given BackupTask should be executed the next time.
+	 *
+	 * @param task given BackupTask
 	 */
 	public void askForNextExecution(BackupTask task) {
-		NextExecutionChooser nec = new NextExecutionChooser(new INECListener() {
+		NextExecutionChooser nec = new NextExecutionChooser(new INextExecutionChooserListener() {
 			@Override
 			public void skipBackup() {
-				rescheduleBackupTask(task);
+				scheduleBackupTask(task);
 			}
 
 			@Override
-			public void postponeBackup(LocalDateTime nextExecutionTime) {
+			public void postponeBackupTo(LocalDateTime nextExecutionTime) {
 				scheduleBackupTaskAt(task, nextExecutionTime);
 			}
 
@@ -576,13 +578,14 @@ public class Controller {
 	}
 
 	/**
-	 * Sucht nach dem "richtigen" Zielpfad. Gibt eine Liste möglicher Kandidaten zurück.
+	 * Tries to find the correct destination path for the BackupTask with the given name and returns a list of possible
+	 * candidates. Used for DestinationVerification.
 	 *
-	 * @param taskName      Name des BackupTasks
-	 * @param wrongDestPath "falscher" Zielpfad
-	 * @return Liste möglicher "richiger" Zielpfade
+	 * @param taskName      name of the corresponding BackupTask
+	 * @param wrongDestPath wrong destination
+	 * @return list of candidates for the correct destination path
 	 */
-	public ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
+	private ArrayList<String> searchForCorrectDestPath(String taskName, String wrongDestPath) {
 		ArrayList<String> foundDestPaths = new ArrayList<>();
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.contains("win")) {
@@ -603,6 +606,13 @@ public class Controller {
 		return foundDestPaths;
 	}
 
+	/**
+	 * Checks for a valid identifier-file for the BackupTask with the given name and the given destination.
+	 *
+	 * @param taskName BackupTask to check for
+	 * @param dest     given destination path
+	 * @return whether there is a valid identifier (true) or not (false)
+	 */
 	private boolean checkForIdentifier(String taskName, String dest) {
 		File destFile = new File(dest);
 		if (destFile.exists()) {
@@ -619,12 +629,12 @@ public class Controller {
 	}
 
 	/**
-	 * Startet den Backup-Vorgang eines bestimmten Backup-Tasks.
+	 * Starts the backup procedure for the given BackupTask in the given Backupable.
 	 *
-	 * @param task Backup-Task welcher ausgeführt werden soll
+	 * @param task BackupTask to run
 	 */
 	public void startBackup(BackupTask task, Backupable backup) {
-		// "Richtigen" Zielpfad setzten (wenn nötig):
+		// set correct destination-path (if necessary)
 		if (task.getRealDestinationPath() != null) {
 			task.setDestinationPath(task.getRealDestinationPath());
 			task.setRealDestinationPath(null);
@@ -638,17 +648,18 @@ public class Controller {
 			backup.runBackup(task);
 		} catch (BackupCanceledException ex) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			printStatus(output, false, task.getTaskName());
+			setStatus(output, false, task.getTaskName());
 			log(output, task);
 		}
-		// "Richtigen" Zielpfad setzten (wenn nötig):
+		// set correct destination-path (if necessary)
+		// ToDo: why again (see above)?
 		if (task.getRealDestinationPath() != null) {
 			task.setDestinationPath(task.getRealDestinationPath());
 			task.setRealDestinationPath(null);
 		}
 
-		// alte Backups aufräumen (wenn gewünscht):
-		if (task.simpleAutoCleanIsEnabled()) {
+		// clean up old backups (if auto-clean is enabled)
+		if (task.basicAutoCleanIsEnabled()) {
 			try {
 				while (this.calcNumberOfBackups(task) > task.getNumberOfBackupsToKeep()) {
 					File toDelete = new File(task.getDestinationPath() + File.separator + findOldestBackup(
@@ -661,17 +672,17 @@ public class Controller {
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
-					printStatus(toDelete.getAbsolutePath() + " " +
+					setStatus(toDelete.getAbsolutePath() + " " +
 									ResourceBundle.getBundle("messages").getString("Messages.deleted"), false,
 							task.getTaskName());
 				}
 			} catch (BackupCanceledException e) {
 				String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-				printStatus(outprint, false, task.getTaskName());
+				setStatus(outprint, false, task.getTaskName());
 				log(outprint, task);
 			}
-		} else if (task.extendedAutoCleanIsEnabled()) {
-			runExtendedClean(task);
+		} else if (task.advancedAutoCleanIsEnabled()) {
+			runAdvancedClean(task);
 		}
 
 		task = null;
@@ -679,9 +690,9 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt eine Liste mit allen Namen aller Backup-Tasks zurück.
+	 * Returns a list with the names of all BackupTasks.
 	 *
-	 * @return Liste der Namen aller Backup-Tasks
+	 * @return list of all BackupTask names
 	 */
 	public ArrayList<String> getBackupTaskNames() {
 		ArrayList<String> backupTaskNames = new ArrayList<>();
@@ -692,30 +703,31 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder
-	 * nicht.
+	 * Sets the status of the BackupTask with the given name to the given message. The error-flag indicates whether it
+	 * is a error status and thus has to be highlighted.
 	 *
-	 * @param s     auszugebender String
-	 * @param error legt fest ob es sich um eine Fehlermeldung handelt oder nicht
+	 * @param msg      message to set the status to
+	 * @param error    whether it is an error status (true) or not (false)
+	 * @param taskName name of the corresponding BackupTask
 	 */
-	private void printStatus(String s, boolean error, String taskName) {
+	private void setStatus(String msg, boolean error, String taskName) {
 		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				guiController.setStatusOfBackupTask(taskName, error, s);
+				guiController.setStatusOfBackupTask(taskName, error, msg);
 			}
 		});
 
 	}
 
 	/**
-	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
+	 * Logs the given message for the given BackupTask.
 	 *
-	 * @param event zu loggender String
-	 * @param task  zugehöriger Task
+	 * @param msg  message to log
+	 * @param task corresponding BackupTask
 	 */
-	private void log(String event, BackupTask task) {
+	private void log(String msg, BackupTask task) {
 		// Log-Datei anlegen:
 		if (task == null) {
 			return;
@@ -734,7 +746,7 @@ public class Controller {
 			LocalDateTime dateDime = LocalDateTime.now();
 			String timePattern = "dd.MM.yyyy HH:mm:ss";
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(timePattern);
-			String output = dtf.format(dateDime) + ": " + event;
+			String output = dtf.format(dateDime) + ": " + msg;
 
 			writer.append("\n" + output);
 			writer.close();
@@ -744,15 +756,14 @@ public class Controller {
 	}
 
 	/**
-	 * Liefert den Backup-Task mit gegebenem Namen zurück. Existiert kein Backup mit dem angegebenen Namen so wird null
-	 * zurückgeliefert.
+	 * Returns the BackupTask with the given name. Returns null if no BackupTask with the given name exists.
 	 *
-	 * @param name Name des "gesuchten" Backup-Tasks
-	 * @return den gesuchten Backup-Task oder null
+	 * @param taskName name of the BackupTask to return
+	 * @return BackupTask with the given name (if any), else null
 	 */
-	public BackupTask getBackupTaskWithName(String name) {
+	public BackupTask getBackupTaskWithName(String taskName) {
 		for (BackupTask backupTask : backupTasks) {
-			if (backupTask.getTaskName().equals(name)) {
+			if (backupTask.getTaskName().equals(taskName)) {
 				return backupTask;
 			}
 		}
@@ -760,19 +771,19 @@ public class Controller {
 	}
 
 	/**
-	 * Fügt einen Backup-Task hinzu.
+	 * Adds the given name of a BackupTask to the list of BackupTasks.
 	 *
-	 * @param task hinzuzufügender Backup-Task
+	 * @param task BackupTask to add
 	 */
 	public void addBackupTask(BackupTask task) {
 		backupTasks.add(task);
-		guiController.addBackupTask(task.getTaskName());
+		guiController.addBackupTask(task);
 	}
 
 	/**
-	 * Löscht einen Backup-Task.
+	 * Removes the given BackupTask from the list of BackupTasks.
 	 *
-	 * @param task zu löschender Backup-Task.
+	 * @param task BackupTask to remove
 	 */
 	public void removeBackupTask(BackupTask task) {
 		backupTasks.remove(task);
@@ -780,10 +791,10 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt die Anzahl der Backup-Sätze zum gegebenen Backup-Task zurück.
+	 * Returns the number of existing backup sets for the given BackupTask.
 	 *
-	 * @param task betreffender BackupTask
-	 * @return Anzahl der Backup-Sätze zum gegebenen Backup-Task
+	 * @param task BackupTask to find existing backup sets for
+	 * @return list of existing backup sets
 	 */
 	private int calcNumberOfBackups(BackupTask task) {
 		File dest = new File(task.getDestinationPath());
@@ -791,28 +802,28 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt eine Liste aller Backupsätze im gegebenen Verzeichnis zurück.
+	 * Returns a list of all existing backup sets within the given directory.
 	 *
-	 * @param dir  zu durchsuchendes Verzeichnis
-	 * @param task betreffender BackupTask
-	 * @return Liste aller gefundenen Backupsätze
+	 * @param dir  directory to find backup sets in
+	 * @param task corresponding BackupTask
+	 * @return list of existing backup sets
 	 */
 	private ArrayList<File> findBackupSets(File dir, BackupTask task) {
 		File[] files = dir.listFiles();
 		ArrayList<File> foundBackupsets = new ArrayList<>();
 		if (files.length > 0) {
 			for (File file : files) {
-				// Namen des Ordners "zerlegen":
+				// ToDo: duplicate code (5 times)
+				// split up name of the directory
 				StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				// has to consist of exactly two parts (name of the BackupTask and date)
 				if (tokenizer.countTokens() != 2) {
 					continue;
 				}
-				// Erster Token muss dem TaskName entsprechen:
 				if (!tokenizer.nextToken().equals(task.getTaskName())) {
 					continue;
 				}
-				// Zweiter Token muss analysiert werden:
+				// analyze date token (second one)
 				String backupDate = tokenizer.nextToken();
 
 				try {
@@ -820,7 +831,7 @@ public class Controller {
 					sdfToDate.parse(backupDate);
 					foundBackupsets.add(file);
 				} catch (ParseException e) {
-					// Offenbar kein gültiges Datum
+					// ToDo: handle case without valid date
 				}
 			}
 		}
@@ -829,11 +840,11 @@ public class Controller {
 	}
 
 	/**
-	 * Gibt den Pfad des ältesten Backup-Satzes zurück.
+	 * Returns the path of the oldest existing backup set.
 	 *
-	 * @param directories Ordner unter denen der älteste Backupsatz gefunden werden soll
-	 * @param task        betreffender BackupTask
-	 * @return Pfad des ältesten Backup-Satzes
+	 * @param directories directory of the backup sets
+	 * @param task        corresponding BackupTask
+	 * @return oldest backup set
 	 */
 	private String findOldestBackup(ArrayList<File> directories, BackupTask task) {
 
@@ -842,24 +853,23 @@ public class Controller {
 		Date foundDate;
 		for (File directory : directories) {
 			if (directory.isDirectory()) {
-				// Namen des Ordners "zerlegen":
+				// split up name of the directory
 				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				// has to consist of exactly two parts (name of the BackupTask and date)
 				if (tokenizer.countTokens() != 2) {
 					continue;
 				}
-				// Erster Token muss dem TaskName entsprechen:
 				if (!tokenizer.nextToken().equals(task.getTaskName())) {
 					continue;
 				}
-				// Zweiter Token muss analysiert werden:
+				// analyze date token (second one)
 				String backupDate = tokenizer.nextToken();
 
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 					foundDate = sdfToDate.parse(backupDate);
 				} catch (ParseException e) {
-					// Offenbar kein gültiges Datum
+					// no valid date
 					continue;
 				}
 				if (oldestDate == null) {
@@ -877,30 +887,27 @@ public class Controller {
 	}
 
 	/**
-	 * Führt für den gegebenen BackupTask das erweiterte CleanUp durch.
+	 * Executes the auto-cleaning of the given BackupTask.
 	 *
-	 * @param task BackupTask für den das CleanUp durchgeführt werden soll
+	 * @param task auto-cleaning of the task
 	 */
-	private void runExtendedClean(BackupTask task) {
-		// aktuelle SystemZeit:
+	private void runAdvancedClean(BackupTask task) {
 		LocalDateTime currentSystemTime = LocalDateTime.now();
+		ArrayList<File> existingBackupSets = findBackupSets(new File(task.getDestinationPath()), task);
 
-		// Liste aller existenten Backupsätze anlegen:
-		ArrayList<File> backupSets = findBackupSets(new File(task.getDestinationPath()), task);
-
-		if (backupSets.size() == 0) {
+		if (existingBackupSets.size() == 0) {
 			return;
 		}
-		// Buckets anlegen (Anzahl = Menge der Regeln):
+		// create buckes according to the number of defined rules
 		ArrayList<File> bucket1 = new ArrayList<>();
 		ArrayList<File> bucket2 = new ArrayList<>();
 		ArrayList<File> bucket3 = new ArrayList<>();
 		ArrayList<File> bucket4 = new ArrayList<>();
 		ArrayList<File> bucket5 = new ArrayList<>();
 
-		// Dates für die Bucket-Grenzen erstellen:
+		// create dates for those buckets
 		LocalDateTime[] boundaries = new LocalDateTime[task.getNumberOfExtendedCleanRules() - 1];
-		String[] boundaryStrings = task.getBoundaries();
+		String[] boundaryStrings = task.getFormattedBoundaries();
 		for (int i = 0; i < boundaries.length; i++) {
 			StringTokenizer tokanizer = new StringTokenizer(boundaryStrings[i], "_");
 			String threshold = tokanizer.nextToken();
@@ -923,8 +930,8 @@ public class Controller {
 			}
 		}
 
-		// Bäckupsätze in die Buckets sortieren
-		for (File backupSet : backupSets) {
+		// sort backup sets to the buckets
+		for (File backupSet : existingBackupSets) {
 			StringTokenizer tokenizer = new StringTokenizer(backupSet.getName(), "_");
 			tokenizer.nextToken();
 			String currentBackupSet = tokenizer.nextToken();
@@ -935,11 +942,11 @@ public class Controller {
 			} catch (ParseException e) {
 				System.err.println("Error while parsing date");
 			}
-			// dateOfCurrentBackupSet in LocalTimeDate umwandeln:
+			// transform dateOfCurrentBackupSet to LocalTimeDate
 			LocalDateTime ltmOfCurrentBackupSet = LocalDateTime.ofInstant(dateOfCurrentBackupSet.toInstant(),
 					ZoneId.systemDefault());
 
-			// Richtiges Bucket finden und einfügen:
+			// find correct bucket and insert
 			switch (task.getNumberOfExtendedCleanRules()) {
 				case 1:
 					bucket1.add(backupSet);
@@ -987,8 +994,7 @@ public class Controller {
 			}
 		}
 
-		// Alle Buckets der maximalgröße Entsprechend "ausmisten":
-		// Kontrolle auf Wert "all":
+		// clear all the buckets according to their maximum size
 		if (task.getBackupsToKeep().length > 0 && task.getBackupsToKeep()[0] != -1) {
 			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
 				if (!BackupHelper.deleteDirectory(
@@ -1047,36 +1053,37 @@ public class Controller {
 	}
 
 	/**
-	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
+	 * Adds the BackupTask with the given name to the list of running BackupTasks.
 	 *
-	 * @param taskName Name des hinzuzufügenden Backup-Tasks
+	 * @param taskName name of the started BackupTask
 	 */
 	private void taskStarted(String taskName) {
 		runningBackupTasks.add(taskName);
 		System.out.println("Task started:" + taskName);
-		printStatus("Started", false, taskName);
+		setStatus("Started", false, taskName);
 	}
 
 	/**
-	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
+	 * Deletes the given BackupTask from the list of running BackupTasks.
 	 *
-	 * @param task Der zu entfernenden Backup-Task
+	 * @param task finished BackupTask ToDo: taskStarted() and taskFinished should both use the name of the task or the
+	 *             BackupTask itself!
 	 */
 	private void taskFinished(BackupTask task, boolean schedule) {
 		if (!runningBackupTasks.remove(task.getTaskName())) {
 			System.err.println("Error: This task isn't running");
 		}
 		System.out.println("Task finished:" + task.getTaskName());
-		printStatus("Finished", false, task.getTaskName());
+		setStatus("Finished", false, task.getTaskName());
 		if (schedule) {
 			scheduleBackupTask(task);
 		}
 	}
 
 	/**
-	 * Reschedulet den gegebenen Task.
+	 * Schedules the given BackupTask according to its configuration.
 	 *
-	 * @param task Task der gereschedulet werden soll
+	 * @param task BackupTask to schedule
 	 */
 	public void scheduleBackupTask(final BackupTask task) {
 		LocalDateTime newestBackupTime = BackupHelper.getLocalDateTimeOfNewestBackupSet(task);
@@ -1088,77 +1095,112 @@ public class Controller {
 				e.printStackTrace();
 			}
 		}
-		scheduleBackupTaskStartingAt(task, LocalDateTime.now());
+		scheduleBackupTaskAt(task, LocalDateTime.now());
 	}
 
 	/**
-	 * Reschedult den gegebenen Task von einem bestimmten Zeitpunkt aus.
+	 * Schedules the given BackupTask to be executed immediately.
 	 *
-	 * @param task     zu schedulender Task
-	 * @param dateTime Zeitpunkt von dem aus geschedult werden soll
-	 */
-	private void scheduleBackupTaskStartingAt(final BackupTask task, LocalDateTime dateTime) {
-		// Kontrollieren ob dieser Task bereits läuft:
-		if (runningBackupTasks.contains(task.getTaskName())) {
-			return;
-		}
-		LocalDateTime nextExecutionTime = null;
-		int autoBackupMode = task.getAutoBackupMode();
-		if (autoBackupMode == 0) {
-			return;
-		} else if (autoBackupMode == 1) {
-			nextExecutionTime = calcTimeFromWeekdaysStartingFrom(task.getBackupWeekdays(), task.getStartTime(),
-					dateTime);
-		} else if (autoBackupMode == 2) {
-			nextExecutionTime = calcTimeFromDaysInMonthStartingFrom(task.getBackupDaysInMonth(), task.getStartTime(),
-					dateTime);
-		} else if (autoBackupMode == 3) {
-			nextExecutionTime = calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(),
-					dateTime);
-		}
-		scheduleBackupTaskAt(task, nextExecutionTime);
-	}
-
-	/**
-	 * Schedulet den gegebenen Task auf jetzt (+ Verzögerung).
-	 *
-	 * @param task zu schedulender Task
+	 * @param task   BackupTask to schedule
+	 * @param silent whether the BackupTask should be preformed without status-updates (true) or not (false)
 	 */
 	public void scheduleBackupTaskNow(final BackupTask task, boolean silent) {
-		// Kontrollieren ob dieser Task bereits läuft:
+		// checks whether this BackupTas is already running
 		if (runningBackupTasks.contains(task.getTaskName())) {
 			return;
 		}
 		if (!silent) {
-			printStatus(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
+			setStatus(ResourceBundle.getBundle("messages").getString("Messages.scheduleBackupNow"), false,
 					task.getTaskName());
 		}
 
-		scheduleBackupTaskAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
+		scheduleBackupTaskStartingAt(task, LocalDateTime.now().plusSeconds(DELAY_FOR_MISSED_BACKUP));
 	}
 
+	/**
+	 * Schedules the given BackupTask to be executed immediately.
+	 *
+	 * @param task BackupTask to schedule
+	 */
 	public void scheduleBackupTaskNow(final BackupTask task) {
 		scheduleBackupTaskNow(task, false);
 	}
 
 	/**
-	 * Schedulet den gegebenen Task auf die gegebene Zeit.
+	 * Schedules the given BackupTask according to its configuration.
+	 */
+	public void scheduleBackupTasks() {
+		// clear waiting "queue"
+		for (BackupTask task : backupTasks) {
+			if (task.getScheduledFuture() != null) {
+				task.resetLocalDateTimeOfNextExecution();
+				task.getScheduledFuture().cancel(false);
+			}
+			if (task.getPopupScheduledFuture() != null) {
+				task.getPopupScheduledFuture().cancel(false);
+			}
+		}
+		for (final BackupTask task : backupTasks) {
+			scheduleBackupTask(task);
+		}
+	}
+
+	/**
+	 * Schedules the given BackupTask from the given time (as a starting point).
 	 *
-	 * @param task              zu schedulenden Task
-	 * @param nextExecutionTime Zeit auf die der Task geschedulet wird
+	 * @param task     BackupTask to schedule
+	 * @param dateTime starting point for the scheduling
+	 */
+	private void scheduleBackupTaskStartingAt(final BackupTask task, LocalDateTime dateTime) {
+		// checks whether this BackupTas is already running
+		if (runningBackupTasks.contains(task.getTaskName())) {
+			return;
+
+		}
+		LocalDateTime nextExecutionTime = null;
+		int autoBackupMode = task.getAutoBackupMode();
+		if (autoBackupMode == 0) {
+			return;
+
+		} else if (autoBackupMode == 1) {
+			nextExecutionTime = calcTimeFromWeekdaysStartingFrom(task.getBackupWeekdays(), task.getBackupStartTime(),
+					dateTime);
+
+		} else if (autoBackupMode == 2) {
+			nextExecutionTime = calcTimeFromDaysInMonthStartingFrom(task.getBackupDaysInMonth(),
+					task.getBackupStartTime(), dateTime);
+
+		} else if (autoBackupMode == 3) {
+			nextExecutionTime = calcTimeFromIntervalStartingFrom(task.getIntervalTime(), task.getIntervalUnit(),
+					dateTime);
+
+		}
+		scheduleBackupTaskAt(task, nextExecutionTime);
+	}
+
+	/**
+	 * Schedules the given BackupTask to the given time.
+	 *
+	 * @param task              BackupTask to schedule
+	 * @param nextExecutionTime time for the next execution
 	 */
 	private void scheduleBackupTaskAt(final BackupTask task, LocalDateTime nextExecutionTime) {
+		// checks whether this BackupTas is already running
+		if (runningBackupTasks.contains(task.getTaskName())) {
+			return;
+		}
+
 		task.resetLocalDateTimeOfNextExecution();
 		guiController.setNextExecutionTimeStatus(task.getTaskName(), nextExecutionTime);
 		// scheduling:
-		// Für das Backup:
+		// for the backup itself
 		Runnable backup = new Runnable() {
 			public void run() {
 				taskStarted(task.getTaskName());
 				Thread backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						if (task.getAutostart()) {
+						if (task.autostartIsEnabled()) {
 							startPreparation(task);
 						} else {
 							task.setAutostart(true);
@@ -1172,7 +1214,7 @@ public class Controller {
 				backupThread.start();
 			}
 		};
-		// Für das Popup:
+		// for the popup
 		Runnable popup = new Runnable() {
 			public void run() {
 				showTrayPopupMessage(ResourceBundle.getBundle("messages").getString("Messages.popup.backupTask") + " " +
@@ -1180,60 +1222,38 @@ public class Controller {
 						ResourceBundle.getBundle("messages").getString("Messages.popup.startsInOneMinute"));
 			}
 		};
-		// Task (mit timer) schedulen:
-		task.setScheduledFuture(timer.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.SECONDS),
-				TimeUnit.SECONDS));
-		// Tray-Icon-Popup (mit timer) schedulen:
-		// Prüfen ob das Backup weit genug in der Zukunft liegt um 1min vorher
-		// ein Popup anzuzeigen:
+		// schedule task
+		task.setScheduledFuture(
+				threadExecutor.schedule(backup, LocalDateTime.now().until(nextExecutionTime, ChronoUnit.SECONDS),
+						TimeUnit.SECONDS));
+		// schedule tray icon popup
+		// check whether the backup execution is far enough in the future to show a "one minute warning"
 		if (LocalDateTime.now().until(nextExecutionTime, ChronoUnit.SECONDS) >
 				NUMBER_OF_SECONDS_UNTIL_NEXT_EXECUTION_FOR_POPUP) {
-			task.setPopupScheduledFuture(timer.schedule(popup,
+			task.setPopupScheduledFuture(threadExecutor.schedule(popup,
 					LocalDateTime.now().minusMinutes(1).until(nextExecutionTime, ChronoUnit.SECONDS),
 					TimeUnit.SECONDS));
 		}
 
-		// Nächsten Ausführungszeitpunkt (als LocalDateTime) im Task sichern (um
-		// Backups nachholen zu können):
+		// save next execution time within the BackupTask to be able to catch up missed backups after restart of
+		// TotalBackup
 		task.setLocalDateTimeOfNextBackup(nextExecutionTime);
 	}
 
 	/**
-	 * Reschedulet alle Tasks, dabei dürfen laufende Backups weiterlaufen.
-	 */
-	public void scheduleBackupTasks() {
-		// Alle aus dem Timer werfen, die geplant aber noch nicht gestartet sind
-		for (BackupTask task : backupTasks) {
-			if (task.getScheduledFuture() != null) {
-				task.resetLocalDateTimeOfNextExecution();
-				task.getScheduledFuture().cancel(false);
-			}
-			if (task.getPopupScheduledFuture() != null) {
-				task.getPopupScheduledFuture().cancel(false);
-			}
-		}
-		// Einstellungen aus dem Backup-Task holen und im LocalTime Objekte
-		// "umwandeln" (für jeden Task)
-		for (final BackupTask task : backupTasks) {
-			scheduleBackupTask(task);
-		}
-	}
-
-	/**
-	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den gegebenen weekdays ab dem gegebenen
-	 * Zeitpunkt.
+	 * Calculates the next execution time from the given weekday rules.
 	 *
-	 * @param weekdays Wochentage an denen gesichert werden soll
-	 * @param time     Zeit zu der gesichert werden soll
-	 * @param startAt  Zeitpunkt von dem aus gerchnet werden soll
-	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
+	 * @param weekdays weekdays to perform backup on
+	 * @param time     backup-time
+	 * @param startAt  start-time of the calculation
+	 * @return time of the next execution (null if something went wrong)
 	 */
 	private LocalDateTime calcTimeFromWeekdaysStartingFrom(boolean[] weekdays, LocalTime time, LocalDateTime startAt) {
 		DayOfWeek currentWeekday = startAt.getDayOfWeek();
 		int weekdayNumber = currentWeekday.getValue() - 1;
-		// Heute?:
+		// today?
 		if (weekdays[weekdayNumber]) {
-			// Heute istBackup-Tag, also muss die Zeit betrachet werden:
+			// check the exact time if a backup has to be performed today
 			if (startAt.toLocalTime().isBefore(time)) {
 				return time.atDate(startAt.toLocalDate());
 			}
@@ -1266,9 +1286,9 @@ public class Controller {
 	}
 
 	/**
-	 * Löscht die geplante Ausführung des gegebenen Tasks.
+	 * Deletes the scheduled execution of the given BackupTask.
 	 *
-	 * @param task entsprechender Task
+	 * @param task BackupTask to delete scheduled execution
 	 */
 	public void removeBackupTaskScheduling(BackupTask task) {
 		if (task.getScheduledFuture() != null) {
@@ -1281,19 +1301,19 @@ public class Controller {
 	}
 
 	/**
-	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus den gegebenen daysInMonth.
+	 * Calculates the next execution time from the given days in month rules.
 	 *
-	 * @param daysInMonth Tage im Monat an denen gesichert werden soll
-	 * @param time        Zeit zu der gesichert werden soll
-	 * @param startAt     Zeitpunkt von dem aus gerchnet werden soll
-	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
+	 * @param daysInMonth days in month to perform backup on
+	 * @param time        backup-time
+	 * @param startAt     start-time of the calculation
+	 * @return time of the next execution (null if something went wrong)
 	 */
 	private LocalDateTime calcTimeFromDaysInMonthStartingFrom(boolean[] daysInMonth, LocalTime time,
 			LocalDateTime startAt) {
 		int currentDayInMonth = startAt.getDayOfMonth() - 1;
-		// Heute?:
+		// today
 		if (daysInMonth[currentDayInMonth]) {
-			// Heute istBackup-Tag, also muss die Zeit betrachet werden:
+			// check the exact time if a backup has to be performed today
 			if (startAt.toLocalTime().isBefore(time)) {
 				return time.atDate(startAt.toLocalDate());
 			}
@@ -1324,12 +1344,12 @@ public class Controller {
 	}
 
 	/**
-	 * Berechnet (als LocalDateTime) den nächsten Ausführungszeitpunkt aus dem gegebenen Intervall.
+	 * Calculates the next execution time from the given interval rules.
 	 *
-	 * @param interval     gegebenes Intervall
-	 * @param intervalUnit Einheit des Intervals (min, h, d, m)
-	 * @param startAt      Zeitpunkt von dem aus gerechnet werden soll
-	 * @return nächster Ausführungszeitpunkt oder null im Fehlerfall
+	 * @param interval     interval value
+	 * @param intervalUnit unit of the interval
+	 * @param startAt      start-time of the calculation
+	 * @return time of the next execution (null if something went wrong)
 	 */
 	private LocalDateTime calcTimeFromIntervalStartingFrom(int interval, String intervalUnit, LocalDateTime startAt) {
 		switch (intervalUnit) {
@@ -1346,9 +1366,9 @@ public class Controller {
 	}
 
 	/**
-	 * Löscht einen leeren Backup-Ordner.
+	 * Deletes empty backup folders within the destination path.
 	 *
-	 * @param task BackupTask zu dem der Ordner gehört
+	 * @param task corresponding BackupTask
 	 */
 	private void deleteEmptyBackupFolders(BackupTask task) {
 		String path = task.getDestinationPath();
@@ -1374,14 +1394,14 @@ public class Controller {
 		}
 
 		String outprint = ResourceBundle.getBundle("messages").getString("Messages.deletedBackupFolder");
-		backupListener.printOut(outprint, false, task.getTaskName());
+		backupListener.setStatus(outprint, false, task.getTaskName());
 		backupListener.log(outprint, task);
 	}
 
 	/**
-	 * Gibt den gegebenen String als Tray-Popup-Message aus.
+	 * Shows the given message as popup-message.
 	 *
-	 * @param msg anzuzeigender String
+	 * @param msg message to show
 	 */
 	private void showTrayPopupMessage(String msg) {
 		if (guiController.isQTTray()) {
@@ -1392,14 +1412,14 @@ public class Controller {
 	}
 
 	/**
-	 * Prüft ob der gegebene String teil der übergebenen Argumente ist.
+	 * Checks whether the given argument is part of the execution arguments of TotalBackup.
 	 *
-	 * @param s zu prüfender String (gesuchtes Argument)
-	 * @return ob der gegebene String teil der übergebenen Argumente ist
+	 * @param arg argument to check
+	 * @return whether it is part of the execution arguments (true) or not (false)
 	 */
-	public boolean argsContains(String s) {
+	public boolean argsContains(String arg) {
 		for (String string : arguments) {
-			if (string.equals(s)) {
+			if (string.equals(arg)) {
 				return true;
 			}
 		}
@@ -1417,17 +1437,6 @@ public class Controller {
 	}
 
 	/**
-	 * Reschedules the given BackupTask.
-	 *
-	 * @param task BackupTask to be rescheduled
-	 */
-	public void rescheduleBackupTask(BackupTask task) {
-		LocalDateTime nextExecution = task.getLocalDateTimeOfNextBackup();
-		task.resetLocalDateTimeOfNextExecution();
-		Controller.this.scheduleBackupTaskStartingAt(task, nextExecution.plusSeconds(1));
-	}
-
-	/**
 	 * Cancels all running tasks without further confirmation.
 	 */
 	private void cancelAllRunningTasksImmediately() {
@@ -1437,14 +1446,14 @@ public class Controller {
 	}
 
 	/**
-	 * Beendet das Programm.
+	 * Quits TotalBackup.
 	 */
 	private void quit() {
 		int reply = JOptionPane.showConfirmDialog(null,
 				ResourceBundle.getBundle("messages").getString("Messages.ReallyQuit"),
 				ResourceBundle.getBundle("messages").getString("Messages.Quit"), JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
-			savePropertiesGson();
+			saveSerialization();
 			cancelAllRunningTasksImmediately();
 			if (guiController.isQTTray()) {
 				guiController.sendToQtTrayOverSocket(null, true);

@@ -48,9 +48,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Optional;
 
-
 /**
- * ToDo
+ * Dialog to configure a certain BackupTask.
  *
  * @author Andreas Fleig
  */
@@ -58,7 +57,6 @@ public class BackupTaskDialog {
 	private static Stage stage;
 
 	private static IBackupTaskDialogListener backupTaskDialogListener;
-
 	private BackupTask initTask;
 
 	@FXML
@@ -68,7 +66,7 @@ public class BackupTaskDialog {
 	@FXML
 	private Tab tab_autoclean;
 
-	//Tab Main:
+	// tab main
 	@FXML
 	private TextField tf_taskName;
 	@FXML
@@ -86,7 +84,7 @@ public class BackupTaskDialog {
 	@FXML
 	private CheckBox cb_autostart;
 
-	//Tab Autorun:
+	// tab auto-backup
 	@FXML
 	private RadioButton rb_off;
 	@FXML
@@ -96,7 +94,7 @@ public class BackupTaskDialog {
 	@FXML
 	private RadioButton rb_interval;
 
-	//Untertab Wochentag:
+	// subtab weekday
 	@FXML
 	private CheckBox cb_monday;
 	@FXML
@@ -112,7 +110,7 @@ public class BackupTaskDialog {
 	@FXML
 	private CheckBox cb_sunday;
 
-	//Untertab Tag im Monat:
+	// subtab day in month
 	@FXML
 	private CheckBox cb_day1;
 	@FXML
@@ -176,13 +174,13 @@ public class BackupTaskDialog {
 	@FXML
 	private CheckBox cb_day31;
 
-	//Untertab Intervall:
+	// subtab interval
 	@FXML
 	private TextField tf_intervall;
 	@FXML
 	private ComboBox cb_unit;
 
-	//Alle 3 Untertabs:
+	// common of all subtabs
 	@FXML
 	private TextField tf_startAt;
 	@FXML
@@ -190,7 +188,7 @@ public class BackupTaskDialog {
 	@FXML
 	private ComboBox cb_catchUpComboBox;
 
-	//Tab Autoclean:
+	// tab auto-clean
 	@FXML
 	private RadioButton rb_autoclean_off;
 	@FXML
@@ -198,11 +196,11 @@ public class BackupTaskDialog {
 	@FXML
 	private RadioButton rb_autoclean_extended;
 
-	//Untertab Einfach:
+	// subtab basic auto-clean
 	@FXML
 	private Spinner sp_keep_last_x_backups;
 
-	//Untertab Erweitert:
+	// subtab advanced auto-clean
 	@FXML
 	private Spinner<Integer> sp_number_of_rules;
 	@FXML
@@ -232,16 +230,16 @@ public class BackupTaskDialog {
 	@FXML
 	private Spinner<Integer> sp_rule_5_number;
 
-	//Autoclean:
-	//Einfach:
+	// auto-clean feature
+	// basic auto-clean
 	SpinnerValueFactory<Integer> valueFactory_keep_last_x_backups = new SpinnerValueFactory.IntegerSpinnerValueFactory(
 			1, 50, 1);
 
-	//Erweitert:
+	// advanced auto-clean
 	SpinnerValueFactory<Integer> valueFactory_number_of_rules = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 5,
 			1);
 
-	//Einzelne Regeln:
+	// rules:
 	SpinnerValueFactory<Integer> valueFactory_rules_1 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
 	SpinnerValueFactory<Integer> valueFactory_rules_2 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
 	SpinnerValueFactory<Integer> valueFactory_rules_3 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 59, 1);
@@ -254,6 +252,11 @@ public class BackupTaskDialog {
 	SpinnerValueFactory<Integer> valueFactory_number_5 = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1);
 
 
+	/**
+	 * Creates a new BackupTaskDialog with the given BackupTask.
+	 *
+	 * @param task given BackupTask
+	 */
 	public BackupTaskDialog(BackupTask task) {
 		if (task != null) {
 			initTask = task;
@@ -267,7 +270,11 @@ public class BackupTaskDialog {
 		});
 	}
 
-
+	/**
+	 * Set the Listener of the BackupTaskDialog.
+	 *
+	 * @param listener instance of BackupTaskDialog listener
+	 */
 	public void setBackupTaskDialogListener(IBackupTaskDialogListener listener) {
 		this.backupTaskDialogListener = listener;
 	}
@@ -362,7 +369,7 @@ public class BackupTaskDialog {
 		sp_rule_4_number.setEditable(true);
 		sp_rule_5_number.setEditable(true);
 
-		//limit rules to numbers:
+		//limit rules to numeric values:
 		sp_rule_1.getEditor().textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -438,7 +445,7 @@ public class BackupTaskDialog {
 		});
 
 
-		//Alle Regeln ab Nr.2 sind deaktiviert (da Anzahl Regeln default = 1)
+		// since the default number of rules is 1, all rules starting with nr 2 are disabled initially
 		sp_rule_2.setDisable(true);
 		sp_rule_3.setDisable(true);
 		sp_rule_4.setDisable(true);
@@ -449,7 +456,6 @@ public class BackupTaskDialog {
 		sp_rule_5_number.setDisable(true);
 
 		sp_number_of_rules.valueProperty().addListener(new ChangeListener<Integer>() {
-
 			@Override
 			public void changed(ObservableValue<? extends Integer> observableValue, Integer integer, Integer t1) {
 				int value = sp_number_of_rules.getValue();
@@ -516,9 +522,11 @@ public class BackupTaskDialog {
 		}
 
 		lv_sources.setItems(ol_sources);
-
 	}
 
+	/**
+	 * Initializes the BackupTaskDialog from an existing BackupTask (initTask).
+	 */
 	public void initWithTask() {
 		tf_taskName.setText(initTask.getTaskName());
 		tf_taskName.setDisable(true);
@@ -533,13 +541,13 @@ public class BackupTaskDialog {
 		} else {
 			rb_normalBackup.setSelected(true);
 		}
-		cb_destinationVerification.setSelected(initTask.getDestinationVerification());
-		cb_autostart.setSelected(initTask.getAutostart());
+		cb_destinationVerification.setSelected(initTask.destinationVerificationIsEnabled());
+		cb_autostart.setSelected(initTask.autostartIsEnabled());
 
-		//Auto-Backup Einstellungen:
+		// auto-backup options
 		if (initTask.getAutoBackupMode() != 0) {
 			if (initTask.getAutoBackupMode() == 1) {
-				//Wochentag:
+				// weekday:
 				rb_weekday.setSelected(true);
 				if (initTask.getBackupWeekdays()[0]) {
 					cb_monday.setSelected(true);
@@ -564,6 +572,7 @@ public class BackupTaskDialog {
 				}
 			}
 			if (initTask.getAutoBackupMode() == 2) {
+				// day in month
 				rb_dayInMonth.setSelected(true);
 				if (initTask.getBackupDaysInMonth()[0]) {
 					cb_day1.setSelected(true);
@@ -660,22 +669,25 @@ public class BackupTaskDialog {
 				}
 			}
 			if (initTask.getAutoBackupMode() == 3) {
+				// auto-backup mode
 				rb_interval.setSelected(true);
 				tf_intervall.setText(String.valueOf(initTask.getIntervalTime()));
 				cb_unit.setValue(initTask.getIntervalUnit());
 			}
-			tf_startAt.setText(initTask.getStartTime().toString());
-			if (initTask.isCatchUpEnabled()) {
+			tf_startAt.setText(initTask.getBackupStartTime().toString());
+			if (initTask.catchUpIsEnabled()) {
 				cb_catchUpBackups.setSelected(true);
 				cb_catchUpComboBox.setValue(initTask.getCatchUpTime());
 			}
 		}
-		//Auto-Clean Einstellungen:
-		if (initTask.simpleAutoCleanIsEnabled()) {
+		// auto-clean options
+		if (initTask.basicAutoCleanIsEnabled()) {
+			// basic auto-clean options
 			rb_autoclean_simple.setSelected(true);
 			sp_keep_last_x_backups.getValueFactory().setValue(initTask.getNumberOfBackupsToKeep());
 		}
-		if (initTask.extendedAutoCleanIsEnabled()) {
+		if (initTask.advancedAutoCleanIsEnabled()) {
+			// advanced auto-clean options
 			rb_autoclean_extended.setSelected(true);
 			sp_number_of_rules.getValueFactory().setValue(initTask.getNumberOfExtendedCleanRules());
 			int numberOfRules = initTask.getNumberOfExtendedCleanRules();
@@ -707,6 +719,11 @@ public class BackupTaskDialog {
 		}
 	}
 
+	/**
+	 * Set stage of this BackupTaskDialog to the given stage.
+	 *
+	 * @param stage stage to set
+	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -740,7 +757,7 @@ public class BackupTaskDialog {
 				alert.showAndWait();
 				return;
 			}
-			newTask.addSourcePath(source);
+			newTask.addSource(source);
 		}
 		newTask.setDestinationPath(tf_destPath.getText());
 
@@ -752,7 +769,7 @@ public class BackupTaskDialog {
 			newTask.setAutostart(true);
 		}
 
-		// autorun settings:
+		// auto-backup settings:
 		if (rb_weekday.isSelected()) {
 			// weekdays:
 			newTask.setAutoBackupMode(1);
@@ -879,14 +896,14 @@ public class BackupTaskDialog {
 
 			newTask.setBackupDaysInMonth(daysInMonth);
 		} else if (rb_interval.isSelected()) {
-			// intervall:
+			// interval:
 			newTask.setAutoBackupMode(3);
 			newTask.setIntervalTime(Integer.parseInt(tf_intervall.getText()));
 			newTask.setIntervalUnit(cb_unit.getValue().toString());
 
 		}
 		if (rb_weekday.isSelected() || rb_dayInMonth.isSelected() || rb_interval.isSelected()) {
-			// start-zeit:
+			// start time:
 			try {
 				newTask.setBackupStartTime(LocalTime.parse(tf_startAt.getText()));
 			} catch (DateTimeParseException e) {
@@ -898,15 +915,15 @@ public class BackupTaskDialog {
 			}
 		}
 
-		// autoclean settings:
+		// auto-clean options:
 		if (rb_autoclean_simple.isSelected()) {
-			newTask.setSimpleAutoCleanEnabled(true);
+			newTask.setBasicAutoCleanEnabled(true);
 			newTask.setNumberOfBackupsToKeep(Integer.parseInt(sp_keep_last_x_backups.getValue().toString()));
 		}
 		if (rb_autoclean_extended.isSelected()) {
-			newTask.setExtendedAutoCleanEnabled(true);
+			newTask.setAdvancedAutoCleanEnabled(true);
 			int numberOfRules = sp_number_of_rules.getValue();
-			newTask.setNumberOfExtendedAutoCleanRules(numberOfRules);
+			newTask.setNumberOfAdvancedAutoCleanRules(numberOfRules);
 			int[] threshold = new int[numberOfRules];
 			String[] thresholdUnits = new String[numberOfRules];
 			int[] backupsToKeep = new int[numberOfRules];
@@ -967,18 +984,18 @@ public class BackupTaskDialog {
 	}
 
 	private boolean settingsAreValid() {
-		//Tab: Main
+		//tab: main
 		if (tf_taskName.getText().matches("^.*[^a-zA-Z0-9 ].*$")) {
 			System.out.println("Taskname invalid");
 			return false;
 		}
-		//Quellpfade werden im entsprechenden Untertab gecheckt
+		// source-paths will be checked in corresponding subtab
 		if (!(new File(tf_destPath.getText())).isDirectory()) {
 			System.out.println("Dest-Path invalid");
 			return false;
 		}
 
-		//Tab: Autorun
+		// tab: auto-backup
 		if (!rb_off.isSelected()) {
 			try {
 				LocalTime.parse(tf_startAt.getText());
@@ -987,7 +1004,7 @@ public class BackupTaskDialog {
 				return false;
 			}
 			if (rb_weekday.isSelected()) {
-				//Untertab: Wochentag
+				// subtab: weekday
 				if (!(cb_monday.isSelected() || cb_tuesday.isSelected() || cb_wednesday.isSelected() ||
 						cb_thursday.isSelected() || cb_friday.isSelected() || cb_saturday.isSelected() ||
 						cb_sunday.isSelected())) {
@@ -995,7 +1012,7 @@ public class BackupTaskDialog {
 					return false;
 				}
 			} else if (rb_dayInMonth.isSelected()) {
-				//Untertab: Tag im Monat
+				// subtab: day in month
 				if (!(cb_day1.isSelected() || cb_day2.isSelected() || cb_day3.isSelected() || cb_day4.isSelected() ||
 						cb_day5.isSelected() || cb_day6.isSelected() || cb_day7.isSelected() || cb_day8.isSelected() ||
 						cb_day9.isSelected() || cb_day10.isSelected() || cb_day11.isSelected() ||
@@ -1010,7 +1027,7 @@ public class BackupTaskDialog {
 					return false;
 				}
 			} else if (rb_interval.isSelected()) {
-				//Untertab: Intervall
+				// subtab: interval
 				try {
 					Integer.parseInt(tf_intervall.getText());
 				} catch (NumberFormatException e) {
@@ -1021,7 +1038,7 @@ public class BackupTaskDialog {
 		}
 
 		if (rb_autoclean_extended.isSelected()) {
-			//last rule_unit and only it must be "inf"
+			// last rule_unit and only it must be "inf"
 			if (sp_number_of_rules.getValue() == 1) {
 				if (!cb_rule_1_unit.getValue().equals("inf")) {
 					return false;
@@ -1047,7 +1064,7 @@ public class BackupTaskDialog {
 				}
 			}
 
-			//time slots have to be rising:
+			// time slots have to be rising:
 			if (sp_number_of_rules.getValue() == 2) {
 				// check whether rule 1 is "smaller" than rule 2
 				if (getValueOfRuleInMinutes(2) < getValueOfRuleInMinutes(1)) {
@@ -1078,19 +1095,25 @@ public class BackupTaskDialog {
 		return true;
 	}
 
-	private int getValueOfRuleInMinutes(int numberOfRuleToCheck) {
-		assert numberOfRuleToCheck > 0 && numberOfRuleToCheck < 5;
+	/**
+	 * Returns the value of the advanced auto-clean rule with the given index.
+	 *
+	 * @param indexOfRuleToCheck index of the rule (0-4)
+	 * @return value of the rule in minutes
+	 */
+	private int getValueOfRuleInMinutes(int indexOfRuleToCheck) {
+		assert indexOfRuleToCheck > 0 && indexOfRuleToCheck < 5;
 
 		String unit;
 		int value;
 
-		if (numberOfRuleToCheck == 1) {
+		if (indexOfRuleToCheck == 1) {
 			unit = String.valueOf(cb_rule_1_unit.getValue());
 			value = sp_rule_1.getValue();
-		} else if (numberOfRuleToCheck == 2) {
+		} else if (indexOfRuleToCheck == 2) {
 			unit = String.valueOf(cb_rule_2_unit.getValue());
 			value = sp_rule_2.getValue();
-		} else if (numberOfRuleToCheck == 3) {
+		} else if (indexOfRuleToCheck == 3) {
 			unit = String.valueOf(cb_rule_3_unit.getValue());
 			value = sp_rule_3.getValue();
 		} else {
@@ -1112,7 +1135,7 @@ public class BackupTaskDialog {
 	}
 
 	@FXML
-	public void addSourcePathAction() {
+	public void addSourceAction() {
 		startSourcesDialog(null);
 	}
 
@@ -1147,7 +1170,12 @@ public class BackupTaskDialog {
 
 	}
 
-	public void startSourcesDialog(Source source) {
+	/**
+	 * Starts the SourcesDialog with the given source.
+	 *
+	 * @param source given source
+	 */
+	private void startSourcesDialog(Source source) {
 		final Stage sourcesDialogStage = new Stage(StageStyle.UTILITY);
 		sourcesDialogStage.initModality(Modality.APPLICATION_MODAL);
 		try {
@@ -1181,8 +1209,7 @@ public class BackupTaskDialog {
 				sourcesDialog.setPath(source.getPath());
 				ArrayList<Filter> filters = source.getFilter();
 				for (Filter current_filter : filters) {
-					sourcesDialog.ol_filters.add(
-							new Filter(current_filter.getPath(), current_filter.getMode()));
+					sourcesDialog.ol_filters.add(new Filter(current_filter.getPath(), current_filter.getMode()));
 				}
 			}
 

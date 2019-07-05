@@ -22,22 +22,28 @@ package data;
 
 import java.io.Serializable;
 
+/**
+ * File or dictionary filter to be used for filtering of the source files/ dictionaries.
+ */
 public class Filter implements Serializable {
+	/**
+	 * Version number for serialization.
+	 */
 	private static final long serialVersionUID = -1492728068400793184L;
 	/**
-	 * Pfad der zu filternden Datei oder des zu filternden Verzeichnisses.
+	 * path of the file or dictionary to filter.
 	 */
 	private String path;
 	/**
-	 * mode of filter: 0 = exclusion-filter (default); 1 = MD5-filter
+	 * mode of filter: 0 = exclusion-filter (default), 1 = MD5-filter
 	 */
 	private int mode = 0;
 
 	/**
-	 * Creates a new Filter with the given path and mode.
+	 * Creates a new filter with the given path and mode.
 	 *
 	 * @param path path of the filter
-	 * @param mode mode of the filter 0 = exclusion-filter; 1 = MD5-filter
+	 * @param mode mode of the filter 0 = exclusion-filter, 1 = MD5-filter
 	 */
 	public Filter(String path, int mode) {
 		this.path = path;
@@ -45,43 +51,43 @@ public class Filter implements Serializable {
 	}
 
 	/**
-	 * Creates a new empty Filter.
+	 * Creates a new empty filter.
 	 */
 	public Filter() {
 
 	}
 
 	/**
-	 * Gibt den Pfad des Filters zurück.
+	 * Returns the path of the filter.
 	 *
-	 * @return Pfad des Filters
+	 * @return path of the filter
 	 */
 	public String getPath() {
 		return path;
 	}
 
 	/**
-	 * Gibt den Filter-Modus des Filters zurück.
+	 * Returns the mode of the filter.
 	 *
-	 * @return Filter-Modus (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 * @return filter mode 0 = exclusion-filter, 1 = MD5-filter
 	 */
 	public int getMode() {
 		return mode;
 	}
 
 	/**
-	 * Setzt den Pfad des Filters.
+	 * Sets the path of the filter.
 	 *
-	 * @param path zu setzender Pfad
+	 * @param path filter-path to set
 	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
 
 	/**
-	 * Setzt den Filter-Modus des Filters.
+	 * Sets the mode of the filter.
 	 *
-	 * @param mode Filter-Modus (0 = Ausschluss-Filter; 1 = MD5-Filter)
+	 * @param mode mode of the filter to set (0 = exclusion-filter, 1 = MD5-filter)
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;

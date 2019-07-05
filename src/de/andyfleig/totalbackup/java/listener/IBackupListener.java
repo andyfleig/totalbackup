@@ -22,51 +22,48 @@ package listener;
 
 import data.BackupTask;
 
+/**
+ * ToDo
+ */
 public interface IBackupListener {
 
 	/**
-	 * Gibt den gegebenen String auf der GUI aus. error bestimmt ob es sich um eine Fehlermeldung (rot) handelt oder
-	 * nicht.
+	 * Sets the status of the BackupTask with the given name to the given message. The error-flag indicates whether it
+	 * is a error status and thus has to be highlighted.
 	 *
-	 * @param s        auszugebender String
-	 * @param error    legt fest ob es sich um eine Fehlermeldung handelt oder nicht
-	 * @param taskName Name des entsprechenden Tasks
+	 * @param msg      message to set the status to
+	 * @param error    whether it is an error status (true) or not (false)
+	 * @param taskName name of the corresponding BackupTask
 	 */
-	public void printOut(String s, boolean error, final String taskName);
+	public void setStatus(String msg, boolean error, final String taskName);
 
 	/**
-	 * Schreibt den gegebenen String in das log-File des gegebenen Tasks.
+	 * Logs the given message for the given BackupTask.
 	 *
-	 * @param event zu loggender String
-	 * @param task  zugehöriger Task
+	 * @param msg  message to log
+	 * @param task corresponding BackupTask
 	 */
-	public void log(String event, BackupTask task);
+	public void log(String msg, BackupTask task);
 
 	/**
-	 * Gibt den gegebenen String auf dem Status-Textfeld auf der GUI aus.
+	 * Adds the BackupTask with the given name to the list of running BackupTasks.
 	 *
-	 * @param status auszugebender String
-	 */
-	public void setStatus(String status, BackupTask task);
-
-	/**
-	 * Fügt den gegebenen Task zur Liste der laufenden Backup-Tasks hinzu.
-	 *
-	 * @param taskName Name des hinzuzufügenden Backup-Tasks
+	 * @param taskName name of the started BackupTask
 	 */
 	public void taskStarted(String taskName);
 
 	/**
-	 * Entfernt den gegebenen Task aus der Liste der laufenden Backup-Tasks.
+	 * Deletes the given BackupTask from the list of running BackupTasks.
 	 *
-	 * @param task der zu entfernenden Backup-Tasks
+	 * @param task finished BackupTask ToDo: taskStarted() and taskFinished should both use the name of the task or the
+	 *             BackupTask itself!
 	 */
 	public void taskFinished(BackupTask task);
 
 	/**
-	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
+	 * Deletes empty backup folders within the destination path.
 	 *
-	 * @param task entsprechernder BackupTask
+	 * @param task corresponding BackupTask
 	 */
-	public void deleteEmptyBackupFolders(String path, BackupTask task);
+	public void deleteEmptyBackupFolders(BackupTask task);
 }

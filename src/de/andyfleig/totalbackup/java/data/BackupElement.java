@@ -26,40 +26,45 @@
  */
 package data;
 
+/**
+ * Element like dictionary or file to be backed up as part of a certain BackupTask.
+ *
+ * @author Andreas Fleig
+ */
 public class BackupElement {
 	/**
-	 * Legt den Quell-Pfad des Elements fest
+	 * Current path of the file to back up.
 	 */
 	private String sourcePath;
 	/**
-	 * Legt den Ziel-Pfad des Elements fest
+	 * Path of where to back up the file to.
 	 */
 	private String destPath;
 	/**
-	 * Legt fest ob das Element ein Ordner ist
+	 * Whether the BackupElement is a dictionary or not.
 	 */
 	private boolean isDirectory;
 	/**
-	 * Legt fest ob das Element verlinkt (true) oder kopiert (false) werden soll
+	 * Whether the element has to be linked (true) or copied (false).
 	 */
 	private boolean toLink = false;
 
 	/**
-	 * Erzeugt ein neues Backup-Element.
+	 * Creates a new BackupElement.
 	 *
-	 * @param sourcePath  Quellpfad des Elements
-	 * @param destPath    Zielpfad des Elements
-	 * @param isDirectory ob das Element ein Ordner ist
-	 * @param toLink      ob das Element kopiert oder verlinkt werden soll (Achtung: Ordner können nicht verlinkt
-	 *                    werden)
+	 * @param sourcePath  path of the file to backup
+	 * @param destPath    where to backup to
+	 * @param isDirectory whether the element is a directory or not
+	 * @param toLink      whether it has to be linked or copied (only valid for non-directory elements)
 	 */
 	public BackupElement(String sourcePath, String destPath, boolean isDirectory, boolean toLink) {
 		this.sourcePath = sourcePath;
 		this.destPath = destPath;
 		this.isDirectory = isDirectory;
-		if (!isDirectory) {
-			this.toLink = toLink;
+		if (toLink) {
+			assert !isDirectory;
 		}
+		this.toLink = toLink;
 	}
 
 	public String getSourcePath() {

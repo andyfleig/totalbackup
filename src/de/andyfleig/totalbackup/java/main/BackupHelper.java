@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -44,28 +44,28 @@ import data.BackupTask;
 import listener.IBackupListener;
 
 /**
- * Statische Helper Klasse welche statische Methoden für Backups anbieten (z.B. Datei/ Verzeichnis kopieren).
+ * Static helper containing various general methods for backups.
  *
  * @author Andreas Fleig
  */
 public final class BackupHelper {
 
 	/**
-	 * Ort des Programm-Icons.
+	 * Location of the logo of TotalBackup.
 	 */
 	public static final String ICON_LOCATION = "./src/de/andyfleig/totalbackup/resources/TB_logo.png";
 
 	/**
-	 * Datum-Vorlage.
+	 * date template ToDo: change to ISO 8601
 	 */
 	public static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
 
 	/**
-	 * Kopiert eine Datei vom angegebenen Quellpfad zum angegebenen Zielpfad.
+	 * Copies the given source file to the given destination.
 	 *
-	 * @param source      Quellpfad
-	 * @param destination Zielpfad
-	 * @throws FileNotFoundException
+	 * @param source      source-file
+	 * @param destination destination-file
+	 * @throws FileNotFoundException if the given file does not exist
 	 * @throws IOException
 	 */
 	public static void copyFile(File source, File destination, IBackupListener listener, BackupTask currentTask)
@@ -75,9 +75,9 @@ public final class BackupHelper {
 			return;
 		}
 
-		String output = ResourceBundle.getBundle("messages").getString("Messages.copying") + " " + source.getPath();
-		listener.setStatus(output, currentTask);
-		listener.log(output, currentTask);
+		String msg = ResourceBundle.getBundle("messages").getString("Messages.copying") + " " + source.getPath();
+		listener.setStatus(msg, false, currentTask.getTaskName());
+		listener.log(msg, currentTask);
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(source));
 		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destination, true));
 		int bytes = 0;
@@ -87,15 +87,15 @@ public final class BackupHelper {
 
 		in.close();
 		out.close();
-		listener.setStatus("", currentTask);
+		listener.setStatus("", false, currentTask.getTaskName());
 	}
 
 	/**
-	 * Erstellt einen Hardlink (dest) der auf source zeigt
+	 * Creates a hardlink of the given source file at the given destination.
 	 *
-	 * @param source      Quell-Datei des Hardlinks
-	 * @param destination Ziel-Datei des Hardlinks
-	 * @param task        entsprechender BackupTask
+	 * @param source      source file
+	 * @param destination destination file
+	 * @param task        corresponding BackupTask
 	 */
 	public static void hardlinkFile(File source, File destination, IBackupListener listener, BackupTask task) {
 		if (!source.isFile()) {
@@ -103,7 +103,7 @@ public final class BackupHelper {
 		}
 
 		String output = ResourceBundle.getBundle("messages").getString("Messages.linking") + " " + source.getPath();
-		listener.setStatus(output, task);
+		listener.setStatus(output, false, task.getTaskName());
 		listener.log(output, task);
 
 		try {
@@ -112,21 +112,21 @@ public final class BackupHelper {
 			System.out.println("Fehler: IO-Problem");
 		}
 
-		listener.setStatus("", task);
+		listener.setStatus("", false, task.getTaskName());
 	}
 
 	/**
-	 * Erstellt den Root-Ordner für ein Backup.
+	 * Creates the root directory for a BackupTask with the given name.
 	 *
-	 * @param destinationPath Zielpfad des Backups (Ort an dem der Root-Ordner angelegt werden soll)
-	 * @param taskName        Name des Backup-Tasks
-	 * @param task            entsprechender BackupTask
-	 * @return angelegter Root-Ordner
+	 * @param destinationPath destination path of the BackupTask
+	 * @param taskName        name of the BackupTask
+	 * @param task            corresponding BackupTask
+	 * @return created root directory as {@link File}
 	 */
 	public static File createBackupFolder(String destinationPath, String taskName, IBackupListener listener,
 			BackupTask task) {
 
-		// Ordnername mit Datum festlegen:
+		// create directory with date
 		Date date = new Date();
 		SimpleDateFormat df = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
 		df.setTimeZone(TimeZone.getDefault());
@@ -134,7 +134,7 @@ public final class BackupHelper {
 		File destinationFile = new File(destinationPath);
 		if (!destinationFile.exists()) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
-			listener.printOut(output, true, task.getTaskName());
+			listener.setStatus(output, true, task.getTaskName());
 			listener.log(output, task);
 
 			return null;
@@ -142,15 +142,15 @@ public final class BackupHelper {
 		String backupDir = destinationFile.getAbsolutePath() + File.separator + taskName + "_" + df.format(date);
 
 		File dir = new File(backupDir);
-		// Backup-Ordner anlegen:
+		// create backup dir
 		if (dir.mkdir()) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreated");
-			listener.printOut(output, false, task.getTaskName());
+			listener.setStatus(output, false, task.getTaskName());
 			listener.log(output, task);
 
 		} else {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
-			listener.printOut(output, true, task.getTaskName());
+			listener.setStatus(output, true, task.getTaskName());
 			listener.log(output, task);
 
 			return null;
@@ -159,10 +159,10 @@ public final class BackupHelper {
 	}
 
 	/**
-	 * Löscht ein Verzeichnis und dessen Inhalt rekursiv.
+	 * Deletes a directory and all its content recursively.
 	 *
-	 * @param path Pfad des zu löschenden Ordners
-	 * @return true falls erfolgreich, false sonst
+	 * @param path path of the directory to delete
+	 * @return true if successful, else false
 	 */
 	public static boolean deleteDirectory(File path) {
 		if (Thread.interrupted()) {
@@ -184,12 +184,12 @@ public final class BackupHelper {
 	}
 
 	/**
-	 * Berechnet den MD5 Hashwert der gegebenen Datei.
+	 * Calculates the MD5 hash value of the given file.
 	 *
-	 * @param f Datei von der der Hashwert berechnet werden soll
-	 * @return MD5-Hashwert der gegebenen Datei
+	 * @param file file to calculate the hash value from
+	 * @return calculated hash value
 	 */
-	public static String calcMD5(File f) {
+	public static String calcMD5(File file) {
 		MessageDigest md;
 
 		try {
@@ -202,7 +202,7 @@ public final class BackupHelper {
 		FileInputStream fis;
 
 		try {
-			fis = new FileInputStream(f.getAbsoluteFile());
+			fis = new FileInputStream(file.getAbsoluteFile());
 		} catch (FileNotFoundException e) {
 			return null;
 		}
@@ -229,10 +229,10 @@ public final class BackupHelper {
 	}
 
 	/**
-	 * Gibt den Zeitpunkt des aktuellsten Backups zurück.
+	 * Returns the time of the most recent execution of the given BackupTask based on the created backup.
 	 *
-	 * @param task Task für den das aktuellste Backup gesucht werden soll
-	 * @return Zeitpunkt des aktuellsten Backups (als LocalDateTime)
+	 * @param task BackupTask to find the most recent execution for
+	 * @return time of the most recent execution
 	 */
 	public static LocalDateTime getLocalDateTimeOfNewestBackupSet(BackupTask task) {
 		String rootPath = task.getDestinationPath();
@@ -246,17 +246,16 @@ public final class BackupHelper {
 		LocalDateTime foundDate;
 		for (File directory : directories) {
 			if (directory.isDirectory()) {
-				// Namen des Ordners "zerlegen":
+				// split up name of the directory
 				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-				// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+				// has to consist of exactly two parts (name of the BackupTask and date)
 				if (tokenizer.countTokens() != 2) {
 					continue;
 				}
-				// Erster Token muss dem TaskName entsprechen:
 				if (!tokenizer.nextToken().equals(task.getTaskName())) {
 					continue;
 				}
-				// Zweiter Token muss analysiert werden:
+				// analyze date token (second one)
 				String backupDate = tokenizer.nextToken();
 
 				try {
@@ -264,15 +263,15 @@ public final class BackupHelper {
 					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(),
 							ZoneId.systemDefault());
 				} catch (ParseException e) {
-					// Offenbar kein gültiges Datum
+					// no valid date
 					continue;
 				}
-				if (newestDate == null) {
-					newestDate = foundDate;
-				} else {
+				if (newestDate != null) {
 					if (newestDate.compareTo(foundDate) < 0) {
 						newestDate = foundDate;
 					}
+				} else {
+					newestDate = foundDate;
 				}
 			}
 		}

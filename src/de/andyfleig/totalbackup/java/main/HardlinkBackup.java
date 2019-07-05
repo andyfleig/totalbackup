@@ -45,73 +45,43 @@ import data.Source;
 import data.StructureFile;
 
 /**
- * Ein Hardlink-Backup Objekt. Implementierung von Backupable.
+ * Implementation of Backupable for hardlink backups.
  *
  * @author Andreas Fleig
  */
 public class HardlinkBackup implements Backupable {
 
-	/**
-	 * Liste der Quellen
-	 */
-	private ArrayList<Source> sources;
-	/**
-	 * Name des zu bearbeitenden BackupTasks
-	 */
 	private String taskName;
-	/**
-	 * Zielpfad
-	 */
+	private ArrayList<Source> sources;
 	private String destinationPath;
-	/**
-	 * Listener zur Interaktion mit dem Controller
-	 */
 	private IBackupListener listener;
 	/**
-	 * Index für diesen Backup-Task
+	 * Index for this BackupTask (used to decide whether a file has to be linked or copied).
 	 */
 	private StructureFile directoryStructure;
 	/**
-	 * aktuellster Backup-Satz
+	 * Path of the most recent backup set.
 	 */
 	private String newestBackupPath;
 	/**
-	 * Zu bearbeitende Elemente
+	 * List of BackupElements to process as part of this backup.
 	 */
 	private LinkedList<BackupElement> elementQueue;
-	/**
-	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann runBackup() aufgerufen werden.
-	 */
 	private boolean preparationDone = false;
-	/**
-	 * Aktuelles Backup-Directory.
-	 */
-	private File backupDir;
-	/**
-	 * Root-Verzeichnis der Quelle.
-	 */
-	private String sourceRootDir;
-	/**
-	 * Informationen (der Vorbereitung) über dieses Backup.
-	 */
+	private boolean isCanceled;
 	private BackupInfos backupInfos = new BackupInfos();
-	/**
-	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden Elemente).
-	 */
+	private File backupDir;
+	private String sourceRootDir;
 	private Source currentSource;
 
-	/**
-	 * Gibt an ob dieses Backup gecanceled ist.
-	 */
-	private boolean isCanceled;
 
 	/**
-	 * Backup-Objekt zur Datensicherung.
+	 * Creates a new hardlink backup Backupable object.
 	 *
-	 * @param listener    Listener
-	 * @param nameOfTask  Name des Backup-Tasks
-	 * @param sources     Quellen
-	 * @param destination Zielpfad
+	 * @param listener    corresponding IBackupListener instance
+	 * @param nameOfTask  name of the BackupTask
+	 * @param sources     list of sources
+	 * @param destination destination path
 	 */
 	public HardlinkBackup(IBackupListener listener, String nameOfTask, ArrayList<Source> sources, String destination) {
 		this.listener = listener;
@@ -123,8 +93,7 @@ public class HardlinkBackup implements Backupable {
 
 	@Override
 	public void runPreparation(BackupTask task) {
-
-		// Kontrollieren ob für jeden Backup-Satz ein Index vorhanden ist:
+		// checks whether there is an index for every existing backup set
 		File dest = new File(destinationPath);
 
 		FilenameFilter filter = new FilenameFilter() {
@@ -133,134 +102,128 @@ public class HardlinkBackup implements Backupable {
 				return new File(current, name).isDirectory();
 			}
 		};
-
 		File[] destFolders = dest.listFiles(filter);
 
-		// Prüfen bei welchen Ordnern es sich um Backup-Sätze handelt und den
-		// aktuellsten Backup-Satz finden:
+		// find backup sets to locate the most recent one
 		if (destFolders.length > 0) {
 			for (File destFolder1 : destFolders) {
 				boolean indexExists = false;
 				if (destFolder1.isDirectory()) {
-					// Namen des Ordners "zerlegen":
+					// split up name of the directory
 					StringTokenizer tokenizer = new StringTokenizer(destFolder1.getName(), "_");
-					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+					// has to consist of exactly two parts (name of the BackupTask and date)
 					if (tokenizer.countTokens() != 2) {
 						continue;
 					}
-					// Erster Token muss dem TaskName entsprechen:
 					if (!tokenizer.nextToken().equals(taskName)) {
 						continue;
 					}
-					// Es handelt sich wohl um einen Backup-Satz
+					// found an existing backup set
 					File[] destFolder = destFolder1.listFiles();
 					for (File aDestFolder : destFolder) {
 						if (!aDestFolder.isDirectory() && aDestFolder.getName().contains(taskName) &&
 								aDestFolder.getName().contains(".ser")) {
-							// Ab hier wird davon ausgegangen, dass ein index-file
-							// exisitert.
+							// corresponding index existing
 							indexExists = true;
 							break;
 						}
 					}
 				}
-				// Falls kein index gefunden wurde, wird ein index angelegt:
+				// create index if no index exists
 				if (!indexExists) {
 					String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexIndexing");
-					listener.printOut(outprint, false, task.getTaskName());
+					listener.setStatus(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 
 					createIndex(destFolder1, task);
 
-					// Indizierung wurde abgebrochen:
+					// indexing was cancelled
 					if (directoryStructure == null) {
 						throw new BackupCanceledException();
 					}
 
 					outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
-					listener.printOut(outprint, false, task.getTaskName());
+					listener.setStatus(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 
 					outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
-					listener.printOut(outprint, false, task.getTaskName());
+					listener.setStatus(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 
 					serializeIndex(taskName, destFolder1.getAbsolutePath());
 					outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
-					listener.printOut(outprint, false, task.getTaskName());
+					listener.setStatus(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 				}
 			}
 		}
 
-
-		// Herausfinden welcher Backup-Satz der Neuste ist und diesen laden:
-		// Neusten Backup-Ordner finden:
-		newestBackupPath = findNewestBackup(destinationPath);
+		// find most recent backup set and load it
+		newestBackupPath = findMostRecentBackup(destinationPath);
 		if (newestBackupPath == null) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.noValidIndexCanceled");
-			listener.printOut(outprint, true, task.getTaskName());
+			listener.setStatus(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 			return;
 		}
 
-		// Index dieses backups einlesen:
+		// read index of this backup set
 		File index = new File(
 				destinationPath + File.separator + newestBackupPath + File.separator + "index_" + taskName + ".ser");
 
-		// Pfad prüfen:
+		// check path
 		if (!index.exists()) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexNotFound");
-			listener.printOut(outprint, true, task.getTaskName());
+			listener.setStatus(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 			return;
 		}
 
 		if (!loadSerialization(index)) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCorrupted");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			createIndex(index, task);
 
-			// Indizierung wurde abgebrochen:
+			// indexing was cancelled
 			if (directoryStructure == null) {
 				throw new BackupCanceledException();
 			}
 
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			serializeIndex(taskName, index.getAbsolutePath());
 
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
-			// Index erneut laden:
+			// reload index
 			if (!loadSerialization(index)) {
 				outprint = ResourceBundle.getBundle("messages").getString("Messages.FatalErrorIndexing");
-				listener.printOut(outprint, true, task.getTaskName());
+				listener.setStatus(outprint, true, task.getTaskName());
 				listener.log(outprint, task);
 				return;
 			}
 		}
-		// Eigentliches Hardlink Backup:
-		// Backup-Ordner anlegen:
+		// actual backup process starts here
+		// create backup folder
 		backupDir = BackupHelper.createBackupFolder(destinationPath, taskName, listener, task);
 
 		String outprint = ResourceBundle.getBundle("messages").getString("Messages.PreparationStarted");
-		listener.printOut(outprint, false, task.getTaskName());
+		listener.setStatus(outprint, false, task.getTaskName());
 		listener.log(outprint, task);
 
 		if (backupDir == null) {
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
-			listener.printOut(outprint, true, task.getTaskName());
+			listener.setStatus(outprint, true, task.getTaskName());
 			return;
 		}
 
@@ -269,13 +232,12 @@ public class HardlinkBackup implements Backupable {
 				if (Thread.interrupted()) {
 					throw new BackupCanceledException();
 				}
-				// Für die Filterung:
+				// for filtering
 				currentSource = sources.get(i);
 
 				File sourceFile = new File(sources.get(i).getPath());
 
-				// Sonderbehandlung für Windows, wenn der SourcePath das
-				// root-dir eines Volume (z.B. C:/) ist:
+				// handling for windows special case where the source path is the root of a volume (e.g. C:/)
 				String folder;
 				File f;
 				if (!sourceFile.isDirectory()) {
@@ -283,8 +245,7 @@ public class HardlinkBackup implements Backupable {
 				} else {
 					if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3 &&
 							sourceFile.getName().equals("")) {
-						// In diesem Sonderfall ergibt sich der Name nur aus dem
-						// Laufwerksbuchstaben:
+						// name is created from the volume letter in this special case
 						folder = backupDir + File.separator + sourceFile.getAbsolutePath().charAt(0);
 					} else {
 						folder = backupDir + File.separator + sourceFile.getName();
@@ -294,20 +255,19 @@ public class HardlinkBackup implements Backupable {
 
 					if (f.mkdir()) {
 						outprint = ResourceBundle.getBundle("messages").getString("Messages.FolderCreated");
-						listener.printOut(outprint, false, task.getTaskName());
+						listener.setStatus(outprint, false, task.getTaskName());
 						listener.log(outprint, task);
 					} else {
 						outprint = ResourceBundle.getBundle("messages").getString("Messages.FolderCreationError");
-						listener.printOut(outprint, true, task.getTaskName());
+						listener.setStatus(outprint, true, task.getTaskName());
 						listener.log(outprint, task);
 					}
 				}
 
-				// Queueing:
+				// queueing:
 				try {
 					for (Source source : sources) {
-						// Sonderfall: Wenn der Backup-Root == Root des Systems
-						// ist:
+						// special case when backup root is system root
 						if (sourceFile.getName().length() == 0) {
 							sourceRootDir = "";
 						} else {
@@ -318,40 +278,39 @@ public class HardlinkBackup implements Backupable {
 					}
 				} catch (BackupCanceledException e) {
 					outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-					listener.printOut(outprint, false, task.getTaskName());
+					listener.setStatus(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 					isCanceled = true;
 				}
 			}
 		} catch (BackupCanceledException e) {
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
 		if (!isCanceled) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.PreparationDone");
-			listener.printOut(output, false, task.getTaskName());
+			listener.setStatus(output, false, task.getTaskName());
 			listener.log(output, task);
 			preparationDone = true;
 		} else {
-			listener.deleteEmptyBackupFolders(task.getDestinationPath(), task);
+			listener.deleteEmptyBackupFolders(task);
 		}
 	}
 
 	@Override
 	public void runBackup(BackupTask task) {
-		// Test ob die Vorbereitung durchgeführt wurden:
 		if (!preparationDone) {
-			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
+			System.out.println("Error: Tying to run backup without previously running the preparation.");
 			return;
 		}
 
 		String outprint = ResourceBundle.getBundle("messages").getString("Messages.startBackup");
-		listener.printOut(outprint, false, task.getTaskName());
+		listener.setStatus(outprint, false, task.getTaskName());
 		listener.log(outprint, task);
 		try {
-			// Eigentlicher Backup-Vorgang:
+			// actual backup process starts here
 			while (!elementQueue.isEmpty()) {
 				if (Thread.interrupted()) {
 					throw new BackupCanceledException();
@@ -371,47 +330,43 @@ public class HardlinkBackup implements Backupable {
 							String msg = ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg1") +
 									currentElement.getSourcePath() +
 									ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg2");
-							listener.printOut(msg, true, task.getTaskName());
+							listener.setStatus(msg, true, task.getTaskName());
 							listener.log(msg, task);
 						}
 					}
 				}
 			}
 
-			// Index des Backup-Satzes erzeugen und serialisiert:
+			// create and serialize the index of the backup set
 			createIndex(backupDir, task);
 
-			// Indizierung wurde abgebrochen:
+			// indexing was cancelled
 			if (directoryStructure == null) {
 				throw new BackupCanceledException();
 			}
 
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 
 			serializeIndex(taskName, backupDir.getAbsolutePath());
 
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupComplete");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			listener.taskFinished(task);
 		} catch (BackupCanceledException e) {
 			outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 		}
 	}
 
 	/**
-	 * Rekursive Mathode zur Vorbereitung ("analyse") eines Hardlink Backups.
-	 *
-	 * @param sourceFile Quell-Verzeichnis
-	 * @param backupDir  Ziel-Verzeichnis
-	 * @param task       betreffender BackupTask
+	 * Recursive method for the actual preparation of the backup.
 	 */
 	private void rekursivePreparation(File sourceFile, File backupDir, BackupTask task) {
 
@@ -428,7 +383,7 @@ public class HardlinkBackup implements Backupable {
 		if (files == null) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.UnknownErrorAt") + " " +
 					sourceFile.getPath();
-			listener.printOut(outprint, true, task.getTaskName());
+			listener.setStatus(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 
 			return;
@@ -438,7 +393,7 @@ public class HardlinkBackup implements Backupable {
 				throw new BackupCanceledException();
 			}
 			if (file.isDirectory()) {
-				// Filtern:
+				// filtering
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
@@ -455,7 +410,7 @@ public class HardlinkBackup implements Backupable {
 				}
 
 			} else {
-				// Filtern:
+				// filtering
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
@@ -465,18 +420,14 @@ public class HardlinkBackup implements Backupable {
 					}
 				}
 				if (!filterMatches) {
-					// Herausfinden ob zu kopieren oder zu verlinken:
-					// Entsprechendes StrucutreFile aus dem Index:
+					// find out whether the file has to be copied or linked
 
 					StructureFile fileInIndex = getStructureFileFromIndex(file, sourceRootDir);
 
 					File newFile = new File(backupDir.getAbsolutePath() + File.separator + file.getName());
 
 					if (fileInIndex == null) {
-						// Befindet die Datei sich nicht im Index, wird sie
-						// kopiert (nicht verlinkt)
-						// Es handelt sich also um eine neue Datei (bisher nicht
-						// im Backup)
+						// no corresponding file in index -> copy it
 						elementQueue.add(
 								new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 						backupInfos.increaseNumberOfFilesToCopy();
@@ -484,20 +435,18 @@ public class HardlinkBackup implements Backupable {
 						continue;
 					}
 					if (file.lastModified() > fileInIndex.getLastModifiedDate()) {
-						// Datei liegt in einer älteren Version im Backup vor
-						// Datei zu kopieren:
+						// file is already part of an older backup set
 						elementQueue.add(
 								new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 						backupInfos.increaseNumberOfFilesToCopy();
 						backupInfos.increaseSizeToCopyBy(file.length());
 					} else {
-						// Datei liegt in der aktuellen Version vor
+						// file is already part of the most recent backup set
 
-						// Test ob die Datei im Backup-Satz vorhanden ist:
 						File fileToLinkFrom = new File(
 								destinationPath + File.separator + newestBackupPath + fileInIndex.getFilePath());
 						if (fileToLinkFrom.exists()) {
-							// Filterung:
+							// filtering
 							filterMatches = false;
 							for (Filter aFiltersOfThisSource : filtersOfThisSource) {
 								if (aFiltersOfThisSource.getMode() == 1 &&
@@ -506,26 +455,25 @@ public class HardlinkBackup implements Backupable {
 								}
 							}
 							if (!filterMatches) {
-								// Datei verlinken:
+								// link file
 								elementQueue.add(
 										new BackupElement(fileToLinkFrom.getAbsolutePath(), newFile.getAbsolutePath(),
 												false, true));
 								backupInfos.increaseNumberOfFilesToLink();
 								backupInfos.increaseSizeToLinkBy(file.length());
 							} else {
-								// Überprüfung der MD5 Summe:
-								// Gleiche MD5 heißt verlinken, unterschiedliche
-								// MD5 heißt kopieren:
+								// check MD5 sum
+								// equal MD5 means linking, different MD5 means copying
 								String md5OfSourceFile = BackupHelper.calcMD5(file);
 								String md5OfFileToLinkFrom = BackupHelper.calcMD5(fileToLinkFrom);
 								if (md5OfSourceFile != null && md5OfSourceFile.equals(md5OfFileToLinkFrom)) {
-									// Datei verlinken:
+									// file to link
 									elementQueue.add(new BackupElement(fileToLinkFrom.getAbsolutePath(),
 											newFile.getAbsolutePath(), false, true));
 									backupInfos.increaseNumberOfFilesToLink();
 									backupInfos.increaseSizeToLinkBy(file.length());
 								} else {
-									// Datei zu kopieren:
+									// file to copy
 									elementQueue.add(
 											new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false,
 													false));
@@ -535,51 +483,50 @@ public class HardlinkBackup implements Backupable {
 							}
 
 						} else {
-							// File existiert im Backup-Satz nicht (aber im
-							// Index)
+							// file is not existing within the backup set but listed in the index
 							String outprint = ResourceBundle.getBundle("messages").getString("Messages.BadIndex");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.DeletingIndex");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
-							// Root-Pfad des Index "sichern":
+							// save root path of the index
 							String rootPathForIndex = file.getAbsolutePath();
 
-							// Ungültiger Index wird gelöscht:
+							// delete invalid index
 							File badIndex = new File(file.getAbsolutePath() + directoryStructure.getFilePath());
 							badIndex.delete();
 
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexDeleted");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
-							// Neu indizieren:
+							// recreate index
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.Indexing");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 							createIndex(new File(rootPathForIndex), task);
 
-							// Indizierung wurde abgebrochen:
+							// indexing was cancelled
 							if (directoryStructure == null) {
 								throw new BackupCanceledException();
 							}
 
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexCreated");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaving");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
 
 							serializeIndex(taskName, rootPathForIndex);
 
 							outprint = ResourceBundle.getBundle("messages").getString("Messages.IndexSaved");
-							listener.printOut(outprint, false, task.getTaskName());
+							listener.setStatus(outprint, false, task.getTaskName());
 							listener.log(outprint, task);
-							// Datei zu kopieren:
+							// file to copy
 							elementQueue.add(
 									new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));
 							backupInfos.increaseNumberOfFilesToCopy();
@@ -592,12 +539,12 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Gibt die Datei (als StructureFile) aus dem Index zurück, falls diese dort vorhanden ist. Ist die Datei nicht im
-	 * Index wird null zurückgegeben.
+	 * Returns the corresponding StructureFile of the index for the given file. Returns null if file is not existing in
+	 * the index.
 	 *
-	 * @param file           Datei für welche das StrucutreFile zurückgegeben werden soll
-	 * @param sourceRootPath Root-Pfad der Quelle
-	 * @return Gefundenes StructureFile oder null
+	 * @param file           file to find the StrcutureFile from the index for
+	 * @param sourceRootPath root path of the source
+	 * @return corresponding StructureFile or null
 	 */
 	private StructureFile getStructureFileFromIndex(File file, String sourceRootPath) {
 
@@ -621,10 +568,10 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Erzeugt den Index.
+	 * Creates the index.
 	 *
-	 * @param root Root-File zur Indizierung
-	 * @param task betreffender BackupTask
+	 * @param root root file for the indexing
+	 * @param task corresponding BackupTask
 	 */
 	private void createIndex(File root, BackupTask task) {
 		if (root.isDirectory()) {
@@ -634,24 +581,24 @@ public class HardlinkBackup implements Backupable {
 			} catch (BackupCanceledException e) {
 				directoryStructure = null;
 				String output = ResourceBundle.getBundle("messages").getString("Messages.IndexingCanceled");
-				listener.printOut(output, false, task.getTaskName());
+				listener.setStatus(output, false, task.getTaskName());
 				listener.log(output, task);
 			}
 		}
 	}
 
 	/**
-	 * Serialisiert den Index.
+	 * Serializes the index.
 	 *
-	 * @param taskName      Name des Tasks des zu serialisierenden Index
-	 * @param backupSetPath Pfad zum Backup-Satz
+	 * @param taskName      name of the corresponding BackupTask
+	 * @param backupSetPath path of the corresponding backup set
 	 */
 	private void serializeIndex(String taskName, String backupSetPath) {
 
-		// Verzeichnisstruktur speichern:
-		// File anlegen:
+		// save file structure
+		// create file
 		File index = new File(backupSetPath + File.separator + "index_" + taskName + ".ser");
-		// Prüfen ob bereits ein Index existiert:
+		// check for existing index
 		if (!index.exists()) {
 			try {
 				index.createNewFile();
@@ -659,7 +606,7 @@ public class HardlinkBackup implements Backupable {
 				System.err.println("Error: IOException in HardlinkBackup while creating new File");
 			}
 		}
-		// OutputStreams anlegen:
+		// create OutputStreams
 		OutputStream fos = null;
 		ObjectOutputStream o = null;
 
@@ -692,9 +639,10 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Lädt einen seriallisierten Index. Gibt bei Erfolg TRUE und sonst FALSE zurück;
+	 * Loads the serialized index. Returns true if successful and false otherwise.
 	 *
-	 * @param index zu ladender Index
+	 * @param index index file to load
+	 * @return true if successful and false otherwise
 	 */
 	private boolean loadSerialization(File index) {
 
@@ -740,11 +688,7 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Rekursive Methode zur Berechnung der Verzeichnisstruktur.
-	 *
-	 * @param rootPath root Pfad des Backups
-	 * @param path     Pfad der aktuell zu analysierenden Datei (relativer Pfad)
-	 * @return StructureFile für die Verzeichnisstruktur
+	 * Recursive method to calculate the directory structure
 	 */
 	private StructureFile recCalcDirStruct(String rootPath, String path) {
 		if (Thread.interrupted()) {
@@ -754,8 +698,7 @@ public class HardlinkBackup implements Backupable {
 		File[] files = new File(path).listFiles();
 
 		StructureFile sFile;
-		// Sonderbehandlung für Windows, wenn der SourcePath das
-		// root-dir eines Volume (z.B. C:/) ist:
+		// handling for windows special case where the source path is the root of a volume (e.g. C:/)
 		String nameOfBackupDir = path.substring(rootPath.length());
 		String OS = System.getProperty("os.name").toLowerCase();
 		if (OS.contains("win") && nameOfBackupDir.length() == 2) {
@@ -779,12 +722,12 @@ public class HardlinkBackup implements Backupable {
 	}
 
 	/**
-	 * Gibt den Pfad (als String) zum aktuellsten Backup-Satz zurück.
+	 * Returns the path of the most recent backup set at the given root path.
 	 *
-	 * @param rootPath Ordner in dem nach Backup-Sätzen gesucht werden soll
-	 * @return Pfad zum aktuellsten Backup-Satz
+	 * @param rootPath path to search for backups sets
+	 * @return most recent backup task
 	 */
-	private String findNewestBackup(String rootPath) {
+	private String findMostRecentBackup(String rootPath) {
 		File root = new File(rootPath);
 		File[] directories = root.listFiles();
 
@@ -794,24 +737,23 @@ public class HardlinkBackup implements Backupable {
 		if (directories.length > 0) {
 			for (File directory : directories) {
 				if (directory.isDirectory()) {
-					// Namen des Ordners "zerlegen":
+					// split up name of the directory
 					StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-					// Es wird geprüft ob der Name aus genau 2 Tokens besteht:
+					// has to consist of exactly two parts (name of the BackupTask and date)
 					if (tokenizer.countTokens() != 2) {
 						continue;
 					}
-					// Erster Token muss dem TaskName entsprechen:
 					if (!tokenizer.nextToken().equals(taskName)) {
 						continue;
 					}
-					// Zweiter Token muss analysiert werden:
+					// analyze date token (second one)
 					String backupDate = tokenizer.nextToken();
 
 					try {
 						SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
 						foundDate = sdfToDate.parse(backupDate);
 					} catch (ParseException e) {
-						// Offenbar kein gültiges Datum
+						// no valid date
 						continue;
 					}
 					if (newestDate == null) {

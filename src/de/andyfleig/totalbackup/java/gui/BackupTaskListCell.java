@@ -25,7 +25,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
 
 /**
- * ToDo
+ * ListCells for the list of BackupTasks within the FxMainframe.
  *
  * @author Andreas Fleig
  */

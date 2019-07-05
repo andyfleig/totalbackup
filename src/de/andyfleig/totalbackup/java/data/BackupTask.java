@@ -27,35 +27,35 @@ import java.util.ArrayList;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * Eine Backup-Aufgabe. Enthält die Einstellungen dieses Backup Tasks wie Quell- und Zielpfad aber auch Informationen
- * über autoClean usw.
+ * One backup task containing the configuration information of the backup like source and destination path or
+ * information about the configuration of auto-clean or auto-backup.
  *
  * @author Andreas Fleig
  */
 public class BackupTask implements Serializable {
 
 	/**
-	 * Versionsnummer für die Seriallisierung.
+	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = 1212577706810419845L;
 	private String taskName;
 	private ArrayList<Source> sources;
 	private String destinationPath;
 	private int backupMode;
-	private boolean simpleAutoCleanIsEnabled;
-	private boolean extendedAutoCleanIsEnabled;
+	private boolean basicAutoCleanIsEnabled;
+	private boolean advancedAutoCleanIsEnabled;
 	private int numberOfExtendedCleanRules;
 	private int numberOfBackupsToKeep;
 	private boolean isPrepared = false;
 	private boolean autostart = false;
 	private boolean destVerification = false;
 
-	// Für das erweiterte AutoClean:
+	// For the advanced auto-clean feature:
 	private int[] threshold = new int[5];
 	private String[] thresholdUnits = new String[5];
 	private int[] backupsToKeep = new int[5];
 
-	// Für AutoBackup:
+	// For the auto-backup feature:
 	private int autoBackupMode;
 	private boolean[] weekdays = new boolean[7];
 	private boolean[] backupDaysInMonth = new boolean[31];
@@ -66,18 +66,20 @@ public class BackupTask implements Serializable {
 	private transient ScheduledFuture<?> popupScheduledFuture;
 	private LocalDateTime nextExecutionTime;
 	/**
-	 * Number of minutes until next scheduled backup so it is reasonably the catch up the missed one
-	 * (default is 10 minutes)
+	 * Number of minutes until next scheduled backup so it is reasonably the catch up the missed one (default is 10
+	 * minutes)
 	 */
 	private String catchUpTime;
 	private boolean catchUpEnabled;
-	// Für die einmalige Ausführung eines Backups mit einem anderen Zielpfad:
+	/**
+	 * DestinationPath for the one time execution of a backup with another destination path.
+	 */
 	private String realDestinationPath = null;
 
 	/**
-	 * Erzeugt einen BackupTask
+	 * Creates a new BackupTask.
 	 *
-	 * @param name Name des Backup-Tasks
+	 * @param name name of the BackupTask
 	 */
 	public BackupTask(String name) {
 		this.taskName = name;
@@ -85,264 +87,257 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Gibt den Namen des Tasks zurück.
+	 * Returns the name of the BackupTask.
 	 *
-	 * @return Task-Name
+	 * @return name of the BackupTask
 	 */
 	public String getTaskName() {
 		return taskName;
 	}
 
 	/**
-	 * Gibt alle Quellen zurück.
+	 * Returns all the sources of this BackupTask.
 	 *
-	 * @return alle Quellen
+	 * @return list of all the sources
 	 */
 	public ArrayList<Source> getSources() {
 		return sources;
 	}
 
 	/**
-	 * Fügt der Listen der zu sichernden Quellpfade einen Pfad hinzu.
+	 * Adds the given source to the list of sources of this BackupTask.
 	 *
-	 * @param source hinzuzufügende Quelle
+	 * @param source source to add
 	 */
-	public void addSourcePath(Source source) {
+	public void addSource(Source source) {
 		sources.add(source);
 	}
 
 	/**
-	 * Legt den Zielpfad auf den übergebenen Pfad fest.
+	 * Sets the destination path of this BackupTask to the given one.
 	 *
-	 * @param path festzulegender Pfad
+	 * @param path destination path to set
 	 */
 	public void setDestinationPath(String path) {
 		this.destinationPath = path;
 	}
 
 	/**
-	 * Gibt den Zielpfad zurück.
+	 * Returns the destination path of this BackupTask.
 	 *
-	 * @return Zielpfad
+	 * @return destination path
 	 */
 	public String getDestinationPath() {
 		return this.destinationPath;
 	}
 
-	/**
-	 * Gibt den Namen des Backup-Tasks als String zurück. Wird für das korrekte Anzeigen des Namens in der Liste (GUI)
-	 * benötigt.
-	 */
 	@Override
 	public String toString() {
 		return taskName;
 	}
 
 	/**
-	 * Legt den Backup-Modus fest.
+	 * Sets the mode of the backup of this BackupTask.
 	 *
-	 * @param mode festzulegender Backup-Modus
+	 * @param mode backup-mode to set (0 = normal, 1 = hardlink)
 	 */
 	public void setBackupMode(int mode) {
 		backupMode = mode;
 	}
 
 	/**
-	 * Gibt den gewählten Backup-Modus zurück. 0 = normal, 1 = hardlink.
+	 * Returns the backup-mode of this BackupTask.
 	 *
-	 * @return gewählter Backup-Modus
+	 * @return backup-mode (0 = normal, 1 = hardlink)
 	 */
 	public int getBackupMode() {
 		return backupMode;
 	}
 
 	/**
-	 * Aktiviert bzw. Deaktiviert die einfache Auto-Clean Funktion.
+	 * Sets the basic auto-clean feature to the given value.
 	 *
-	 * @param enabled Auto-Clean aktivieren
+	 * @param enabled enable basic auto-clean
 	 */
-	public void setSimpleAutoCleanEnabled(boolean enabled) {
-		simpleAutoCleanIsEnabled = enabled;
+	public void setBasicAutoCleanEnabled(boolean enabled) {
+		basicAutoCleanIsEnabled = enabled;
 	}
 
 	/**
-	 * Aktiviert bzw. Deaktiviert die erweiterte Auto-Clean Funktion.
+	 * Sets the advanced auto-clean feature to the given value.
 	 *
-	 * @param enabled Auto-Clean aktivieren
+	 * @param enabled enable advanced auto-clean
 	 */
-	public void setExtendedAutoCleanEnabled(boolean enabled) {
-		extendedAutoCleanIsEnabled = enabled;
+	public void setAdvancedAutoCleanEnabled(boolean enabled) {
+		advancedAutoCleanIsEnabled = enabled;
 	}
 
 	/**
-	 * Gibt zurück ob einfaches Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * Returns whether basic auto-clean feature is enabled for this BackupTask.
 	 *
-	 * @return Zustand der Auto-Clean Funktion
+	 * @return whether basic auto-clean is enabled or not
 	 */
-	public boolean simpleAutoCleanIsEnabled() {
-		return simpleAutoCleanIsEnabled;
+	public boolean basicAutoCleanIsEnabled() {
+		return basicAutoCleanIsEnabled;
 	}
 
 	/**
-	 * Gibt zurück ob erweiterte Auto-Clean aktiviert (true) oder deaktiviert (false) ist.
+	 * Returns whether advanced auto-clean feature is enabled for this BackupTask.
 	 *
-	 * @return Zustand der Auto-Clean Funktion
+	 * @return whether advanced auto-clean is enabled or not.
 	 */
-	public boolean extendedAutoCleanIsEnabled() {
-		return extendedAutoCleanIsEnabled;
+	public boolean advancedAutoCleanIsEnabled() {
+		return advancedAutoCleanIsEnabled;
 	}
 
 	/**
-	 * Legt den Threshold des BackupTasks fest.
+	 * Returns the advanced auto-clean threshold of this BackupTask.
 	 *
-	 * @param thresholdToSet festzulegender Threshold
-	 */
-	public void setThreshold(int[] thresholdToSet) {
-		this.threshold = thresholdToSet;
-	}
-
-	/**
-	 * Legt die Threshold-Einheiten des BackupTasks fest.
-	 *
-	 * @param thresholdUnitsToSet festzulegende Threshold-Einheiten
-	 */
-	public void setThresholdUnits(String[] thresholdUnitsToSet) {
-		this.thresholdUnits = thresholdUnitsToSet;
-	}
-
-	/**
-	 * Legt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln fest.
-	 *
-	 * @param backupsToKeep festzulegende Werte
-	 */
-	public void setBackupsToKeep(int[] backupsToKeep) {
-		this.backupsToKeep = backupsToKeep;
-	}
-
-	/**
-	 * Gibt den Threshold zurück
-	 *
-	 * @return Threshold
+	 * @return threshold
 	 */
 	public int[] getThreshold() {
 		return threshold;
 	}
 
 	/**
-	 * Gibt die Threshold-Einheiten zurück.
+	 * Returns the unit of the advanced auto-clean threshold of this BackupTask.
 	 *
-	 * @return Threshold-Einheiten
+	 * @return unit of the threshold
 	 */
 	public String[] getThresholdUnits() {
 		return thresholdUnits;
 	}
 
 	/**
-	 * Gibt die Anzahl der zu behaltenden Backupsätze für die einzelnen Regeln zurück.
+	 * Sets the advanced auto-clean threshold of this BackupTask.
 	 *
-	 * @return Anzahl der zu behaltenden Backupsätze
+	 * @param thresholdToSet threshold to set
+	 */
+	public void setThreshold(int[] thresholdToSet) {
+		this.threshold = thresholdToSet;
+	}
+
+	/**
+	 * Sets the unit of the advanced auto-clean threshold of this BackupTask.
+	 *
+	 * @param thresholdUnitsToSet unit to set
+	 */
+	public void setThresholdUnits(String[] thresholdUnitsToSet) {
+		this.thresholdUnits = thresholdUnitsToSet;
+	}
+
+	/**
+	 * Returns the number of backup-sets to keep for each rule for advanced auto-clean.
+	 *
+	 * @return the number of backup-sets to keep for each rule
 	 */
 	public int[] getBackupsToKeep() {
 		return backupsToKeep;
 	}
 
 	/**
-	 * Legt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze fest
+	 * Sets the number of backup-sets to keep for each rule for advanced auto-clean.
 	 *
-	 * @param numberOfBackupsToKeep Anzahl der zu behaltenden Backup-Sätze
+	 * @param backupsToKeep number of backup-sets to keep for each rule
 	 */
-	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
-		this.numberOfBackupsToKeep = numberOfBackupsToKeep;
+	public void setBackupsToKeep(int[] backupsToKeep) {
+		this.backupsToKeep = backupsToKeep;
 	}
 
 	/**
-	 * Gibt die Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze zurück
+	 * Returns the number of backup-sets to keep for basic auto-clean.
 	 *
-	 * @return Anzahl der beim Auto-Clean zu behaltenden Backup-Sätze
+	 * @return number of backup-sets to keep
 	 */
 	public int getNumberOfBackupsToKeep() {
 		return numberOfBackupsToKeep;
 	}
 
 	/**
-	 * Gibt zurück ob dieser BackupTask vorbereitet (zur Ausführung bereit) ist
+	 * Sets the number of backup-sets to keep for basic auto-clean.
 	 *
-	 * @return true wenn die Vorbereitungen getroffen wurden, false sonst
+	 * @param numberOfBackupsToKeep number of backup-sets to keep
+	 */
+	public void setNumberOfBackupsToKeep(int numberOfBackupsToKeep) {
+		this.numberOfBackupsToKeep = numberOfBackupsToKeep;
+	}
+
+	/**
+	 * Returns whether this BackupTask is ready for execution (which means preparation was completed).
+	 *
+	 * @return whether prepared for execution or not
 	 */
 	public boolean isPrepared() {
 		return isPrepared;
 	}
 
 	/**
-	 * Markiert diesen BackupTask als für das Backup vorbereitet/ nicht vorbereitet.
-	 *
-	 * @param prepared true = vorbereitet, false = nicht vorbereitet
+	 * Marks this BackupTask as prepared and therefore ready for execution.
 	 */
-	public void setPrepared(boolean prepared) {
-		this.isPrepared = prepared;
+	public void setPrepared() {
+		this.isPrepared = true;
 	}
 
 	/**
-	 * Setzt die Autostart-Option.
+	 * Sets the auto-start option to the given value.
 	 *
-	 * @param autostart zu setzende Autostart-Option
+	 * @param autostart auto-start option to set (on = true, off = false)
 	 */
 	public void setAutostart(boolean autostart) {
 		this.autostart = autostart;
 	}
 
 	/**
-	 * Setzt die DestinationVerification-Option.
+	 * Sets the destination-verification option to the given value.
 	 *
-	 * @param destVerification zu setzende DestinationVerification-Option
+	 * @param destVerification destination-verification option to set (on = true, off = false)
 	 */
 	public void setDestinationVerification(boolean destVerification) {
 		this.destVerification = destVerification;
 	}
 
 	/**
-	 * Gibt zurück ob die Autostart-Option aktiviert ist.
+	 * Returns whether the auto-start option is activated.
 	 *
-	 * @return ob die Autostart-Option aktiviert ist
+	 * @return whether auto-start is activated (true) or not (false)
 	 */
-	public boolean getAutostart() {
+	public boolean autostartIsEnabled() {
 		return autostart;
 	}
 
 	/**
-	 * Gibt zurück ob die DestinationVerification-Option aktiviert ist.
+	 * Returns whether the destination-verification option is activated.
 	 *
-	 * @return ob die DestinationVerification-Option aktiviert ist
+	 * @return whether destination-verification is activated (true) or not (false)
 	 */
-	public boolean getDestinationVerification() {
+	public boolean destinationVerificationIsEnabled() {
 		return destVerification;
 	}
 
 	/**
-	 * Setzt die Anzahl der Regeln des erweiterten AutoClean.
+	 * Returns the number of rules for advanced auto-clean.
 	 *
-	 * @param numberOfRules Anzahl der Regeln
-	 */
-	public void setNumberOfExtendedAutoCleanRules(int numberOfRules) {
-		this.numberOfExtendedCleanRules = numberOfRules;
-	}
-
-	/**
-	 * Gibt die Anzahl der Regeln des erweiterten AutoClean zurück.
-	 *
-	 * @return Anzahl der Regeln
+	 * @return number of auto-clean rules
 	 */
 	public int getNumberOfExtendedCleanRules() {
 		return this.numberOfExtendedCleanRules;
 	}
 
 	/**
-	 * Gibt eine Liste von Strings zurück, wobei die Strings für die verschiedenen Regeln eine Kombination von
-	 * Zahl_Zeiteinheit ist.
+	 * Determines the number of rules for advanced auto-clean.
 	 *
-	 * @return Liste von Strings welche die Grenzwerte beschreiben
+	 * @param numberOfRules number of auto-clean rules to set
 	 */
-	public String[] getBoundaries() {
+	public void setNumberOfAdvancedAutoCleanRules(int numberOfRules) {
+		this.numberOfExtendedCleanRules = numberOfRules;
+	}
+
+	/**
+	 * Returns a list of the boundaries of advanced auto-clean as formatted strings.
+	 *
+	 * @return list of formated strings of boundaries
+	 */
+	public String[] getFormattedBoundaries() {
 		String[] result = new String[numberOfExtendedCleanRules - 1];
 		for (int i = 0; i < (numberOfExtendedCleanRules - 1); i++) {
 			result[i] = threshold[i] + "_" + thresholdUnits[i];
@@ -351,177 +346,173 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Legt den Backup-Modus fest. 0 = Auto-Backup deaktiviert, 1 = Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 =
-	 * Intervall
+	 * Returns the mode of the auto-backup feature, where 0 = no auto-backup 1 = weekdays 2 = days in months 3 =
+	 * interval
 	 *
-	 * @param mode Backup-Modus
-	 */
-	public void setAutoBackupMode(int mode) {
-		this.autoBackupMode = mode;
-	}
-
-	/**
-	 * Gibt den Backup-Modus zurück. 0 = Auto-Backup deaktiviert, 1 = Zeitpunkt-Wochentag, 2 = Zeitpunkt-TagImMonat, 3 =
-	 * Intervall
-	 *
-	 * @return Backup-Modus
+	 * @return auto-backup mode
 	 */
 	public int getAutoBackupMode() {
 		return autoBackupMode;
 	}
 
 	/**
-	 * Legt die Wochentage fest an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Wochentagen
-	 * von [0] = Montag bis [6] = Sonntag.
+	 * Determines the mode of the auto-backup feature, where 0 = no auto-backup 1 = weekdays 2 = days in months 3 =
+	 * interval
 	 *
-	 * @param weekdays Wochentage an denen gesichert werden soll
+	 * @param mode auto-backup mode to set
 	 */
-	public void setBackupWeekdays(boolean[] weekdays) {
-		this.weekdays = weekdays;
+	public void setAutoBackupMode(int mode) {
+		this.autoBackupMode = mode;
 	}
 
 	/**
-	 * Gibt die Wochentage zurück an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den
-	 * Wochentagen von [0] = Montag bis [6] = Sonntag.
+	 * Returns the weekdays of the auto-backup feature, where 0 = monday, 1 = tuesday, * ... 6 = sunday.
 	 *
-	 * @return Wochentage an denen gesichert werden soll
+	 * @return weekdays for the auto-backup feature
 	 */
 	public boolean[] getBackupWeekdays() {
 		return weekdays;
 	}
 
 	/**
-	 * Legt die Tage im Monat fest an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Tagen im
-	 * Monat von [0] = 1. bis [30] = 31.
+	 * Determines the weekdays of the auto-backup feature, where 0 = monday, 1 = tuesday, ... 6 = sunday.
 	 *
-	 * @param daysInMonth Tage im Monat an denen das Backup ausgeführt werden soll.
+	 * @param weekdays weekdays for the auto-backup feature to set
 	 */
-	public void setBackupDaysInMonth(boolean[] daysInMonth) {
-		this.backupDaysInMonth = daysInMonth;
+	public void setBackupWeekdays(boolean[] weekdays) {
+		this.weekdays = weekdays;
 	}
 
 	/**
-	 * Gibt die Tage im Monat zurück an denen das Backup ausgeführt werden soll. Die Array-Felder entsprechen den Tagen
-	 * im Monat von [0] = 1. bis [30] = 31.
+	 * Returns the days in month of the auto-backup feature, where 0 = 1. 1 = 2. ... 30 = 31.
 	 *
-	 * @return Tage im Monat an denen das Backup ausgeführt werden soll.
+	 * @return days in month for the auto-backup feature to set
 	 */
 	public boolean[] getBackupDaysInMonth() {
 		return backupDaysInMonth;
 	}
 
 	/**
-	 * Legt die Startzeit für das AutoBackup fest.
+	 * Determines the days in month of the auto-backup feature, where 0 = 1. 1 = 2. ... 30 = 31.
 	 *
-	 * @param startTime festzulegende Startzeit
+	 * @param daysInMonth days in month for the auto-backup feature
+	 */
+	public void setBackupDaysInMonth(boolean[] daysInMonth) {
+		this.backupDaysInMonth = daysInMonth;
+	}
+
+	/**
+	 * Returns the start-time of the auto-backup feature.
+	 *
+	 * @return start-time for the auto-backup feature
+	 */
+	public LocalTime getBackupStartTime() {
+		return backupStartTime;
+	}
+
+	/**
+	 * Determines the start-time of the auto-backup feature.
+	 *
+	 * @param startTime start-time for the auto-backup feature to set
 	 */
 	public void setBackupStartTime(LocalTime startTime) {
 		this.backupStartTime = startTime;
 	}
 
 	/**
-	 * Gibt die Startzeit des AutoBackups zurück.
+	 * Returns the time interval of the auto-backup feature.
 	 *
-	 * @return Startzeit des AutoBackups
-	 */
-	public LocalTime getStartTime() {
-		return backupStartTime;
-	}
-
-	/**
-	 * Legt die Intervallzeit fest.
-	 *
-	 * @param time Intervallzeit
-	 */
-	public void setIntervalTime(int time) {
-		this.intervalTime = time;
-	}
-
-	/**
-	 * Gibt die Intervallzeit zurück.
-	 *
-	 * @return Intervallzeit
+	 * @return time interval for the auto-backup feature
 	 */
 	public int getIntervalTime() {
 		return intervalTime;
 	}
 
 	/**
-	 * Legt die Intervalleinheit fest.
+	 * Determines the time interval of the auto-backup feature.
 	 *
-	 * @param intervalUnit Intervalleinheit
+	 * @param time time interval for the auto-backup feature to set
 	 */
-	public void setIntervalUnit(String intervalUnit) {
-		this.intervalUnit = intervalUnit;
+	public void setIntervalTime(int time) {
+		this.intervalTime = time;
 	}
 
 	/**
-	 * Gibt die Intervalleinheit zurück.
+	 * Returns the time unit of the interval of the auto-backup feature.
 	 *
-	 * @return Intervalleinheit
+	 * @return time unit of the interval of the auto-backup feature
 	 */
 	public String getIntervalUnit() {
 		return intervalUnit;
 	}
 
 	/**
-	 * Gibt das ScheduledFuture für die nächste geschedulte Ausführung zurück.
+	 * Determines the time unit of the interval of the auto-backup feature.
 	 *
-	 * @return ScheduledFuture der nächsten Ausführung
+	 * @param intervalUnit time unit of the interval of the auto-backup feature to set
+	 */
+	public void setIntervalUnit(String intervalUnit) {
+		this.intervalUnit = intervalUnit;
+	}
+
+	/**
+	 * Returns the ScheduledFuture object for the next scheduled execution.
+	 *
+	 * @return ScheduledFuture object of the next scheduled execution
 	 */
 	public ScheduledFuture getScheduledFuture() {
 		return scheduledFuture;
 	}
 
 	/**
-	 * Setzt das ScheduledFuture für die nächste Ausführung.
+	 * Sets the ScheduledFuture object for the next scheduled execution.
 	 *
-	 * @param scheduledFuture ScheduledFuture der nächsten Ausführung
+	 * @param scheduledFuture ScheduledFuture object of the next scheduled execution to set
 	 */
 	public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
 		this.scheduledFuture = scheduledFuture;
 	}
 
 	/**
-	 * Gibt das ScheduledFuture für den nächsten geschedulte Popup zurück.
+	 * Returns the ScheduledFuture object for the next scheduled popup.
 	 *
-	 * @return ScheduledFuture des nächsten Popups
+	 * @return popupScheduledFuture object of the next scheduled popup
 	 */
 	public ScheduledFuture getPopupScheduledFuture() {
 		return popupScheduledFuture;
 	}
 
 	/**
-	 * Setzt das ScheduledFuture für den nächsten Popup.
+	 * Sets the ScheduledFuture object for the next scheduled popup.
 	 *
-	 * @param popupScheduledFuture ScheduledFuture des nächsten Popups
+	 * @param popupScheduledFuture ScheduledFuture object of the next scheduled popup to set
 	 */
 	public void setPopupScheduledFuture(ScheduledFuture<?> popupScheduledFuture) {
 		this.popupScheduledFuture = popupScheduledFuture;
 	}
 
 	/**
-	 * Speichert den nächsten geschedulten Ausführungszeitpunkt.
+	 * Returns the date and time of the next scheduled execution.
 	 *
-	 * @param nextExecutionTime nächster geschedulter Ausführungszeitpunkt als LocalDateTime
-	 */
-	public void setLocalDateTimeOfNextBackup(LocalDateTime nextExecutionTime) {
-		this.nextExecutionTime = nextExecutionTime;
-	}
-
-	/**
-	 * Gibt den nächsten geschedulten Ausführungszeitpunkt zurück.
-	 *
-	 * @return nächster geplanter Ausführungszeitpunkt
+	 * @return date and time of the next scheduled execution
 	 */
 	public LocalDateTime getLocalDateTimeOfNextBackup() {
 		return nextExecutionTime;
 	}
 
 	/**
+	 * Sets the date and time of the next scheduled execution.
+	 *
+	 * @param nextExecutionTime date and time of the next scheduled execution to set
+	 */
+	public void setLocalDateTimeOfNextBackup(LocalDateTime nextExecutionTime) {
+		this.nextExecutionTime = nextExecutionTime;
+	}
+
+	/**
 	 * Resettet den nächsten Ausführungszeitpunkt (LocalDateTime). Achtung: Hierbei wird nicht das scheduling an sich
 	 * resettet sondern nur die zusätzliche Variable für das Nachholen versäumter Backups. Diese Methode ist nur gefolgt
-	 * von task.getScheduledFuture().cancel(false) zu benutzen!
+	 * von task.getScheduledFuture().cancel(false) zu benutzen! ToDo: create one joint method?
 	 */
 	public void resetLocalDateTimeOfNextExecution() {
 		this.nextExecutionTime = null;
@@ -560,58 +551,61 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Aktiviert/ Deaktiviert die Backup-Nachholen-Funktikon.
+	 * Sets the catch-up feature enabled.
 	 *
-	 * @param enabled zu setzender Wert (akt./deakt.)
+	 * @param enabled catch-up feature enabled (true) or disabled (false)
 	 */
 	public void setCatchUpEnabled(boolean enabled) {
 		this.catchUpEnabled = enabled;
 	}
 
 	/**
-	 * Legt die catchUp-Zeit (als String) fest.
+	 * Returns whether the catch-up feature is enabled for this BackupTask.
 	 *
-	 * @param catchUpTime festzulegende catchUp-Zeit (als String)
+	 * @return whether catch-up feature is enabled (true) or not (false)
 	 */
-	public void setCatchUpTime(String catchUpTime) {
-		this.catchUpTime = catchUpTime;
+	public boolean catchUpIsEnabled() {
+		return catchUpEnabled;
 	}
 
 	/**
-	 * Gibt die catchUp-Zeit (als String) zurück.
+	 * Returns the catch-up time.
 	 *
-	 * @return catchUp-Zeit (als String)
+	 * @return catch-up time as string
 	 */
 	public String getCatchUpTime() {
 		return catchUpTime;
 	}
 
 	/**
-	 * Gibt zurück ob catchUp aktiviert ist.
+	 * Determines the catch-up time.
 	 *
-	 * @return ob catchUp aktiviert ist
+	 * @param catchUpTime catch-up time as string
 	 */
-	public boolean isCatchUpEnabled() {
-		return catchUpEnabled;
+	public void setCatchUpTime(String catchUpTime) {
+		this.catchUpTime = catchUpTime;
 	}
 
-	/**
-	 * Legt den "richtigen" Zielpfad fest. Dieser wird nach dem Backup zum Zielpfad. Dies ist nötig wenn einmalig ein
-	 * Backup mit einem anderen Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
-	 *
-	 * @param path festzulegender "richtiger" Zielpfad
-	 */
-	public void setRealDestinationPath(String path) {
-		this.realDestinationPath = path;
-	}
 
 	/**
-	 * Gibt den "richtigen" Zielpfad zurück. Dieser wird nach dem Backup zum Zielpfad. Dies ist nötig wenn einmalig ein
-	 * Backup mit einem anderen Zielpfad ausgeführt werden soll (z.B. für DestinationVerification).
+	 * Returns the the real destination path of the BackupTask which will become the actual destination path after the
+	 * execution. This is necessary when a backup is executed once with a divergent destination (e.g. for
+	 * destination-verification)
 	 *
-	 * @return "richtiger" Zielpfad
+	 * @return real destination path
 	 */
 	public String getRealDestinationPath() {
 		return this.realDestinationPath;
+	}
+
+	/**
+	 * Determines the the real destination path of the BackupTask which will become the actual destination path after
+	 * the execution. This is necessary when a backup is executed once with a divergent destination (e.g. for
+	 * destination-verification)
+	 *
+	 * @param path real destination path to set
+	 */
+	public void setRealDestinationPath(String path) {
+		this.realDestinationPath = path;
 	}
 }

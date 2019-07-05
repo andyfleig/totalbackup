@@ -22,6 +22,11 @@ package listener;
 
 import data.Filter;
 
+/**
+ * Listener of the FilterDialog.
+ *
+ * @author Andreas Fleig
+ */
 public interface IFilterDialogListener {
 	/**
 	 * Adds the given filter.
@@ -46,17 +51,17 @@ public interface IFilterDialogListener {
 	public boolean hasFilter(Filter filter);
 
 	/**
-	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
+	 * Checks whether the given path is a sub-path of the selected source.
 	 *
-	 * @param path zu prüfender Pfad
-	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
+	 * @param path path to check
+	 * @return whether path is sub-path of source (true) or not (false)
 	 */
 	public boolean isUnderSourceRoot(String path);
 
 	/**
-	 * Returns the path of the current Source.
+	 * Returns the path of the current source.
 	 *
-	 * @return
+	 * @return path of the source
 	 */
 	public String getSourcePath();
 }

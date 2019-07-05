@@ -46,12 +46,10 @@ import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 /**
- * ToDo
+ * Controller of the JavaFx based GUI of TotalBackup.
  *
  * @author Andreas Fleig
  */
-
-
 public class GuiController {
 
 	private IGUIControllerListener guiControllerListener;
@@ -62,10 +60,9 @@ public class GuiController {
 	private Stage root_stage;
 	public Stage backupTaskDialogStage;
 
-	//ToDo: setzen (isQTTray)!
 	private TrayIcon trayIcon;
 	private Process trayProcess;
-	// Legt fest ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet wird.
+	// defines whether the QtTray (true) or the Java-Tray (false) is used
 	private boolean isQTTray;
 
 	private Image image;
@@ -73,6 +70,12 @@ public class GuiController {
 	private Socket socket = null;
 	private Socket clientSocket = null;
 
+	/**
+	 * Creates a GuiController with the given corresponding listener and the given instance of the mainframe.
+	 *
+	 * @param guiControllerListener given instance of GuiControllerListener
+	 * @param fxMainframe           given mainframe instance
+	 */
 	public GuiController(IGUIControllerListener guiControllerListener, FxMainframe fxMainframe) {
 		this.guiControllerListener = guiControllerListener;
 		this.fxMainframe = fxMainframe;
@@ -170,8 +173,8 @@ public class GuiController {
 			}
 
 			@Override
-			public void deleteEmptyBackupFolders(String path, BackupTask task) {
-				guiControllerListener.deleteEmptyBackupFolders(path, task);
+			public void deleteEmptyBackupFolders(BackupTask task) {
+				guiControllerListener.deleteEmptyBackupFolders(task);
 			}
 
 			@Override
@@ -186,19 +189,19 @@ public class GuiController {
 				guiControllerListener.taskFinished(task, schedule);
 			}
 		});
-		//ToDo: Wohin? (Konstruktor, initialize oder wo anders?)
 		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
 		image = Toolkit.getDefaultToolkit().getImage(url);
 	}
 
+	/**
+	 * Initializes the GuiController.
+	 */
 	public void initialize() {
-		// Entscheidung für den Tray-Typ treffen:
-		// Wird der Java-SystemTray unterstützt wird dieser auch verwendet:
+		// Make a decision whether the QtTray or the Java-Tray is used
+		// Java-Tray is used if supported by the platform and QtTray is not forced
 		if (SystemTray.isSupported() && !guiControllerListener.argsContains("force_qt")) {
 			SystemTray systemTray = SystemTray.getSystemTray();
-
 			PopupMenu trayPopupMenu = new PopupMenu();
-
 			MenuItem action = new MenuItem(ResourceBundle.getBundle("messages").getString("GUI.button_show"));
 			action.addActionListener(new ActionListener() {
 
@@ -232,7 +235,7 @@ public class GuiController {
 			isQTTray = false;
 		} else {
 
-			// QT-App starten:
+			// start QtTray
 			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
 				trayProcess = builder.start();
@@ -242,7 +245,7 @@ public class GuiController {
 						ResourceBundle.getBundle("messages").getString("GUI.errMsg"), JOptionPane.INFORMATION_MESSAGE);
 			}
 
-			// Thread für recv anlegen und starten:
+			// create and run thread for communication with QtTray
 			Thread recvThread = new Thread(new Runnable() {
 
 				@Override
@@ -256,20 +259,19 @@ public class GuiController {
 	}
 
 	/**
-	 * Gibt zurück ob ein QT-Tray (true) oder ein Java-Tray (false) verwendet wird.
+	 * Returns whether QtTray or Java-Tray is used.
 	 *
-	 * @return QT-Tray (true) oder ein Java-Tray (false)
+	 * @return QtTray = true, Java-Tray = false
 	 */
 	public boolean isQTTray() {
 		return isQTTray;
 	}
 
 	/**
-	 * Sendet die gegebene Nachricht (String) an den QT-Tray. Dabei darf die Nachricht maximal 999 Zeichen lang sein!
+	 * Sends the given message to the QtTray. Message must not be longer than 999 characters.
 	 *
-	 * @param msg               zu sendende Nachricht
-	 * @param terminationSignal wenn es sich bei der Nachricht um ein terminationSignal (true) und keine anzuzeigende
-	 *                          Nachricht (false) handelt
+	 * @param msg               message to send
+	 * @param terminationSignal whether the message is a termination signal (true) or not (false)
 	 */
 	public void sendToQtTrayOverSocket(String msg, boolean terminationSignal) {
 		char[] toSend;
@@ -279,8 +281,7 @@ public class GuiController {
 			}
 			int msgLenght = msg.length();
 			toSend = new char[msgLenght + 3];
-			// Anzuzeigende Nachricht:
-			// Umlaute bearbeiten:
+			// handle umlauts
 			msg = msg.replace("ä", "ae");
 			msg = msg.replace("ö", "oe");
 			msg = msg.replace("ü", "ue");
@@ -305,12 +306,11 @@ public class GuiController {
 			}
 		} else {
 			toSend = new char[3];
-			// Signal:
 			toSend[0] = "0".charAt(0);
 			toSend[1] = "0".charAt(0);
 			toSend[2] = "0".charAt(0);
 		}
-		// 1. Socket aufbauen & verbinden:
+		// 1. create socket and connect
 		try {
 			clientSocket = new Socket("127.0.0.1", 1235);
 			clientSocket.setReuseAddress(true);
@@ -344,7 +344,7 @@ public class GuiController {
 	}
 
 	/**
-	 * Ruft destroy auf dem TrayProcess auf, wenn dieser nicht null ist.
+	 * Calls the destruction of the QtTray.
 	 */
 	public void destroyTrayProcess() {
 		if (trayProcess != null) {
@@ -353,11 +353,11 @@ public class GuiController {
 	}
 
 	/**
-	 * Endlosschleife für die Kommunikation mit dem Qt-Tray (mit TCP-Socket).
+	 * Loop for the communication with the QtTray (via local TCP socket).
 	 */
 	private void recvLoop() {
 		while (true) {
-			// 1. Socket aufbauen:
+			// 1. create socket
 			ServerSocket server = null;
 			try {
 				server = new ServerSocket(1234);
@@ -366,7 +366,7 @@ public class GuiController {
 				return;
 			}
 
-			// 2. Verbinden:
+			// 2. connect
 			try {
 				socket = server.accept();
 			} catch (IOException e) {
@@ -378,13 +378,13 @@ public class GuiController {
 
 				int msg = in.readInt();
 				if (msg == 0) {
-					// Programm beenden:
+					// quit TotalBackup
 					guiControllerListener.saveProperties();
 					guiControllerListener.quitTotalBackup();
 					in.close();
 				} else if (msg == 1) {
-					// Programm zeigen/ verstecken:
-					// todo
+					// hide/ show TotalBackup
+					// ToDo: implement
 					in.close();
 				}
 
@@ -393,7 +393,7 @@ public class GuiController {
 						"reading int");
 			}
 
-			// Socket schließen:
+			// close socket
 			try {
 				socket.close();
 				server.close();
@@ -405,34 +405,34 @@ public class GuiController {
 	}
 
 	/**
-	 * Gibt den gegebenen String als Tray-Popup-Message aus.
+	 * Shows the given message on the Java-Tray.
 	 *
-	 * @param msg anzuzeigender Text
+	 * @param msg message to show
 	 */
 	public void showTrayPopupMessage(String msg) {
 		trayIcon.displayMessage(null, msg, TrayIcon.MessageType.INFO);
 	}
 
 	/**
-	 * Fügt einen Task (Namen) in die Liste der Tasks in der GUI hinzu.
+	 * Adds the given name of a BackupTask to the list of BackupTasks.
 	 *
-	 * @param taskName
+	 * @param task BackupTask to add
 	 */
-	public void addBackupTask(String taskName) {
-		fxMainframe.addBackupTask(taskName);
+	public void addBackupTask(BackupTask task) {
+		fxMainframe.addBackupTask(task);
 	}
 
 	/**
-	 * Fügt einen Task (Namen) in die Liste der Tasks in der GUI hinzu.
+	 * Removes the BackupTask with the given name from the list of BackupTasks.
 	 *
-	 * @param taskName
+	 * @param taskName name of the BackupTask to remove
 	 */
 	public void removeBackupTask(String taskName) {
 		fxMainframe.removeBackupTask(taskName);
 	}
 
 	/**
-	 * Ruft auf dem aktuellen PreparingDialog disposeDialog() auf, wenn dieser nicht null ist.
+	 * Triggers the disposing of the PreparingDialog (if any)
 	 */
 	public void disposePreparingDialogIfNotNull() {
 		fxMainframe.disposePreparingDialogIfNotNull();
@@ -442,7 +442,7 @@ public class GuiController {
 	 * Opens the SummaryDialog window giving an overview over some stats of the BackupTask (like number of files to
 	 * copy)
 	 *
-	 * @param task corresponding BackupTask
+	 * @param task   corresponding BackupTask
 	 * @param backup Backup object of the BackupTask
 	 */
 	public void showSummaryDialog(final BackupTask task, final Backupable backup) {

@@ -32,58 +32,32 @@ import data.Filter;
 import data.Source;
 
 /**
- * Ein Normal-Backup Objekt. Implementierung von Backupable.
+ * Implementation of Backupable for normal backups.
  *
  * @author Andreas Fleig
  */
 public class NormalBackup implements Backupable {
 
-	/**
-	 * Name des zu bearbeitenden BackupTasks
-	 */
 	private String taskName;
-	/**
-	 * Liste der Quellen
-	 */
 	private ArrayList<Source> sources;
-	/**
-	 * Zielpfad
-	 */
 	private String destinationPath;
-	/**
-	 * Listener zur Interaktion mit dem Controller
-	 */
 	private IBackupListener listener;
 	/**
-	 * Zu bearbeitende Elemente
+	 * List of BackupElements to process as part of this backup.
 	 */
 	private LinkedList<BackupElement> elementQueue;
-	/**
-	 * Zeigt ob die Vorbereitungen bereits getroffen wurde. Erst dann kann runBackup() aufgerufen werden.
-	 */
 	private boolean preparationDone = false;
-	/**
-	 * Informationen (der Vorbereitung) über dieses Backup.
-	 */
+	private boolean isCanceled;
 	private BackupInfos backupInfos = new BackupInfos();
-
-	/**
-	 * Quelle an der aktuell "gearbeitet" wird (für das Filtern der zu queuenden Elemente).
-	 */
 	private Source currentSource;
 
 	/**
-	 * Gibt an ob dieses Backup gecanceled ist.
-	 */
-	private boolean isCanceled;
-
-	/**
-	 * Backup-Objekt zur Datensicherung.
+	 * Creates a new normal backup Backupable object.
 	 *
-	 * @param listener    Listener
-	 * @param nameOfTask  Name des Backup-Tasks
-	 * @param sources     Quellen
-	 * @param destination Zielpfad
+	 * @param listener    corresponding IBackupListener instance
+	 * @param nameOfTask  name of the BackupTask
+	 * @param sources     list of sources
+	 * @param destination destination path
 	 */
 	public NormalBackup(IBackupListener listener, String nameOfTask, ArrayList<Source> sources, String destination) {
 		this.listener = listener;
@@ -98,20 +72,19 @@ public class NormalBackup implements Backupable {
 		File dir = BackupHelper.createBackupFolder(destinationPath, taskName, listener, task);
 		if (dir == null) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.BackupFolderCreationError");
-			listener.printOut(output, true, task.getTaskName());
+			listener.setStatus(output, true, task.getTaskName());
 			listener.log(output, task);
 			return;
 		}
 
 		try {
 			for (int i = 0; i < sources.size(); i++) {
-				// Für die Filterung:
+				// for filtering
 				currentSource = sources.get(i);
 
 				File sourceFile = new File(sources.get(i).getPath());
 
-				// Sonderbehandlung für Windows, wenn der SourcePath das
-				// root-dir eines Volume (z.B. C:/) ist:
+				// handling for windows special case where the source path is the root of a volume (e.g. C:/)
 				String folder;
 				File f;
 				if (!sourceFile.isDirectory()) {
@@ -119,8 +92,7 @@ public class NormalBackup implements Backupable {
 				} else {
 					if (sourceFile.getAbsolutePath().contains(":\\") && sourceFile.getAbsolutePath().length() == 3 &&
 							sourceFile.getName().equals("")) {
-						// In diesem Sonderfall ergibt sich der Name nur aus dem
-						// Laufwerksbuchstaben:
+						// name is created from the volume letter in this special case
 						folder = dir.getAbsolutePath() + File.separator + sourceFile.getAbsolutePath().charAt(0);
 					} else {
 						folder = dir.getAbsolutePath() + File.separator + sourceFile.getName();
@@ -130,66 +102,60 @@ public class NormalBackup implements Backupable {
 
 					if (f.mkdir()) {
 						String outprint = ResourceBundle.getBundle("messages").getString("Messages.FolderCreated");
-						listener.printOut(outprint, false, task.getTaskName());
+						listener.setStatus(outprint, false, task.getTaskName());
 						listener.log(outprint, task);
 					} else {
 						String outprint = ResourceBundle.getBundle("messages").getString(
 								"Messages.FolderCreationError");
-						listener.printOut(outprint, true, task.getTaskName());
+						listener.setStatus(outprint, true, task.getTaskName());
 						listener.log(outprint, task);
 					}
 				}
 
 				String output = ResourceBundle.getBundle("messages").getString("Messages.PreparationStarted");
-				listener.printOut(output, false, task.getTaskName());
+				listener.setStatus(output, false, task.getTaskName());
 				listener.log(output, task);
 
-				// Queueing:
+				// queueing:
 				try {
 					for (Source source : sources) {
 						rekursivePreparation(new File(source.getPath()), f, task);
 					}
 				} catch (BackupCanceledException e) {
 					String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-					listener.printOut(outprint, false, task.getTaskName());
+					listener.setStatus(outprint, false, task.getTaskName());
 					listener.log(outprint, task);
 					isCanceled = true;
 				}
 			}
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			isCanceled = true;
 		}
-		// TODO: Warum hier noch nicht gecanceled?
 		if (!isCanceled) {
 			String output = ResourceBundle.getBundle("messages").getString("Messages.PreparationDone");
-			listener.printOut(output, false, task.getTaskName());
+			listener.setStatus(output, false, task.getTaskName());
 			listener.log(output, task);
 			preparationDone = true;
 		} else {
-			listener.deleteEmptyBackupFolders(task.getDestinationPath(), task);
+			listener.deleteEmptyBackupFolders(task);
 		}
 	}
 
-	/**
-	 * Startet den Backup-Vorgang.
-	 *
-	 * @param task Backup-Tasks welcher ausgeführt wird
-	 */
+	@Override
 	public void runBackup(BackupTask task) {
-		// Test ob die Vorbereitung durchgeführt wurden:
 		if (!preparationDone) {
-			System.out.println("Fehler: Vorbereitung muss zuerst ausgeführt werden!");
+			System.out.println("Error: Tying to run backup without previously running the preparation.");
 			return;
 		}
 		String output = ResourceBundle.getBundle("messages").getString("Messages.startBackup");
-		listener.printOut(output, false, task.getTaskName());
+		listener.setStatus(output, false, task.getTaskName());
 		listener.log(output, task);
 
 		try {
-			// Eigentlicher Backup-Vorgang:
+			// actual backup process starts here
 			while (!elementQueue.isEmpty()) {
 				if (Thread.interrupted()) {
 					throw new BackupCanceledException();
@@ -205,7 +171,7 @@ public class NormalBackup implements Backupable {
 						String msg = ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg1") +
 								currentElement.getSourcePath() +
 								ResourceBundle.getBundle("messages").getString("GUI.errCopyIOExMsg2");
-						listener.printOut(msg, true, task.getTaskName());
+						listener.setStatus(msg, true, task.getTaskName());
 						listener.log(msg, task);
 					}
 
@@ -213,22 +179,18 @@ public class NormalBackup implements Backupable {
 			}
 
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.BackupComplete");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			listener.taskFinished(task);
 		} catch (BackupCanceledException e) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.CanceledByUser");
-			listener.printOut(outprint, false, task.getTaskName());
+			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 		}
 	}
 
 	/**
-	 * Führt die rekursive Backup-Vorbereitung durch.
-	 *
-	 * @param sourceFile Quellverzeichnis
-	 * @param backupDir  Backup-Verzeichnis (im Zielverzeichnis)
-	 * @param task       zugehöriger BackupTask
+	 * Recursive method for the actual preparation of the backup.
 	 */
 	private void rekursivePreparation(File sourceFile, File backupDir, BackupTask task) {
 
@@ -245,7 +207,7 @@ public class NormalBackup implements Backupable {
 		if (files == null) {
 			String outprint = ResourceBundle.getBundle("messages").getString("Messages.UnknownErrorAt") + " " +
 					sourceFile.getPath();
-			listener.printOut(outprint, true, task.getTaskName());
+			listener.setStatus(outprint, true, task.getTaskName());
 			listener.log(outprint, task);
 
 			return;
@@ -256,7 +218,7 @@ public class NormalBackup implements Backupable {
 				throw new BackupCanceledException();
 			}
 			if (file.isDirectory()) {
-				// Filtern:
+				// filtering
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
@@ -265,7 +227,6 @@ public class NormalBackup implements Backupable {
 					}
 				}
 				if (!filterMatches) {
-					// Queuen:
 					File newBackupDir = new File(backupDir.getAbsolutePath() + File.separator + file.getName());
 					elementQueue.add(
 							new BackupElement(file.getAbsolutePath(), newBackupDir.getAbsolutePath(), true, false));
@@ -273,7 +234,7 @@ public class NormalBackup implements Backupable {
 					rekursivePreparation(file, newBackupDir, task);
 				}
 			} else {
-				// Filtern:
+				// filtering
 				ArrayList<Filter> filtersOfThisSource = currentSource.getFilter();
 				boolean filterMatches = false;
 				for (Filter aFiltersOfThisSource : filtersOfThisSource) {
@@ -283,7 +244,6 @@ public class NormalBackup implements Backupable {
 					}
 				}
 				if (!filterMatches) {
-					// Queuen:
 					File newFile = new File(backupDir.getAbsolutePath() + File.separator + file.getName());
 					elementQueue.add(
 							new BackupElement(file.getAbsolutePath(), newFile.getAbsolutePath(), false, false));

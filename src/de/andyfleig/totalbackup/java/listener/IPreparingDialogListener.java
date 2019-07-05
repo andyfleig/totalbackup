@@ -20,8 +20,21 @@
  */
 package listener;
 
+/**
+ * Listener of the PreparingDialog.
+ *
+ * @author Andreas Fleig
+ */
 public interface IPreparingDialogListener {
+	/**
+	 * Cancels the BackupTask with the given name.
+	 *
+	 * @param taskName name of the BackupTask to cancel
+	 */
 	public void cancelBackup(String taskName);
 
+	/**
+	 * Disposes the corresponding PreparingDialog.
+	 */
 	public void disposeDialog();
 }

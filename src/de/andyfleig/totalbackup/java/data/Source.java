@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -24,56 +24,56 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Quellobjekt zur Haltung des Quellpfades und der dazugehörigen Filter.
+ * Object containing information of a certain source of a BackupTask.
  *
  * @author Andreas Fleig
  */
 public class Source implements Serializable {
 	/**
-	 *
+	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = 6082953307431457183L;
 	/**
-	 * Quellpfad
+	 * Path of the source
 	 */
 	private String path;
 	/**
-	 * Liste von Pfaden welche vom Backup ausgeschlossen werden sollen.
+	 * LList of filters
 	 */
-	private ArrayList<Filter> filterOfSource;
+	private ArrayList<Filter> filters;
 
 	/**
-	 * Erstellt ein neues Quellobjekt.
+	 * Creates a new Source object from the given path.
 	 *
-	 * @param path Quellpfad
+	 * @param path given source path
 	 */
 	public Source(String path) {
 		this.path = path;
-		filterOfSource = new ArrayList<>();
+		filters = new ArrayList<>();
 	}
 
 	/**
-	 * Fügt für diese Quelle einen Filter hinzu.
+	 * Adds a filter to the source.
 	 *
-	 * @param filter hinzuzufügender Filter
+	 * @param filter filter object to add
 	 */
 	public void addFilter(Filter filter) {
-		filterOfSource.add(filter);
+		filters.add(filter);
 	}
 
 	/**
-	 * Gibt die Liste aller Filter für diese Quelle zurück.
+	 * Returns all filters of this source.
 	 *
-	 * @return Liste aller Filter für diese Quelle
+	 * @return list of filters
 	 */
 	public ArrayList<Filter> getFilter() {
-		return filterOfSource;
+		return filters;
 	}
 
 	/**
-	 * Gibt den Quellpfad dieser Quelle zurück.
+	 * Returns the path of the source.
 	 *
-	 * @return Quellpfad dieser Quelle
+	 * @return source path
 	 */
 	public String getPath() {
 		return path;

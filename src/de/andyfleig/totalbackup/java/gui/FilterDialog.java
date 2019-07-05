@@ -35,7 +35,7 @@ import javafx.stage.Stage;
 import listener.IFilterDialogListener;
 
 /**
- * Dialog zum Erstellen und Bearbeiten eines Filters.
+ * Dialog for creating and editing of Source-filters.
  *
  * @author Andreas Fleig
  */
@@ -57,12 +57,18 @@ public class FilterDialog implements Initializable {
 
 	}
 
+	/**
+	 * Set stage of this FilterDialog to the given stage.
+	 *
+	 * @param stage stage to set
+	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
 
 	/**
-	 * Initialize the FilterDialog with the corresponding FilterDialogListener and Filter.
+	 * Initialize the FilterDialog with the corresponding FilterDialogListener and filter.
+	 *
 	 * @param filter corresponding Filter
 	 */
 	public void init(IFilterDialogListener listener, Filter filter, boolean inEditMode) {
@@ -70,23 +76,22 @@ public class FilterDialog implements Initializable {
 		this.filter = filter;
 		this.inEditMode = inEditMode;
 		this.tf_filterPath.setText(filter.getPath());
-		if (filter.getMode() == 1)  {
-			rb_md5Filter.setSelected(true);
-		}
-	}
-
-	public void setInitPath(String initPath) {
-		tf_filterPath.setText(initPath);
-	}
-
-	public void setInitMode(int mode) {
-		if (mode == 1) {
+		if (filter.getMode() == 1) {
 			rb_md5Filter.setSelected(true);
 		}
 	}
 
 	/**
-	 * Legt fest, ob gerade ein existierender Filter bearbeitet, oder ein neuer erzeugt wird.
+	 * Sets the initial source path of this FilterDialog.
+	 *
+	 * @param initPath initial source path
+	 */
+	public void setInitPath(String initPath) {
+		tf_filterPath.setText(initPath);
+	}
+
+	/**
+	 * Current filter of this FilterDialog instance.
 	 */
 	private Filter filter;
 
@@ -158,10 +163,10 @@ public class FilterDialog implements Initializable {
 	}
 
 	/**
-	 * Prüft ob der gegebene Pfad unter dem Rootpfad der gewählten Quelle ist.
+	 * Checks whether the given path is a sub-path of the selected source.
 	 *
-	 * @param path zu prüfender Pfad
-	 * @return ob der gegebene Pfad unter dem Rootpfad der Quelle ist
+	 * @param path path to check
+	 * @return whether path is sub-path of source (true) or not (false)
 	 */
 	private boolean isUnderSourceRoot(String path) {
 		return listener.isUnderSourceRoot(path);

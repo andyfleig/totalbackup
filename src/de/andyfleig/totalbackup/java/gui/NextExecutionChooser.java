@@ -20,7 +20,7 @@
  */
 package gui;
 
-import listener.INECListener;
+import listener.INextExecutionChooserListener;
 import main.BackupHelper;
 
 import javax.swing.*;
@@ -31,7 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ResourceBundle;
 
 public class NextExecutionChooser extends JDialog {
-	private INECListener listener;
+	private INextExecutionChooserListener listener;
 
 	private JPanel contentPane = new JPanel();
 	private JButton btn_ok = new JButton("OK");
@@ -46,7 +46,7 @@ public class NextExecutionChooser extends JDialog {
 	private JComboBox comboBox_postpone = new JComboBox();
 	private ButtonGroup group = new ButtonGroup();
 
-	public NextExecutionChooser(INECListener l) {
+	public NextExecutionChooser(INextExecutionChooserListener l) {
 		this.listener = l;
 
 		contentPane.setLayout(new BorderLayout());
@@ -135,7 +135,7 @@ public class NextExecutionChooser extends JDialog {
 
 
 			int minutesToPostpone = Integer.valueOf(sub);
-			listener.postponeBackup(LocalDateTime.now().plus(minutesToPostpone, ChronoUnit.MINUTES));
+			listener.postponeBackupTo(LocalDateTime.now().plus(minutesToPostpone, ChronoUnit.MINUTES));
 		}
 		NextExecutionChooser.this.dispose();
 	}

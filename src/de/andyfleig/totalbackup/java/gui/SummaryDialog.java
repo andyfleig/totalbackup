@@ -32,7 +32,7 @@ import javafx.stage.Stage;
 import listener.ISummaryDialogListener;
 
 /**
- * Dialog welcher nach der Preparation die Zusammenfassung des bevorstehenden Backups anzeigt.
+ * Dialog showing an overview over the results of the Preparation of a certain BackupTask.
  *
  * @author Andreas Fleig
  */
@@ -58,6 +58,11 @@ public class SummaryDialog implements Initializable {
 	@FXML
 	private Label label_sizeToLinkDyn;
 
+	/**
+	 * Set stage of this SummaryDialog to the given stage.
+	 *
+	 * @param stage stage to set
+	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -67,6 +72,17 @@ public class SummaryDialog implements Initializable {
 
 	}
 
+	/**
+	 * Initializes the SummaryDialog with the corresponding listener and its content.
+	 *
+	 * @param listener            corresponding instance of ISummaryDialogListener
+	 * @param task                corresponding BackupTask
+	 * @param numberOfFilesToCopy number of files to be copied within the backup
+	 * @param numberOfFilesToLink number of files to be linked within the backup
+	 * @param numberOfDirectories number of directories to be copied within the backup
+	 * @param sizeToCopy          total size of the files (in Bytes) to copy within the backup
+	 * @param sizeToLink          total size of files (in Bytes) to linke within the backup
+	 */
 	public void init(ISummaryDialogListener listener, BackupTask task, long numberOfFilesToCopy,
 			long numberOfFilesToLink, long numberOfDirectories, double sizeToCopy, double sizeToLink) {
 		this.listener = listener;
@@ -85,10 +101,10 @@ public class SummaryDialog implements Initializable {
 	}
 
 	/**
-	 * Formatiert die gegeben Größe für die Anzeige im Summary-Dialog.
+	 * Correclty formats the given size to the printed text for the summary.
 	 *
-	 * @param size Größe (als double)
-	 * @return Formatierter String der Größe
+	 * @param size size in Bytes
+	 * @return formatted string of the size
 	 */
 	private String formatSize(double size) {
 		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
@@ -105,7 +121,7 @@ public class SummaryDialog implements Initializable {
 
 	@FXML
 	public void cancelAction() {
-		outprintBackupCanceled(task);
+		setStatusToCanceled(task);
 		listener.taskFinished(task, true);
 		deleteEmptyBackupFolders(task);
 		synchronized (task) {
@@ -124,15 +140,20 @@ public class SummaryDialog implements Initializable {
 	}
 
 	/**
-	 * Löscht alle leeren Backup-Ordner eines Backuptasks (im Zielverzeichnis).
+	 * Deletes empty backup folders within the destination path.
 	 *
-	 * @param task entsprechender BackupTask
+	 * @param task corresponding BackupTask
 	 */
 	private void deleteEmptyBackupFolders(BackupTask task) {
 		listener.deleteEmptyBackupFolders(task);
 	}
 
-	private void outprintBackupCanceled(BackupTask task) {
-		listener.outprintBackupCanceled(task);
+	/**
+	 * Sets the status of the given BackupTask to canceled.
+	 *
+	 * @param task corresponding BackupTask
+	 */
+	private void setStatusToCanceled(BackupTask task) {
+		listener.setStatusToCanceled(task);
 	}
 }

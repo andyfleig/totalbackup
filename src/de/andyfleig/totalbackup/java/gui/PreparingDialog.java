@@ -45,6 +45,11 @@ public class PreparingDialog implements Initializable {
 
 	}
 
+	/**
+	 * Set stage of this PreparingDialog to the given stage.
+	 *
+	 * @param stage stage to set
+	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -54,6 +59,13 @@ public class PreparingDialog implements Initializable {
 
 	}
 
+	/**
+	 * Initializes the PreparingDialog with the given listener, name of BackupTask and backup.
+	 *
+	 * @param listener instance of the IPreparingDialogListener
+	 * @param taskName name of the corresponding BackupTask
+	 * @param backup   corresponding Backupable
+	 */
 	public void init(IPreparingDialogListener listener, String taskName, Backupable backup) {
 		this.listener = listener;
 		this.taskName = taskName;

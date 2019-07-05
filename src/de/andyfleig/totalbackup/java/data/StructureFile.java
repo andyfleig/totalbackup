@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -25,14 +25,16 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * Eine Datei oder ein Verzeichnis für die Struktur innerhalb des Index.
+ * A file or dictionary within the backups index. It is meant to be used to hold information about all the files of a
+ * hardlink backup to assess whether the file has changed since the last backup or not (so it has to be copied or just
+ * linked).
  *
  * @author Andreas Fleig
  */
 public class StructureFile implements Serializable {
 
 	/**
-	 * Versionsnummer für die Serialisierung.
+	 * Version number for serialization.
 	 */
 	private static final long serialVersionUID = 7289482994627565945L;
 	private String filePath;
@@ -41,10 +43,10 @@ public class StructureFile implements Serializable {
 	private ArrayList<StructureFile> existingFiles;
 
 	/**
-	 * Erzeugt ein StructureFile-Objekt, liest das letzte Modifizierungsdatum aus und schreibt dieses.
+	 * Creates a new StructureFile object with the given path and the last modification date of it.
 	 *
-	 * @param rootPath Pfad des Wurzelverzeichnisses
-	 * @param path     relativer Pfad der Datei
+	 * @param rootPath root path of the given path
+	 * @param path     relative path of the file or directory
 	 */
 	public StructureFile(String rootPath, String path) {
 		this.filePath = path;
@@ -55,7 +57,8 @@ public class StructureFile implements Serializable {
 	}
 
 	/**
-	 * Fügt zum StruktureFile eine Datei hinzu.
+	 * Adds the given file or directory to the list of sub-files of this StructureFile. Only valid if this StructureFile
+	 * is a directory.
 	 *
 	 * @param file hinzuzufügende Datei
 	 */
@@ -68,28 +71,28 @@ public class StructureFile implements Serializable {
 	}
 
 	/**
-	 * Gibt den Zeitpunkt der letzten Bearbeitung der Datei zurück.
+	 * Returns the time of the last modification of the corresponding file.
 	 *
-	 * @return Zeitpunkt der letzten Bearbeitung (als long in ms seit 1.1.1970)
+	 * @return time of the last modification (unix time as long)
 	 */
 	public long getLastModifiedDate() {
 		return lastModified;
 	}
 
 	/**
-	 * Gibt den Datei-Pfad zurück.
+	 * Returns the path of the file or directory.
 	 *
-	 * @return Datei-Pfad
+	 * @return path as string
 	 */
 	public String getFilePath() {
 		return filePath;
 	}
 
 	/**
-	 * Gibt die gesuchte Datei zurück, oder null wenn die gesuchte Datei nicht existiert.
+	 * Returns the StructureFile with the given name from the specified sub-files of this StructureFile.
 	 *
-	 * @param name Name der zu suchenden Datei
-	 * @return Datei oder null
+	 * @param name name of the StructureFile to return
+	 * @return StructureFile or null if no file with the given name exists
 	 */
 	public StructureFile getStructureFile(String name) {
 		if (existingFiles == null) {

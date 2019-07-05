@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ import listener.IFilterDialogListener;
 import listener.ISourcesDialogListener;
 
 /**
- * Dialog zum Festlegen und Bearbeiten der Quellen.
+ * Dialog to configure a certain source of a BackupTask.
  *
  * @author Andreas Fleig
  */
@@ -60,7 +60,11 @@ public class SourcesDialog implements Initializable {
 	private ListView<Filter> lv_filters;
 	final ObservableList<Filter> ol_filters = FXCollections.observableArrayList();
 
-
+	/**
+	 * Set stage of this SourcesDialog to the given stage.
+	 *
+	 * @param stage stage to set
+	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -76,12 +80,17 @@ public class SourcesDialog implements Initializable {
 		});
 	}
 
+	/**
+	 * Initializes the SourcesDialog with the given listener.
+	 *
+	 * @param listener corresponding instance of ISourcesDialogListener
+	 */
 	public void init(ISourcesDialogListener listener) {
 		this.listener = listener;
 	}
 
 	@FXML
-	public void addSourcePathAction() {
+	public void addSourceAction() {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("choose SourcePath");
 		File sourcePath = dirChooser.showDialog(stage);
@@ -148,7 +157,7 @@ public class SourcesDialog implements Initializable {
 		Source source = new Source(tf_sourcePath.getText());
 		Iterator itr = ol_filters.iterator();
 		while (itr.hasNext()) {
-			Filter currFilter = (Filter)itr.next();
+			Filter currFilter = (Filter) itr.next();
 			source.addFilter(new Filter(currFilter.getPath(), currFilter.getMode()));
 		}
 		listener.addSource(source);

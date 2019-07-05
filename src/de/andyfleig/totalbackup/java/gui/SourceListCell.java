@@ -26,7 +26,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
 
 /**
- * ToDo
+ * CellContent elements for the list of Sources within the BackupTaskDialog.
  *
  * @author Andreas Fleig
  */
@@ -34,6 +34,9 @@ public class SourceListCell extends ListCell<Source> {
 	private GridPane gridPane = new GridPane();
 	private Label lb_path = new Label();
 
+	/**
+	 * Creates a new ContentCell for the list of sources witin the BackupTaskDialog.
+	 */
 	public SourceListCell() {
 		gridPane.add(lb_path, 0, 0);
 	}

@@ -47,7 +47,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 /**
- * ToDo
+ * JavaFx based Mainframe of TotalBackup.
  *
  * @author Andreas Fleig
  */
@@ -60,7 +60,6 @@ public class FxMainframe extends Application implements Initializable {
 	public VBox vBoxMain;
 
 	IPreparingDialogListener preparingDialogListener;
-
 
 	@FXML
 	public ContextMenu contextMenu;
@@ -151,19 +150,19 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	/**
-	 * Fügt einen Task (Namen) in die Liste der Tasks in der GUI hinzu.
+	 * Adds the given name of a BackupTask to the list of BackupTasks.
 	 *
-	 * @param taskName
+	 * @param task BackupTask to add
 	 */
-	public void addBackupTask(String taskName) {
-		ol_backupTasks.add(new MainframeCellContent(taskName, "Okay", null));
+	public void addBackupTask(BackupTask task) {
+		ol_backupTasks.add(new MainframeCellContent(task.getTaskName(), "Okay", null));
 
 	}
 
 	/**
-	 * Fügt einen Task (Namen) in die Liste der Tasks in der GUI hinzu.
+	 * Removes the BackupTask with the given name from the list of BackupTasks.
 	 *
-	 * @param taskName
+	 * @param taskName name of the BackupTask to remove
 	 */
 	public void removeBackupTask(String taskName) {
 		int indexOfTask = getIndexOfObservableListFromName(taskName);
@@ -173,13 +172,11 @@ public class FxMainframe extends Application implements Initializable {
 
 	}
 
-	//ToDo: Wohin? + private?
-
 	/**
-	 * Sucht aus der ol_filters den Eintrag eines bestimmten Tasks heraus.
+	 * Returns the index of the BackupTask with the given name within the list of BackupTasks (ol_backupTasks).
 	 *
-	 * @param taskName Name des gesuchten Tasks
-	 * @return Index an dem sich der gesuchte Task in der observable List befindet
+	 * @param taskName name of the BackupTask
+	 * @return index of the BackupTask
 	 */
 	private int getIndexOfObservableListFromName(String taskName) {
 		for (int i = 0; i < ol_backupTasks.size(); i++) {
@@ -245,18 +242,18 @@ public class FxMainframe extends Application implements Initializable {
 					summaryDialog.init(new ISummaryDialogListener() {
 										   @Override
 										   public void deleteEmptyBackupFolders(BackupTask task) {
-											   mainframeListener.deleteEmptyBackupFolders("", task);
+											   mainframeListener.deleteEmptyBackupFolders(task);
 
 										   }
 
 										   @Override
-										   public void outprintBackupCanceled(BackupTask task) {
+										   public void setStatusToCanceled(BackupTask task) {
 											   setStatusOfBackupTask(task.getTaskName(), false, "Canceled");
 										   }
 
 										   @Override
 										   public void taskFinished(BackupTask task, boolean schedule) {
-												mainframeListener.taskFinished(task, schedule);
+											   mainframeListener.taskFinished(task, schedule);
 										   }
 									   }, task, backup.getBackupInfos().getNumberOfFilesToCopy(),
 							backup.getBackupInfos().getNumberOfFilesToCopy(),
@@ -295,7 +292,7 @@ public class FxMainframe extends Application implements Initializable {
 						public void cancelBackup(String taskName) {
 							setStatusOfBackupTask(task.getTaskName(), false, "Canceled");
 							mainframeListener.taskFinished(task, true);
-							mainframeListener.deleteEmptyBackupFolders("", task);
+							mainframeListener.deleteEmptyBackupFolders(task);
 							synchronized (task) {
 								task.notify();
 							}
@@ -318,6 +315,9 @@ public class FxMainframe extends Application implements Initializable {
 		});
 	}
 
+	/**
+	 * Disposes the PreparingDialog (if any).
+	 */
 	public void disposePreparingDialogIfNotNull() {
 		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
 		Platform.runLater(new Runnable() {

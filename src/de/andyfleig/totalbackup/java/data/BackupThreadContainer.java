@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -21,8 +21,7 @@
 package data;
 
 /**
- * Container für Backup-Threads. Besteht aus einem Thread und dem Namen des
- * zugehörigen BackupTask.
+ * Container for BackupThreads. Contains a BackupThread and the corresponding BackupTask.
  *
  * @author Andreas Fleig
  */

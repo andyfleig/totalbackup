@@ -1,8 +1,8 @@
 /*
  * Copyright 2014 - 2019 Andreas Fleig (github AT andyfleig DOT de)
- * 
+ *
  * All rights reserved.
- * 
+ *
  * This file is part of TotalBackup.
  *
  * TotalBackup is free software: you can redistribute it and/or modify
@@ -21,38 +21,37 @@
 package data;
 
 /**
- * Enthält Informationen über den Umfang eines auszuführenden BackupTasks (z.B. Größe der zu kopierenden/ verlinkenden
- * Dateien oder Anzahl der zu kopierenden/ verlinkenden Dateien oder Verzeichnissen).
+ * Contains information about the BackupTask to run like size or number of files and dictionaries.
  *
  * @author Andreas Fleig
  */
 public class BackupInfos {
 	/**
-	 * Anzahl der zu sichernden Ordner
+	 * Number of dictionaries to back up.
 	 */
 	private long numberOfDirectories = 0;
 	/**
-	 * Anzahl der zu kopierenden Dateien
+	 * Number of files to copy.
 	 */
 	private long numberOfFilesToCopy = 0;
 	/**
-	 * Anzahl der zu verlinkenden Dateien
+	 * Number of files to link.
 	 */
 	private long numberOfFilesToLink = 0;
 
 	/**
-	 * Gesamtgröße der zu kopierenden Dateien
+	 * Total size of files to copy in Bytes.
 	 */
 	private double sizeToCopy = 0;
 	/**
-	 * Gesamtgröße der zu verlinkenden Dateien
+	 * Total size of files to link in Bytes.
 	 */
 	private double sizeToLink = 0;
 
 	/**
-	 * Gibt die Anzahl der zu bearbeitenden Ordner zurück.
+	 * Returns the number of dictionaries to back up.
 	 *
-	 * @return Anzahl der zu bearbeitenden Ordner
+	 * @return number of dictionaries
 	 */
 	public long getNumberOfDirectories() {
 
@@ -60,7 +59,7 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Erhöht die Anzahl der zu bearbeitenden Ordner um 1.
+	 * Increases the number of dictionaries by 1.
 	 */
 	public void increaseNumberOfDirectories() {
 
@@ -68,9 +67,9 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Gibt die Anzahl der zu kopierenden Dateien zurück.
+	 * Returns the number of files to copy.
 	 *
-	 * @return Anzahl der zu kopierenden Dateien
+	 * @return number of files to copy
 	 */
 	public long getNumberOfFilesToCopy() {
 
@@ -78,7 +77,7 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Erhöht die Anzahl der zu kopierenden Ordner um 1.
+	 * Increases the number of files to copy by 1.
 	 */
 	public void increaseNumberOfFilesToCopy() {
 
@@ -86,9 +85,9 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Gibt die Anzahl der zu verlinkenden Dateien zurück.
+	 * Returns the number of files to link.
 	 *
-	 * @return Anzahl der zu verlinkenden Dateien
+	 * @return number of files to link
 	 */
 	public long getNumberOfFilesToLink() {
 
@@ -96,7 +95,7 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Erhöht die Anzahl der zu verlinkenden Ordner um 1.
+	 * Increases the number of files to link by 1.
 	 */
 	public void increaseNumberOfFilesToLink() {
 
@@ -104,9 +103,9 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Gibt die Gesamtgröße der zu kopierenden Dateien zurück.
+	 * Returns the total size of all files to copy.
 	 *
-	 * @return Gesamtgröße der zu kopierenden Dateien
+	 * @return total size of files to copy in Bytes
 	 */
 	public double getSizeToCopy() {
 
@@ -114,27 +113,27 @@ public class BackupInfos {
 	}
 
 	/**
-	 * Erhöht die Gesamtgröße der zu kopierenden Dateien um den gegebenen Wert.
+	 * Increases the size of files to copy by the given amount of Bytes.
 	 *
-	 * @param sizeToIncreaseBy Größe um die der Gesamtwert erhöht wird
+	 * @param sizeToIncreaseBy amount of Bytes to increase the total size by
 	 */
 	public void increaseSizeToCopyBy(double sizeToIncreaseBy) {
 		sizeToCopy += sizeToIncreaseBy;
 	}
 
 	/**
-	 * Gibt die Gesamtgröße der zu verlinkenden Dateien zurück.
+	 * Returns the total size of all files to link.
 	 *
-	 * @return Gesamtgröße der zu verlinkenden Dateien
+	 * @return total size of files to link in Bytes
 	 */
 	public double getSizeToLink() {
 		return sizeToLink;
 	}
 
 	/**
-	 * Erhöht die Gesamtgröße der zu verlinkenden Dateien um den gegebenen Wert.
+	 * Increases the size of files to link by the given amount of Bytes.
 	 *
-	 * @param sizeToIncreaseBy Größe um die der Gesamtwert erhöht wird
+	 * @param sizeToIncreaseBy amount of Bytes to increase the total size by
 	 */
 	public void increaseSizeToLinkBy(double sizeToIncreaseBy) {
 		sizeToLink += sizeToIncreaseBy;

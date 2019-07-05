@@ -23,41 +23,43 @@ package listener;
 import data.BackupTask;
 
 /**
- * ToDo
+ * Listener of the BackupTaskDialog.
  *
  * @author Andreas Fleig
  */
 public interface IBackupTaskDialogListener {
 
 	/**
-	 * Fügt einen Backup-Task hinzu.
+	 * Adds the given name of a BackupTask to the list of BackupTasks.
 	 *
-	 * @param task hinzuzufügender Backup-Task
+	 * @param task BackupTask to add
 	 */
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Taks)
+	 * Serializes all the BackupTasks.
 	 */
 	public void saveProperties();
 
 	/**
-	 * Rescheduled den gegebenen BackupTask.
+	 * Schedules the given BackupTask according to its configuration.
+	 *
+	 * @param task BackupTask to schedule
 	 */
 	public void scheduleBackupTask(BackupTask task);
 
 	/**
-	 * Prüft ob bereits ein BackupTask mit dem gegebenen Namen existiert.
+	 * Returns whether a BackupTask with the given name already exists.
 	 *
-	 * @param taskName zu prüfender Name
+	 * @param taskName name for the BackupTask to check
+	 * @return whether the name already exists (true) or not (false)
 	 */
 	public boolean backupTaskWithNameExisting(String taskName);
 
 	/**
-	 * Löscht den BackupTask mit dem gegebenen Namen. Existiert kein BackupTask mit dem gegebenen Namen, passiert
-	 * nichts.
+	 * Deletes the BackupTask with the given taskName from the list of BackupTasks (if any).
 	 *
-	 * @param taskName Name des BackupTasks
+	 * @param taskName name of the BackupTask to delete
 	 */
 	public void deleteBackupTaskWithName(String taskName);
 

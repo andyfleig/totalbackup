@@ -26,7 +26,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.GridPane;
 
 /**
- * ToDo
+ * ListCells for the list of filters of a certain source within the SourcesDialog.
  *
  * @author Andreas Fleig
  */

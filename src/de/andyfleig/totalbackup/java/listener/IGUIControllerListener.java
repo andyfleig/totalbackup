@@ -29,49 +29,49 @@ import data.BackupTask;
  */
 public interface IGUIControllerListener {
 	/**
-	 * Prüft ob der gegebene String teil der übergebenen Argumente ist.
+	 * Checks whether the given argument is part of the execution arguments of TotalBackup.
 	 *
-	 * @param s zu prüfender String (gesuchtes Argument)
-	 * @return ob der gegebene String teil der übergebenen Argumente ist
+	 * @param arg argument to check
+	 * @return whether it is part of the execution arguments (true) or not (false)
 	 */
-	public boolean argsContains(String s);
+	public boolean argsContains(String arg);
 
 	/**
-	 * Beendet das TotalBackup.
+	 * Quits TotalBackup.
 	 */
 	public void quitTotalBackup();
 
 	/**
-	 * Serialisiert die Programm-Einstellungen (Backup-Tasks).
+	 * Serializes all the BackupTasks.
 	 */
 	public void saveProperties();
 
 	/**
-	 * Fügt einen Backup-Task hinzu.
+	 * Adds the given name of a BackupTask to the list of BackupTasks.
 	 *
-	 * @param task hinzuzufügender Backup-Task
+	 * @param task BackupTask to add
 	 */
 	public void addBackupTask(BackupTask task);
 
 	/**
-	 * Reschedules the given BackupTask according to its properties.
+	 * Schedules the given BackupTask according to its configuration.
 	 *
-	 * @param task BackupTask to reschedule
+	 * @param task BackupTask to schedule
 	 */
 	public void scheduleBackupTask(BackupTask task);
 
 	/**
-	 * Reschedules the given BackupTask to be executed immediately.
+	 * Schedules the given BackupTask to be executed immediately.
 	 *
-	 * @param task BackupTask to execute
+	 * @param task BackupTask to schedule
 	 */
 	public void scheduleBackupTaskNow(BackupTask task);
 
 	/**
-	 * Gibt aus der Liste der BackupTasks den Task mit dem Namen taskName zurück. Wird kein entsprechender Eintrag
-	 * gefunden, wird null zurückgegeben.
+	 * Returns the BackupTask with the given name. Returns null if no BackupTask with the given name exists.
 	 *
-	 * @param taskName Name des gesuchten BackupTasks
+	 * @param taskName name of the BackupTask to return
+	 * @return BackupTask with the given name (if any), else null
 	 */
 	public BackupTask getBackupTaskWithName(String taskName);
 
@@ -83,15 +83,16 @@ public interface IGUIControllerListener {
 	public void deleteBackupTaskWithName(String taskName);
 
 	/**
-	 * Löscht alle leeren Backup-Ordner (erzeugt z.B. durch das Abbrechen eines Backup-Vorgangs nach der Übersicht)
+	 * Deletes empty backup folders within the destination path.
 	 *
-	 * @param task entsprechender BackupTask
+	 * @param task corresponding BackupTask
 	 */
-	public void deleteEmptyBackupFolders(String path, BackupTask task);
+	public void deleteEmptyBackupFolders(BackupTask task);
 
 	/**
-	 * Markes the given task as finished and thus as not currently running. Allows to reschedule.
-	 * @param task task to mark as finished
+	 * Marks the given task as finished and thus as not currently running. Allows to reschedule.
+	 *
+	 * @param task     task to mark as finished
 	 * @param schedule whether the task should be rescheduled
 	 */
 	public void taskFinished(BackupTask task, boolean schedule);
