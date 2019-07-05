@@ -256,7 +256,7 @@ public class FxMainframe extends Application implements Initializable {
 											   mainframeListener.taskFinished(task, schedule);
 										   }
 									   }, task, backup.getBackupInfos().getNumberOfFilesToCopy(),
-							backup.getBackupInfos().getNumberOfFilesToCopy(),
+							backup.getBackupInfos().getNumberOfFilesToLink(),
 							backup.getBackupInfos().getNumberOfDirectories(), backup.getBackupInfos().getSizeToCopy(),
 							backup.getBackupInfos().getSizeToLink());
 
