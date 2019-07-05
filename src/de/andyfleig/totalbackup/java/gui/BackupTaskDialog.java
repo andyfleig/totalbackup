@@ -741,7 +741,7 @@ public class BackupTaskDialog {
 		}
 
 		BackupTask newTask = new BackupTask(tf_taskName.getText());
-		if (rb_hardlinkBackup.isPressed()) {
+		if (rb_hardlinkBackup.isSelected()) {
 			newTask.setBackupMode(1);
 		} else {
 			newTask.setBackupMode(0);
