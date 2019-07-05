@@ -151,10 +151,14 @@ public class Controller {
 
 			@Override
 			public void deleteBackupTaskWithName(String taskName) {
+				ArrayList<BackupTask> tasksToDelete = new ArrayList<>();
 				for (BackupTask backupTask : backupTasks) {
 					if (backupTask.getTaskName().equals(taskName)) {
-						Controller.this.removeBackupTask(backupTask);
+						tasksToDelete.add(backupTask);
 					}
+				}
+				for (BackupTask backupTask : tasksToDelete) {
+					Controller.this.removeBackupTask(backupTask);
 				}
 			}
 
