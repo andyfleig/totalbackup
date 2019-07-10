@@ -152,6 +152,25 @@ public class FxMainframe extends Application implements Initializable {
 	}
 
 	@FXML
+	public void cancelAction() {
+		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
+			return;
+		}
+		String taskName = lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName();
+		// checks whether the selected BackupTask is running
+		if (!mainframeListener.taskIsRunning(taskName)) {
+			return;
+		}
+		// ask for confirmation
+		Optional<ButtonType> result = GuiHelper.showConfirmationWindows("Cancel task?",
+				"Do you really want to cancel" + " the selected backup task?");
+		if (result.get() == ButtonType.YES) {
+			mainframeListener.cancelBackupTaskWithName(taskName);
+		}
+
+	}
+
+	@FXML
 	public void startAboutDialog() {
 		mainframeListener.startAboutDialog();
 	}

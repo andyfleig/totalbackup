@@ -75,4 +75,11 @@ public interface IFxMainframeListener {
 	 * @return whether the BackupTask is currently running
 	 */
 	public boolean taskIsRunning(String taskName);
+
+	/**
+	 * Cancel the BackupTask with the given name if running.
+	 *
+	 * @param taskName name of the backup to cancel
+	 */
+	public void cancelBackupTaskWithName(String taskName);
 }

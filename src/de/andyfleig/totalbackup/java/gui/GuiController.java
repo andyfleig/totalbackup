@@ -192,6 +192,11 @@ public class GuiController {
 			public boolean taskIsRunning(String taskName) {
 				return guiControllerListener.taskIsRunning(taskName);
 			}
+
+			@Override
+			public void cancelBackupTaskWithName(String taskName) {
+				guiControllerListener.cancelBackupTaskWithName(taskName);
+			}
 		});
 		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
 		image = Toolkit.getDefaultToolkit().getImage(url);

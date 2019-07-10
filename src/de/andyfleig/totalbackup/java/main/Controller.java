@@ -175,6 +175,15 @@ public class Controller {
 			public boolean taskIsRunning(String taskName) {
 				return runningBackupTasks.contains(taskName);
 			}
+
+			@Override
+			public void cancelBackupTaskWithName(String taskName) {
+				BackupTask task = getBackupTaskWithName(taskName);
+				if (task == null) {
+					return;
+				}
+				cancelBackup(task, true);
+			}
 		}, fxMainframe);
 	}
 

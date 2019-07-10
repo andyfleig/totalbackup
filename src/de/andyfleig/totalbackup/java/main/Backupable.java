@@ -59,7 +59,7 @@ public interface Backupable {
 	public boolean isCanceled();
 
 	/**
-	 * Canceles this Backupable.
+	 * Cancel this Backupable.
 	 */
 	public void cancel();
 }

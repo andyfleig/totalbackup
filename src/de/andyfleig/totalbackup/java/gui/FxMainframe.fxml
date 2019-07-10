@@ -18,6 +18,7 @@
               <MenuItem mnemonicParsing="false" onAction="#addEntryAction" text="New backup task..." />
                   <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit selected task..." />
                   <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete selected task..." />
+                  <MenuItem mnemonicParsing="false" onAction="#cancelAction" text="Cancel selected backup" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -33,7 +34,8 @@
               <items>
                   <MenuItem mnemonicParsing="false" onAction="#runNowAction" text="Run now" />
                   <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit task" />
-                <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete tassk" />
+                <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete task" />
+                  <MenuItem mnemonicParsing="false" onAction="#cancelAction" text="Cancel task" />
               </items>
             </ContextMenu>
          </contextMenu></ListView>
