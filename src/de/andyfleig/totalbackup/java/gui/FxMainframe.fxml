@@ -10,14 +10,14 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#quitAction" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#quitAction" text="Exit" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#addEntryAction" text="Add" />
-                  <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit" />
-                  <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#addEntryAction" text="New backup task..." />
+                  <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit selected task..." />
+                  <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete selected task..." />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -32,8 +32,8 @@
             <ContextMenu fx:id="contextMenu">
               <items>
                   <MenuItem mnemonicParsing="false" onAction="#runNowAction" text="Run now" />
-                  <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit" />
-                <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete" />
+                  <MenuItem mnemonicParsing="false" onAction="#editEntryAction" text="Edit task" />
+                <MenuItem mnemonicParsing="false" onAction="#deleteEntryAction" text="Delete tassk" />
               </items>
             </ContextMenu>
          </contextMenu></ListView>
