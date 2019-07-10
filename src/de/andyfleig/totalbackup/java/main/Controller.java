@@ -170,6 +170,11 @@ public class Controller {
 			public void taskFinished(BackupTask task, boolean schedule) {
 				Controller.this.taskFinished(task, schedule);
 			}
+
+			@Override
+			public boolean taskIsRunning(String taskName) {
+				return runningBackupTasks.contains(taskName);
+			}
 		}, fxMainframe);
 	}
 
@@ -1078,8 +1083,7 @@ public class Controller {
 	/**
 	 * Deletes the given BackupTask from the list of running BackupTasks.
 	 *
-	 * @param task finished BackupTask ToDo: taskStarted() and taskFinished should both use the name of the task or the
-	 *             BackupTask itself!
+	 * @param task finished BackupTask
 	 */
 	private void taskFinished(BackupTask task, boolean schedule) {
 		if (!runningBackupTasks.remove(task.getTaskName())) {
@@ -1120,6 +1124,7 @@ public class Controller {
 	public void scheduleBackupTaskNow(final BackupTask task, boolean silent) {
 		// checks whether this BackupTas is already running
 		if (runningBackupTasks.contains(task.getTaskName())) {
+			System.err.println("Error: Could not run BackupTask since it is already running.");
 			return;
 		}
 		if (!silent) {
@@ -1208,7 +1213,6 @@ public class Controller {
 		// for the backup itself
 		Runnable backup = new Runnable() {
 			public void run() {
-				taskStarted(task.getTaskName());
 				Thread backupThread = new Thread(new Runnable() {
 					@Override
 					public void run() {

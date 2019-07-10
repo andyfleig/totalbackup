@@ -308,6 +308,7 @@ public class HardlinkBackup implements Backupable {
 		String outprint = "Backup-Task started";
 		listener.setStatus(outprint, false, task.getTaskName());
 		listener.log(outprint, task);
+		listener.taskStarted(task.getTaskName());
 		try {
 			// actual backup process starts here
 			while (!elementQueue.isEmpty()) {
@@ -360,6 +361,7 @@ public class HardlinkBackup implements Backupable {
 			outprint = "Backup canceled by User";
 			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
+			listener.taskFinished(task);
 		}
 	}
 

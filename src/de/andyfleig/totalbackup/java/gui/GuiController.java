@@ -187,6 +187,11 @@ public class GuiController {
 			public void taskFinished(BackupTask task, boolean schedule) {
 				guiControllerListener.taskFinished(task, schedule);
 			}
+
+			@Override
+			public boolean taskIsRunning(String taskName) {
+				return guiControllerListener.taskIsRunning(taskName);
+			}
 		});
 		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
 		image = Toolkit.getDefaultToolkit().getImage(url);

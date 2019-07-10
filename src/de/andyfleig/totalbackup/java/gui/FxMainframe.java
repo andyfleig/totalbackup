@@ -114,15 +114,40 @@ public class FxMainframe extends Application implements Initializable {
 		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
 			return;
 		}
+		String taskName = lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName();
+		// prevent from editing when BackupTask is currently running:
+		if (mainframeListener.taskIsRunning(taskName)) {
+			// show error message
+			// ToDo: move all usages of "Alert alert" to static helper method
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("BackupTask is currently running.");
+			alert.setContentText("Can not edit the selected BackupTask because it is currently running.");
+			alert.showAndWait();
+			return;
+		}
+
 		contextMenu.hide();
 
-		mainframeListener.startBackupTaskDialog(lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
+		mainframeListener.startBackupTaskDialog(taskName);
 
 	}
 
 	@FXML
 	public void deleteEntryAction() {
 		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
+			return;
+		}
+		String taskName = lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName();
+		// prevent from deleting when BackupTask is currently running:
+		if (mainframeListener.taskIsRunning(taskName)) {
+			// show error message
+			// ToDo: move all usages of "Alert alert" to static helper method
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText("BackupTask is currently running.");
+			alert.setContentText("Can not edit the selected BackupTask because it is currently running.");
+			alert.showAndWait();
 			return;
 		}
 		// Ask for confirmation
@@ -135,8 +160,7 @@ public class FxMainframe extends Application implements Initializable {
 
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.get() == ButtonType.YES) {
-			mainframeListener.deleteBackupTaskWithName(
-					lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName());
+			mainframeListener.deleteBackupTaskWithName(taskName);
 		}
 	}
 

@@ -96,4 +96,12 @@ public interface IGUIControllerListener {
 	 * @param schedule whether the task should be rescheduled
 	 */
 	public void taskFinished(BackupTask task, boolean schedule);
+
+	/**
+	 * Returns whether the given BackupTask is currently running.
+	 *
+	 * @param taskName name of the BackupTask to check
+	 * @return whether the BackupTask is currently running
+	 */
+	public boolean taskIsRunning(String taskName);
 }

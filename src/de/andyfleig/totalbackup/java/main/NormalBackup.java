@@ -152,6 +152,7 @@ public class NormalBackup implements Backupable {
 		String output = "Backup-Task started";
 		listener.setStatus(output, false, task.getTaskName());
 		listener.log(output, task);
+		listener.taskStarted(task.getTaskName());
 
 		try {
 			// actual backup process starts here
@@ -184,6 +185,7 @@ public class NormalBackup implements Backupable {
 			String outprint = "Backup canceled by User";
 			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
+			listener.taskFinished(task);
 		}
 	}
 
