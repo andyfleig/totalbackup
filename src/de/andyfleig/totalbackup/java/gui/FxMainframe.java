@@ -118,12 +118,8 @@ public class FxMainframe extends Application implements Initializable {
 		// prevent from editing when BackupTask is currently running:
 		if (mainframeListener.taskIsRunning(taskName)) {
 			// show error message
-			// ToDo: move all usages of "Alert alert" to static helper method
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("BackupTask is currently running.");
-			alert.setContentText("Can not edit the selected BackupTask because it is currently running.");
-			alert.showAndWait();
+			GuiHelper.showErrorWindow("BackupTask is currently running.",
+					"Can not edit the selected BackupTask because it is currently running.");
 			return;
 		}
 
@@ -141,24 +137,15 @@ public class FxMainframe extends Application implements Initializable {
 		String taskName = lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName();
 		// prevent from deleting when BackupTask is currently running:
 		if (mainframeListener.taskIsRunning(taskName)) {
-			// show error message
-			// ToDo: move all usages of "Alert alert" to static helper method
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("BackupTask is currently running.");
-			alert.setContentText("Can not edit the selected BackupTask because it is currently running.");
-			alert.showAndWait();
+			GuiHelper.showErrorWindow("BackupTask is currently running.",
+					"Can not edit the selected BackupTask because it is currently running.");
 			return;
 		}
 		// Ask for confirmation
-		Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-				"Deleting the backup-task will cancel " + "future executions of this task. \nThis can not be undone.",
-				ButtonType.YES, ButtonType.NO);
-		alert.setTitle("Warning");
-		alert.setHeaderText("Do you really want to delete the selected backup-task?");
-		alert.setResizable(true);
-
-		Optional<ButtonType> result = alert.showAndWait();
+		Optional<ButtonType> result = GuiHelper.showConfirmationWindows(
+				"Do you really want to delete the selected " + "backup-task?",
+				"Deleting the backup-task will cancel " + "future executions of this task. \nThis can" +
+						" not be undone.");
 		if (result.get() == ButtonType.YES) {
 			mainframeListener.deleteBackupTaskWithName(taskName);
 		}

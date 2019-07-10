@@ -112,12 +112,8 @@ public class FilterDialog implements Initializable {
 	private void okAction() {
 		File filterPath = new File(tf_filterPath.getText());
 		if (!filterPath.exists()) {
-			// show error message
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Invalid filter.");
-			alert.setContentText("The following filter path is not valid: " + tf_filterPath.getText());
-			alert.showAndWait();
+			GuiHelper.showErrorWindow("Invalid filter.",
+					"The following filter path is not valid: " + tf_filterPath.getText());
 			return;
 		}
 		Filter newFilter = new Filter();
@@ -128,13 +124,7 @@ public class FilterDialog implements Initializable {
 			newFilter.setMode(1);
 		}
 		if (!isUnderSourceRoot(filterPath.getAbsolutePath())) {
-			// show error message
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Invalid Filter.");
-			alert.setContentText("The filter path has to be inside the specified source!");
-			alert.setResizable(true);
-			alert.showAndWait();
+			GuiHelper.showErrorWindow("Invalid Filter.", "The filter path has to be inside the specified source!");
 			return;
 		}
 		newFilter.setPath(filterPath.getAbsolutePath());
@@ -144,13 +134,8 @@ public class FilterDialog implements Initializable {
 		}
 		// check whether same filter already exists:
 		if (listener.hasFilter(newFilter)) {
-			// show error message
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setResizable(true);
-			alert.setTitle("Error");
-			alert.setHeaderText("Filter already exists.");
-			alert.setContentText("The given filter already exists for this source path.");
-			alert.showAndWait();
+			GuiHelper.showErrorWindow("Filter already exists.",
+					"The given filter already exists for this source path.");
 			return;
 		}
 		listener.addFilter(newFilter);

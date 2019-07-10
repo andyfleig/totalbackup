@@ -749,12 +749,8 @@ public class BackupTaskDialog {
 		for (Source source : ol_sources) {
 			File currentSource = new File(source.getPath());
 			if (!currentSource.exists()) {
-				// show error message
-				Alert alert = new Alert(Alert.AlertType.ERROR);
-				alert.setTitle("Error");
-				alert.setHeaderText("Invalid source.");
-				alert.setContentText("The following source path is not valid: " + source.getPath());
-				alert.showAndWait();
+				GuiHelper.showErrorWindow("Invalid source.",
+						"The following source path is not valid: " + source.getPath());
 				return;
 			}
 			newTask.addSource(source);
@@ -960,12 +956,8 @@ public class BackupTaskDialog {
 		if (initTask == null && backupTaskDialogListener.backupTaskWithNameExisting(newTask.getTaskName())) {
 			// error is only shown if initTask is null which means this is a new BackupTask and not a change on an
 			// existing one (edit)
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Warning");
-			alert.setHeaderText("BackupTask with this name already exists.");
-			alert.setContentText("Old BackupTask with same name will be overwritten!");
-
-			Optional<ButtonType> result = alert.showAndWait();
+			Optional<ButtonType> result = GuiHelper.showConfirmationWindows("BackupTask with this name already exists.",
+					"Old BackupTask with same name will be overwritten!");
 			if (result.get() == ButtonType.OK) {
 				backupTaskDialogListener.deleteBackupTaskWithName(newTask.getTaskName());
 			} else {

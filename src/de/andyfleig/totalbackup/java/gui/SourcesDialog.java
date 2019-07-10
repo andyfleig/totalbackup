@@ -135,22 +135,13 @@ public class SourcesDialog implements Initializable {
 		File file = new File(tf_sourcePath.getText());
 		if (!file.exists()) {
 			// show error message
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Invalid source path.");
-			alert.setContentText("The selected source is not a valid path.");
-			alert.showAndWait();
+			GuiHelper.showErrorWindow("Invalid source path.", "The selected source path is invalid.");
 			return;
 		}
 		// check whether the selected source is already defined as source
 		if (listener.isAlreadyCoveredByExistingSource(tf_sourcePath.getText())) {
 			// show error message
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText("Same source.");
-			alert.setContentText("The selected source is already defined as source.");
-
-			Optional<ButtonType> result = alert.showAndWait();
+			GuiHelper.showErrorWindow("Duplicate source.", "The selected source is already defined as source.");
 			return;
 		}
 
