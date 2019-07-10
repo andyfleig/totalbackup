@@ -21,6 +21,7 @@
 package gui;
 
 import data.BackupTask;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -211,12 +212,22 @@ public class GuiController {
 		if (SystemTray.isSupported() && !guiControllerListener.argsContains("force_qt")) {
 			SystemTray systemTray = SystemTray.getSystemTray();
 			PopupMenu trayPopupMenu = new PopupMenu();
-			MenuItem action = new MenuItem("Show");
+			MenuItem action = new MenuItem("Show/Hide");
 			action.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//ToDo: show TotalBackup
+					// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							if (root_stage.isShowing()) {
+								root_stage.hide();
+							} else {
+								root_stage.show();
+							}
+						}
+					});
 
 				}
 			});
@@ -233,8 +244,8 @@ public class GuiController {
 			trayPopupMenu.add(close);
 			int trayIconWidth = new TrayIcon(image).getSize().width;
 
-			trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH),
-					"TotalBackup", trayPopupMenu);
+			trayIcon = new TrayIcon(image.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH), "TotalBackup",
+					trayPopupMenu);
 
 			try {
 				systemTray.add(trayIcon);

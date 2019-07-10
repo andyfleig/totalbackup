@@ -68,6 +68,8 @@ public class FxMainframe extends Application implements Initializable {
 
 	public void init(IFxMainframeListener listener) {
 		this.mainframeListener = listener;
+		// prevent javafx thread to end when mainframe is hidden
+		Platform.setImplicitExit(false);
 	}
 
 	@Override
