@@ -217,18 +217,7 @@ public class GuiController {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// Avoid throwing IllegalStateException by running from a non-JavaFX thread
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							if (root_stage.isShowing()) {
-								root_stage.hide();
-							} else {
-								root_stage.show();
-							}
-						}
-					});
-
+					triggerShowHide();
 				}
 			});
 			trayPopupMenu.add(action);
@@ -254,7 +243,6 @@ public class GuiController {
 			}
 			isQTTray = false;
 		} else {
-
 			// start QtTray
 			ProcessBuilder builder = new ProcessBuilder("./totalbackuptray");
 			try {
@@ -402,8 +390,7 @@ public class GuiController {
 					guiControllerListener.quitTotalBackup();
 					in.close();
 				} else if (msg == 1) {
-					// hide/ show TotalBackup
-					// ToDo: implement
+					triggerShowHide();
 					in.close();
 				}
 
@@ -494,5 +481,22 @@ public class GuiController {
 	 */
 	public void setNextExecutionTimeStatus(String taskName, LocalDateTime taskNextExecutionTimeStatus) {
 		fxMainframe.setNextExecutionTimeStatusOfBackupTask(taskName, taskNextExecutionTimeStatus);
+	}
+
+	/**
+	 * Triggers to show/hide the mainfrasme.
+	 */
+	private void triggerShowHide() {
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if (root_stage.isShowing()) {
+					root_stage.hide();
+				} else {
+					root_stage.show();
+				}
+			}
+		});
 	}
 }
