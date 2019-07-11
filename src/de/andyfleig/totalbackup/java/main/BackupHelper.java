@@ -50,9 +50,9 @@ import listener.IBackupListener;
 public final class BackupHelper {
 
 	/**
-	 * Location of the logo of TotalBackup.
+	 * Logo of TotalBackup.
 	 */
-	public static final String ICON_LOCATION = "./src/de/andyfleig/totalbackup/resources/TB_logo.png";
+	public static final String TB_LOGO = "TB_logo.png";
 
 	/**
 	 * date template ToDo: change to ISO 8601

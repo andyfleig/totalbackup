@@ -22,11 +22,11 @@ package gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
+import main.BackupHelper;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -54,16 +54,13 @@ public class AboutDialog {
 		String infoText = "TotalBackup v0.1pre5 beta";
 		infoText = infoText.concat("\nCopyright 2014-2019 Andreas Fleig - All rights reserved");
 		infoText = infoText.concat("\nLicense: GPLv3+");
-		infoText = infoText.concat("\n" + System.getProperty("java.runtime.name") + " " + System.getProperty("java.version"));
+		infoText = infoText.concat(
+				"\n" + System.getProperty("java.runtime.name") + " " + System.getProperty("java.version"));
 
 
 		lbl_versionAndCopyright.setText(infoText);
-		try {
-			FileInputStream input = new FileInputStream("./src/de/andyfleig/totalbackup/resources/TB_logo.png");
-			Image image = new Image(input);
-			if_logo.setImage(image);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Image image = new Image(BackupHelper.TB_LOGO);
+		if_logo.setImage(image);
+
 	}
 }

@@ -31,6 +31,7 @@ import javafx.stage.StageStyle;
 import listener.IBackupTaskDialogListener;
 import listener.IFxMainframeListener;
 import listener.IGUIControllerListener;
+import main.BackupHelper;
 import main.Backupable;
 
 import javax.swing.*;
@@ -199,7 +200,7 @@ public class GuiController {
 				guiControllerListener.cancelBackupTaskWithName(taskName);
 			}
 		});
-		URL url = Thread.currentThread().getContextClassLoader().getResource("TB_logo.png");
+		URL url = Thread.currentThread().getContextClassLoader().getResource(BackupHelper.TB_LOGO);
 		image = Toolkit.getDefaultToolkit().getImage(url);
 	}
 

@@ -281,42 +281,29 @@ public class BackupTaskDialog {
 
 	@FXML
 	public void initialize() {
+		Image image_general = new Image("tab_general.png");
+		Image image_autorun = new Image("tab_autorun.png");
+		Image image_autobclean = new Image("tab_autoclean.png");
 
-		try {
-			FileInputStream in_general = new FileInputStream(
-					"./src/de/andyfleig/totalbackup/resources/tab_general.png");
-			FileInputStream in_autorun = new FileInputStream(
-					"./src/de/andyfleig/totalbackup/resources/tab_autorun.png");
-			FileInputStream in_autoclean = new FileInputStream(
-					"./src/de/andyfleig/totalbackup/resources/tab_autoclean.png");
+		ImageView iv_general = new ImageView(image_general);
+		ImageView iv_autorun = new ImageView(image_autorun);
+		ImageView iv_autoclean = new ImageView(image_autobclean);
 
+		iv_general.setRotate(90.0);
+		iv_autorun.setRotate(90.0);
+		iv_autoclean.setRotate(90.0);
 
-			Image image_general = new Image(in_general);
-			Image image_autorun = new Image(in_autorun);
-			Image image_autobclean = new Image(in_autoclean);
+		BorderPane tp_general = new BorderPane();
+		BorderPane tp_autorun = new BorderPane();
+		BorderPane tp_autoclean = new BorderPane();
 
-			ImageView iv_general = new ImageView(image_general);
-			ImageView iv_autorun = new ImageView(image_autorun);
-			ImageView iv_autoclean = new ImageView(image_autobclean);
+		tp_general.setCenter(iv_general);
+		tp_autorun.setCenter(iv_autorun);
+		tp_autoclean.setCenter(iv_autoclean);
 
-			iv_general.setRotate(90.0);
-			iv_autorun.setRotate(90.0);
-			iv_autoclean.setRotate(90.0);
-
-			BorderPane tp_general = new BorderPane();
-			BorderPane tp_autorun = new BorderPane();
-			BorderPane tp_autoclean = new BorderPane();
-
-			tp_general.setCenter(iv_general);
-			tp_autorun.setCenter(iv_autorun);
-			tp_autoclean.setCenter(iv_autoclean);
-
-			tab_main.setGraphic(tp_general);
-			tab_autorun.setGraphic(tp_autorun);
-			tab_autoclean.setGraphic(tp_autoclean);
-		} catch (IOException e) {
-			System.err.println("IOException while accessing one of the tab-logos of the BackupTaskDialog.");
-		}
+		tab_main.setGraphic(tp_general);
+		tab_autorun.setGraphic(tp_autorun);
+		tab_autoclean.setGraphic(tp_autoclean);
 
 
 		cb_unit.setItems(FXCollections.observableArrayList("min", "hour", "day", "month"));

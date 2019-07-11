@@ -56,7 +56,7 @@ public class NextExecutionChooser extends JDialog {
 		setContentPane(contentPane);
 		setAlwaysOnTop(true);
 		setBounds(100, 100, 550, 210);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.ICON_LOCATION));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupHelper.TB_LOGO));
 
 		panel_options.setLayout(new BorderLayout());
 		panel_postponeOptions.setLayout(new BorderLayout());
