@@ -1088,7 +1088,7 @@ public class Controller {
 		runningBackupTasks.add(taskName);
 		System.out.println("Task started:" + taskName);
 		setStatus("Started", false, taskName);
-		showTrayPopupMessage("Task started:" + taskName);
+		showTrayPopupMessage("Task started: " + taskName);
 	}
 
 	/**

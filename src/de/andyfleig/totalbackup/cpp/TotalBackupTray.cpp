@@ -98,30 +98,28 @@ void TotalBackupTray::serverLoop(QSystemTrayIcon* trayIcon) {
     
     int recvBufferLength = 1023;
     char recvBuffer[1023];
-    // Empfangen:
+    // receiving
     int readBytes;
-    std::string strIn;
-    bool loop = true;
+    QString msg;
     readBytes = ::recvfrom(partnerSock, recvBuffer, recvBufferLength, 0, NULL, NULL);
     
-    // erste drei Zeichen geben die Anzahl der Zeichen an:
-    int numberOfSigns1 = recvBuffer[0] - '0';
-    int numberOfSigns2 = recvBuffer[1] - '0';
-    int numberOfSigns3 = recvBuffer[2] - '0';
+    // first three chars encode the total number of chars of the message
+    int numberOfChars1 = recvBuffer[0] - '0';
+    int numberOfChars2 = recvBuffer[1] - '0';
+    int numberOfChars3 = recvBuffer[2] - '0';
     
-    int numberOfSigns = numberOfSigns1 * 100 + numberOfSigns2 * 10 + numberOfSigns3;
-    // Sind die ersten drei Bits 0, so handelt es sich um das termSignal:
-    if (numberOfSigns == 0) {
+    int numberOfChars = numberOfChars1 * 100 + numberOfChars2 * 10 + numberOfChars3;
+    // special case: first three bits are 0 is the termination signal
+    if (numberOfChars == 0) {
       ::close(partnerSock);
       ::close(serverSock);
       QCoreApplication::exit(0);
     } else {
-      // Erhaltenen Nachricht in char[] stecken:
-      char result[numberOfSigns];
-      for (int i = 3; i < numberOfSigns + 3; i++) {
-	result[i - 3] = recvBuffer[i];
+      // handle received message
+      for (int i = 3; i < numberOfChars + 3; i++) {
+	msg += recvBuffer[i];
       }
-      trayIcon->showMessage("TotalBackup" , result, QSystemTrayIcon::Information, 5000);
+      trayIcon->showMessage("TotalBackup" , msg, QSystemTrayIcon::Information, 5000);
       
       ::close(partnerSock);
     }
@@ -130,13 +128,12 @@ void TotalBackupTray::serverLoop(QSystemTrayIcon* trayIcon) {
 }
 
 void TotalBackupTray::startSocket() {
-  // Netzwerksocket:
-  // Socket aufbauen:
+  // start socket
   sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
     printf ("%s \n", "error: could not create client-socket");
   }
-  // Zum Server verbinden:
+  // connect to server (TotalBackup)
   struct sockaddr_in server;
   memset(&server, 0, sizeof(server));
   unsigned long addr = inet_addr("127.0.0.1");

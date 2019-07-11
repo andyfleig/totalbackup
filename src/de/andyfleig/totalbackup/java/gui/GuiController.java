@@ -287,12 +287,14 @@ public class GuiController {
 				msg = "";
 			}
 			int msgLenght = msg.length();
+			// toSend is the buffer for the message to send
+			// its size is the size of the message + 3 leading characters
 			toSend = new char[msgLenght + 3];
 			// handle umlauts
 			msg = msg.replace("ä", "ae");
 			msg = msg.replace("ö", "oe");
 			msg = msg.replace("ü", "ue");
-
+			// leading three chars encode the length of the message
 			if (msgLenght < 10) {
 				toSend[0] = "0".charAt(0);
 				toSend[1] = "0".charAt(0);
