@@ -24,7 +24,6 @@ import data.BackupInfos;
 import data.Source;
 import gui.FxMainframe;
 import gui.GuiController;
-import gui.NextExecutionChooser;
 import javafx.application.Platform;
 import listener.IBackupListener;
 
@@ -56,7 +55,6 @@ import com.google.gson.reflect.TypeToken;
 import data.BackupTask;
 import data.BackupThreadContainer;
 import listener.IGUIControllerListener;
-import listener.INextExecutionChooserListener;
 
 /**
  * Main controller of TotalBackup.
@@ -100,6 +98,11 @@ public class Controller {
 
 	// Controller of TotalBackups GUI.
 	private GuiController guiController;
+
+	/**
+	 * Determines whether the Controller is fully started yet.
+	 */
+	public Boolean controllerStarted = false;
 
 	/**
 	 * Creates a new controller with the given FxMainframe.
@@ -184,6 +187,17 @@ public class Controller {
 				}
 				cancelBackup(task, true);
 			}
+
+			@Override
+			public void skipNextExecution(String taskName) {
+				Controller.this.skipNextExecution(taskName);
+			}
+
+			@Override
+			public void postponeExecutionBy(String taskName, int minutesToPostponeBy) {
+				Controller.this.postponeExecutionBy(taskName, minutesToPostponeBy);
+
+			}
 		}, fxMainframe);
 	}
 
@@ -247,8 +261,8 @@ public class Controller {
 		ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
 		// check whether backups has been missed since the last execution of TotalBackup
 		for (BackupTask task : backupTasks) {
-			if (task.getLocalDateTimeOfNextBackup() != null &&
-					task.getLocalDateTimeOfNextBackup().isBefore(LocalDateTime.now())) {
+			if (task.getLocalDateTimeOfNextExecution() != null &&
+					task.getLocalDateTimeOfNextExecution().isBefore(LocalDateTime.now())) {
 				missedBackupTaks.add(task);
 			}
 		}
@@ -261,13 +275,14 @@ public class Controller {
 		// catch up missed backups
 		for (BackupTask task : missedBackupTaks) {
 			// check whether it is worth catching those backups up (by checking the next regularly planned execution)
-			if ((task.getLocalDateTimeOfNextBackup().minusMinutes(task.getProfitableTimeUntilNextExecution())).isAfter(
+			if ((task.getLocalDateTimeOfNextExecution().minusMinutes(task.getProfitableTimeUntilNextExecution())).isAfter(
 					LocalDateTime.now())) {
 				String msg = "Catch up task" + " " + task.getTaskName();
 				showTrayPopupMessage(msg);
 				scheduleBackupTaskNow(task, true);
 			}
 		}
+		controllerStarted = true;
 	}
 
 	/**
@@ -568,25 +583,7 @@ public class Controller {
 	 * @param task given BackupTask
 	 */
 	public void askForNextExecution(BackupTask task) {
-		// ToDo: fully implement this!
-		NextExecutionChooser nec = new NextExecutionChooser(new INextExecutionChooserListener() {
-			@Override
-			public void skipBackup() {
-				scheduleBackupTask(task);
-			}
-
-			@Override
-			public void postponeBackupTo(LocalDateTime nextExecutionTime) {
-				scheduleBackupTaskAt(task, nextExecutionTime);
-			}
-
-			@Override
-			public void retry() {
-				scheduleBackupTaskNow(task);
-			}
-		});
-		nec.setModal(true);
-		nec.setVisible(true);
+		// ToDo: implement
 	}
 
 	/**
@@ -1256,6 +1253,9 @@ public class Controller {
 					LocalDateTime.now().minusMinutes(1).until(nextExecutionTime, ChronoUnit.SECONDS),
 					TimeUnit.SECONDS));
 		}
+		if (controllerStarted) {
+			guiController.forceGuiUpdate();
+		}
 
 		// save next execution time within the BackupTask to be able to catch up missed backups after restart of
 		// TotalBackup
@@ -1481,5 +1481,34 @@ public class Controller {
 			}
 			System.exit(0);
 		}
+	}
+
+	/**
+	 * Skips the next execution of the BackupTask with the given name.
+	 *
+	 * @param taskName name of the BackupTask to skip
+	 */
+	private void skipNextExecution(String taskName) {
+		BackupTask task = getBackupTaskWithName(taskName);
+		LocalDateTime nextExecutionTime = task.getLocalDateTimeOfNextExecution();
+		// reschedule to next possible time after the current one
+		nextExecutionTime = nextExecutionTime.plusSeconds(1);
+		removeBackupTaskScheduling(task);
+		scheduleBackupTaskStartingAt(task, nextExecutionTime);
+	}
+
+	/**
+	 * Postpones the execution of the BackupTask with the given name by the given amount of minutes.
+	 *
+	 * @param taskName            name of the BackupTask to postpone
+	 * @param minutesToPostponeBy number of minutes to postpone by
+	 */
+	private void postponeExecutionBy(String taskName, int minutesToPostponeBy) {
+		BackupTask task = getBackupTaskWithName(taskName);
+		LocalDateTime nextExecutionTime = task.getLocalDateTimeOfNextExecution();
+		// reschedule to next possible time after the current one
+		nextExecutionTime = nextExecutionTime.plusMinutes(minutesToPostponeBy);
+		removeBackupTaskScheduling(task);
+		scheduleBackupTaskAt(task, nextExecutionTime);
 	}
 }

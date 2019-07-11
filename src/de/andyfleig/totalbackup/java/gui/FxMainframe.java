@@ -36,10 +36,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import listener.IFxMainframeListener;
+import listener.INextExecutionChooserDialogListener;
 import listener.IPreparingDialogListener;
 import listener.ISummaryDialogListener;
 import main.Backupable;
-import main.Controller;
 
 import java.io.IOException;
 import java.net.URL;
@@ -123,7 +123,6 @@ public class FxMainframe extends Application implements Initializable {
 					"Can not edit the selected BackupTask because it is currently running.");
 			return;
 		}
-
 		contextMenu.hide();
 
 		mainframeListener.startBackupTaskDialog(taskName);
@@ -169,6 +168,20 @@ public class FxMainframe extends Application implements Initializable {
 			mainframeListener.cancelBackupTaskWithName(taskName);
 		}
 
+	}
+
+	@FXML
+	public void rescheduleAction() {
+		if (lv_backupTasks.getSelectionModel().getSelectedIndex() == -1) {
+			return;
+		}
+		String taskName = lv_backupTasks.getSelectionModel().getSelectedItem().getTaskName();
+		// checks whether the selected BackupTask is running
+		if (mainframeListener.taskIsRunning(taskName)) {
+			return;
+		}
+		contextMenu.hide();
+		startNextExecutionChooserDialog(taskName);
 	}
 
 	@FXML
@@ -359,5 +372,40 @@ public class FxMainframe extends Application implements Initializable {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Forces to update the list of BackupTasks within the mainframe.
+	 */
+	public void forceGuiUpdate() {
+		lv_backupTasks.fireEvent(
+				new ListView.EditEvent<>(lv_backupTasks, ListView.editCommitEvent(), ol_backupTasks.get(0), 0));
+	}
+
+	private void startNextExecutionChooserDialog(String taskName) {
+		final Stage nextExecutionChooserDialogStage = new Stage(StageStyle.UTILITY);
+		nextExecutionChooserDialogStage.initModality(Modality.APPLICATION_MODAL);
+		try {
+			FXMLLoader loader = new FXMLLoader((getClass().getResource("NextExecutionChooserDialog.fxml")));
+			Scene scene = new Scene(loader.load());
+			NextExecutionChooserDialog nextExecutionChooserDialog = loader.getController();
+			nextExecutionChooserDialog.init(new INextExecutionChooserDialogListener() {
+				@Override
+				public void skipNextExecution(String taskName) {
+					mainframeListener.skipNextExecution(taskName);
+				}
+
+				@Override
+				public void postponeExecutionBy(String taskName, int minutesToPostponeBy) {
+					mainframeListener.postponeExecutionBy(taskName, minutesToPostponeBy);
+				}
+			}, taskName);
+			nextExecutionChooserDialogStage.setScene(scene);
+			nextExecutionChooserDialog.setStage(nextExecutionChooserDialogStage);
+
+			nextExecutionChooserDialogStage.showAndWait();
+		} catch (IOException e) {
+			System.err.println("IOException while starting NextExecutionChooserDialog: " + e.toString());
+		}
 	}
 }

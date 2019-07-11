@@ -111,4 +111,19 @@ public interface IGUIControllerListener {
 	 * @param taskName name of the backup to cancel
 	 */
 	public void cancelBackupTaskWithName(String taskName);
+
+	/**
+	 * Skips the next execution of the BackupTask with the given name.
+	 *
+	 * @param taskName name of the BackupTask to skip
+	 */
+	public void skipNextExecution(String taskName);
+
+	/**
+	 * Postpones the execution of the BackupTask with the given name by the given amount of minutes.
+	 *
+	 * @param taskName            name of the BackupTask to postpone
+	 * @param minutesToPostponeBy number of minutes to postpone by
+	 */
+	public void postponeExecutionBy(String taskName, int minutesToPostponeBy);
 }

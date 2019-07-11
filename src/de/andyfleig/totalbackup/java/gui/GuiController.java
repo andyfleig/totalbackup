@@ -204,6 +204,16 @@ public class GuiController {
 			public void quitTotalBackup() {
 				guiControllerListener.quitTotalBackup();
 			}
+
+			@Override
+			public void skipNextExecution(String taskName) {
+				guiControllerListener.skipNextExecution(taskName);
+			}
+
+			@Override
+			public void postponeExecutionBy(String taskName, int minutesToPostponeBy) {
+				guiControllerListener.postponeExecutionBy(taskName, minutesToPostponeBy);
+			}
 		});
 		URL url = Thread.currentThread().getContextClassLoader().getResource(BackupHelper.TB_LOGO);
 		image = Toolkit.getDefaultToolkit().getImage(url);
@@ -506,5 +516,12 @@ public class GuiController {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Forces to update the list of BackupTasks within the mainframe.
+	 */
+	public void forceGuiUpdate() {
+		fxMainframe.forceGuiUpdate();
 	}
 }

@@ -27,21 +27,19 @@ import java.time.LocalDateTime;
  *
  * @author Andreas Fleig
  */
-public interface INextExecutionChooserListener {
+public interface INextExecutionChooserDialogListener {
 	/**
-	 * Skips this execution of the BackupTask. The BackupTask will be rescheduled accorting to its configuration.
-	 */
-	public void skipBackup();
-
-	/**
-	 * Postpones this BackupTask to the given time.
+	 * Skips the next execution of the BackupTask with the given name.
 	 *
-	 * @param nextExecutionTime time to postpone the execution of the BackupTask to
+	 * @param taskName name of the BackupTask to skip
 	 */
-	public void postponeBackupTo(LocalDateTime nextExecutionTime);
+	public void skipNextExecution(String taskName);
 
 	/**
-	 * Reschedules the BackupTask to be executed immediately.
+	 * Postpones the execution of the BackupTask with the given name by the given amount of minutes.
+	 *
+	 * @param taskName            name of the BackupTask to postpone
+	 * @param minutesToPostponeBy number of minutes to postpone by
 	 */
-	public void retry();
+	public void postponeExecutionBy(String taskName, int minutesToPostponeBy);
 }

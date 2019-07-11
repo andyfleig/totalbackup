@@ -496,7 +496,7 @@ public class BackupTask implements Serializable {
 	 *
 	 * @return date and time of the next scheduled execution
 	 */
-	public LocalDateTime getLocalDateTimeOfNextBackup() {
+	public LocalDateTime getLocalDateTimeOfNextExecution() {
 		return nextExecutionTime;
 	}
 
