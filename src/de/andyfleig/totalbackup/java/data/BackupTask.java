@@ -510,12 +510,14 @@ public class BackupTask implements Serializable {
 	}
 
 	/**
-	 * Resettet den nächsten Ausführungszeitpunkt (LocalDateTime). Achtung: Hierbei wird nicht das scheduling an sich
-	 * resettet sondern nur die zusätzliche Variable für das Nachholen versäumter Backups. Diese Methode ist nur gefolgt
-	 * von task.getScheduledFuture().cancel(false) zu benutzen! ToDo: create one joint method?
+	 * Resets the scheduled next execution of the BackupTask.
 	 */
-	public void resetLocalDateTimeOfNextExecution() {
+	public void resetNextExecution() {
 		this.nextExecutionTime = null;
+		ScheduledFuture sf = this.getScheduledFuture();
+		if (sf != null) {
+			sf.cancel(false);
+		}
 	}
 
 	/**

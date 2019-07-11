@@ -568,6 +568,7 @@ public class Controller {
 	 * @param task given BackupTask
 	 */
 	public void askForNextExecution(BackupTask task) {
+		// ToDo: fully implement this!
 		NextExecutionChooser nec = new NextExecutionChooser(new INextExecutionChooserListener() {
 			@Override
 			public void skipBackup() {
@@ -1159,10 +1160,7 @@ public class Controller {
 	public void scheduleBackupTasks() {
 		// clear waiting "queue"
 		for (BackupTask task : backupTasks) {
-			if (task.getScheduledFuture() != null) {
-				task.resetLocalDateTimeOfNextExecution();
-				task.getScheduledFuture().cancel(false);
-			}
+			task.resetNextExecution();
 			if (task.getPopupScheduledFuture() != null) {
 				task.getPopupScheduledFuture().cancel(false);
 			}
@@ -1217,7 +1215,7 @@ public class Controller {
 			return;
 		}
 
-		task.resetLocalDateTimeOfNextExecution();
+		task.resetNextExecution();
 		guiController.setNextExecutionTimeStatus(task.getTaskName(), nextExecutionTime);
 		// scheduling:
 		// for the backup itself
@@ -1315,10 +1313,7 @@ public class Controller {
 	 * @param task BackupTask to delete scheduled execution
 	 */
 	public void removeBackupTaskScheduling(BackupTask task) {
-		if (task.getScheduledFuture() != null) {
-			task.getScheduledFuture().cancel(false);
-			task.resetLocalDateTimeOfNextExecution();
-		}
+		task.resetNextExecution();
 		if (task.getPopupScheduledFuture() != null) {
 			task.getPopupScheduledFuture().cancel(false);
 		}
