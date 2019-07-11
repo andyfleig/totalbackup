@@ -31,6 +31,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import listener.IFilterDialogListener;
 
@@ -97,11 +98,19 @@ public class FilterDialog implements Initializable {
 
 	@FXML
 	private void addFilterAction() {
-		// ToDo: DirectoryChooser only allows to choose dirs and FileChooser only allows to choose files
-		DirectoryChooser dirChooser = new DirectoryChooser();
-		dirChooser.setInitialDirectory(new File(listener.getSourcePath()));
-		dirChooser.setTitle("choose File or Directory to Filter");
-		File filterPath = dirChooser.showDialog(stage);
+		// use FileChooser if MD5 filter is selected and DirectoryChooser if exclusion filter is selected
+		File filterPath;
+		if (rb_md5Filter.isSelected()) {
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setInitialDirectory(new File(listener.getSourcePath()));
+			fileChooser.setTitle("choose File or Directory to Filter");
+			filterPath = fileChooser.showOpenDialog(stage);
+		} else {
+			DirectoryChooser dirChooser = new DirectoryChooser();
+			dirChooser.setInitialDirectory(new File(listener.getSourcePath()));
+			dirChooser.setTitle("choose File or Directory to Filter");
+			filterPath = dirChooser.showDialog(stage);
+		}
 		if (filterPath == null) {
 			return;
 		}
