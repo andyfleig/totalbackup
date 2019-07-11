@@ -199,6 +199,11 @@ public class GuiController {
 			public void cancelBackupTaskWithName(String taskName) {
 				guiControllerListener.cancelBackupTaskWithName(taskName);
 			}
+
+			@Override
+			public void quitTotalBackup() {
+				guiControllerListener.quitTotalBackup();
+			}
 		});
 		URL url = Thread.currentThread().getContextClassLoader().getResource(BackupHelper.TB_LOGO);
 		image = Toolkit.getDefaultToolkit().getImage(url);
@@ -356,7 +361,7 @@ public class GuiController {
 	/**
 	 * Calls the destruction of the QtTray.
 	 */
-	public void destroyTrayProcess() {
+	public void destroyQtTrayProcess() {
 		if (trayProcess != null) {
 			trayProcess.destroy();
 		}

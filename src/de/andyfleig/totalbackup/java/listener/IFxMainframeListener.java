@@ -82,4 +82,9 @@ public interface IFxMainframeListener {
 	 * @param taskName name of the backup to cancel
 	 */
 	public void cancelBackupTaskWithName(String taskName);
+
+	/**
+	 * Quits TotalBackup.
+	 */
+	public void quitTotalBackup();
 }

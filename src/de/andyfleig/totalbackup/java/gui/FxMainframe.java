@@ -39,6 +39,7 @@ import listener.IFxMainframeListener;
 import listener.IPreparingDialogListener;
 import listener.ISummaryDialogListener;
 import main.Backupable;
+import main.Controller;
 
 import java.io.IOException;
 import java.net.URL;
@@ -91,9 +92,7 @@ public class FxMainframe extends Application implements Initializable {
 
 	@FXML
 	public void quitAction() {
-		//ToDo
-		mainframeListener.saveProperties();
-		System.exit(0);
+		mainframeListener.quitTotalBackup();
 	}
 
 	@FXML

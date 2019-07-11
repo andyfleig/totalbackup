@@ -115,7 +115,7 @@ public class Controller {
 
 			@Override
 			public void quitTotalBackup() {
-				Controller.this.quit();
+				Controller.this.quitTotalBackup();
 			}
 
 			@Override
@@ -312,7 +312,7 @@ public class Controller {
 					if (guiController.isQTTray()) {
 						guiController.sendToQtTrayOverSocket(null, true);
 					}
-					guiController.destroyTrayProcess();
+					guiController.destroyQtTrayProcess();
 					System.exit(1);
 				}
 			}
@@ -1467,17 +1467,18 @@ public class Controller {
 	/**
 	 * Quits TotalBackup.
 	 */
-	private void quit() {
+	private void quitTotalBackup() {
 		int reply = JOptionPane.showConfirmDialog(null,
-				"Really want to quit?\\nAll runningn Backups will be canceled!\\nNo scheduled Backups will be executed!",
+				"Really want to quit TotalBackup?\nAll running backups will be canceled and scheduled backups will " +
+						"not be executed!",
 				"Quit", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			saveSerialization();
 			cancelAllRunningTasksImmediately();
 			if (guiController.isQTTray()) {
 				guiController.sendToQtTrayOverSocket(null, true);
+				guiController.destroyQtTrayProcess();
 			}
-			guiController.destroyTrayProcess();
 			System.exit(0);
 		}
 	}
