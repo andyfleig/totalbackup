@@ -23,7 +23,7 @@ package listener;
 import data.BackupTask;
 
 /**
- * ToDo
+ * Listener for instances of Backupable (NormalBackup or HardlinkBackup).
  */
 public interface IBackupListener {
 
@@ -55,8 +55,7 @@ public interface IBackupListener {
 	/**
 	 * Deletes the given BackupTask from the list of running BackupTasks.
 	 *
-	 * @param task finished BackupTask ToDo: taskStarted() and taskFinished should both use the name of the task or the
-	 *             BackupTask itself!
+	 * @param task finished BackupTask
 	 */
 	public void taskFinished(BackupTask task);
 

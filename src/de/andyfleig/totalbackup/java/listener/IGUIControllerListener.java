@@ -23,7 +23,7 @@ package listener;
 import data.BackupTask;
 
 /**
- * ToDo
+ * Listener of the GuiController.
  *
  * @author Andreas Fleig
  */

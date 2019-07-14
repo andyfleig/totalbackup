@@ -21,6 +21,7 @@
 package gui;
 
 import javafx.scene.paint.Color;
+import main.BackupHelper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -96,7 +97,7 @@ public class MainframeCellContent {
 	 * @return string for the NextExecutionStatus
 	 */
 	private String buildNextExecutionStatusString(LocalDateTime taskNextExecutionDateTime) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(BackupHelper.DATE_TIME_PATTERN_SHOW);
 		String dataTime = taskNextExecutionDateTime.format(formatter);
 		return "Next Execution: " + dataTime;
 	}

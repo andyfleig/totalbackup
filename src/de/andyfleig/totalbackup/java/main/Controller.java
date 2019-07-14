@@ -780,8 +780,7 @@ public class Controller {
 		try {
 			PrintWriter writer = new PrintWriter(new FileOutputStream(log, true));
 			LocalDateTime dateDime = LocalDateTime.now();
-			String timePattern = "dd.MM.yyyy HH:mm:ss";
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(timePattern);
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern(BackupHelper.DATE_TIME_PATTERN_SHOW);
 			String output = dtf.format(dateDime) + ": " + msg;
 
 			writer.append("\n" + output);
@@ -863,7 +862,7 @@ public class Controller {
 				String backupDate = tokenizer.nextToken();
 
 				try {
-					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 					sdfToDate.parse(backupDate);
 					foundBackupsets.add(file);
 				} catch (ParseException e) {
@@ -902,7 +901,7 @@ public class Controller {
 				String backupDate = tokenizer.nextToken();
 
 				try {
-					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 					foundDate = sdfToDate.parse(backupDate);
 				} catch (ParseException e) {
 					// no valid date
@@ -973,7 +972,7 @@ public class Controller {
 			String currentBackupSet = tokenizer.nextToken();
 			Date dateOfCurrentBackupSet = new Date();
 			try {
-				SimpleDateFormat sdfOfCurrentBackupSet = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
+				SimpleDateFormat sdfOfCurrentBackupSet = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 				dateOfCurrentBackupSet = sdfOfCurrentBackupSet.parse(currentBackupSet);
 			} catch (ParseException e) {
 				System.err.println("Error while parsing date");

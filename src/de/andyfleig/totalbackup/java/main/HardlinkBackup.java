@@ -749,7 +749,7 @@ public class HardlinkBackup implements Backupable {
 					String backupDate = tokenizer.nextToken();
 
 					try {
-						SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.BACKUP_FOLDER_NAME_PATTERN);
+						SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 						foundDate = sdfToDate.parse(backupDate);
 					} catch (ParseException e) {
 						// no valid date

@@ -55,9 +55,12 @@ public final class BackupHelper {
 	public static final String TB_LOGO = "TB_logo.png";
 
 	/**
-	 * date template ToDo: change to ISO 8601
+	 * templates for date and time following ISO 8601
+	 * *_NAMING is for the naming of files or directories (does not include colons)
+	 * *_SHOW is for printing anywhere within the gui or in log files
 	 */
-	public static final String BACKUP_FOLDER_NAME_PATTERN = "dd-MM-yyyy-HH-mm-ss";
+	public static final String DATE_TIME_PATTERN_NAMING = "yyyy-MM-dd'T'HHmmss";
+	public static final String DATE_TIME_PATTERN_SHOW = "yyyy-MM-dd'T'HH:mm:ss";
 
 	/**
 	 * Copies the given source file to the given destination.
@@ -127,7 +130,7 @@ public final class BackupHelper {
 
 		// create directory with date
 		Date date = new Date();
-		SimpleDateFormat df = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+		SimpleDateFormat df = new SimpleDateFormat(DATE_TIME_PATTERN_NAMING);
 		df.setTimeZone(TimeZone.getDefault());
 
 		File destinationFile = new File(destinationPath);
@@ -258,7 +261,7 @@ public final class BackupHelper {
 				String backupDate = tokenizer.nextToken();
 
 				try {
-					SimpleDateFormat sdfToDate = new SimpleDateFormat(BACKUP_FOLDER_NAME_PATTERN);
+					SimpleDateFormat sdfToDate = new SimpleDateFormat(DATE_TIME_PATTERN_NAMING);
 					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(),
 							ZoneId.systemDefault());
 				} catch (ParseException e) {
