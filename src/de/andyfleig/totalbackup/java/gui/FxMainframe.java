@@ -31,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -239,10 +240,17 @@ public class FxMainframe extends Application implements Initializable {
 	 * @param taskStatus status to set
 	 */
 	public void setStatusOfBackupTask(String taskName, boolean error, String taskStatus) {
-		//ToDo: Farbe (Error)
+		Color color;
+		if (error) {
+			color = Color.web("#ff0000", 0.8);
+		} else {
+			color = Color.web("#000000", 0.8);
+		}
 		int indexOfTask = getIndexOfObservableListFromName(taskName);
 		if (indexOfTask >= 0) {
 			ol_backupTasks.get(indexOfTask).setTaskStaus(taskStatus);
+			ol_backupTasks.get(indexOfTask).setStausColor(color);
+
 			lv_backupTasks.fireEvent(new ListView.EditEvent<>(lv_backupTasks, ListView.editCommitEvent(),
 					ol_backupTasks.get(indexOfTask), indexOfTask));
 		}
@@ -378,8 +386,15 @@ public class FxMainframe extends Application implements Initializable {
 	 * Forces to update the list of BackupTasks within the mainframe.
 	 */
 	public void forceGuiUpdate() {
-		lv_backupTasks.fireEvent(
-				new ListView.EditEvent<>(lv_backupTasks, ListView.editCommitEvent(), ol_backupTasks.get(0), 0));
+		// Avoid throwing IllegalStateException by running from a non-JavaFX thread
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				lv_backupTasks.fireEvent(
+						new ListView.EditEvent<>(lv_backupTasks, ListView.editCommitEvent(), ol_backupTasks.get(0), 0));
+			}
+		});
+
 	}
 
 	private void startNextExecutionChooserDialog(String taskName) {

@@ -275,8 +275,8 @@ public class Controller {
 		// catch up missed backups
 		for (BackupTask task : missedBackupTaks) {
 			// check whether it is worth catching those backups up (by checking the next regularly planned execution)
-			if ((task.getLocalDateTimeOfNextExecution().minusMinutes(task.getProfitableTimeUntilNextExecution())).isAfter(
-					LocalDateTime.now())) {
+			if ((task.getLocalDateTimeOfNextExecution().minusMinutes(
+					task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
 				String msg = "Catch up task" + " " + task.getTaskName();
 				showTrayPopupMessage(msg);
 				scheduleBackupTaskNow(task, true);
@@ -561,7 +561,7 @@ public class Controller {
 	 */
 	private void cancelBackup(BackupTask task, boolean reschedule) {
 		// ToDo: non-JavaFX thread?
-		guiController.setStatusOfBackupTask(task.getTaskName(), false, "Canceling Backup...");
+		setStatus("Canceling Backup...", false, task.getTaskName());
 
 		BackupThreadContainer tmpContainer = null;
 		for (BackupThreadContainer container : backupThreads) {
@@ -674,9 +674,9 @@ public class Controller {
 					File toDelete = new File(task.getDestinationPath() + File.separator + findOldestBackup(
 							new ArrayList<>(Arrays.asList((new File(task.getDestinationPath()).listFiles()))), task));
 
-					String output = "Deleting Backup" + " " + toDelete.getAbsolutePath();
-					guiController.setStatusOfBackupTask(task.getTaskName(), false, output);
-					log(output, task);
+					String msg = "Deleting Backup" + " " + toDelete.getAbsolutePath();
+					setStatus(msg, false, task.getTaskName());
+					log(msg, task);
 					if (!BackupHelper.deleteDirectory(toDelete)) {
 						System.err.println("FEHLER: Ordner konnte nicht gelöscht werden");
 					}
@@ -722,6 +722,9 @@ public class Controller {
 			@Override
 			public void run() {
 				guiController.setStatusOfBackupTask(taskName, error, msg);
+				if (controllerStarted) {
+					guiController.forceGuiUpdate();
+				}
 			}
 		});
 
@@ -740,8 +743,17 @@ public class Controller {
 			@Override
 			public void run() {
 				guiController.setNextExecutionTimeStatus(taskName, nextExecutionTime);
+				if (controllerStarted) {
+					guiController.forceGuiUpdate();
+				}
 			}
 		});
+		try {
+			// workaround for forceGuiUpdate from above to work every time
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -1470,8 +1482,7 @@ public class Controller {
 	private void quitTotalBackup() {
 		int reply = JOptionPane.showConfirmDialog(null,
 				"Really want to quit TotalBackup?\nAll running backups will be canceled and scheduled backups will " +
-						"not be executed!",
-				"Quit", JOptionPane.YES_NO_OPTION);
+						"not be executed!", "Quit", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			saveSerialization();
 			cancelAllRunningTasksImmediately();

@@ -20,6 +20,8 @@
  */
 package gui;
 
+import javafx.scene.paint.Color;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -31,6 +33,7 @@ import java.time.format.DateTimeFormatter;
 public class MainframeCellContent {
 	private String taskName;
 	private String taskStaus;
+	private Color statusColor;
 	private String taskNextExecutionStatus;
 
 	/**
@@ -43,6 +46,7 @@ public class MainframeCellContent {
 	public MainframeCellContent(String taskName, String taskStaus, LocalDateTime taskNextExecutionDateTime) {
 		this.taskName = taskName;
 		this.taskStaus = "Status: " + taskStaus;
+		this.statusColor = Color.web("#000000", 0.8);
 		if (taskNextExecutionDateTime != null) {
 			this.taskNextExecutionStatus = buildNextExecutionStatusString(taskNextExecutionDateTime);
 		}
@@ -56,12 +60,19 @@ public class MainframeCellContent {
 		return taskStaus;
 	}
 
+	public Color getStatusColor() {
+		return statusColor;
+	}
+
 	public String getTaskNextExecutionStatus() {
 		return taskNextExecutionStatus;
 	}
 
 	public void setTaskStaus(String taskStaus) {
 		this.taskStaus = "Status: " + taskStaus;
+	}
+	public void setStausColor(Color color) {
+		this.statusColor = color;
 	}
 
 	/**

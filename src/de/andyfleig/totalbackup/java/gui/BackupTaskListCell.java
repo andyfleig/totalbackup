@@ -52,6 +52,7 @@ public class BackupTaskListCell extends ListCell<MainframeCellContent> {
 			taskName.setText(content.getTaskName());
 			taskName.setStyle("-fx-font-weight: bold");
 			taskStatus.setText(content.getTaskStaus());
+			taskStatus.setTextFill(content.getStatusColor());
 			taskNextExecution.setText(content.getTaskNextExecutionStatus());
 			setGraphic(gridPane);
 		}
