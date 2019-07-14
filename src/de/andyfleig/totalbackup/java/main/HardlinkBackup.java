@@ -108,13 +108,8 @@ public class HardlinkBackup implements Backupable {
 			for (File destFolder1 : destFolders) {
 				boolean indexExists = false;
 				if (destFolder1.isDirectory()) {
-					// split up name of the directory
-					StringTokenizer tokenizer = new StringTokenizer(destFolder1.getName(), "_");
-					// has to consist of exactly two parts (name of the BackupTask and date)
-					if (tokenizer.countTokens() != 2) {
-						continue;
-					}
-					if (!tokenizer.nextToken().equals(taskName)) {
+					if (!BackupHelper.isValidBackupSet(destFolder1.getName(), task.getTaskName())) {
+						// not a valid backup set
 						continue;
 					}
 					// found an existing backup set
@@ -736,23 +731,20 @@ public class HardlinkBackup implements Backupable {
 		if (directories.length > 0) {
 			for (File directory : directories) {
 				if (directory.isDirectory()) {
-					// split up name of the directory
-					StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-					// has to consist of exactly two parts (name of the BackupTask and date)
-					if (tokenizer.countTokens() != 2) {
-						continue;
-					}
-					if (!tokenizer.nextToken().equals(taskName)) {
+					if (!BackupHelper.isValidBackupSet(directory.getName(), taskName)) {
+						// not a valid backup set
 						continue;
 					}
 					// analyze date token (second one)
+					StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
+					tokenizer.nextToken();
 					String backupDate = tokenizer.nextToken();
 
 					try {
 						SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 						foundDate = sdfToDate.parse(backupDate);
 					} catch (ParseException e) {
-						// no valid date
+						// no valid date means no valid backup set
 						continue;
 					}
 					if (newestDate == null) {

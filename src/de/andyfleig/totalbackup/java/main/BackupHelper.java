@@ -55,9 +55,8 @@ public final class BackupHelper {
 	public static final String TB_LOGO = "TB_logo.png";
 
 	/**
-	 * templates for date and time following ISO 8601
-	 * *_NAMING is for the naming of files or directories (does not include colons)
-	 * *_SHOW is for printing anywhere within the gui or in log files
+	 * templates for date and time following ISO 8601 *_NAMING is for the naming of files or directories (does not
+	 * include colons) *_SHOW is for printing anywhere within the gui or in log files
 	 */
 	public static final String DATE_TIME_PATTERN_NAMING = "yyyy-MM-dd'T'HHmmss";
 	public static final String DATE_TIME_PATTERN_SHOW = "yyyy-MM-dd'T'HH:mm:ss";
@@ -231,6 +230,26 @@ public final class BackupHelper {
 	}
 
 	/**
+	 * Checks whether the given directory-name is a valid name of a backup set for the BackupTask with the given name.
+	 *
+	 * @param dirName  name of the directory to validate
+	 * @param taskName name of the corresponding BackupTask
+	 * @return whether it is a valid name for the given task
+	 */
+	public static boolean isValidBackupSet(String dirName, String taskName) {
+		// split up name of the directory
+		StringTokenizer tokenizer = new StringTokenizer(dirName, "_");
+		// has to consist of exactly two parts (name of the BackupTask and date)
+		if (tokenizer.countTokens() != 2) {
+			return false;
+		}
+		if (!tokenizer.nextToken().equals(taskName)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Returns the time of the most recent execution of the given BackupTask based on the created backup.
 	 *
 	 * @param task BackupTask to find the most recent execution for
@@ -248,24 +267,20 @@ public final class BackupHelper {
 		LocalDateTime foundDate;
 		for (File directory : directories) {
 			if (directory.isDirectory()) {
-				// split up name of the directory
-				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-				// has to consist of exactly two parts (name of the BackupTask and date)
-				if (tokenizer.countTokens() != 2) {
-					continue;
-				}
-				if (!tokenizer.nextToken().equals(task.getTaskName())) {
+				if (!isValidBackupSet(directory.getName(), task.getTaskName())) {
+					// not a valid backup set
 					continue;
 				}
 				// analyze date token (second one)
+				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
+				tokenizer.nextToken();
 				String backupDate = tokenizer.nextToken();
-
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(DATE_TIME_PATTERN_NAMING);
 					foundDate = LocalDateTime.ofInstant(sdfToDate.parse(backupDate).toInstant(),
 							ZoneId.systemDefault());
 				} catch (ParseException e) {
-					// no valid date
+					// no valid date means no valid backup set
 					continue;
 				}
 				if (newestDate != null) {

@@ -376,17 +376,10 @@ public class Controller {
 			if (files.length > 0) {
 				for (File file : files) {
 					if (file.isDirectory()) {
-						// split up name of the directory
-						StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-						// has to consist of exactly two parts (name of the BackupTask and date)
-						if (tokenizer.countTokens() != 2) {
-							continue;
+						if (BackupHelper.isValidBackupSet(file.getName(), task.getTaskName())) {
+							backupSetFound = true;
+							break;
 						}
-						if (!tokenizer.nextToken().equals(task.getTaskName())) {
-							continue;
-						}
-						backupSetFound = true;
-						break;
 					}
 				}
 			}
@@ -475,7 +468,7 @@ public class Controller {
 						// DestinationVerification as not successful -> cancel backup
 						cancelBackup(task, false);
 						guiController.disposePreparingDialogIfNotNull();
-						askForNextExecution(task);
+						scheduleBackupTask(task);
 						return;
 					}
 
@@ -483,7 +476,7 @@ public class Controller {
 					// user response: NO
 					cancelBackup(task, false);
 					guiController.disposePreparingDialogIfNotNull();
-					askForNextExecution(task);
+					scheduleBackupTask(task);
 					return;
 				}
 			}
@@ -493,7 +486,7 @@ public class Controller {
 		if (!(new File(task.getDestinationPath())).exists()) {
 			cancelBackup(task, false);
 			guiController.disposePreparingDialogIfNotNull();
-			askForNextExecution(task);
+			scheduleBackupTask(task);
 			return;
 		}
 
@@ -575,15 +568,6 @@ public class Controller {
 			backupThreads.remove(tmpContainer);
 			taskFinished(task, reschedule);
 		}
-	}
-
-	/**
-	 * Request from user when the given BackupTask should be executed the next time.
-	 *
-	 * @param task given BackupTask
-	 */
-	public void askForNextExecution(BackupTask task) {
-		// ToDo: implement
 	}
 
 	/**
@@ -690,9 +674,8 @@ public class Controller {
 		} else if (task.advancedAutoCleanIsEnabled()) {
 			runAdvancedClean(task);
 		}
-
+		setStatus("Execution completed", false, task.getTaskName());
 		task = null;
-
 	}
 
 	/**
@@ -848,25 +831,21 @@ public class Controller {
 		ArrayList<File> foundBackupsets = new ArrayList<>();
 		if (files.length > 0) {
 			for (File file : files) {
-				// ToDo: duplicate code (5 times)
-				// split up name of the directory
-				StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
-				// has to consist of exactly two parts (name of the BackupTask and date)
-				if (tokenizer.countTokens() != 2) {
-					continue;
-				}
-				if (!tokenizer.nextToken().equals(task.getTaskName())) {
+				if (!BackupHelper.isValidBackupSet(file.getName(), task.getTaskName())) {
+					// not a valid backup set
 					continue;
 				}
 				// analyze date token (second one)
+				StringTokenizer tokenizer = new StringTokenizer(file.getName(), "_");
+				tokenizer.nextToken();
 				String backupDate = tokenizer.nextToken();
-
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 					sdfToDate.parse(backupDate);
 					foundBackupsets.add(file);
 				} catch (ParseException e) {
-					// ToDo: handle case without valid date
+					// no valid date means no valid backup set
+					continue;
 				}
 			}
 		}
@@ -888,23 +867,20 @@ public class Controller {
 		Date foundDate;
 		for (File directory : directories) {
 			if (directory.isDirectory()) {
-				// split up name of the directory
-				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
-				// has to consist of exactly two parts (name of the BackupTask and date)
-				if (tokenizer.countTokens() != 2) {
-					continue;
-				}
-				if (!tokenizer.nextToken().equals(task.getTaskName())) {
+				if (!BackupHelper.isValidBackupSet(directory.getName(), task.getTaskName())) {
+					// not a valid backup set
 					continue;
 				}
 				// analyze date token (second one)
+				StringTokenizer tokenizer = new StringTokenizer(directory.getName(), "_");
+				tokenizer.nextToken();
 				String backupDate = tokenizer.nextToken();
 
 				try {
 					SimpleDateFormat sdfToDate = new SimpleDateFormat(BackupHelper.DATE_TIME_PATTERN_NAMING);
 					foundDate = sdfToDate.parse(backupDate);
 				} catch (ParseException e) {
-					// no valid date
+					// no valid date means no valid backup set
 					continue;
 				}
 				if (oldestDate == null) {
@@ -1305,10 +1281,6 @@ public class Controller {
 		wNumber = 0;
 		while (wNumber < 7) {
 			if (weekdays[wNumber]) {
-				if (daysFromTodayCounter > 7) {
-					// TODO: Debugging-Ausgabe raus
-					System.err.println("Error: Weekday more than 7 days in future is not possible");
-				}
 				LocalDate date = startAt.toLocalDate().plusDays(daysFromTodayCounter);
 				return time.atDate(date);
 			}
