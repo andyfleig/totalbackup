@@ -36,11 +36,6 @@ public interface IFxMainframeListener {
 	public void startAboutDialog();
 
 	/**
-	 * Serializes all the BackupTasks.
-	 */
-	public void saveProperties();
-
-	/**
 	 * Deletes the BackupTask with the given taskName from the list of BackupTasks (if any).
 	 *
 	 * @param taskName name of the BackupTask to delete
@@ -56,7 +51,7 @@ public interface IFxMainframeListener {
 
 	/***
 	 * Executes the BackupTask with the given Name immediately.
-	 * @param taskName
+	 * @param taskName name of the BackupTask
 	 */
 	public void runBackupTaskWithName(String taskName);
 

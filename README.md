@@ -19,6 +19,7 @@ java -jar totalbackup.jar force_qt
 ## Requirements
 - Java >=8 (unfortunately, using openJDK can cause problems, which is related to the JavaFX prerequisite)
 - JavaFX
+- Gson >= 2.8.5 (included in the jar)
 
 Note: To be able to minimize TotalBackup into the system tray, Javas SystemTray has to be supported. Alternatively the included Qt/C++ based tray-app can be used.
 

@@ -54,7 +54,7 @@ public interface Backupable {
 	/**
 	 * Returns whether this Backupable was canceled.
 	 *
-	 * @return whether it was cenceled (true) or not (false)
+	 * @return whether it was canceled (true) or not (false)
 	 */
 	public boolean isCanceled();
 

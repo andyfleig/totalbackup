@@ -105,7 +105,7 @@ public class Filter implements Serializable {
 
 	@Override
 	public boolean equals(Object object) {
-		if (object != null && object instanceof Filter) {
+		if (object instanceof Filter) {
 			if (this.mode == ((Filter) object).mode && this.path.equals(((Filter) object).path)) {
 				return true;
 			}

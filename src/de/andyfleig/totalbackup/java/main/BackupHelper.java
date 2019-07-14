@@ -222,7 +222,7 @@ public final class BackupHelper {
 		}
 		byte[] mdbytes = md.digest();
 
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (byte mdbyte : mdbytes) {
 			sb.append(Integer.toString((mdbyte & 0xff) + 0x100, 16).substring(1));
 		}

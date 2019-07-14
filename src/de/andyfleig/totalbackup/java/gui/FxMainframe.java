@@ -147,7 +147,7 @@ public class FxMainframe extends Application implements Initializable {
 				"Do you really want to delete the selected " + "backup-task?",
 				"Deleting the backup-task will cancel " + "future executions of this task. \nThis can" +
 						" not be undone.");
-		if (result.get() == ButtonType.YES) {
+		if (result.isPresent() && result.get() == ButtonType.YES) {
 			mainframeListener.deleteBackupTaskWithName(taskName);
 		}
 	}
@@ -165,7 +165,7 @@ public class FxMainframe extends Application implements Initializable {
 		// ask for confirmation
 		Optional<ButtonType> result = GuiHelper.showConfirmationWindows("Cancel task?",
 				"Do you really want to cancel" + " the selected backup task?");
-		if (result.get() == ButtonType.YES) {
+		if (result.isPresent() && result.get() == ButtonType.YES) {
 			mainframeListener.cancelBackupTaskWithName(taskName);
 		}
 

@@ -19,11 +19,6 @@
  * along with TotalBackup.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Contains information about a file or directory to backup.
- *
- * @author Andreas Fleig
- */
 package data;
 
 /**
@@ -47,7 +42,7 @@ public class BackupElement {
 	/**
 	 * Whether the element has to be linked (true) or copied (false).
 	 */
-	private boolean toLink = false;
+	private boolean toLink;
 
 	/**
 	 * Creates a new BackupElement.

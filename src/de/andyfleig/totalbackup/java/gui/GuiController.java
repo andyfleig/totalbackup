@@ -164,11 +164,6 @@ public class GuiController {
 			}
 
 			@Override
-			public void saveProperties() {
-				guiControllerListener.saveProperties();
-			}
-
-			@Override
 			public void deleteBackupTaskWithName(String taskName) {
 				guiControllerListener.deleteBackupTaskWithName(taskName);
 			}
@@ -270,7 +265,6 @@ public class GuiController {
 
 			// create and run thread for communication with QtTray
 			Thread recvThread = new Thread(new Runnable() {
-
 				@Override
 				public void run() {
 					recvLoop();
@@ -302,31 +296,31 @@ public class GuiController {
 			if (msg == null) {
 				msg = "";
 			}
-			int msgLenght = msg.length();
+			int msgLength = msg.length();
 			// toSend is the buffer for the message to send
 			// its size is the size of the message + 3 leading characters
-			toSend = new char[msgLenght + 3];
+			toSend = new char[msgLength + 3];
 			// handle umlauts
 			msg = msg.replace("ä", "ae");
 			msg = msg.replace("ö", "oe");
 			msg = msg.replace("ü", "ue");
 			// leading three chars encode the length of the message
-			if (msgLenght < 10) {
+			if (msgLength < 10) {
 				toSend[0] = "0".charAt(0);
 				toSend[1] = "0".charAt(0);
-				toSend[2] = String.valueOf(msgLenght).charAt(0);
-			} else if (msgLenght < 100) {
+				toSend[2] = String.valueOf(msgLength).charAt(0);
+			} else if (msgLength < 100) {
 				toSend[0] = "0".charAt(0);
-				toSend[1] = String.valueOf(msgLenght).charAt(0);
-				toSend[2] = String.valueOf(msgLenght).charAt(1);
-			} else if (msgLenght < 1000) {
-				toSend[0] = String.valueOf(msgLenght).charAt(0);
-				toSend[1] = String.valueOf(msgLenght).charAt(1);
-				toSend[2] = String.valueOf(msgLenght).charAt(2);
+				toSend[1] = String.valueOf(msgLength).charAt(0);
+				toSend[2] = String.valueOf(msgLength).charAt(1);
+			} else if (msgLength < 1000) {
+				toSend[0] = String.valueOf(msgLength).charAt(0);
+				toSend[1] = String.valueOf(msgLength).charAt(1);
+				toSend[2] = String.valueOf(msgLength).charAt(2);
 			} else {
 				return;
 			}
-			for (int i = 3; i < msgLenght + 3; i++) {
+			for (int i = 3; i < msgLength + 3; i++) {
 				toSend[i] = msg.charAt(i - 3);
 			}
 		} else {
@@ -383,7 +377,7 @@ public class GuiController {
 	private void recvLoop() {
 		while (true) {
 			// 1. create socket
-			ServerSocket server = null;
+			ServerSocket server;
 			try {
 				server = new ServerSocket(1234);
 			} catch (IOException e) {
@@ -421,7 +415,6 @@ public class GuiController {
 			try {
 				socket.close();
 				server.close();
-				server = null;
 			} catch (IOException e) {
 				System.err.println("Error: IOException in Mainframe in recvLoop while closing Socket and ServerSocket");
 			}
@@ -502,7 +495,7 @@ public class GuiController {
 	}
 
 	/**
-	 * Triggers to show/hide the mainfrasme.
+	 * Triggers to show/hide the mainframe.
 	 */
 	private void triggerShowHide() {
 		// Avoid throwing IllegalStateException by running from a non-JavaFX thread

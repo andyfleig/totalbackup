@@ -40,7 +40,6 @@ import javafx.scene.image.ImageView;
 import listener.ISourcesDialogListener;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -283,11 +282,11 @@ public class BackupTaskDialog {
 	public void initialize() {
 		Image image_general = new Image("tab_general.png");
 		Image image_autorun = new Image("tab_autorun.png");
-		Image image_autobclean = new Image("tab_autoclean.png");
+		Image image_autoclean = new Image("tab_autoclean.png");
 
 		ImageView iv_general = new ImageView(image_general);
 		ImageView iv_autorun = new ImageView(image_autorun);
-		ImageView iv_autoclean = new ImageView(image_autobclean);
+		ImageView iv_autoclean = new ImageView(image_autoclean);
 
 		iv_general.setRotate(90.0);
 		iv_autorun.setRotate(90.0);
@@ -518,9 +517,7 @@ public class BackupTaskDialog {
 		tf_taskName.setText(initTask.getTaskName());
 		tf_taskName.setDisable(true);
 
-		for (Source source : initTask.getSources()) {
-			ol_sources.add(source);
-		}
+		ol_sources.addAll(initTask.getSources());
 		tf_destPath.setText(initTask.getDestinationPath());
 
 		if (initTask.getBackupMode() == 1) {
@@ -945,7 +942,7 @@ public class BackupTaskDialog {
 			// existing one (edit)
 			Optional<ButtonType> result = GuiHelper.showConfirmationWindows("BackupTask with this name already exists.",
 					"Old BackupTask with same name will be overwritten!");
-			if (result.get() == ButtonType.OK) {
+			if (result.isPresent() && result.get() == ButtonType.OK) {
 				backupTaskDialogListener.deleteBackupTaskWithName(newTask.getTaskName());
 			} else {
 				return;
@@ -1101,15 +1098,15 @@ public class BackupTaskDialog {
 		}
 		switch (unit) {
 			case "min":
-				return sp_rule_1.getValue();
+				return value;
 			case "hour(s)":
-				return sp_rule_1.getValue() * 60;
+				return value * 60;
 			case "days(s)":
-				return sp_rule_1.getValue() * 60 * 24;
+				return value * 60 * 24;
 			case "weeks(s)":
-				return sp_rule_1.getValue() * 60 * 24 * 7;
+				return value * 60 * 24 * 7;
 			default:
-				return sp_rule_1.getValue() * 60 * 24 * 7 * 365;
+				return value * 60 * 24 * 7 * 365;
 		}
 	}
 

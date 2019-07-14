@@ -20,8 +20,6 @@
  */
 package listener;
 
-import java.time.LocalDateTime;
-
 /**
  * Listener of the INextExecutionChooserDialog.
  *

@@ -27,8 +27,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import main.BackupHelper;
 
-import java.io.IOException;
-
 /**
  * AboutDialog containing general information about totalbackup like the version number.
  *

@@ -39,8 +39,6 @@ import listener.ISummaryDialogListener;
 public class SummaryDialog implements Initializable {
 
 	private ISummaryDialogListener listener;
-	private boolean backupCanceled;
-	private boolean backupIsNotFinished;
 	private BackupTask task;
 
 	static Stage stage;
@@ -87,9 +85,9 @@ public class SummaryDialog implements Initializable {
 			long numberOfFilesToLink, long numberOfDirectories, double sizeToCopy, double sizeToLink) {
 		this.listener = listener;
 		this.task = task;
-		String taskname = task.getTaskName();
+		String taskName = task.getTaskName();
 		// Inhalte hinzufügen:
-		label_taskNameDyn.setText(taskname);
+		label_taskNameDyn.setText(taskName);
 		label_numberToCopyDyn.setText(String.valueOf(numberOfFilesToCopy));
 		label_numberToLinkDyn.setText(String.valueOf(numberOfFilesToLink));
 		label_numberOfDirsDyn.setText(String.valueOf(numberOfDirectories));
@@ -109,13 +107,13 @@ public class SummaryDialog implements Initializable {
 	private String formatSize(double size) {
 		DecimalFormat decimalFormat = new DecimalFormat("#0.00");
 		if (size < 1000) {
-			return String.valueOf(decimalFormat.format(size)) + "Byte";
+			return decimalFormat.format(size) + "Byte";
 		} else if (size < 1000000) {
-			return String.valueOf(decimalFormat.format(size / 1000)) + "kB";
+			return decimalFormat.format(size / 1000) + "kB";
 		} else if (size < 1000000000) {
-			return String.valueOf(decimalFormat.format(size / 1000000)) + "MB";
+			return decimalFormat.format(size / 1000000) + "MB";
 		} else {
-			return String.valueOf(decimalFormat.format(size / 1000000000)) + "GB";
+			return decimalFormat.format(size / 1000000000) + "GB";
 		}
 	}
 
@@ -132,7 +130,6 @@ public class SummaryDialog implements Initializable {
 
 	@FXML
 	public void okAction() {
-		backupIsNotFinished = true;
 		synchronized (task) {
 			task.notify();
 			stage.close();

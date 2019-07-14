@@ -35,7 +35,7 @@ public class SourceListCell extends ListCell<Source> {
 	private Label lb_path = new Label();
 
 	/**
-	 * Creates a new ContentCell for the list of sources witin the BackupTaskDialog.
+	 * Creates a new ContentCell for the list of sources within the BackupTaskDialog.
 	 */
 	public SourceListCell() {
 		gridPane.add(lb_path, 0, 0);

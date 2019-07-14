@@ -258,12 +258,12 @@ public class Controller {
 		loadSerialization();
 
 		// list of all missed BackupTasks to catch up
-		ArrayList<BackupTask> missedBackupTaks = new ArrayList<>();
+		ArrayList<BackupTask> missedBackupTask = new ArrayList<>();
 		// check whether backups has been missed since the last execution of TotalBackup
 		for (BackupTask task : backupTasks) {
 			if (task.getLocalDateTimeOfNextExecution() != null &&
 					task.getLocalDateTimeOfNextExecution().isBefore(LocalDateTime.now())) {
-				missedBackupTaks.add(task);
+				missedBackupTask.add(task);
 			}
 		}
 
@@ -273,7 +273,7 @@ public class Controller {
 		scheduleBackupTasks();
 
 		// catch up missed backups
-		for (BackupTask task : missedBackupTaks) {
+		for (BackupTask task : missedBackupTask) {
 			// check whether it is worth catching those backups up (by checking the next regularly planned execution)
 			if ((task.getLocalDateTimeOfNextExecution().minusMinutes(
 					task.getProfitableTimeUntilNextExecution())).isAfter(LocalDateTime.now())) {
@@ -286,7 +286,7 @@ public class Controller {
 	}
 
 	/**
-	 * Creating and writing GSON-based serialization of the BackupTasks.
+	 * Creating and writing Gson-based serialization of the BackupTasks.
 	 */
 	private void saveSerialization() {
 		Gson gson = new Gson();
@@ -302,7 +302,7 @@ public class Controller {
 	}
 
 	/**
-	 * Loads the GSON-based serialization of the BackupTasks and adds them to the local list of BackupTasks.
+	 * Loads the Gson-based serialization of the BackupTasks and adds them to the local list of BackupTasks.
 	 */
 	private void loadSerialization() {
 		String settings = "";
@@ -675,7 +675,6 @@ public class Controller {
 			runAdvancedClean(task);
 		}
 		setStatus("Execution completed", false, task.getTaskName());
-		task = null;
 	}
 
 	/**
@@ -909,7 +908,7 @@ public class Controller {
 		if (existingBackupSets.size() == 0) {
 			return;
 		}
-		// create buckes according to the number of defined rules
+		// create buckets according to the number of defined rules
 		ArrayList<File> bucket1 = new ArrayList<>();
 		ArrayList<File> bucket2 = new ArrayList<>();
 		ArrayList<File> bucket3 = new ArrayList<>();
@@ -920,9 +919,9 @@ public class Controller {
 		LocalDateTime[] boundaries = new LocalDateTime[task.getNumberOfExtendedCleanRules() - 1];
 		String[] boundaryStrings = task.getFormattedBoundaries();
 		for (int i = 0; i < boundaries.length; i++) {
-			StringTokenizer tokanizer = new StringTokenizer(boundaryStrings[i], "_");
-			String threshold = tokanizer.nextToken();
-			switch (tokanizer.nextToken()) {
+			StringTokenizer tokenizer = new StringTokenizer(boundaryStrings[i], "_");
+			String threshold = tokenizer.nextToken();
+			switch (tokenizer.nextToken()) {
 				case "min":
 					boundaries[i] = currentSystemTime.minusMinutes(Long.parseLong(threshold));
 					break;
@@ -1007,7 +1006,7 @@ public class Controller {
 
 		// clear all the buckets according to their maximum size
 		if (task.getBackupsToKeep().length > 0 && task.getBackupsToKeep()[0] != -1) {
-			while (!bucket1.isEmpty() && bucket1.size() > Integer.valueOf(task.getBackupsToKeep()[0])) {
+			while (!bucket1.isEmpty() && bucket1.size() > task.getBackupsToKeep()[0]) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket1, task)))) {
 					System.err.println("Error: Directory could not be deleted");
@@ -1017,7 +1016,7 @@ public class Controller {
 		}
 
 		if (task.getBackupsToKeep().length > 1 && task.getBackupsToKeep()[1] != -1) {
-			while (!bucket2.isEmpty() && bucket2.size() > Integer.valueOf(task.getBackupsToKeep()[1])) {
+			while (!bucket2.isEmpty() && bucket2.size() > task.getBackupsToKeep()[1]) {
 				File oldestBackupSet = new File(task.getDestinationPath() + "/" + findOldestBackup(bucket2, task));
 				if (!BackupHelper.deleteDirectory(oldestBackupSet)) {
 					System.err.println("Error: Directory could not be deleted");
@@ -1028,7 +1027,7 @@ public class Controller {
 		}
 
 		if (task.getBackupsToKeep().length > 2 && task.getBackupsToKeep()[2] != -1) {
-			while (!bucket3.isEmpty() && bucket3.size() > Integer.valueOf(task.getBackupsToKeep()[2])) {
+			while (!bucket3.isEmpty() && bucket3.size() > task.getBackupsToKeep()[2]) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket3, task)))) {
 					System.err.println("Error: Directory could not be deleted");
@@ -1038,7 +1037,7 @@ public class Controller {
 		}
 
 		if (task.getBackupsToKeep().length > 3 && task.getBackupsToKeep()[3] != -1) {
-			while (!bucket4.isEmpty() && bucket4.size() > Integer.valueOf(task.getBackupsToKeep()[3])) {
+			while (!bucket4.isEmpty() && bucket4.size() > task.getBackupsToKeep()[3]) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket4, task)))) {
 					System.err.println("Error: Directory could not be deleted");
@@ -1048,7 +1047,7 @@ public class Controller {
 		}
 
 		if (task.getBackupsToKeep().length > 4 && task.getBackupsToKeep()[4] != -1) {
-			while (!bucket4.isEmpty() && bucket5.size() > Integer.valueOf(task.getBackupsToKeep()[4])) {
+			while (!bucket4.isEmpty() && bucket5.size() > task.getBackupsToKeep()[4]) {
 				if (!BackupHelper.deleteDirectory(
 						new File(task.getDestinationPath() + "/" + findOldestBackup(bucket5, task)))) {
 					System.err.println("Error: Directory could not be deleted");
@@ -1056,11 +1055,6 @@ public class Controller {
 				}
 			}
 		}
-		bucket1 = null;
-		bucket2 = null;
-		bucket3 = null;
-		bucket4 = null;
-		bucket5 = null;
 	}
 
 	/**

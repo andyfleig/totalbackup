@@ -278,7 +278,7 @@ public class HardlinkBackup implements Backupable {
 				}
 			}
 		} catch (BackupCanceledException e) {
-			outprint = "ackup canceled by User";
+			outprint = "Backup canceled by User";
 			listener.setStatus(outprint, false, task.getTaskName());
 			listener.log(outprint, task);
 			isCanceled = true;
@@ -536,7 +536,7 @@ public class HardlinkBackup implements Backupable {
 	 * Returns the corresponding StructureFile of the index for the given file. Returns null if file is not existing in
 	 * the index.
 	 *
-	 * @param file           file to find the StrcutureFile from the index for
+	 * @param file           file to find the StructureFile from the index for
 	 * @param sourceRootPath root path of the source
 	 * @return corresponding StructureFile or null
 	 */

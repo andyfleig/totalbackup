@@ -53,7 +53,6 @@ public class StructureFile implements Serializable {
 
 		File tempFile = new File(rootPath + filePath);
 		lastModified = tempFile.lastModified();
-		tempFile = null;
 	}
 
 	/**

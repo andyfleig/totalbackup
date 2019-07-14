@@ -335,7 +335,7 @@ public class BackupTask implements Serializable {
 	/**
 	 * Returns a list of the boundaries of advanced auto-clean as formatted strings.
 	 *
-	 * @return list of formated strings of boundaries
+	 * @return list of formatted strings of boundaries
 	 */
 	public String[] getFormattedBoundaries() {
 		String[] result = new String[numberOfExtendedCleanRules - 1];
