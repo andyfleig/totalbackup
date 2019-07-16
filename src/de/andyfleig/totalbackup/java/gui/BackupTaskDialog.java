@@ -720,7 +720,7 @@ public class BackupTaskDialog {
 	@FXML
 	public void okAction() {
 		if (!settingsAreValid()) {
-			System.out.println("Error: invalid parameters!");
+			System.err.println("Error: invalid parameters!");
 			return;
 		}
 
@@ -887,7 +887,7 @@ public class BackupTaskDialog {
 			try {
 				newTask.setBackupStartTime(LocalTime.parse(tf_startAt.getText()));
 			} catch (DateTimeParseException e) {
-				System.out.println("Error: " + e.toString());
+				System.err.println("Error: " + e.toString());
 			}
 			if (cb_catchUpBackups.isSelected()) {
 				newTask.setCatchUpEnabled(true);

@@ -296,7 +296,7 @@ public class HardlinkBackup implements Backupable {
 	@Override
 	public void runBackup(BackupTask task) {
 		if (!preparationDone) {
-			System.out.println("Error: Tying to run backup without previously running the preparation.");
+			System.err.println("Error: Tying to run backup without previously running the preparation.");
 			return;
 		}
 
@@ -610,7 +610,7 @@ public class HardlinkBackup implements Backupable {
 
 			o.writeObject(this.directoryStructure);
 		} catch (IOException ex) {
-			System.out.println("Error: IOException in HardlinkBackup in serializeIndex while creating " +
+			System.err.println("Error: IOException in HardlinkBackup in serializeIndex while creating " +
 					"FileOutputStream, ObjectOutputStream and writing Object");
 		} finally {
 			if (o != null) {

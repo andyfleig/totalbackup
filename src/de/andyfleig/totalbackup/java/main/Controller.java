@@ -746,17 +746,17 @@ public class Controller {
 	 * @param task corresponding BackupTask
 	 */
 	private void log(String msg, BackupTask task) {
-		// Log-Datei anlegen:
+		// create log-file
 		if (task == null) {
 			return;
 		}
 		File log = new File(task.getDestinationPath() + File.separator + task.getTaskName() + ".log");
-		// Kontrollieren ob bereits eine log Datei existiert:
+		// check whether a log-file already exists
 		if (!log.exists()) {
 			try {
 				log.createNewFile();
 			} catch (IOException e) {
-				System.out.println("Fehler: IO-Problem");
+				System.err.println("Error: IO-Problem while creating the logfile");
 			}
 		}
 		try {
@@ -768,7 +768,7 @@ public class Controller {
 			writer.append("\n" + output);
 			writer.close();
 		} catch (FileNotFoundException e) {
-			System.err.println("Fehler: log Datei nicht gefunden");
+			System.err.println("Error: Logfile not found.");
 		}
 	}
 

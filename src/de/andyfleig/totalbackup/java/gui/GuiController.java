@@ -347,7 +347,7 @@ public class GuiController {
 			try {
 				clientSocket.close();
 			} catch (IOException ex) {
-				System.out.println("Error: IOException in Mainframe in sendToQtTrayOverSocket while closing Socket");
+				System.err.println("Error: IOException in Mainframe in sendToQtTrayOverSocket while closing Socket");
 			}
 			return;
 		}

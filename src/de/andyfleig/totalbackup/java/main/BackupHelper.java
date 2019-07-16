@@ -110,7 +110,7 @@ public final class BackupHelper {
 		try {
 			Files.createLink(Paths.get(destination.getAbsolutePath()), Paths.get(source.getAbsolutePath()));
 		} catch (IOException e) {
-			System.out.println("Fehler: IO-Problem");
+			System.err.println("Error: Could not create hardlink to file");
 		}
 
 		listener.setStatus("", false, task.getTaskName());
