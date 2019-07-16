@@ -42,5 +42,5 @@ java -jar totalbackup.jar force_qt
 Note: To be able to minimize TotalBackup into the system tray, Javas SystemTray has to be supported. Alternatively the included Qt/C++ based tray-app can be used.
 
 ## Known Bugs
-- Java (AWT) Tray is not able to show notifications using KDE
-- Java (AWT) Tray is not working at all under Gnome 3
+- Java (AWT) Tray is not able to show notifications using Plasma/KDE -> use QtTray instead
+- Java (AWT) Tray is not working at all under Gnome 3 -> use QtTray instead
